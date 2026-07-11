@@ -8944,6 +8944,10 @@ function editTab(tab) {
     el.disabled = false;
     if (tab === 'osago') el.addEventListener('input', _updateOsagoPreview);
   });
+  if (tab === 'contacts') {
+    const shortWrap = document.getElementById('cfg_contact_short')?.closest('.cfg-field');
+    if (shortWrap) shortWrap.style.display = '';
+  }
   panel.querySelector('.s-edit-btn').style.display   = 'none';
   panel.querySelector('.s-save-btn').style.display   = '';
   panel.querySelector('.s-cancel-btn').style.display = '';
@@ -8956,6 +8960,10 @@ function cancelTab(tab) {
     if (el && _cfgOriginal[k] !== undefined) el.value = _cfgOriginal[k];
   });
   panel.querySelectorAll('.form-input').forEach(el => { el.disabled = true; });
+  if (tab === 'contacts') {
+    const shortWrap = document.getElementById('cfg_contact_short')?.closest('.cfg-field');
+    if (shortWrap) shortWrap.style.display = document.getElementById('cfg_contact_short')?.value ? '' : 'none';
+  }
   panel.querySelector('.s-edit-btn').style.display   = '';
   panel.querySelector('.s-save-btn').style.display   = 'none';
   panel.querySelector('.s-cancel-btn').style.display = 'none';
@@ -12572,6 +12580,9 @@ async function loadSiteSettings() {
         _cfgOriginal[k] = s[k];
       }
     });
+    // Скрыть короткий номер если пустой (в режиме просмотра)
+    const shortWrap = document.getElementById('cfg_contact_short')?.closest('.cfg-field');
+    if (shortWrap) shortWrap.style.display = s.contact_short ? '' : 'none';
     updateLeadsGroupStatus();
     _updateOsagoPreview();
     _updateReceiptPreview();
