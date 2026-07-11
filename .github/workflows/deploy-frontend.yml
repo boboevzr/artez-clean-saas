@@ -4,15 +4,15 @@ on:
   workflow_dispatch:
     inputs:
       subdomain:
-        description: 'Поддомен (пусто = artez.uz, иначе client1 → client1.artez.uz)'
+        description: 'Поддомен (пусто = artez.uz, saas-test = saas-test.artez.uz)'
         required: false
         default: ''
       api_url:
-        description: 'API URL для этого клиента (напр. https://cleanpro-api.railway.app)'
+        description: 'API URL для этого клиента'
         required: false
         default: 'https://artez-api-production.up.railway.app'
       company_name:
-        description: 'Название компании (напр. CleanPro)'
+        description: 'Название компании'
         required: false
         default: 'ARTEZ'
 
@@ -27,19 +27,23 @@ jobs:
 
       - name: Generate config.js
         run: |
-          cat > config.js << 'ENDOFCONFIG'
+          cat > config.js << EOF
           window.APP_COMPANY_NAME = "${{ github.event.inputs.company_name }}";
           window.APP_API_URL      = "${{ github.event.inputs.api_url }}";
-          ENDOFCONFIG
+          EOF
 
-      - name: Set deploy path
-        id: path
+      - name: Set FTP credentials and path
+        id: cfg
         run: |
           SUB="${{ github.event.inputs.subdomain }}"
           if [ -z "$SUB" ]; then
-            echo "ftp_path=/" >> $GITHUB_OUTPUT
+            echo "ftp_user=${{ secrets.FTP_USERNAME }}"     >> $GITHUB_OUTPUT
+            echo "ftp_pass=${{ secrets.FTP_PASSWORD }}"     >> $GITHUB_OUTPUT
+            echo "ftp_path=/"                               >> $GITHUB_OUTPUT
           else
-            echo "ftp_path=/$SUB" >> $GITHUB_OUTPUT
+            echo "ftp_user=${{ secrets.FTP_USERNAME_SAAS }}" >> $GITHUB_OUTPUT
+            echo "ftp_pass=${{ secrets.FTP_PASSWORD_SAAS }}" >> $GITHUB_OUTPUT
+            echo "ftp_path=/"                                >> $GITHUB_OUTPUT
           fi
 
       - name: Install lftp
@@ -48,15 +52,14 @@ jobs:
       - name: Deploy via FTP
         env:
           FTP_SERVER: ${{ secrets.FTP_SERVER }}
-          FTP_USER: ${{ secrets.FTP_USERNAME }}
-          FTP_PASS: ${{ secrets.FTP_PASSWORD }}
-          DEPLOY_PATH: ${{ steps.path.outputs.ftp_path }}
+          FTP_USER: ${{ steps.cfg.outputs.ftp_user }}
+          FTP_PASS: ${{ steps.cfg.outputs.ftp_pass }}
+          DEPLOY_PATH: ${{ steps.cfg.outputs.ftp_path }}
         run: |
           lftp -u "$FTP_USER,$FTP_PASS" "$FTP_SERVER" -e "
             set ftp:ssl-allow no;
             set net:timeout 60;
             set net:max-retries 3;
-            mkdir -p $DEPLOY_PATH;
             mirror --reverse --no-perms --parallel=4 --ignore-time --verbose \
               --exclude-glob=.git \
               --exclude-glob=.github \
