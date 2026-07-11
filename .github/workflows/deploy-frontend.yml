@@ -3,10 +3,18 @@ name: Deploy Frontend to ahost.uz
 on:
   workflow_dispatch:
     inputs:
-      deploy_path:
-        description: 'Путь на FTP-сервере (например: /saas или /saas/client1)'
+      subdomain:
+        description: 'Поддомен (пусто = artez.uz, иначе client1 → client1.artez.uz)'
         required: false
-        default: '/saas'
+        default: ''
+      api_url:
+        description: 'API URL для этого клиента (напр. https://cleanpro-api.railway.app)'
+        required: false
+        default: 'https://artez-api-production.up.railway.app'
+      company_name:
+        description: 'Название компании (напр. CleanPro)'
+        required: false
+        default: 'ARTEZ'
 
 jobs:
   deploy:
@@ -17,6 +25,23 @@ jobs:
         with:
           submodules: false
 
+      - name: Generate config.js
+        run: |
+          cat > config.js << 'ENDOFCONFIG'
+          window.APP_COMPANY_NAME = "${{ github.event.inputs.company_name }}";
+          window.APP_API_URL      = "${{ github.event.inputs.api_url }}";
+          ENDOFCONFIG
+
+      - name: Set deploy path
+        id: path
+        run: |
+          SUB="${{ github.event.inputs.subdomain }}"
+          if [ -z "$SUB" ]; then
+            echo "ftp_path=/home/artezuz/public_html" >> $GITHUB_OUTPUT
+          else
+            echo "ftp_path=/home/artezuz/public_html/$SUB" >> $GITHUB_OUTPUT
+          fi
+
       - name: Install lftp
         run: sudo apt-get install -y lftp
 
@@ -25,6 +50,17 @@ jobs:
           FTP_SERVER: ${{ secrets.FTP_SERVER }}
           FTP_USER: ${{ secrets.FTP_USERNAME }}
           FTP_PASS: ${{ secrets.FTP_PASSWORD }}
-          DEPLOY_PATH: ${{ github.event.inputs.deploy_path }}
+          DEPLOY_PATH: ${{ steps.path.outputs.ftp_path }}
         run: |
-          lftp -u "$FTP_USER,$FTP_PASS" "$FTP_SERVER" -e "set ftp:ssl-allow no; set net:timeout 60; set net:max-retries 3; mirror --reverse --no-perms --parallel=4 --ignore-time --verbose --exclude-glob=artez_api --exclude-glob=artez_bot --exclude-glob=.git --exclude-glob=.github --exclude-glob=*.md --exclude-glob=*.py --exclude-glob=.gitignore . $DEPLOY_PATH; bye"
+          lftp -u "$FTP_USER,$FTP_PASS" "$FTP_SERVER" -e "
+            set ftp:ssl-allow no;
+            set net:timeout 60;
+            set net:max-retries 3;
+            mkdir -p $DEPLOY_PATH;
+            mirror --reverse --no-perms --parallel=4 --ignore-time --verbose \
+              --exclude-glob=.git \
+              --exclude-glob=.github \
+              --exclude-glob=*.md \
+              --exclude-glob=.gitignore \
+              . $DEPLOY_PATH;
+            bye"
