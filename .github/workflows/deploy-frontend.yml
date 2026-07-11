@@ -37,9 +37,9 @@ jobs:
         run: |
           SUB="${{ github.event.inputs.subdomain }}"
           if [ -z "$SUB" ]; then
-            echo "ftp_path=/home/artezuz/public_html" >> $GITHUB_OUTPUT
+            echo "ftp_path=/" >> $GITHUB_OUTPUT
           else
-            echo "ftp_path=/home/artezuz/public_html/$SUB" >> $GITHUB_OUTPUT
+            echo "ftp_path=/$SUB" >> $GITHUB_OUTPUT
           fi
 
       - name: Install lftp
