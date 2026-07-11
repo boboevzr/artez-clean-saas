@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Правила партнёрской программы — ARTEZ</title>
+  <link rel="icon" href="LOGO/favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --teal-deep:#0E2D2A; --teal:#1A5C54; --teal-soft:#2CC6B3;
+      --amber:#E8A83C; --amber-deep:#C98C24;
+      --sand:#F4EFE6; --sand-card:#FFFFFF;
+      --ink:#141E1B; --ink-soft:#5A6D68; --line:#E0D9CC;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:"Inter",system-ui,sans-serif;background:var(--sand);color:var(--ink);line-height:1.7;min-height:100vh}
+
+    .header{
+      background:linear-gradient(135deg,#0A1F1D 0%,var(--teal-deep) 50%,#152E32 100%);
+      padding:0 24px;height:64px;display:flex;align-items:center;gap:16px;
+      position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(0,0,0,.3);
+    }
+    .header-back{
+      color:rgba(255,255,255,.75);text-decoration:none;font-size:13px;font-weight:500;
+      display:flex;align-items:center;gap:6px;padding:6px 12px;
+      border:1px solid rgba(255,255,255,.15);border-radius:20px;transition:all .2s;white-space:nowrap;
+    }
+    .header-back:hover{color:#fff;border-color:rgba(255,255,255,.35);background:rgba(255,255,255,.07)}
+    .header-logo{display:flex;align-items:center}
+    .header-logo img{height:32px;width:auto}
+    .lang-switch{margin-left:auto;display:flex;gap:6px}
+    .lang-btn{
+      padding:5px 16px;border-radius:20px;border:1px solid rgba(255,255,255,.25);
+      cursor:pointer;font-size:13px;font-weight:600;font-family:"Sora",sans-serif;
+      transition:all .2s;background:transparent;color:rgba(255,255,255,.7);
+    }
+    .lang-btn.active{background:var(--teal-soft);color:#fff;border-color:var(--teal-soft);box-shadow:0 0 12px rgba(44,198,179,.4)}
+    .lang-btn:hover:not(.active){background:rgba(255,255,255,.08);color:#fff}
+
+    .page-hero{
+      background:linear-gradient(135deg,var(--teal-deep) 0%,var(--teal) 100%);
+      padding:40px 24px 36px;text-align:center;
+    }
+    .page-hero h1{font-family:"Sora",sans-serif;font-size:clamp(22px,4vw,32px);font-weight:800;color:#fff;margin-bottom:8px}
+    .page-hero .date{font-size:13px;color:rgba(255,255,255,.55)}
+
+    .container{max-width:800px;margin:0 auto;padding:32px 24px 64px}
+    .section{
+      background:var(--sand-card);border-radius:16px;
+      padding:24px 28px;margin-bottom:16px;
+      box-shadow:0 2px 12px rgba(14,45,42,.07);border:1px solid var(--line);
+    }
+    .section-title{
+      font-family:"Sora",sans-serif;font-size:15px;font-weight:800;
+      color:var(--teal);margin-bottom:12px;display:flex;align-items:center;gap:10px;
+    }
+    .section-title::before{
+      content:'';display:block;width:4px;height:18px;
+      background:linear-gradient(180deg,var(--teal-soft),var(--teal));
+      border-radius:4px;flex-shrink:0;
+    }
+    .section p{margin-bottom:10px;font-size:14.5px;color:#334155;line-height:1.75}
+    .section p:last-child{margin-bottom:0}
+    .section ul{padding-left:0;margin-bottom:10px;list-style:none}
+    .section ul li{
+      font-size:14.5px;color:#334155;margin-bottom:6px;
+      padding-left:20px;position:relative;line-height:1.6
+    }
+    .section ul li::before{content:'•';position:absolute;left:0;color:var(--teal-soft);font-weight:700}
+    .section ul li strong{color:var(--ink)}
+
+    .callout{
+      background:linear-gradient(135deg,rgba(44,198,179,.08),rgba(44,198,179,.03));
+      border:1px solid rgba(44,198,179,.25);border-radius:10px;
+      padding:12px 16px;margin:12px 0;font-size:14px;color:var(--teal);
+      display:flex;gap:10px;align-items:flex-start;
+    }
+    .callout::before{content:'ℹ️';font-size:16px;flex-shrink:0;margin-top:1px}
+
+    .steps{display:flex;flex-direction:column;gap:10px;margin:4px 0 10px}
+    .step{display:flex;align-items:flex-start;gap:12px}
+    .step-num{
+      width:28px;height:28px;border-radius:50%;background:var(--teal);
+      color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+    }
+    .step-text{font-size:14.5px;color:#334155;line-height:1.6;padding-top:3px}
+    .step-text strong{color:var(--ink)}
+
+    .commission-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:12px 0}
+    .commission-card{
+      background:linear-gradient(135deg,var(--teal-deep),var(--teal));
+      border-radius:12px;padding:18px 16px;text-align:center;color:#fff;
+    }
+    .commission-val{font-family:"Sora",sans-serif;font-size:28px;font-weight:800;color:#4ade80;margin-bottom:4px}
+    .commission-label{font-size:12px;color:rgba(255,255,255,.75);line-height:1.4}
+
+    .contact-card{
+      background:var(--sand);border:1px solid var(--line);border-radius:12px;
+      padding:16px 20px;margin-top:14px;display:flex;flex-direction:column;gap:6px;
+    }
+    .contact-card a{color:var(--teal);text-decoration:none;font-weight:600;font-size:14.5px}
+    .contact-card a:hover{color:var(--teal-soft)}
+    .contact-card span{font-size:14px;color:var(--ink-soft)}
+
+    [data-lang]{display:none}
+    [data-lang].visible{display:block}
+
+    footer{
+      text-align:center;padding:24px;font-size:13px;color:var(--ink-soft);
+      border-top:1px solid var(--line);background:var(--sand-card);
+    }
+
+    @media(max-width:600px){
+      .section{padding:18px 16px;border-radius:12px}
+      .page-hero{padding:28px 16px 24px}
+      .commission-grid{grid-template-columns:1fr 1fr}
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <a class="header-back" href="index.html">← Назад</a>
+  <div class="header-logo">
+    <img src="LOGO/artez-logo-lockup.svg" alt="ARTEZ">
+  </div>
+  <div class="lang-switch">
+    <button class="lang-btn active" onclick="setLang('ru')" id="btn-ru">RU</button>
+    <button class="lang-btn" onclick="setLang('uz')" id="btn-uz">UZ</button>
+  </div>
+</div>
+
+<!-- ══════════════════════ РУССКИЙ ══════════════════════ -->
+<div data-lang="ru" class="visible">
+
+  <div class="page-hero">
+    <h1>🤝 Правила партнёрской программы</h1>
+    <div class="date">ARTEZ · Редакция от 26 июня 2026 г.</div>
+  </div>
+
+  <div class="container">
+
+    <div class="section">
+      <div class="section-title">1. Общие положения</div>
+      <p>Настоящие Правила регулируют условия участия в партнёрской программе компании <strong>ARTEZ</strong> (г. Зарафшан и г. Навои, Узбекистан) — профессиональной чистки ковров и текстиля.</p>
+      <p>Принимая участие в программе, партнёр (агент) полностью соглашается с настоящими Правилами и <a href="privacy.html" style="color:var(--teal)">Политикой конфиденциальности</a> ARTEZ.</p>
+      <div class="callout">Партнёрская программа действует для физических лиц, зарегистрированных на сайте artez.uz.</div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">2. Кто может стать агентом</div>
+      <ul>
+        <li>Физическое лицо, зарегистрированное на сайте <strong>artez.uz</strong></li>
+        <li>Подтвердившее номер телефона через Telegram-бот ARTEZ</li>
+        <li>Не нарушавшее условия программы ранее</li>
+        <li>Возраст от 18 лет</li>
+      </ul>
+      <p>Регистрация в программе бесплатна. Никаких вложений или взносов не требуется.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">3. Как это работает</div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-text"><strong>Регистрируйтесь</strong> как агент через личный кабинет на artez.uz</div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-text"><strong>Рекомендуйте</strong> услуги ARTEZ своим знакомым, друзьям, в соцсетях</div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-text"><strong>Клиент оформляет заказ</strong> — указывает вас как агента или приходит по вашей ссылке</div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-text"><strong>Заказ выполняется</strong> и подтверждается сотрудником ARTEZ</div>
+        </div>
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-text"><strong>Вы получаете комиссию</strong> — она отображается в вашем кабинете агента</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">4. Комиссионное вознаграждение</div>
+      <div class="commission-grid">
+        <div class="commission-card">
+          <div class="commission-val">5–10%</div>
+          <div class="commission-label">от суммы выполненного заказа</div>
+        </div>
+        <div class="commission-card">
+          <div class="commission-val">∞</div>
+          <div class="commission-label">без лимита заявок и клиентов</div>
+        </div>
+        <div class="commission-card">
+          <div class="commission-val">0 сум</div>
+          <div class="commission-label">вступительный взнос — бесплатно</div>
+        </div>
+      </div>
+      <ul>
+        <li>Точный процент комиссии устанавливается индивидуально и сообщается при регистрации</li>
+        <li>Комиссия начисляется только за <strong>выполненные и оплаченные</strong> заказы</li>
+        <li>Заказы, отменённые клиентом, комиссией не сопровождаются</li>
+        <li>Накопленные суммы отображаются в личном кабинете агента</li>
+      </ul>
+      <div class="callout">Выплата комиссии осуществляется по договорённости с администрацией ARTEZ — наличными или переводом.</div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">5. Права и обязанности агента</div>
+      <p><strong>Агент вправе:</strong></p>
+      <ul>
+        <li>Рекомендовать услуги ARTEZ любым законным способом</li>
+        <li>Получать актуальные рекламные материалы у администратора</li>
+        <li>Видеть статус своих лидов и начисленных комиссий в кабинете</li>
+        <li>Задавать вопросы и получать поддержку через Telegram-бот или по телефону</li>
+      </ul>
+      <p><strong>Агент обязан:</strong></p>
+      <ul>
+        <li>Предоставлять клиентам только достоверную информацию об услугах ARTEZ</li>
+        <li>Не обещать скидки или условия, не согласованные с ARTEZ</li>
+        <li>Не использовать спам и агрессивные методы продвижения</li>
+        <li>Не дискредитировать репутацию компании ARTEZ</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <div class="section-title">6. Ограничения и блокировка</div>
+      <p>ARTEZ оставляет за собой право приостановить или прекратить участие агента в программе в случае:</p>
+      <ul>
+        <li>Нарушения настоящих Правил</li>
+        <li>Предоставления клиентам ложной информации</li>
+        <li>Использования запрещённых методов привлечения (спам, мошенничество)</li>
+        <li>Бездействия агента более 6 месяцев подряд</li>
+      </ul>
+      <p>При блокировке накопленная, но не выплаченная комиссия рассматривается индивидуально.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">7. Конфиденциальность</div>
+      <p>Персональные данные агента и клиентов обрабатываются в соответствии с <a href="privacy.html" style="color:var(--teal)">Политикой конфиденциальности</a> ARTEZ и Законом Республики Узбекистан «О персональных данных».</p>
+      <p>Агент не вправе передавать третьим лицам персональные данные клиентов ARTEZ, ставшие ему известными в ходе партнёрской деятельности.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">8. Изменение условий</div>
+      <p>ARTEZ вправе изменять настоящие Правила. Актуальная версия всегда доступна на странице <strong>artez.uz/partner-rules.html</strong>. Продолжение участия в программе после публикации изменений означает согласие с новыми условиями.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">9. Контакты</div>
+      <p>По вопросам партнёрской программы обращайтесь:</p>
+      <div class="contact-card">
+        <span>📞 Телефон / WhatsApp</span>
+        <a href="tel:+998792221221">+998 79 222-12-21</a>
+        <span>📱 Telegram-бот</span>
+        <a href="https://t.me/artez_orders_bot">@artez_orders_bot</a>
+        <span>🌐 Сайт</span>
+        <a href="https://artez.uz">artez.uz</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════ УЗБЕКСКИЙ ══════════════════════ -->
+<div data-lang="uz">
+
+  <div class="page-hero">
+    <h1>🤝 Hamkorlik dasturi qoidalari</h1>
+    <div class="date">ARTEZ · 2026 yil 26 iyun tahririyati</div>
+  </div>
+
+  <div class="container">
+
+    <div class="section">
+      <div class="section-title">1. Umumiy qoidalar</div>
+      <p>Ushbu Qoidalar <strong>ARTEZ</strong> kompaniyasi (Zarafshon va Navoiy shaharlari, O'zbekiston) hamkorlik dasturida ishtirok etish shartlarini belgilaydi.</p>
+      <p>Dasturda ishtirok etib, hamkor (agent) ushbu Qoidalar va ARTEZ <a href="privacy.html" style="color:var(--teal)">Maxfiylik siyosati</a>ga to'liq rozilik bildiradi.</p>
+      <div class="callout">Hamkorlik dasturi artez.uz saytida ro'yxatdan o'tgan jismoniy shaxslar uchun amal qiladi.</div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">2. Kim agent bo'lishi mumkin</div>
+      <ul>
+        <li><strong>artez.uz</strong> saytida ro'yxatdan o'tgan jismoniy shaxs</li>
+        <li>ARTEZ Telegram-bot orqali telefon raqamini tasdiqlagan</li>
+        <li>Ilgari dastur shartlarini buzmagan</li>
+        <li>Yoshi 18 dan katta</li>
+      </ul>
+      <p>Dasturga ro'yxatdan o'tish bepul. Hech qanday to'lov yoki badal talab etilmaydi.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">3. Qanday ishlaydi</div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-text"><strong>Ro'yxatdan o'ting</strong> — artez.uz shaxsiy kabinetida agent sifatida</div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-text"><strong>Tavsiya qiling</strong> — ARTEZ xizmatlarini tanish-bilishlaringizga, ijtimoiy tarmoqlarda</div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-text"><strong>Mijoz buyurtma beradi</strong> — sizni agent sifatida ko'rsatadi yoki havolangiz orqali keladi</div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-text"><strong>Buyurtma bajariladi</strong> va ARTEZ xodimi tomonidan tasdiqlanadi</div>
+        </div>
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-text"><strong>Komissiya olasiz</strong> — agent kabinetingizda ko'rinadi</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">4. Komissiya mukofoti</div>
+      <div class="commission-grid">
+        <div class="commission-card">
+          <div class="commission-val">5–10%</div>
+          <div class="commission-label">bajarilgan buyurtma summasidan</div>
+        </div>
+        <div class="commission-card">
+          <div class="commission-val">∞</div>
+          <div class="commission-label">buyurtma va mijozlar soni cheksiz</div>
+        </div>
+        <div class="commission-card">
+          <div class="commission-val">0 so'm</div>
+          <div class="commission-label">kirish badali — bepul</div>
+        </div>
+      </div>
+      <ul>
+        <li>Aniq komissiya foizi individual tarzda belgilanadi va ro'yxatdan o'tishda xabar beriladi</li>
+        <li>Komissiya faqat <strong>bajarilgan va to'langan</strong> buyurtmalar uchun hisoblanadi</li>
+        <li>Mijoz tomonidan bekor qilingan buyurtmalar komissiyasiz hisoblanadi</li>
+        <li>Yig'ilgan summalar agent shaxsiy kabinetida ko'rinadi</li>
+      </ul>
+      <div class="callout">Komissiya to'lovi ARTEZ ma'muriyati bilan kelishilgan holda — naqd yoki o'tkazma orqali amalga oshiriladi.</div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">5. Agentning huquq va majburiyatlari</div>
+      <p><strong>Agent haqli:</strong></p>
+      <ul>
+        <li>ARTEZ xizmatlarini har qanday qonuniy usulda tavsiya qilishga</li>
+        <li>Administratordan reklama materiallarini olishga</li>
+        <li>Kabinetda liderlar va komissiyalar holatini kuzatishga</li>
+        <li>Telegram-bot yoki telefon orqali yordam olishga</li>
+      </ul>
+      <p><strong>Agent majbur:</strong></p>
+      <ul>
+        <li>Mijozlarga ARTEZ xizmatlari haqida faqat to'g'ri ma'lumot berishga</li>
+        <li>ARTEZ bilan kelishilmagan chegirma yoki shartlarni va'da qilmaslikka</li>
+        <li>Spam va tajovuzkor usullardan foydalanmaslikka</li>
+        <li>ARTEZ kompaniyasi obro'sini yo'qotmaslikka</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <div class="section-title">6. Cheklovlar va bloklash</div>
+      <p>ARTEZ quyidagi hollarda agentning dasturda ishtirokini to'xtatish yoki tugatish huquqini o'zida saqlab qoladi:</p>
+      <ul>
+        <li>Ushbu Qoidalarni buzish</li>
+        <li>Mijozlarga yolg'on ma'lumot berish</li>
+        <li>Taqiqlangan jalb qilish usullaridan foydalanish (spam, firibgarlik)</li>
+        <li>Agent 6 oy va undan ortiq vaqt davomida faoliyatsiz bo'lsa</li>
+      </ul>
+      <p>Bloklash hollarda to'planган, ammo to'lanmagan komissiya individual ko'rib chiqiladi.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">7. Maxfiylik</div>
+      <p>Agent va mijozlarning shaxsiy ma'lumotlari ARTEZ <a href="privacy.html" style="color:var(--teal)">Maxfiylik siyosati</a> va O'zbekiston Respublikasining «Shaxsiy ma'lumotlar to'g'risida»gi qonuniga muvofiq qayta ishlanadi.</p>
+      <p>Agent hamkorlik faoliyati davomida bilgan ARTEZ mijozlarining shaxsiy ma'lumotlarini uchinchi shaxslarga berishga haqli emas.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">8. Shartlarni o'zgartirish</div>
+      <p>ARTEZ ushbu Qoidalarni o'zgartirish huquqiga ega. Dolzarb versiya doimo <strong>artez.uz/partner-rules.html</strong> sahifasida mavjud. O'zgartirishlar e'lon qilinganidan keyin dasturda ishtirok etishni davom ettirish yangi shartlarga rozilikni bildiradi.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">9. Aloqa</div>
+      <p>Hamkorlik dasturi bo'yicha savollar uchun murojaat qiling:</p>
+      <div class="contact-card">
+        <span>📞 Telefon / WhatsApp</span>
+        <a href="tel:+998792221221">+998 79 222-12-21</a>
+        <span>📱 Telegram-bot</span>
+        <a href="https://t.me/artez_orders_bot">@artez_orders_bot</a>
+        <span>🌐 Sayt</span>
+        <a href="https://artez.uz">artez.uz</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  © 2026 ARTEZ — Профессиональная чистка ковров · Зарафшан, Навои
+</footer>
+
+<script>
+  function setLang(l) {
+    document.querySelectorAll('[data-lang]').forEach(el => el.classList.toggle('visible', el.dataset.lang === l));
+    document.getElementById('btn-ru').classList.toggle('active', l === 'ru');
+    document.getElementById('btn-uz').classList.toggle('active', l === 'uz');
+    document.documentElement.lang = l;
+    localStorage.setItem('artez_lang', l);
+  }
+  // Применяем язык из localStorage при загрузке
+  const saved = localStorage.getItem('artez_lang');
+  if (saved && saved !== 'ru') setLang(saved);
+</script>
+</body>
+</html>

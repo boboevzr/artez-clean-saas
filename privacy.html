@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Политика конфиденциальности — ARTEZ</title>
+  <link rel="icon" href="LOGO/favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --teal-deep:#0E2D2A; --teal:#1A5C54; --teal-soft:#2CC6B3;
+      --amber:#E8A83C; --amber-deep:#C98C24;
+      --sand:#F4EFE6; --sand-card:#FFFFFF;
+      --ink:#141E1B; --ink-soft:#5A6D68; --line:#E0D9CC;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:"Inter",system-ui,sans-serif;background:var(--sand);color:var(--ink);line-height:1.7;min-height:100vh}
+
+    /* ── HEADER ── */
+    .header{
+      background:linear-gradient(135deg,#0A1F1D 0%,var(--teal-deep) 50%,#152E32 100%);
+      padding:0 24px; height:64px; display:flex; align-items:center; gap:16px;
+      position:sticky; top:0; z-index:100;
+      box-shadow:0 2px 20px rgba(0,0,0,.3);
+    }
+    .header-back{
+      color:rgba(255,255,255,.75); text-decoration:none; font-size:13px; font-weight:500;
+      display:flex; align-items:center; gap:6px; padding:6px 12px;
+      border:1px solid rgba(255,255,255,.15); border-radius:20px;
+      transition:all .2s; white-space:nowrap;
+    }
+    .header-back:hover{color:#fff;border-color:rgba(255,255,255,.35);background:rgba(255,255,255,.07)}
+    .header-logo{display:flex;align-items:center}
+    .header-logo img{height:32px;width:auto}
+    .lang-switch{margin-left:auto;display:flex;gap:6px}
+    .lang-btn{
+      padding:5px 16px; border-radius:20px; border:1px solid rgba(255,255,255,.25);
+      cursor:pointer; font-size:13px; font-weight:600; font-family:"Sora",sans-serif;
+      transition:all .2s; background:transparent; color:rgba(255,255,255,.7);
+    }
+    .lang-btn.active{background:var(--teal-soft);color:#fff;border-color:var(--teal-soft);box-shadow:0 0 12px rgba(44,198,179,.4)}
+    .lang-btn:hover:not(.active){background:rgba(255,255,255,.08);color:#fff}
+
+    /* ── HERO BAND ── */
+    .page-hero{
+      background:linear-gradient(135deg,var(--teal-deep) 0%,var(--teal) 100%);
+      padding:40px 24px 36px; text-align:center;
+    }
+    .page-hero h1{font-family:"Sora",sans-serif;font-size:clamp(22px,4vw,32px);font-weight:800;color:#fff;margin-bottom:8px}
+    .page-hero .date{font-size:13px;color:rgba(255,255,255,.55)}
+
+    /* ── CONTENT ── */
+    .container{max-width:800px;margin:0 auto;padding:32px 24px 64px}
+    .section{
+      background:var(--sand-card); border-radius:16px;
+      padding:24px 28px; margin-bottom:16px;
+      box-shadow:0 2px 12px rgba(14,45,42,.07);
+      border:1px solid var(--line);
+    }
+    .section-title{
+      font-family:"Sora",sans-serif; font-size:15px; font-weight:800;
+      color:var(--teal); margin-bottom:12px; display:flex; align-items:center; gap:10px;
+    }
+    .section-title::before{
+      content:''; display:block; width:4px; height:18px;
+      background:linear-gradient(180deg,var(--teal-soft),var(--teal));
+      border-radius:4px; flex-shrink:0;
+    }
+    .section p{margin-bottom:10px;font-size:14.5px;color:#334155;line-height:1.75}
+    .section p:last-child{margin-bottom:0}
+    .section ul{padding-left:0;margin-bottom:10px;list-style:none}
+    .section ul li{
+      font-size:14.5px;color:#334155;margin-bottom:6px;
+      padding-left:20px;position:relative;line-height:1.6
+    }
+    .section ul li::before{content:'•';position:absolute;left:0;color:var(--teal-soft);font-weight:700}
+    .section ul li strong{color:var(--ink)}
+
+    .callout{
+      background:linear-gradient(135deg,rgba(44,198,179,.08),rgba(44,198,179,.03));
+      border:1px solid rgba(44,198,179,.25); border-radius:10px;
+      padding:12px 16px; margin:12px 0; font-size:14px; color:var(--teal);
+      display:flex; gap:10px; align-items:flex-start;
+    }
+    .callout::before{content:'ℹ️'; font-size:16px; flex-shrink:0; margin-top:1px}
+
+    .contact-card{
+      background:var(--sand); border:1px solid var(--line); border-radius:12px;
+      padding:16px 20px; margin-top:14px; display:flex; flex-direction:column; gap:6px;
+    }
+    .contact-card a{color:var(--teal);text-decoration:none;font-weight:600;font-size:14.5px}
+    .contact-card a:hover{color:var(--teal-soft)}
+    .contact-card span{font-size:14px;color:var(--ink-soft)}
+
+    [data-lang]{display:none}
+    [data-lang].visible{display:block}
+
+    footer{
+      text-align:center;padding:24px;font-size:13px;color:var(--ink-soft);
+      border-top:1px solid var(--line); background:var(--sand-card);
+    }
+
+    @media(max-width:600px){
+      .section{padding:18px 16px;border-radius:12px}
+      .page-hero{padding:28px 16px 24px}
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <a class="header-back" href="index.html">← Назад</a>
+  <div class="header-logo">
+    <img src="LOGO/artez-logo-lockup.svg" alt="ARTEZ">
+  </div>
+  <div class="lang-switch">
+    <button class="lang-btn active" onclick="setLang('ru')">RU</button>
+    <button class="lang-btn" onclick="setLang('uz')">UZ</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════ РУССКИЙ ═══════════════════════════════════ -->
+<div data-lang="ru" class="visible">
+
+  <div class="page-hero">
+    <h1>Политика конфиденциальности</h1>
+    <div class="date">Последнее обновление: 24 июня 2026 г.</div>
+  </div>
+
+  <div class="container">
+
+    <div class="section">
+      <div class="section-title">1. Общие положения</div>
+      <p>Настоящая Политика конфиденциальности регулирует порядок сбора, хранения и использования персональных данных пользователей сайта <strong>artez.uz</strong>, принадлежащего компании <strong>ARTEZ</strong> (г. Зарафшан, Узбекистан).</p>
+      <p>Пользуясь сайтом и отправляя заявки, вы соглашаетесь с условиями данной политики. Политика составлена в соответствии с Законом Республики Узбекистан «О персональных данных» (№ 547-III от 02.07.2019).</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">2. Какие данные мы собираем</div>
+      <ul>
+        <li><strong>Имя</strong> — для персонализации обращения</li>
+        <li><strong>Номер телефона</strong> — для связи по заявке и подтверждения заказа</li>
+        <li><strong>Адрес</strong> — для выезда мастера (при необходимости)</li>
+        <li><strong>Тип услуги и параметры</strong> — для расчёта стоимости</li>
+        <li><strong>Сообщения в чате</strong> — для обработки обращений</li>
+      </ul>
+      <div class="callout">Мы не собираем платёжные реквизиты, данные паспортов или иную чувствительную информацию.</div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">3. Цели обработки данных</div>
+      <ul>
+        <li>Обработка и исполнение заявок на услуги</li>
+        <li>Обратный звонок по вашему запросу</li>
+        <li>Уточнение деталей заказа и координация выезда мастера</li>
+        <li>Информирование о статусе заказа</li>
+        <li>Улучшение качества обслуживания</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <div class="section-title">4. Передача данных третьим лицам</div>
+      <p>Мы не продаём и не передаём ваши персональные данные третьим лицам без вашего согласия, за исключением случаев, предусмотренных законодательством Республики Узбекистан.</p>
+      <p>Данные могут передаваться только нашим сотрудникам в объёме, необходимом для выполнения заказа.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">5. Хранение данных</div>
+      <p>Персональные данные хранятся на защищённых серверах. Срок хранения — <strong>3 года</strong> с момента последнего обращения или до получения запроса на удаление.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">6. Ваши права</div>
+      <ul>
+        <li>Запросить доступ к своим персональным данным</li>
+        <li>Исправить неточные данные</li>
+        <li>Потребовать удаления данных</li>
+        <li>Отозвать согласие на обработку</li>
+      </ul>
+      <div class="contact-card">
+        <span>Для реализации ваших прав обращайтесь:</span>
+        <a href="tel:1221">📞 1221</a>
+        <a href="tel:+998792221221">📞 +998 79 222-12-21</a>
+        <a href="mailto:info@artez.uz">✉️ info@artez.uz</a>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">7. Файлы cookie</div>
+      <p>Сайт может использовать локальное хранилище браузера для сохранения настроек языка и данных входа. Эта информация не покидает ваше устройство и не передаётся нам.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">8. Изменения политики</div>
+      <p>Мы вправе обновлять настоящую политику. Актуальная версия всегда доступна на этой странице. При существенных изменениях мы сообщим об этом на сайте.</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════ UZBEKCHA ═══════════════════════════════════ -->
+<div data-lang="uz">
+
+  <div class="page-hero">
+    <h1>Maxfiylik siyosati</h1>
+    <div class="date">Oxirgi yangilanish: 24 iyun 2026 yil</div>
+  </div>
+
+  <div class="container">
+
+    <div class="section">
+      <div class="section-title">1. Umumiy qoidalar</div>
+      <p><strong>ARTEZ</strong> kompaniyasiga (Zarafshon shahri, O'zbekiston) tegishli <strong>artez.uz</strong> saytida foydalanuvchilar shaxsiy ma'lumotlarini yig'ish, saqlash va foydalanish tartibi ushbu Maxfiylik siyosatida belgilanadi.</p>
+      <p>Saytdan foydalanib va ariza yuborib, siz ushbu siyosat shartlariga rozilik bildirasiz. Siyosat O'zbekiston Respublikasining «Shaxsiy ma'lumotlar to'g'risida»gi Qonuniga (02.07.2019 yildagi № 547-III) muvofiq tuzilgan.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">2. Qanday ma'lumotlarni yig'amiz</div>
+      <ul>
+        <li><strong>Ism</strong> — murojaat shaxsiylashtirilishi uchun</li>
+        <li><strong>Telefon raqami</strong> — ariza bo'yicha bog'lanish va buyurtmani tasdiqlash uchun</li>
+        <li><strong>Manzil</strong> — usta chiqishi uchun (zarur bo'lganda)</li>
+        <li><strong>Xizmat turi va parametrlari</strong> — narxni hisoblash uchun</li>
+        <li><strong>Chat xabarlari</strong> — murojaatlarni qayta ishlash uchun</li>
+      </ul>
+      <div class="callout">Biz to'lov rekvizitlari, pasport ma'lumotlari yoki boshqa maxfiy ma'lumotlarni yig'maymiz.</div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">3. Ma'lumotlarni qayta ishlash maqsadlari</div>
+      <ul>
+        <li>Xizmat buyurtmalarini qabul qilish va bajarish</li>
+        <li>Sizning so'rovingiz bo'yicha qayta qo'ng'iroq qilish</li>
+        <li>Buyurtma tafsilotlarini aniqlash va ustani yuborish</li>
+        <li>Buyurtma holati to'g'risida xabardor qilish</li>
+        <li>Xizmat sifatini yaxshilash</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <div class="section-title">4. Uchinchi shaxslarga ma'lumot berish</div>
+      <p>Biz sizning shaxsiy ma'lumotlaringizni roziligingiziz uchinchi shaxslarga sotmaymiz yoki bermaymiz — O'zbekiston Respublikasi qonunchiligida belgilangan hollardan tashqari.</p>
+      <p>Ma'lumotlar faqat buyurtmani bajarish uchun zarur bo'lgan hajmda xodimlarimizga berilishi mumkin.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">5. Ma'lumotlarni saqlash</div>
+      <p>Shaxsiy ma'lumotlar himoyalangan serverlarda saqlanadi. Saqlash muddati — so'nggi murojaatdan <strong>3 yil</strong> yoki o'chirish so'rovi olinguncha.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">6. Sizning huquqlaringiz</div>
+      <ul>
+        <li>Shaxsiy ma'lumotlaringizga kirish so'rovi</li>
+        <li>Noto'g'ri ma'lumotlarni to'g'rilash</li>
+        <li>Ma'lumotlarni o'chirish talabi</li>
+        <li>Qayta ishlashga rozilikni qaytarib olish</li>
+      </ul>
+      <div class="contact-card">
+        <span>Huquqlaringizni amalga oshirish uchun murojaat qiling:</span>
+        <a href="tel:1221">📞 1221</a>
+        <a href="tel:+998792221221">📞 +998 79 222-12-21</a>
+        <a href="mailto:info@artez.uz">✉️ info@artez.uz</a>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">7. Cookie fayllar</div>
+      <p>Sayt til sozlamalari va kirish ma'lumotlarini saqlash uchun brauzer lokal xotirasidan foydalanishi mumkin. Ushbu ma'lumot qurilmangizdan chiqmaydi va bizga uzatilmaydi.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">8. Siyosatni o'zgartirish</div>
+      <p>Biz ushbu siyosatni yangilashga haqqlimiz. Joriy versiya doimo ushbu sahifada mavjud. Muhim o'zgarishlar bo'lsa, saytda xabardor qilamiz.</p>
+    </div>
+
+  </div>
+</div>
+
+<footer>© 2024–2026 ARTEZ · <a href="mailto:info@artez.uz" style="color:var(--teal);text-decoration:none">info@artez.uz</a></footer>
+
+<script>
+  function setLang(l) {
+    document.querySelectorAll('[data-lang]').forEach(el => el.classList.toggle('visible', el.dataset.lang === l));
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.textContent.toLowerCase() === l));
+  }
+</script>
+</body>
+</html>

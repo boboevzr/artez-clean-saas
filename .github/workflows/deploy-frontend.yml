@@ -1,0 +1,32 @@
+name: Deploy Frontend to ahost.uz
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '**.html'
+      - '**.js'
+      - '**.json'
+      - '**.css'
+      - 'LOGO/**'
+      - '.github/workflows/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: false
+
+      - name: Install lftp
+        run: sudo apt-get install -y lftp
+
+      - name: Deploy via FTP
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          FTP_USER: ${{ secrets.FTP_USERNAME }}
+          FTP_PASS: ${{ secrets.FTP_PASSWORD }}
+        run: |
+          lftp -u "$FTP_USER,$FTP_PASS" "$FTP_SERVER" -e "set ftp:ssl-allow no; set net:timeout 60; set net:max-retries 3; mirror --reverse --no-perms --parallel=4 --ignore-time --verbose --exclude-glob=artez_api --exclude-glob=artez_bot --exclude-glob=.git --exclude-glob=.github --exclude-glob=*.md --exclude-glob=*.py --exclude-glob=.gitignore . /; bye"

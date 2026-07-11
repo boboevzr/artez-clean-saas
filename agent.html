@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="ru" id="htmlRoot">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title id="pageTitle">Агентская программа ARTEZ — зарабатывайте на рекомендациях</title>
+  <meta name="description" content="Станьте агентом ARTEZ и получайте 5–10% от каждого заказа. Рекомендуйте чистку ковров, следите за статусом в личном кабинете.">
+  <link rel="icon" href="/LOGO/favicon.ico">
+  <link rel="apple-touch-icon" href="/LOGO/artez-icon-1024.png">
+  <meta name="theme-color" content="#163E3B">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --teal-deep:   #0E2D2A;
+      --teal:        #1A5C54;
+      --teal-soft:   #2CC6B3;
+      --sand:        #F4EFE6;
+      --sand-card:   #FFFFFF;
+      --amber:       #E8A83C;
+      --amber-deep:  #C98C24;
+      --ink:         #141E1B;
+      --ink-soft:    #5A6D68;
+      --line:        #E0D9CC;
+      --radius:      20px;
+      --radius-sm:   14px;
+      --shadow:      0 16px 48px -16px rgba(14,45,42,.28);
+      font-family: "Inter", system-ui, sans-serif;
+    }
+
+    [data-theme="dark"] {
+      --sand:      #111A18;
+      --sand-card: #1A2724;
+      --ink:       #E8F0EE;
+      --ink-soft:  #7A9590;
+      --line:      #253330;
+      --teal-deep: #0D2A27;
+      --teal:      #1F6E66;
+      --shadow:    0 16px 48px -16px rgba(0,0,0,.6);
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--sand);
+      color: var(--ink);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      transition: background .3s, color .3s;
+    }
+    img { max-width: 100%; display: block; }
+    h1, h2, h3 { font-family: "Sora", system-ui, sans-serif; letter-spacing: -0.02em; }
+    a { color: inherit; text-decoration: none; }
+
+    .wrap { max-width: 900px; margin: 0 auto; padding: 0 20px; }
+
+    /* ── Header ── */
+    .topbar {
+      background: rgba(14,45,42,.97);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      color: #EFF6F4;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid rgba(44,198,179,.12);
+    }
+    .topbar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      height: 62px;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: "Sora", sans-serif;
+      font-weight: 800;
+      font-size: 20px;
+      color: #fff;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+    .logo-icon {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, var(--teal-soft), var(--teal));
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+    }
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .back-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      color: rgba(210,235,230,.8);
+      font-size: 14px; font-weight: 500;
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,.1);
+      transition: color .15s, background .15s;
+    }
+    .back-link:hover { color: #fff; background: rgba(255,255,255,.08); }
+    .lang-switch {
+      display: flex;
+      gap: 2px;
+      background: rgba(255,255,255,.07);
+      border-radius: 8px;
+      padding: 3px;
+      border: 1px solid rgba(255,255,255,.1);
+    }
+    .lang-switch button {
+      background: none;
+      border: none;
+      color: rgba(210,235,230,.6);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 9px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: color .15s, background .15s;
+      font-family: inherit;
+    }
+    .lang-switch button.active {
+      background: rgba(44,198,179,.25);
+      color: #fff;
+    }
+    .theme-toggle {
+      width: 36px; height: 36px;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 9px;
+      cursor: pointer;
+      font-size: 16px;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .15s;
+      flex-shrink: 0;
+    }
+    .theme-toggle:hover { background: rgba(255,255,255,.14); }
+
+    /* ── Hero ── */
+    .hero {
+      background: linear-gradient(135deg, #0f3d37 0%, #1a5c54 60%, #2a7a70 100%);
+      color: #fff;
+      padding: 64px 0 72px;
+      text-align: center;
+    }
+    .hero h1 { font-size: clamp(26px, 5vw, 42px); font-weight: 900; margin-bottom: 16px; line-height: 1.15; }
+    .hero p { font-size: 17px; color: rgba(255,255,255,0.85); max-width: 560px; margin: 0 auto 32px; }
+    .hero-badges { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 32px; }
+    .badge {
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 100px;
+      padding: 7px 16px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .hero-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn-hero {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 14px 32px;
+      background: #fff;
+      color: #0f3d37;
+      border-radius: 14px;
+      font-weight: 800;
+      font-size: 16px;
+      text-decoration: none;
+      border: none; cursor: pointer;
+      transition: transform .15s, box-shadow .2s;
+      font-family: inherit;
+    }
+    .btn-hero:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,.25); }
+    .btn-hero-outline {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 14px 32px;
+      background: transparent;
+      color: #fff;
+      border: 2px solid rgba(255,255,255,0.35);
+      border-radius: 14px;
+      font-weight: 700;
+      font-size: 15px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: border-color .15s, background .15s;
+      font-family: inherit;
+    }
+    .btn-hero-outline:hover { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.6); }
+
+    /* ── Sections ── */
+    section { padding: 60px 0; }
+    section:nth-child(even) { background: var(--sand-card); }
+    [data-theme="dark"] section:nth-child(even) { background: var(--sand-card); }
+    .section-title { font-size: 26px; font-weight: 800; margin-bottom: 8px; color: var(--ink); }
+    .section-sub { color: var(--ink-soft); font-size: 15px; margin-bottom: 32px; line-height: 1.6; }
+
+    /* ── Cards ── */
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 18px; }
+    .card {
+      background: var(--sand);
+      border: 1.5px solid var(--line);
+      border-radius: 16px;
+      padding: 22px;
+      transition: box-shadow .2s, border-color .2s;
+    }
+    [data-theme="dark"] .card { background: #1F2E2B; border-color: #253330; }
+    .card:hover { box-shadow: 0 8px 32px rgba(0,0,0,.12); border-color: var(--teal-soft); }
+    .card-ico { font-size: 34px; margin-bottom: 10px; }
+    .card h3 { font-size: 16px; font-weight: 700; margin-bottom: 6px; color: var(--ink); }
+    .card p { font-size: 14px; color: var(--ink-soft); line-height: 1.5; }
+
+    /* ── Earnings ── */
+    .earn-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; }
+    .earn-card { border-radius: 14px; padding: 22px; text-align: center; }
+    .earn-card.green { background: #f0fdf4; border: 1.5px solid #86efac; }
+    .earn-card.amber { background: #fffbeb; border: 1.5px solid #fcd34d; }
+    .earn-card.blue  { background: #eff6ff; border: 1.5px solid #93c5fd; }
+    [data-theme="dark"] .earn-card.green { background: #0d2318; border-color: #166534; }
+    [data-theme="dark"] .earn-card.amber { background: #1c1306; border-color: #854d0e; }
+    [data-theme="dark"] .earn-card.blue  { background: #0c1a2e; border-color: #1d4ed8; }
+    .earn-amount { font-size: 28px; font-weight: 900; margin-bottom: 4px; }
+    .earn-label  { font-size: 13px; color: var(--ink-soft); line-height: 1.4; }
+    .earn-note { margin-top: 18px; font-size: 13px; color: var(--ink-soft); }
+
+    /* ── Steps ── */
+    .steps { display: flex; flex-direction: column; }
+    .step { display: flex; gap: 18px; padding: 22px 0; border-bottom: 1px solid var(--line); }
+    .step:last-child { border-bottom: none; }
+    .step-num {
+      width: 42px; height: 42px;
+      background: var(--teal);
+      color: #fff;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 17px;
+      flex-shrink: 0;
+    }
+    .step-body h3 { font-size: 16px; font-weight: 700; margin-bottom: 4px; color: var(--ink); }
+    .step-body p { font-size: 14px; color: var(--ink-soft); }
+    .step-body a { color: var(--teal); font-weight: 600; }
+
+    /* ── Video placeholder ── */
+    .video-placeholder {
+      background: linear-gradient(135deg, #0f3d37, #1a5c54);
+      border-radius: 16px;
+      aspect-ratio: 16/9;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      color: #fff; gap: 10px;
+    }
+    .play-ico {
+      width: 60px; height: 60px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px;
+    }
+
+    /* ── FAQ ── */
+    .faq details { border-bottom: 1px solid var(--line); }
+    .faq details:first-child { border-top: 1px solid var(--line); }
+    .faq summary {
+      padding: 16px 0;
+      font-weight: 600;
+      font-size: 15px;
+      cursor: pointer;
+      list-style: none;
+      display: flex; justify-content: space-between; align-items: center;
+      color: var(--ink);
+    }
+    .faq summary::after { content: '+'; font-size: 20px; color: var(--teal); flex-shrink: 0; margin-left: 12px; }
+    .faq details[open] summary::after { content: '−'; }
+    .faq details p { padding: 0 0 16px; font-size: 14px; color: var(--ink-soft); line-height: 1.6; }
+    .faq details p a { color: var(--teal); font-weight: 600; }
+
+    /* ── CTA ── */
+    .cta {
+      background: linear-gradient(135deg, #0f3d37, #1a5c54);
+      color: #fff;
+      text-align: center;
+      padding: 60px 0;
+    }
+    .cta h2 { font-size: 28px; font-weight: 800; margin-bottom: 12px; }
+    .cta p { font-size: 16px; color: rgba(255,255,255,0.8); margin-bottom: 28px; }
+    .cta-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+    /* ── Footer ── */
+    footer {
+      background: #111;
+      color: rgba(255,255,255,0.6);
+      text-align: center;
+      padding: 24px;
+      font-size: 13px;
+    }
+    footer a { color: rgba(255,255,255,0.6); }
+    footer a:hover { color: #fff; }
+
+    @media (max-width: 600px) {
+      .hero { padding: 44px 0 52px; }
+      .hero p { font-size: 15px; }
+      .hero-btns { flex-direction: column; align-items: center; }
+      .btn-hero, .btn-hero-outline { width: 100%; justify-content: center; }
+      .cta-btns { flex-direction: column; align-items: center; }
+      .topbar-inner { height: 54px; }
+      .back-link span { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <a href="/" class="logo">
+      <div class="logo-icon">🧺</div>
+      ARTEZ
+    </a>
+    <div class="topbar-right">
+      <a href="/" class="back-link">
+        ← <span id="backLinkText">На сайт</span>
+      </a>
+      <div class="lang-switch">
+        <button type="button" id="langRu" class="active" onclick="setLang('ru')">RU</button>
+        <button type="button" id="langUz" onclick="setLang('uz')">UZ</button>
+      </div>
+      <button class="theme-toggle" id="themeToggle" title="Сменить тему" aria-label="Сменить тему">🌙</button>
+    </div>
+  </div>
+</header>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="wrap">
+    <h1 id="heroTitle">Зарабатывайте на рекомендациях — станьте агентом ARTEZ</h1>
+    <p id="heroText">Рекомендуйте профессиональную чистку ковров и получайте процент от каждого оформленного заказа. Без вложений, без опыта.</p>
+    <div class="hero-badges">
+      <span class="badge" id="badge1">💰 5–10% с заказа</span>
+      <span class="badge" id="badge2">📋 Личный кабинет</span>
+      <span class="badge" id="badge3">🚀 Без лимитов</span>
+      <span class="badge" id="badge4">📱 Через Telegram</span>
+    </div>
+    <div class="hero-btns">
+      <a href="/" class="btn-hero" id="heroBtn1">🤝 Стать агентом</a>
+      <a href="https://t.me/artez_orders_bot" target="_blank" class="btn-hero-outline" id="heroBtn2">📱 Написать в бот</a>
+    </div>
+  </div>
+</div>
+
+<!-- Что такое агент -->
+<section>
+  <div class="wrap">
+    <h2 class="section-title" id="whatTitle">Что такое агент ARTEZ?</h2>
+    <p class="section-sub" id="whatSub">Агент — это партнёр компании, который привлекает клиентов и получает вознаграждение.</p>
+    <div class="cards">
+      <div class="card">
+        <div class="card-ico">📣</div>
+        <h3 id="card1h">Рекомендуете</h3>
+        <p id="card1p">Рассказываете знакомым, соседям, коллегам о чистке ковров ARTEZ. Оставляете заявку от их имени через личный кабинет.</p>
+      </div>
+      <div class="card">
+        <div class="card-ico">✅</div>
+        <h3 id="card2h">Мы выполняем</h3>
+        <p id="card2p">ARTEZ приезжает, забирает ковёр, профессионально чистит и доставляет обратно. Вы ни за что не отвечаете.</p>
+      </div>
+      <div class="card">
+        <div class="card-ico">💸</div>
+        <h3 id="card3h">Получаете %</h3>
+        <p id="card3p">После выполнения заказа вы получаете вознаграждение. Чем больше клиентов — тем выше доход.</p>
+      </div>
+      <div class="card">
+        <div class="card-ico">📊</div>
+        <h3 id="card4h">Следите в CRM</h3>
+        <p id="card4p">В личном кабинете видите все свои заявки, их статус и статистику — в любое время с телефона.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Сколько можно заработать -->
+<section>
+  <div class="wrap">
+    <h2 class="section-title" id="earnTitle">Сколько можно заработать?</h2>
+    <p class="section-sub" id="earnSub">Вознаграждение зависит от суммы заказов ваших клиентов.</p>
+    <div class="earn-grid">
+      <div class="earn-card green">
+        <div class="earn-amount" style="color:#16a34a" id="earn1amount">130 000 сум</div>
+        <div class="earn-label" id="earn1label">1 ковёр 10 м² × 13 000 сум<br>ваш % ≈ 5–10% = 6 500–13 000 сум</div>
+      </div>
+      <div class="earn-card amber">
+        <div class="earn-amount" style="color:#d97706" id="earn2amount">5 ковров</div>
+        <div class="earn-label" id="earn2label">в месяц от знакомых<br>≈ 32 500–65 000 сум/мес</div>
+      </div>
+      <div class="earn-card blue">
+        <div class="earn-amount" style="color:#2563eb" id="earn3amount">20+ ковров</div>
+        <div class="earn-label" id="earn3label">активный агент<br>≈ 130 000–260 000 сум/мес</div>
+      </div>
+    </div>
+    <p class="earn-note" id="earnNote">* Расчёт примерный. Точный размер вознаграждения уточняйте у администратора.</p>
+  </div>
+</section>
+
+<!-- Как стать агентом -->
+<section>
+  <div class="wrap">
+    <h2 class="section-title" id="howTitle">Как стать агентом?</h2>
+    <p class="section-sub" id="howSub">Всего 3 простых шага — займёт меньше 5 минут.</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h3 id="step1h">Зарегистрируйтесь на сайте</h3>
+          <p id="step1p">Создайте аккаунт на <a href="/">artez.uz</a> — укажите номер телефона и подтвердите через SMS.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h3 id="step2h">Верифицируйте номер через бот</h3>
+          <p id="step2p">Откройте <a href="https://t.me/artez_orders_bot" target="_blank">@artez_orders_bot</a>, нажмите <b>«🤝 Стать Агентом»</b>, затем <b>«📱 Поделиться номером»</b>. Бот сверит ваш Telegram-номер с аккаунтом на сайте.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h3 id="step3h">Войдите в кабинет агента</h3>
+          <p id="step3p">Вернитесь на сайт, откройте меню → «Стать Агентом» — система автоматически зарегистрирует вас. Войдите в <a href="staff.html">artez.uz/staff.html</a> с вашим номером и паролем от сайта.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Видео инструкция -->
+<section>
+  <div class="wrap">
+    <h2 class="section-title" id="videoTitle">Видео-инструкция</h2>
+    <p class="section-sub" id="videoSub">Смотрите как пользоваться кабинетом агента.</p>
+    <div class="video-placeholder">
+      <div class="play-ico">▶</div>
+      <p style="font-size:15px;color:rgba(255,255,255,0.7)" id="videoComingSoon">Видео появится здесь</p>
+      <p style="font-size:13px;color:rgba(255,255,255,0.5)" id="videoSoon">Загружается скоро</p>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section>
+  <div class="wrap">
+    <h2 class="section-title" id="faqTitle">Частые вопросы</h2>
+    <p class="section-sub" id="faqSub">Всё что нужно знать перед тем как стать агентом.</p>
+    <div class="faq">
+      <details>
+        <summary id="faq1q">Нужно ли платить, чтобы стать агентом?</summary>
+        <p id="faq1a">Нет. Регистрация абсолютно бесплатна. Вы ничего не платите и не вкладываете — только рекомендуете.</p>
+      </details>
+      <details>
+        <summary id="faq2q">Как я оформляю заявку от клиента?</summary>
+        <p id="faq2a">Войдите в <a href="staff.html">кабинет агента</a>, перейдите в раздел «Лиды» и создайте новую заявку с именем и телефоном клиента. ARTEZ свяжется с ним сам.</p>
+      </details>
+      <details>
+        <summary id="faq3q">Когда и как я получу вознаграждение?</summary>
+        <p id="faq3a">После выполнения заказа администратор начисляет вознаграждение. Выплата происходит по договорённости — наличными или переводом. Уточните детали у администратора по номеру 1221.</p>
+      </details>
+      <details>
+        <summary id="faq4q">Могу ли я оставлять заявки через Telegram-бот?</summary>
+        <p id="faq4a">Пока заявки оформляются через кабинет агента на сайте <a href="staff.html">artez.uz/staff.html</a>. В будущем появится возможность через бот.</p>
+      </details>
+      <details>
+        <summary id="faq5q">Какой статус у моих заявок я могу отслеживать?</summary>
+        <p id="faq5a">В кабинете агента отображаются все ваши лиды: новые, в работе, конвертированные в заказ. Вы видите только свои заявки — данные других агентов недоступны.</p>
+      </details>
+      <details>
+        <summary id="faq6q">Забыл пароль от кабинета агента — что делать?</summary>
+        <p id="faq6a">На странице входа <a href="staff.html">artez.uz/staff.html</a> нажмите «Забыли пароль?» — временный пароль придёт в Telegram. Или позвоните нам: 1221.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta">
+  <div class="wrap">
+    <h2 id="ctaTitle">Готовы начать зарабатывать?</h2>
+    <p id="ctaText">Регистрация занимает 2 минуты. Начните уже сегодня.</p>
+    <div class="cta-btns">
+      <a href="/" class="btn-hero" id="ctaBtn1">🤝 Зарегистрироваться</a>
+      <a href="https://t.me/artez_orders_bot" target="_blank" class="btn-hero-outline" id="ctaBtn2">📱 Написать в бот</a>
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer>
+  <p id="footerText">© 2026 ARTEZ — профессиональная чистка ковров. Зарафшан, Навои.</p>
+  <p style="margin-top:6px"><a href="/">artez.uz</a> · <a href="tel:1221">1221</a> · <a href="https://t.me/artez_orders_bot">Telegram бот</a></p>
+</footer>
+
+<script>
+  // ── Theme ──
+  (function() {
+    const html = document.documentElement;
+    const btn  = document.getElementById('themeToggle');
+    const saved = localStorage.getItem('artez_theme') || 'dark';
+    function apply(theme) {
+      html.setAttribute('data-theme', theme);
+      btn.textContent = theme === 'dark' ? '☀️' : '🌙';
+      localStorage.setItem('artez_theme', theme);
+    }
+    apply(saved);
+    btn.addEventListener('click', () => {
+      apply(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    });
+  })();
+
+  // ── i18n ──
+  const T = {
+    ru: {
+      pageTitle: 'Агентская программа ARTEZ — зарабатывайте на рекомендациях',
+      backLink: 'На сайт',
+      heroTitle: 'Зарабатывайте на рекомендациях — станьте агентом ARTEZ',
+      heroText: 'Рекомендуйте профессиональную чистку ковров и получайте процент от каждого оформленного заказа. Без вложений, без опыта.',
+      badge1: '💰 5–10% с заказа',
+      badge2: '📋 Личный кабинет',
+      badge3: '🚀 Без лимитов',
+      badge4: '📱 Через Telegram',
+      heroBtn1: '🤝 Стать агентом',
+      heroBtn2: '📱 Написать в бот',
+      whatTitle: 'Что такое агент ARTEZ?',
+      whatSub: 'Агент — это партнёр компании, который привлекает клиентов и получает вознаграждение.',
+      card1h: 'Рекомендуете',
+      card1p: 'Рассказываете знакомым, соседям, коллегам о чистке ковров ARTEZ. Оставляете заявку от их имени через личный кабинет.',
+      card2h: 'Мы выполняем',
+      card2p: 'ARTEZ приезжает, забирает ковёр, профессионально чистит и доставляет обратно. Вы ни за что не отвечаете.',
+      card3h: 'Получаете %',
+      card3p: 'После выполнения заказа вы получаете вознаграждение. Чем больше клиентов — тем выше доход.',
+      card4h: 'Следите в CRM',
+      card4p: 'В личном кабинете видите все свои заявки, их статус и статистику — в любое время с телефона.',
+      earnTitle: 'Сколько можно заработать?',
+      earnSub: 'Вознаграждение зависит от суммы заказов ваших клиентов.',
+      earn1amount: '130 000 сум',
+      earn1label: '1 ковёр 10 м² × 13 000 сум<br>ваш % ≈ 5–10% = 6 500–13 000 сум',
+      earn2amount: '5 ковров',
+      earn2label: 'в месяц от знакомых<br>≈ 32 500–65 000 сум/мес',
+      earn3amount: '20+ ковров',
+      earn3label: 'активный агент<br>≈ 130 000–260 000 сум/мес',
+      earnNote: '* Расчёт примерный. Точный размер вознаграждения уточняйте у администратора.',
+      howTitle: 'Как стать агентом?',
+      howSub: 'Всего 3 простых шага — займёт меньше 5 минут.',
+      step1h: 'Зарегистрируйтесь на сайте',
+      step1p: 'Создайте аккаунт на <a href="/">artez.uz</a> — укажите номер телефона и подтвердите через SMS.',
+      step2h: 'Верифицируйте номер через бот',
+      step2p: 'Откройте <a href="https://t.me/artez_orders_bot" target="_blank">@artez_orders_bot</a>, нажмите <b>«🤝 Стать Агентом»</b>, затем <b>«📱 Поделиться номером»</b>. Бот сверит ваш Telegram-номер с аккаунтом на сайте.',
+      step3h: 'Войдите в кабинет агента',
+      step3p: 'Вернитесь на сайт, откройте меню → «Стать Агентом» — система автоматически зарегистрирует вас. Войдите в <a href="staff.html">artez.uz/staff.html</a> с вашим номером и паролем от сайта.',
+      videoTitle: 'Видео-инструкция',
+      videoSub: 'Смотрите как пользоваться кабинетом агента.',
+      videoComingSoon: 'Видео появится здесь',
+      videoSoon: 'Загружается скоро',
+      faqTitle: 'Частые вопросы',
+      faqSub: 'Всё что нужно знать перед тем как стать агентом.',
+      faq1q: 'Нужно ли платить, чтобы стать агентом?',
+      faq1a: 'Нет. Регистрация абсолютно бесплатна. Вы ничего не платите и не вкладываете — только рекомендуете.',
+      faq2q: 'Как я оформляю заявку от клиента?',
+      faq2a: 'Войдите в <a href="staff.html">кабинет агента</a>, перейдите в раздел «Лиды» и создайте новую заявку с именем и телефоном клиента. ARTEZ свяжется с ним сам.',
+      faq3q: 'Когда и как я получу вознаграждение?',
+      faq3a: 'После выполнения заказа администратор начисляет вознаграждение. Выплата происходит по договорённости — наличными или переводом. Уточните детали у администратора по номеру 1221.',
+      faq4q: 'Могу ли я оставлять заявки через Telegram-бот?',
+      faq4a: 'Пока заявки оформляются через кабинет агента на сайте <a href="staff.html">artez.uz/staff.html</a>. В будущем появится возможность через бот.',
+      faq5q: 'Какой статус у моих заявок я могу отслеживать?',
+      faq5a: 'В кабинете агента отображаются все ваши лиды: новые, в работе, конвертированные в заказ. Вы видите только свои заявки — данные других агентов недоступны.',
+      faq6q: 'Забыл пароль от кабинета агента — что делать?',
+      faq6a: 'На странице входа <a href="staff.html">artez.uz/staff.html</a> нажмите «Забыли пароль?» — временный пароль придёт в Telegram. Или позвоните нам: 1221.',
+      ctaTitle: 'Готовы начать зарабатывать?',
+      ctaText: 'Регистрация занимает 2 минуты. Начните уже сегодня.',
+      ctaBtn1: '🤝 Зарегистрироваться',
+      ctaBtn2: '📱 Написать в бот',
+      footerText: '© 2026 ARTEZ — профессиональная чистка ковров. Зарафшан, Навои.',
+    },
+    uz: {
+      pageTitle: "ARTEZ agentlik dasturi — tavsiyalar orqali daromad qiling",
+      backLink: 'Saytga',
+      heroTitle: "Tavsiyalar orqali daromad qiling — ARTEZ agenti bo'ling",
+      heroText: "Professional gilam tozalashni tavsiya qiling va har bir rasmiylashtirilgan buyurtmadan foiz oling. Sarmoyasiz, tajribasiz.",
+      badge1: '💰 5–10% buyurtmadan',
+      badge2: '📋 Shaxsiy kabinet',
+      badge3: '🚀 Limitisiz',
+      badge4: '📱 Telegram orqali',
+      heroBtn1: "🤝 Agent bo'lish",
+      heroBtn2: "📱 Botga yozish",
+      whatTitle: "ARTEZ agenti nima?",
+      whatSub: "Agent — mijozlarni jalb qiladigan va mukofot oladigan kompaniya hamkori.",
+      card1h: 'Tavsiya qilasiz',
+      card1p: "Tanishlaringizga, qo'shnilaringizga, hamkasblaringizga ARTEZ gilam tozalash haqida aytasiz. Shaxsiy kabinet orqali ulardan buyurtma qoldirasiz.",
+      card2h: "Biz bajaramiz",
+      card2p: "ARTEZ keladi, gilamni olib ketadi, professional tozalaydi va qaytarib yetkazadi. Siz hech narsaga javobgar emassiz.",
+      card3h: "% olasiz",
+      card3p: "Buyurtma bajarilgandan so'ng siz mukofot olasiz. Qancha ko'p mijoz — shuncha yuqori daromad.",
+      card4h: "CRM da kuzatasiz",
+      card4p: "Shaxsiy kabinetda barcha buyurtmalaringizni, ularning holatini va statistikani — istalgan vaqtda telefoningizdan ko'rasiz.",
+      earnTitle: "Qancha daromad qilish mumkin?",
+      earnSub: "Mukofot mijozlaringiz buyurtmalarining summasiga bog'liq.",
+      earn1amount: '130 000 so\'m',
+      earn1label: "1 gilam 10 m² × 13 000 so'm<br>sizning % ≈ 5–10% = 6 500–13 000 so'm",
+      earn2amount: '5 ta gilam',
+      earn2label: "oyiga tanishlardan<br>≈ 32 500–65 000 so'm/oy",
+      earn3amount: '20+ gilam',
+      earn3label: "faol agent<br>≈ 130 000–260 000 so'm/oy",
+      earnNote: "* Hisob taxminiy. Aniq mukofot miqdorini administrator bilan aniqlang.",
+      howTitle: "Agent bo'lish qanday?",
+      howSub: "Atigi 3 ta oddiy qadam — 5 daqiqadan kam vaqt ketadi.",
+      step1h: "Saytda ro'yxatdan o'ting",
+      step1p: '<a href="/">artez.uz</a> saytida hisob yarating — telefon raqamingizni kiriting va SMS orqali tasdiqlang.',
+      step2h: "Raqamingizni bot orqali tasdiqlang",
+      step2p: '<a href="https://t.me/artez_orders_bot" target="_blank">@artez_orders_bot</a> ni oching, <b>«🤝 Agent bo\'lish»</b> tugmasini bosing, so\'ng <b>«📱 Raqamni ulashish»</b>. Bot sizning Telegram raqamingizni saytdagi hisob bilan solishtirad.',
+      step3h: "Agent kabinetiga kiring",
+      step3p: 'Saytga qayting, menyu → «Agent bo\'lish» ni oching — tizim sizni avtomatik ro\'yxatdan o\'tkazadi. <a href="staff.html">artez.uz/staff.html</a> ga telefon raqamingiz va saytdagi parolingiz bilan kiring.',
+      videoTitle: "Video yo'riqnoma",
+      videoSub: "Agent kabinetidan qanday foydalanishni ko'ring.",
+      videoComingSoon: "Video shu yerda paydo bo'ladi",
+      videoSoon: "Tez orada yuklanadi",
+      faqTitle: "Ko'p so'raladigan savollar",
+      faqSub: "Agent bo'lishdan oldin bilish kerak bo'lgan hamma narsa.",
+      faq1q: "Agent bo'lish uchun to'lash kerakmi?",
+      faq1a: "Yo'q. Ro'yxatdan o'tish mutlaqo bepul. Siz hech narsa to'lamaysiz va sarmoya kiritmaysiz — faqat tavsiya qilasiz.",
+      faq2q: "Mijozdan qanday buyurtma rasmiylashtirsam bo'ladi?",
+      faq2a: '<a href="staff.html">Agent kabinetiga</a> kiring, «Lidlar» bo\'limiga o\'ting va mijozning ismi va telefoni bilan yangi buyurtma yarating. ARTEZ u bilan o\'zi bog\'lanadi.',
+      faq3q: "Mukofotni qachon va qanday olaman?",
+      faq3a: "Buyurtma bajarilgandan so'ng administrator mukofot hisoblaydi. To'lov kelishuv bo'yicha — naqd pul yoki o'tkazma. Tafsilotlarni administrator bilan 1221 raqami orqali aniqlang.",
+      faq4q: "Telegram-bot orqali buyurtma qoldira olamanmi?",
+      faq4a: 'Hozircha buyurtmalar <a href="staff.html">artez.uz/staff.html</a> saytidagi agent kabineti orqali rasmiylashtiriladi. Kelajakda bot orqali imkoniyat paydo bo\'ladi.',
+      faq5q: "Buyurtmalarimning qanday holatini kuzata olaman?",
+      faq5a: "Agent kabinetida barcha lidlaringiz ko'rsatiladi: yangi, jarayonda, buyurtmaga aylantirilgan. Faqat o'z buyurtmalaringizni ko'rasiz — boshqa agentlarning ma'lumotlari mavjud emas.",
+      faq6q: "Agent kabineti parolini unutdim — nima qilaman?",
+      faq6a: '<a href="staff.html">artez.uz/staff.html</a> kirish sahifasida «Parolni unutdim?» ni bosing — vaqtinchalik parol Telegramga keladi. Yoki bizga qo\'ng\'iroq qiling: 1221.',
+      ctaTitle: "Daromad qilishga tayyormisiz?",
+      ctaText: "Ro'yxatdan o'tish 2 daqiqa oladi. Bugunoq boshlang.",
+      ctaBtn1: "🤝 Ro'yxatdan o'tish",
+      ctaBtn2: "📱 Botga yozish",
+      footerText: "© 2026 ARTEZ — professional gilam tozalash. Zarafshon, Navoiy.",
+    },
+  };
+
+  let currentLang = localStorage.getItem('artez_lang') || 'uz';
+
+  function applyLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('artez_lang', lang);
+    document.getElementById('htmlRoot').lang = lang;
+    document.getElementById('langRu').classList.toggle('active', lang === 'ru');
+    document.getElementById('langUz').classList.toggle('active', lang === 'uz');
+
+    const d = T[lang];
+    document.title = d.pageTitle;
+    document.getElementById('backLinkText').textContent = d.backLink;
+
+    // Apply all text/innerHTML by id
+    const htmlFields = ['earn1label','earn2label','earn3label','step1p','step2p','step3p',
+      'faq1a','faq2a','faq3a','faq4a','faq5a','faq6a'];
+    Object.keys(d).forEach(key => {
+      const el = document.getElementById(key);
+      if (!el) return;
+      if (htmlFields.includes(key)) {
+        el.innerHTML = d[key];
+      } else {
+        el.textContent = d[key];
+      }
+    });
+  }
+
+  function setLang(lang) {
+    applyLang(lang);
+  }
+
+  // Init
+  applyLang(currentLang);
+</script>
+
+</body>
+</html>
