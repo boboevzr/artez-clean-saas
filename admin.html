@@ -1622,8 +1622,7 @@
         <div id="rtBranchHeaderRow" style="display:none;margin-bottom:14px">
           <div class="rt-pillgroup" id="rtBranchGroup">
             <button data-v="" class="rt-pill active" onclick="rtSetBranch('')">Все филиалы</button>
-            <button data-v="zarafshan" class="rt-pill" onclick="rtSetBranch('zarafshan')">🏢 Зарафшан</button>
-            <button data-v="navoi" class="rt-pill" onclick="rtSetBranch('navoi')">🏢 Навои</button>
+            <span id="rtBranchPills"></span>
           </div>
         </div>
 
@@ -1980,10 +1979,7 @@
             <button class="filter-btn" onclick="expCashSetStatus(this,'rejected')">❌ Отклонён</button>
           </div>
           <div style="margin-bottom:10px">
-            <select id="adminExpFilterBranch" onchange="adminLoadExpenses()" style="padding:6px 10px;border:1.5px solid var(--sep);border-radius:8px;font-size:12px;background:var(--card);color:var(--text)">
-              <option value="">Все филиалы</option>
-              <option value="zarafshan">Зарафшан</option>
-              <option value="navoi">Навои</option>
+            <select id="adminExpFilterBranch" data-branch-select data-add-all="true" onchange="adminLoadExpenses()" style="padding:6px 10px;border:1.5px solid var(--sep);border-radius:8px;font-size:12px;background:var(--card);color:var(--text)">
             </select>
           </div>
           <div id="adminExpensesList"></div>
@@ -2000,10 +1996,7 @@
               <option value="10">Октябрь</option><option value="11">Ноябрь</option><option value="12">Декабрь</option>
             </select>
             <select id="cashHistDay" onchange="loadCashHistory()" style="padding:7px 10px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:13px"></select>
-            <select id="cashHistBranch" onchange="loadCashHistory()" style="padding:7px 10px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:13px">
-              <option value="">Все филиалы</option>
-              <option value="zarafshan">Зарафшан</option>
-              <option value="navoi">Навои</option>
+            <select id="cashHistBranch" data-branch-select data-add-all="true" onchange="loadCashHistory()" style="padding:7px 10px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:13px">
             </select>
           </div>
           <div id="cashHistoryTable" style="overflow-x:auto"></div>
@@ -2059,10 +2052,7 @@
             <button class="filter-btn" onclick="expAdmSetStatus(this,'rejected')">❌ Отклонён</button>
           </div>
           <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px">
-            <select id="expAdmHBranch" onchange="expAdmLoadHistory()" style="padding:7px 10px;border:1.5px solid var(--sep);border-radius:8px;font-size:12px;background:var(--card);color:var(--text)">
-              <option value="">Все филиалы</option>
-              <option value="zarafshan">Зарафшан</option>
-              <option value="navoi">Навои</option>
+            <select id="expAdmHBranch" data-branch-select data-add-all="true" onchange="expAdmLoadHistory()" style="padding:7px 10px;border:1.5px solid var(--sep);border-radius:8px;font-size:12px;background:var(--card);color:var(--text)">
             </select>
             <select id="expAdmHCat" onchange="expAdmLoadHistory()" style="padding:7px 10px;border:1.5px solid var(--sep);border-radius:8px;font-size:12px;background:var(--card);color:var(--text)">
               <option value="">Все категории</option>
@@ -2486,10 +2476,7 @@
         <div class="card" style="margin-bottom:14px;">
           <div class="filters-row">
             <input class="filter-input" type="month" id="tsMonth" onchange="renderTimesheet()">
-            <select class="filter-input" id="tsFilterBranch" onchange="renderTimesheet()">
-              <option value="">Все филиалы</option>
-              <option value="zarafshan">Зарафшан</option>
-              <option value="navoi">Навои</option>
+            <select class="filter-input" id="tsFilterBranch" data-branch-select data-add-all="true" onchange="renderTimesheet()">
             </select>
           </div>
           <!-- Легенда -->
@@ -2588,10 +2575,7 @@
               <option value="7">Июль</option><option value="8">Август</option><option value="9">Сентябрь</option>
               <option value="10">Октябрь</option><option value="11">Ноябрь</option><option value="12">Декабрь</option>
             </select>
-            <select id="salCalcBranch" class="filter-input" style="width:130px" onchange="salCalcRender()">
-              <option value="">Все филиалы</option>
-              <option value="zarafshan">Зарафшан</option>
-              <option value="navoi">Навои</option>
+            <select id="salCalcBranch" class="filter-input" data-branch-select data-add-all="true" style="width:130px" onchange="salCalcRender()">
             </select>
             <button class="btn btn-primary btn-sm" onclick="salCalcLoad()">🔄 Обновить</button>
             <div id="salCalcTotal" style="margin-left:auto;font-size:14px;font-weight:700;color:var(--text2)"></div>
@@ -2799,79 +2783,16 @@
                   <input type="text" id="cfg_contact_main" class="form-input" disabled placeholder="+998792221221" inputmode="tel">
                 </div>
               </div>
-              <div class="cfg-section-label">📍 Зарафшан</div>
-              <div class="cfg-field" style="margin-bottom:10px">
-                <label>🏭 Локация цеха (для маршрутов)</label>
-                <div style="display:flex;gap:8px;align-items:center">
-                  <input type="text" id="cfg_branch_zarafshan_location" class="form-input" disabled placeholder="41.5642,64.2127" style="flex:1;font-family:monospace">
-                  <button id="branchLocBtn_zarafshan" onclick="openBranchLocPicker('zarafshan')" style="padding:7px 12px;border-radius:8px;border:1.5px solid var(--border);background:none;color:var(--accent);font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;display:none" title="Выбрать на карте">🗺 Карта</button>
-                </div>
-              </div>
-              <div class="contacts-grid">
-                <div class="cfg-field">
-                  <label>Номер 1</label>
-                  <input type="text" id="cfg_contact_zarafshan_1" class="form-input" disabled placeholder="+998882001221" inputmode="tel">
-                </div>
-                <div class="cfg-field">
-                  <label>Номер 2 (необязательно)</label>
-                  <input type="text" id="cfg_contact_zarafshan_2" class="form-input" disabled placeholder="+998 ..." inputmode="tel">
-                </div>
-                <div class="cfg-field">
-                  <label>Telegram группа</label>
-                  <input type="text" id="cfg_contact_zarafshan_telegram" class="form-input" disabled placeholder="https://t.me/artez_zarafshan">
-                </div>
-                <div class="cfg-field">
-                  <label>Telegram администратора</label>
-                  <input type="text" id="cfg_contact_zarafshan_admin_tg" class="form-input" disabled placeholder="https://t.me/username">
-                </div>
-                <div class="cfg-field">
-                  <label>WhatsApp (номер без +)</label>
-                  <input type="text" id="cfg_contact_zarafshan_whatsapp" class="form-input" disabled placeholder="998882001221" inputmode="tel">
-                </div>
-                <div class="cfg-field">
-                  <label>Instagram</label>
-                  <input type="text" id="cfg_contact_zarafshan_instagram" class="form-input" disabled placeholder="https://instagram.com/artez_zarafshan">
-                </div>
-              </div>
-              <div class="cfg-section-label">📍 Навои</div>
-              <div class="cfg-field" style="margin-bottom:10px">
-                <label>🏭 Локация цеха (для маршрутов)</label>
-                <div style="display:flex;gap:8px;align-items:center">
-                  <input type="text" id="cfg_branch_navoi_location" class="form-input" disabled placeholder="40.0992,65.3791" style="flex:1;font-family:monospace">
-                  <button id="branchLocBtn_navoi" onclick="openBranchLocPicker('navoi')" style="padding:7px 12px;border-radius:8px;border:1.5px solid var(--border);background:none;color:var(--accent);font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;display:none" title="Выбрать на карте">🗺 Карта</button>
-                </div>
-              </div>
-              <div class="contacts-grid">
-                <div class="cfg-field">
-                  <label>Номер 1</label>
-                  <input type="text" id="cfg_contact_navoi_1" class="form-input" disabled placeholder="+998997500020" inputmode="tel">
-                </div>
-                <div class="cfg-field">
-                  <label>Номер 2 (необязательно)</label>
-                  <input type="text" id="cfg_contact_navoi_2" class="form-input" disabled placeholder="+998 ..." inputmode="tel">
-                </div>
-                <div class="cfg-field">
-                  <label>Telegram группа</label>
-                  <input type="text" id="cfg_contact_navoi_telegram" class="form-input" disabled placeholder="https://t.me/artez_navoi">
-                </div>
-                <div class="cfg-field">
-                  <label>Telegram администратора</label>
-                  <input type="text" id="cfg_contact_navoi_admin_tg" class="form-input" disabled placeholder="https://t.me/username">
-                </div>
-                <div class="cfg-field">
-                  <label>WhatsApp (номер без +)</label>
-                  <input type="text" id="cfg_contact_navoi_whatsapp" class="form-input" disabled placeholder="998997500020" inputmode="tel">
-                </div>
-                <div class="cfg-field">
-                  <label>Instagram</label>
-                  <input type="text" id="cfg_contact_navoi_instagram" class="form-input" disabled placeholder="https://instagram.com/artez_navoi">
-                </div>
-              </div>
             </div>
             <div class="cfg-actions">
               <button class="btn btn-primary  s-save-btn"   onclick="saveTab('contacts')" style="display:none;">💾 Сохранить</button>
               <button class="btn btn-ghost    s-cancel-btn" onclick="cancelTab('contacts')" style="display:none;">Отмена</button>
               <span class="s-msg" id="msg_contacts"></span>
+            </div>
+            <div style="margin-top:20px">
+              <h3 style="margin:0 0 12px;font-size:15px;font-weight:700">🏢 Филиалы</h3>
+              <div id="branchContactsContainer"></div>
+              <button class="btn btn-primary" onclick="openAddBranchModal()" style="margin-top:12px">+ Добавить филиал</button>
             </div>
           </div>
 
@@ -3227,20 +3148,12 @@
               <label>ID общей группы (fallback)</label>
               <input type="text" id="cfg_tg_group_id" class="form-input" disabled placeholder="-5211502458">
             </div>
-            <div class="cfg-field" style="margin-bottom:10px">
-              <label>🏢 ID группы — Зарафшан</label>
-              <input type="text" id="cfg_tg_group_zarafshan" class="form-input" disabled placeholder="-100XXXXXXXXXX">
-            </div>
-            <div class="cfg-field" style="margin-bottom:10px">
-              <label>🏢 ID группы — Навои</label>
-              <input type="text" id="cfg_tg_group_navoi" class="form-input" disabled placeholder="-100XXXXXXXXXX">
-            </div>
-            <div style="font-size:12px;color:var(--text2);margin-bottom:10px">
-              Если ID для филиала не указан — уведомление уходит в общую группу.
-            </div>
+            <p style="color:var(--text2);font-size:14px">
+              Telegram-группы для каждого филиала настраиваются в разделе <strong>«Контакты → Филиалы»</strong>.
+            </p>
             <div class="cfg-actions">
-              <button class="btn btn-primary  s-save-btn"   onclick="saveCard('card-tg-orders',['tg_group_id','tg_group_zarafshan','tg_group_navoi'])" style="display:none;">💾 Сохранить</button>
-              <button class="btn btn-ghost    s-cancel-btn" onclick="cancelCard('card-tg-orders',['tg_group_id','tg_group_zarafshan','tg_group_navoi'])" style="display:none;">Отмена</button>
+              <button class="btn btn-primary  s-save-btn"   onclick="saveCard('card-tg-orders',['tg_group_id'])" style="display:none;">💾 Сохранить</button>
+              <button class="btn btn-ghost    s-cancel-btn" onclick="cancelCard('card-tg-orders',['tg_group_id'])" style="display:none;">Отмена</button>
               <span class="s-msg" id="msg_card-tg-orders"></span>
             </div>
           </div>
@@ -3303,14 +3216,9 @@
               <label>📋 ID общей группы (fallback)</label>
               <input type="text" id="cfg_leads_group_id" class="form-input" disabled placeholder="-1004486597965">
             </div>
-            <div class="cfg-field" style="margin-bottom:10px">
-              <label>🏢 ID группы — Зарафшан</label>
-              <input type="text" id="cfg_leads_group_zarafshan" class="form-input" disabled placeholder="-100...">
-            </div>
-            <div class="cfg-field" style="margin-bottom:14px">
-              <label>🏢 ID группы — Навои</label>
-              <input type="text" id="cfg_leads_group_navoi" class="form-input" disabled placeholder="-100...">
-            </div>
+            <p style="color:var(--text2);font-size:14px;margin-bottom:14px">
+              Группы лидов для каждого филиала настраиваются в разделе <strong>«Контакты → Филиалы»</strong>.
+            </p>
 
 
             <div class="cfg-field" style="margin-bottom:14px">
@@ -3330,7 +3238,7 @@
 
             <div class="cfg-actions">
               <button class="btn btn-primary s-save-btn" onclick="saveLeadsGroupCard()" style="display:none;">💾 Сохранить</button>
-              <button class="btn btn-ghost   s-cancel-btn" onclick="cancelCard('card-tg-leads',['leads_group_id','leads_group_zarafshan','leads_group_navoi','lead_notify_ru','callback_overdue_minutes'])" style="display:none;">Отмена</button>
+              <button class="btn btn-ghost   s-cancel-btn" onclick="cancelCard('card-tg-leads',['leads_group_id','leads_group_enabled','lead_notify_ru','callback_overdue_minutes'])" style="display:none;">Отмена</button>
               <span class="s-msg" id="msg_card-tg-leads"></span>
             </div>
           </div>
@@ -3341,41 +3249,17 @@
               <h3 class="cfg-title">🚗 Группа водителей / доставщиков</h3>
               <button class="btn s-edit-btn" onclick="editCard('card-tg-delivery')">✏️</button>
             </div>
-            <div style="font-size:12px;color:var(--text2);margin-bottom:10px">Маршруты — сюда отправляется список заказов с кнопками подтверждения. У каждого филиала своя группа.</div>
-            <div style="font-size:11px;font-weight:700;color:var(--text2);margin:8px 0 4px;text-transform:uppercase;letter-spacing:.5px">📢 Каналы (список маршрутов)</div>
-            <div class="cfg-field">
-              <label>Канал — Зарафшан (ID)</label>
-              <input type="text" id="cfg_delivery_channel_zarafshan_id" class="form-input" disabled placeholder="-1004483444044" inputmode="numeric">
-            </div>
-            <div class="cfg-field" style="margin-top:8px">
-              <label>Канал — Зарафшан (ссылка)</label>
-              <input type="text" id="cfg_delivery_channel_zarafshan_link" class="form-input" disabled placeholder="https://t.me/+...">
-            </div>
-            <div class="cfg-field" style="margin-top:8px">
-              <label>Канал — Навои (ID)</label>
-              <input type="text" id="cfg_delivery_channel_navoi_id" class="form-input" disabled placeholder="-1004483444044" inputmode="numeric">
-            </div>
-            <div class="cfg-field" style="margin-top:8px">
-              <label>Канал — Навои (ссылка)</label>
-              <input type="text" id="cfg_delivery_channel_navoi_link" class="form-input" disabled placeholder="https://t.me/+...">
-            </div>
-            <div style="font-size:11px;font-weight:700;color:var(--text2);margin:12px 0 4px;text-transform:uppercase;letter-spacing:.5px">💬 Группы (уведомление)</div>
-            <div class="cfg-field">
-              <label>Группа — Зарафшан</label>
-              <input type="text" id="cfg_delivery_group_zarafshan_id" class="form-input" disabled placeholder="-1004327266702" inputmode="numeric">
-            </div>
-            <div class="cfg-field" style="margin-top:8px">
-              <label>Группа — Навои</label>
-              <input type="text" id="cfg_delivery_group_navoi_id" class="form-input" disabled placeholder="-1004327266702" inputmode="numeric">
-            </div>
+            <p style="color:var(--text2);font-size:14px;margin-bottom:12px">
+              Telegram-каналы и группы доставки для каждого филиала настраиваются в разделе <strong>«Контакты → Филиалы»</strong>.
+            </p>
             <div class="cfg-field" style="margin-top:8px">
               <label>📝 Шаблон уведомления в группу</label>
               <textarea id="cfg_delivery_group_template" class="form-input" disabled rows="2" style="font-family:monospace;font-size:12px;resize:vertical" placeholder="🚗 {route_name}-{count} — {route_type} · {date} {time}"></textarea>
               <div style="font-size:11px;color:var(--text2);margin-top:4px">Переменные: <code>{route_name}</code> <code>{count}</code> <code>{route_type}</code> <code>{date}</code> <code>{time}</code> · Список всегда идёт в канал.</div>
             </div>
             <div class="cfg-actions">
-              <button class="btn btn-primary s-save-btn" onclick="saveCard('card-tg-delivery',['delivery_channel_zarafshan_id','delivery_channel_zarafshan_link','delivery_channel_navoi_id','delivery_channel_navoi_link','delivery_group_zarafshan_id','delivery_group_navoi_id','delivery_group_template'])" style="display:none;">💾 Сохранить</button>
-              <button class="btn btn-ghost   s-cancel-btn" onclick="cancelCard('card-tg-delivery',['delivery_channel_zarafshan_id','delivery_channel_zarafshan_link','delivery_channel_navoi_id','delivery_channel_navoi_link','delivery_group_zarafshan_id','delivery_group_navoi_id','delivery_group_template'])" style="display:none;">Отмена</button>
+              <button class="btn btn-primary s-save-btn" onclick="saveCard('card-tg-delivery',['delivery_group_template'])" style="display:none;">💾 Сохранить</button>
+              <button class="btn btn-ghost   s-cancel-btn" onclick="cancelCard('card-tg-delivery',['delivery_group_template'])" style="display:none;">Отмена</button>
               <span class="s-msg" id="msg_card-tg-delivery"></span>
             </div>
           </div>
@@ -4716,10 +4600,8 @@
           </div>
           <div class="form-group">
             <label class="form-label">Филиал</label>
-            <select class="form-input" id="sf_branch">
+            <select class="form-input" id="sf_branch" data-branch-select>
               <option value="">Не указан</option>
-              <option value="zarafshan">Зарафшан</option>
-              <option value="navoi">Навои</option>
             </select>
           </div>
           <div class="form-group">
@@ -5238,10 +5120,8 @@
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
         <div class="form-group">
           <label class="form-label">Филиал</label>
-          <select class="form-input" id="rt_branch">
+          <select class="form-input" id="rt_branch" data-branch-select>
             <option value="">Не указан</option>
-            <option value="zarafshan">Зарафшан</option>
-            <option value="navoi">Навои</option>
           </select>
         </div>
         <div class="form-group">
@@ -5514,6 +5394,160 @@ async function apiFetch(url, opts = {}) {
   return res;
 }
 
+// ── BRANCHES ─────────────────────────────────────────────────────────────────
+window._BRANCHES = [];
+
+async function loadBranches() {
+  try {
+    const r = await apiGet('/branches');
+    if (r?.ok) window._BRANCHES = r.branches || [];
+  } catch(e) {}
+}
+
+function branchName(slug) {
+  const b = (window._BRANCHES || []).find(b => b.slug === slug);
+  return b ? b.name_ru : (slug || '—');
+}
+
+function renderBranchOptions(selectEl, addAll = false) {
+  if (!selectEl) return;
+  const cur = selectEl.value;
+  selectEl.innerHTML = '';
+  if (addAll) selectEl.innerHTML = '<option value="">Все</option>';
+  for (const b of (window._BRANCHES || [])) {
+    const opt = document.createElement('option');
+    opt.value = b.slug;
+    opt.textContent = b.name_ru;
+    selectEl.appendChild(opt);
+  }
+  if (cur) selectEl.value = cur;
+}
+
+function initBranchSelects() {
+  document.querySelectorAll('[data-branch-select]').forEach(sel => {
+    renderBranchOptions(sel, sel.dataset.addAll === 'true');
+  });
+}
+
+function getSalBranchLabels() {
+  return Object.fromEntries((window._BRANCHES || []).map(b => [b.slug, b.name_ru]));
+}
+
+function _getAoeBranchCenter(slug) {
+  const b = (window._BRANCHES || []).find(b => b.slug === slug);
+  if (b && b.lat && b.lon) return [parseFloat(b.lat), parseFloat(b.lon)];
+  return [41.5714, 64.1953];
+}
+
+function _getBranchCenterObj(slug) {
+  const b = (window._BRANCHES || []).find(b => b.slug === slug);
+  if (b && b.lat && b.lon) return { lat: parseFloat(b.lat), lon: parseFloat(b.lon), zoom: 13 };
+  return { lat: 41.5714, lon: 64.1953, zoom: 13 };
+}
+
+function renderRtBranchPills() {
+  const wrap = document.getElementById('rtBranchPills');
+  if (!wrap) return;
+  wrap.innerHTML = (window._BRANCHES || []).map(b =>
+    `<button data-v="${b.slug}" class="rt-pill" onclick="rtSetBranch('${b.slug}')">🏢 ${b.name_ru}</button>`
+  ).join('');
+}
+
+function renderBranchContactCards() {
+  const wrap = document.getElementById('branchContactsContainer');
+  if (!wrap) return;
+  wrap.innerHTML = (window._BRANCHES || []).map(b => `
+    <div class="card" id="branchCard_${b.id}" style="margin-bottom:12px">
+      <div class="cfg-title-row">
+        <h3 class="cfg-title">${b.name_ru}${b.name_uz ? ' / ' + b.name_uz : ''} <span style="font-size:12px;font-weight:400;color:var(--text2)">(${b.slug})</span></h3>
+        <button class="btn s-edit-btn" onclick="editBranchCard(${b.id})">✏️</button>
+        <button class="btn btn-primary s-save-btn" onclick="saveBranchCard(${b.id})" style="display:none">💾 Сохранить</button>
+        <button class="btn btn-ghost s-cancel-btn" onclick="cancelBranchCard(${b.id})" style="display:none">Отмена</button>
+      </div>
+      <div class="contacts-grid">
+        <div class="cfg-field"><label>Широта (lat)</label>
+          <input id="br_${b.id}_lat" class="form-input" disabled value="${b.lat || ''}" placeholder="41.5714" style="font-family:monospace">
+        </div>
+        <div class="cfg-field"><label>Долгота (lon)</label>
+          <input id="br_${b.id}_lon" class="form-input" disabled value="${b.lon || ''}" placeholder="64.1953" style="font-family:monospace">
+        </div>
+        <div class="cfg-field"><label>Телефоны (через запятую)</label>
+          <input id="br_${b.id}_phones" class="form-input" disabled value="${(b.phones || []).join(', ')}" placeholder="+998 88 200-12-21">
+        </div>
+        <div class="cfg-field"><label>Telegram группа</label>
+          <input id="br_${b.id}_telegram_link" class="form-input" disabled value="${b.telegram_link || ''}" placeholder="https://t.me/...">
+        </div>
+        <div class="cfg-field"><label>Admin TG</label>
+          <input id="br_${b.id}_admin_tg_link" class="form-input" disabled value="${b.admin_tg_link || ''}" placeholder="https://t.me/username">
+        </div>
+        <div class="cfg-field"><label>WhatsApp</label>
+          <input id="br_${b.id}_whatsapp" class="form-input" disabled value="${b.whatsapp || ''}" placeholder="998882001221">
+        </div>
+        <div class="cfg-field"><label>Instagram</label>
+          <input id="br_${b.id}_instagram" class="form-input" disabled value="${b.instagram || ''}" placeholder="https://instagram.com/...">
+        </div>
+        <div class="cfg-field"><label>Группа заказов (TG ID)</label>
+          <input id="br_${b.id}_tg_orders_channel_id" class="form-input" disabled value="${b.tg_orders_channel_id || ''}" placeholder="-100XXXXXXXXXX" inputmode="numeric">
+        </div>
+        <div class="cfg-field"><label>Группа лидов (TG ID)</label>
+          <input id="br_${b.id}_tg_leads_group_id" class="form-input" disabled value="${b.tg_leads_group_id || ''}" placeholder="-100..." inputmode="numeric">
+        </div>
+        <div class="cfg-field"><label>Канал доставки (ID)</label>
+          <input id="br_${b.id}_tg_delivery_channel_id" class="form-input" disabled value="${b.tg_delivery_channel_id || ''}" placeholder="-1004483444044" inputmode="numeric">
+        </div>
+        <div class="cfg-field"><label>Канал доставки (ссылка)</label>
+          <input id="br_${b.id}_tg_delivery_channel_link" class="form-input" disabled value="${b.tg_delivery_channel_link || ''}" placeholder="https://t.me/+...">
+        </div>
+        <div class="cfg-field"><label>Группа доставки (TG ID)</label>
+          <input id="br_${b.id}_tg_delivery_group_id" class="form-input" disabled value="${b.tg_delivery_group_id || ''}" placeholder="-1004327266702" inputmode="numeric">
+        </div>
+      </div>
+    </div>
+  `).join('') || '<p style="color:var(--text2)">Нет филиалов. Добавьте первый.</p>';
+}
+
+function editBranchCard(id) {
+  const card = document.getElementById('branchCard_' + id);
+  if (!card) return;
+  card.querySelectorAll('.form-input').forEach(el => el.disabled = false);
+  card.querySelector('.s-edit-btn').style.display = 'none';
+  card.querySelector('.s-save-btn').style.display = '';
+  card.querySelector('.s-cancel-btn').style.display = '';
+}
+
+async function saveBranchCard(id) {
+  const g = field => document.getElementById(`br_${id}_${field}`)?.value?.trim() || null;
+  const phones = (g('phones') || '').split(',').map(p => p.trim()).filter(Boolean);
+  const body = {
+    lat: g('lat') ? parseFloat(g('lat')) : null,
+    lon: g('lon') ? parseFloat(g('lon')) : null,
+    phones,
+    telegram_link: g('telegram_link'),
+    admin_tg_link: g('admin_tg_link'),
+    whatsapp: g('whatsapp'),
+    instagram: g('instagram'),
+    tg_orders_channel_id: g('tg_orders_channel_id') ? parseInt(g('tg_orders_channel_id')) : null,
+    tg_leads_group_id: g('tg_leads_group_id') ? parseInt(g('tg_leads_group_id')) : null,
+    tg_delivery_channel_id: g('tg_delivery_channel_id') ? parseInt(g('tg_delivery_channel_id')) : null,
+    tg_delivery_channel_link: g('tg_delivery_channel_link'),
+    tg_delivery_group_id: g('tg_delivery_group_id') ? parseInt(g('tg_delivery_group_id')) : null,
+  };
+  const r = await apiFetch('/api/branches/' + id, { method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) }).then(res => res.json());
+  if (r.ok) {
+    await loadBranches();
+    renderBranchContactCards();
+    showToast('Филиал сохранён');
+  } else {
+    showToast(r.detail || 'Ошибка', 'error');
+  }
+}
+
+function cancelBranchCard(id) { renderBranchContactCards(); }
+
+function openAddBranchModal() {
+  showToast('Добавление филиала через POST /api/branches', 'warn');
+}
+
 function _enforceRoutesOnly() {
   document.querySelector('.sidebar').style.display = 'none';
   const mb = document.getElementById('mobMenuBtn');
@@ -5528,6 +5562,7 @@ function _enforceRoutesOnly() {
 function showAdmin() {
   initStaffSections();
   _adminMePromise = apiGet('/staff/me').then(d => { _adminMe = d?.staff || null; }).catch(() => {});
+  loadBranches().then(() => { initBranchSelects(); renderRtBranchPills(); renderBranchContactCards(); });
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('adminScreen').style.display = 'block';
   if (_routesOnlyMode) {
@@ -6727,7 +6762,7 @@ function renderStaff() {
     const initials = [(s.first_name||'')[0], (s.last_name||'')[0]].filter(Boolean).join('').toUpperCase() || '?';
     const name     = [s.first_name, s.last_name].filter(Boolean).join(' ') || '—';
     const roleLabel = ROLE_LABELS_ADMIN[s.role] || s.role || '—';
-    const branch   = s.branch === 'zarafshan' ? 'Зарафшан' : s.branch === 'navoi' ? 'Навои' : '';
+    const branch   = branchName(s.branch) !== '—' ? branchName(s.branch) : '';
     const hasHours = s.salary_type !== 'percent';
     return `
     <div class="staff-card" style="${hasHours ? 'border-left:3px solid #f59e0b;' : ''}">
@@ -6803,7 +6838,7 @@ function renderAgents() {
   if (cards) cards.innerHTML = rows.map(s => {
     const initials = [(s.first_name||'')[0], (s.last_name||'')[0]].filter(Boolean).join('').toUpperCase() || '?';
     const name     = [s.first_name, s.last_name].filter(Boolean).join(' ') || '—';
-    const branch   = s.branch === 'zarafshan' ? 'Зарафшан' : s.branch === 'navoi' ? 'Навои' : '';
+    const branch   = branchName(s.branch) !== '—' ? branchName(s.branch) : '';
     return `
     <div class="staff-card">
       <div class="staff-card-avatar" style="background:linear-gradient(135deg,#7c3aed,#a855f7)">${initials}</div>
@@ -6885,7 +6920,6 @@ async function loadWorkOn() {
   _workonRender();
 }
 
-const SAL_BRANCH_LABELS_WORKON = { zarafshan: 'Зарафшан', navoi: 'Навои' };
 
 function _workonFmtSessions(rec) {
   const sessions = Array.isArray(rec.sessions) ? rec.sessions : [];
@@ -6905,7 +6939,7 @@ function _workonRender() {
   }
   body.innerHTML = _workonData.map((r, i) => {
     const roleLabel = ROLE_LABELS_ADMIN[r.role] || r.role || '—';
-    const brLabel   = SAL_BRANCH_LABELS_WORKON[r.branch] || r.branch || '—';
+    const brLabel   = branchName(r.branch);
     const sessionsHtml = _workonFmtSessions(r);
     const hours = r.total_hours || 0;
     const hoursHtml = hours > 0 ? `<b>${hours}</b>` : '<span style="color:var(--text2)">—</span>';
@@ -7189,7 +7223,7 @@ function monRenderTable() {
   tbody.innerHTML = rows.map(a => {
     const ps = a.presence_status || 'offline';
     const { color: dotColor, label: statusLabel } = _presMap[ps] || _presMap.offline;
-    const branchLabel = a.branch === 'zarafshan' ? 'Зарафшан' : a.branch === 'navoi' ? 'Навои' : (a.branch || '—');
+    const branchLabel = branchName(a.branch);
     let checkinBadge = '';
     if (a.checked_in_today && a.checked_in_time) {
       const t = new Date(a.checked_in_time);
@@ -7684,7 +7718,6 @@ const SAL_TYPE_LABELS = {
   per_point:     '📍 За точку',
   kpi:           '🏆 KPI',
 };
-const SAL_BRANCH_LABELS = { zarafshan: 'Зарафшан', navoi: 'Навои' };
 let _salCalcData = [];
 
 async function _loadGlobalAdvancePct() {
@@ -7749,7 +7782,7 @@ function salCalcRender() {
   let grandTotal = 0; let grandKnown = true;
   body.innerHTML = rows.map(s => {
     const typeLabel = SAL_TYPE_LABELS[s.salary_type] || s.salary_type;
-    const brLabel   = SAL_BRANCH_LABELS[s.branch] || s.branch || '—';
+    const brLabel   = branchName(s.branch);
     const roleLabel = { admin:'Администратор', manager:'Менеджер', callcenter:'Колл-центр',
       driver:'Водитель', logistics:'Логистика', washer:'Мойщик', packer:'Упаковщик' }[s.role] || s.role;
 
@@ -8561,16 +8594,10 @@ async function saveOsagoSettings() {
 const SITE_KEYS = [
   'social_instagram','social_tg_bot','social_tg_group',
   'contact_short','contact_main',
-  'contact_zarafshan_1','contact_zarafshan_2','contact_zarafshan_telegram','contact_zarafshan_admin_tg','contact_zarafshan_whatsapp','contact_zarafshan_instagram',
-  'branch_zarafshan_location',
-  'contact_navoi_1','contact_navoi_2','contact_navoi_telegram','contact_navoi_admin_tg','contact_navoi_whatsapp','contact_navoi_instagram',
-  'branch_navoi_location',
-  'tg_bot_token','tg_group_id','tg_group_zarafshan','tg_group_navoi','tg_group_sms_id',
-  'leads_group_id','leads_group_zarafshan','leads_group_navoi','leads_group_enabled','lead_notify_ru','callback_overdue_minutes',
+  'tg_bot_token','tg_group_id','tg_group_sms_id',
+  'leads_group_id','leads_group_enabled','lead_notify_ru','callback_overdue_minutes',
   'new_clients_group_id',
-  'delivery_group_id', 'delivery_group_zarafshan_id', 'delivery_group_navoi_id',
-  'delivery_channel_zarafshan_id', 'delivery_channel_zarafshan_link',
-  'delivery_channel_navoi_id', 'delivery_channel_navoi_link', 'delivery_group_template',
+  'delivery_group_id', 'delivery_group_template',
   'yandex_maps_key',
   'eskiz_email','eskiz_password','eskiz_from',
   'sms_text_register','sms_text_login','sms_text_reset',
@@ -8582,10 +8609,6 @@ const TAB_KEYS = {
   social:   ['social_instagram'],
   contacts: [
     'contact_short','contact_main',
-    'contact_zarafshan_1','contact_zarafshan_2','contact_zarafshan_telegram','contact_zarafshan_admin_tg','contact_zarafshan_whatsapp','contact_zarafshan_instagram',
-    'branch_zarafshan_location',
-    'contact_navoi_1','contact_navoi_2','contact_navoi_telegram','contact_navoi_admin_tg','contact_navoi_whatsapp','contact_navoi_instagram',
-    'branch_navoi_location',
   ],
   maps:     ['yandex_maps_key'],
   eskiz:    ['eskiz_email','eskiz_password','eskiz_from','sms_text_register','sms_text_login','sms_text_reset'],
@@ -8923,12 +8946,6 @@ function editTab(tab) {
   panel.querySelector('.s-edit-btn').style.display   = 'none';
   panel.querySelector('.s-save-btn').style.display   = '';
   panel.querySelector('.s-cancel-btn').style.display = '';
-  if (tab === 'contacts') {
-    const bz = document.getElementById('branchLocBtn_zarafshan');
-    const bn = document.getElementById('branchLocBtn_navoi');
-    if (bz) bz.style.display = '';
-    if (bn) bn.style.display = '';
-  }
 }
 
 function cancelTab(tab) {
@@ -8941,12 +8958,6 @@ function cancelTab(tab) {
   panel.querySelector('.s-edit-btn').style.display   = '';
   panel.querySelector('.s-save-btn').style.display   = 'none';
   panel.querySelector('.s-cancel-btn').style.display = 'none';
-  if (tab === 'contacts') {
-    const bz = document.getElementById('branchLocBtn_zarafshan');
-    const bn = document.getElementById('branchLocBtn_navoi');
-    if (bz) bz.style.display = 'none';
-    if (bn) bn.style.display = 'none';
-  }
   const msg = document.getElementById('msg_' + tab);
   if (msg) msg.textContent = '';
 }
@@ -9527,7 +9538,6 @@ async function loadCashHistory() {
   const rows = d?.rows || [];
   if (!rows.length) { el.innerHTML = '<div style="color:var(--text2);font-size:13px;padding:20px;text-align:center">Нет данных за выбранный период</div>'; return; }
   const fmt = v => Number(Math.round(v || 0)).toLocaleString('ru');
-  const branchLabel = { zarafshan:'Зарафшан', navoi:'Навои' };
   const dateLabel = d => new Date(d + 'T00:00:00').toLocaleDateString('ru',{day:'numeric',month:'short'});
   const totals = { cash:0, card:0, transfer:0, total:0 };
   rows.forEach(r => { totals.cash += +r.cash; totals.card += +r.card; totals.transfer += +r.transfer; totals.total += +r.total; });
@@ -9546,7 +9556,7 @@ async function loadCashHistory() {
         ${rows.map((r,i) => `<tr style="border-top:1px solid var(--sep);${i%2?'background:var(--surface2)':''}">
           <td style="padding:8px 12px;white-space:nowrap;color:var(--text2)">${dateLabel(r.pay_date)}</td>
           <td style="padding:8px 12px;font-weight:600">${r.staff_name||'—'}</td>
-          <td style="padding:8px 12px;color:var(--text2)">${branchLabel[r.branch]||r.branch||'—'}</td>
+          <td style="padding:8px 12px;color:var(--text2)">${branchName(r.branch)}</td>
           <td style="padding:8px 12px;text-align:right;font-variant-numeric:tabular-nums">${+r.cash ? fmt(r.cash) : '—'}</td>
           <td style="padding:8px 12px;text-align:right;font-variant-numeric:tabular-nums">${+r.card ? fmt(r.card) : '—'}</td>
           <td style="padding:8px 12px;text-align:right;font-variant-numeric:tabular-nums">${+r.transfer ? fmt(r.transfer) : '—'}</td>
@@ -10196,8 +10206,8 @@ function openAdminOrderEdit() {
     }
   } else {
     locDisplay.textContent = 'Не указана';
-    const branch = (o.branch || 'zarafshan').toLowerCase();
-    const [cityLat, cityLon] = _AOE_BRANCH_CENTERS[branch] || _AOE_BRANCH_CENTERS.zarafshan;
+    const branch = (o.branch || '').toLowerCase();
+    const [cityLat, cityLon] = _getAoeBranchCenter(branch);
     document.getElementById('aoeMapWrap').style.display = 'block';
     setTimeout(() => _initAoeMap(cityLat, cityLon), 150);
     navigator.geolocation && navigator.geolocation.getCurrentPosition(pos => {
@@ -10259,10 +10269,6 @@ function _loadAoeYmaps(cb) {
     .finally(() => loadScript(_aoeYmapsApiKey));
 }
 
-const _AOE_BRANCH_CENTERS = {
-  zarafshan: [41.5714, 64.1953],
-  navoi:     [40.1032, 65.3791],
-};
 
 function adminPickLocation() {
   const existing = document.getElementById('aoe_location').value;
@@ -10271,8 +10277,8 @@ function adminPickLocation() {
     const [la, lo] = existing.split(',').map(Number);
     if (!isNaN(la)) { setTimeout(() => _initAoeMap(la, lo), 100); return; }
   }
-  const branch = (_adminOrderCache?.branch || 'zarafshan').toLowerCase();
-  const [cityLat, cityLon] = _AOE_BRANCH_CENTERS[branch] || _AOE_BRANCH_CENTERS.zarafshan;
+  const branch = (_adminOrderCache?.branch || '').toLowerCase();
+  const [cityLat, cityLon] = _getAoeBranchCenter(branch);
   setTimeout(() => _initAoeMap(cityLat, cityLon), 100);
   if (!navigator.geolocation) return;
   setTimeout(() => {
@@ -10792,9 +10798,9 @@ const _ADMIN_LEAD_STATUS_CHIPS = [
   { v:'converted', label:'🏆 Стал заказом' },
   { v:'lost',      label:'❌ Потерян' },
 ];
-const _ADMIN_LEAD_BRANCH_CHIPS = [
-  { v:'', label:'Все' }, { v:'zarafshan', label:'Зарафшан' }, { v:'navoi', label:'Навои' },
-];
+function _getAdminLeadBranchChips() {
+  return [{ v:'', label:'Все' }].concat((window._BRANCHES || []).map(b => ({ v: b.slug, label: b.name_ru })));
+}
 
 function _renderAdminLeadsFilterChips() {
   const sc = document.getElementById('adminLeadsStatusChips');
@@ -10808,7 +10814,7 @@ function _renderAdminLeadsFilterChips() {
       background:${active?'var(--accent)':'var(--surface2)'};
       color:${active?'#fff':'var(--text)'};transition:all .15s">${c.label}</button>`;
   }).join('');
-  if (bc) bc.innerHTML = _ADMIN_LEAD_BRANCH_CHIPS.map(c => {
+  if (bc) bc.innerHTML = _getAdminLeadBranchChips().map(c => {
     const active = c.v === _adminLeadsBranchFilter;
     return `<button onclick="_setAdminLeadsBranch('${c.v}')" style="
       padding:5px 14px;border-radius:20px;font-size:13px;font-weight:600;white-space:nowrap;cursor:pointer;
@@ -11108,8 +11114,7 @@ async function openLeadCard(id) {
   document.getElementById('lc_phone').textContent = l.client_phone || '';
   document.getElementById('lc_phone').href        = `tel:${l.client_phone}`;
   document.getElementById('lc_badge').innerHTML   = `<span style="padding:3px 12px;border-radius:20px;font-size:12px;font-weight:700;background:${st.bg};color:${st.color}">${st.label}</span>`;
-  const adminBranchRu = { zarafshan:'Зарафшан', navoi:'Навои', Зарафшан:'Зарафшан', Навои:'Навои' };
-  document.getElementById('lc_branch').textContent  = adminBranchRu[l.branch] || l.branch || '—';
+  document.getElementById('lc_branch').textContent  = branchName(l.branch);
   document.getElementById('lc_address').textContent = [l.short_address, l.address].filter(Boolean).join(' · ') || '—';
   document.getElementById('lc_note').textContent    = l.note    || '—';
   const dt = l.created_at ? new Date(l.created_at) : null;
@@ -12609,7 +12614,7 @@ async function saveLeadsGroupCard() {
     body: JSON.stringify({ leads_group_enabled: cb.checked ? '1' : '0' })
   });
   // Сохраняем остальные поля через стандартный saveCard
-  await saveCard('card-tg-leads', ['leads_group_id','leads_group_zarafshan','leads_group_navoi','lead_notify_ru','callback_overdue_minutes']);
+  await saveCard('card-tg-leads', ['leads_group_id','leads_group_enabled','lead_notify_ru','callback_overdue_minutes']);
 }
 
 // ══════════════════════════════════════════
@@ -12698,10 +12703,6 @@ const PROJ_VAR_CATEGORIES = [
     vars: [
       { key: 'contact_short',        label: 'Короткий номер',        type: 'text', placeholder: '1221' },
       { key: 'contact_main',         label: 'Основной номер',         type: 'text', placeholder: '+998 79 222-12-21' },
-      { key: 'contact_zarafshan_1',  label: 'Зарафшан · Номер 1',    type: 'text', placeholder: '+998 ...' },
-      { key: 'contact_zarafshan_2',  label: 'Зарафшан · Номер 2',    type: 'text', placeholder: '+998 ...' },
-      { key: 'contact_navoi_1',      label: 'Навои · Номер 1',       type: 'text', placeholder: '+998 ...' },
-      { key: 'contact_navoi_2',      label: 'Навои · Номер 2',       type: 'text', placeholder: '+998 ...' },
     ]
   },
   {
@@ -13215,7 +13216,7 @@ async function _ensureRtBranch() {
     const row = document.getElementById('rtBranchHeaderRow');
     if (row) row.style.display = '';   // показать выбор филиала
     _rtBranch = '';                    // по умолчанию все филиалы
-  } else if (branch === 'zarafshan' || branch === 'navoi') {
+  } else if (branch) {
     _rtBranch = branch;                // сотруднику — только его филиал
   }
 }
@@ -13344,12 +13345,7 @@ function renderRoutesList() {
   `).join('');
 }
 
-// Центры городов для карты
-const BRANCH_CENTERS = {
-  zarafshan: { lat: 41.5642, lon: 64.2127, zoom: 13 },
-  navoi:     { lat: 40.0992, lon: 65.3791, zoom: 13 },
-  default:   { lat: 40.5,   lon: 64.8,    zoom: 10 },
-};
+// Центры городов для карты (динамически из window._BRANCHES)
 
 // Текущий маршрут и остановки (для drag&drop)
 let _currentRoute = null;
@@ -13377,7 +13373,7 @@ async function openRouteDetail(routeId) {
           <div style="display:flex;gap:10px;flex-wrap:wrap;font-size:13px;color:var(--text2)">
             <span>📅 ${_rtFmtDate(route.date)}</span>
             <span>${RT_TYPE_LABEL[route.type]||route.type}</span>
-            ${route.branch?`<span>🏢 ${route.branch==='zarafshan'?'Зарафшан':'Навои'}</span>`:''}
+            ${route.branch?`<span>🏢 ${branchName(route.branch)}</span>`:''}
             ${route.driver_name?`<span>👤 ${route.driver_name}</span>`:''}
           </div>
           ${route.note?`<div style="margin-top:8px;font-size:13px;color:var(--text2)">${route.note}</div>`:''}
@@ -13604,7 +13600,7 @@ function _initRouteMap(stops, branch) {
   mapEl.innerHTML = '';
   _routeMarkers = [];
 
-  const center = BRANCH_CENTERS[branch] || BRANCH_CENTERS.default;
+  const center = _getBranchCenterObj(branch);
   _routeMap = L.map('routeMapEl', {zoomControl:true}).setView([center.lat, center.lon], center.zoom);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution:'© OpenStreetMap', maxZoom:19
@@ -15937,10 +15933,6 @@ let _branchLocMap    = null;
 let _branchLocMarker = null;
 let _branchLocLatLon = null;
 
-const BRANCH_DEFAULT_CENTERS = {
-  zarafshan: { lat: 41.5642, lon: 64.2127 },
-  navoi:     { lat: 40.0992, lon: 65.3791 },
-};
 
 function _parseBranchLoc(val) {
   if (!val) return null;
@@ -15964,40 +15956,39 @@ function _parseStopLoc(val) {
 }
 
 async function _loadBranchLocations() {
-  try {
-    // Публичный эндпоинт — работает и под staff-токеном (routes-only из staff)
-    const d = await apiFetch(`${API_BASE}/settings/site`).then(r => r.json());
-    const s = d?.settings || {};
-    ['zarafshan', 'navoi'].forEach(b => {
-      const key = `branch_${b}_location`;
-      if (s[key]) _cfgOriginal[key] = s[key];
-    });
-  } catch(e) { console.warn('_loadBranchLocations', e); }
+  // Координаты теперь хранятся в /api/branches
+  (window._BRANCHES || []).forEach(b => {
+    if (b.lat && b.lon) _cfgOriginal[`branch_${b.slug}_location`] = `${b.lat},${b.lon}`;
+  });
 }
 
 function getBranchDepot(branch) {
   const key = `branch_${branch}_location`;
-  const saved = _cfgOriginal[key] || document.getElementById('cfg_' + key)?.value;
-  return _parseBranchLoc(saved) || BRANCH_DEFAULT_CENTERS[branch] || null;
+  const saved = _cfgOriginal[key];
+  if (saved) return _parseBranchLoc(saved);
+  const b = (window._BRANCHES || []).find(b => b.slug === branch);
+  if (b && b.lat && b.lon) return { lat: parseFloat(b.lat), lon: parseFloat(b.lon) };
+  return null;
 }
 
 function openBranchLocPicker(branch) {
   _branchLocBranch = branch;
   _branchLocLatLon = null;
   document.getElementById('branchLocTitle').textContent =
-    `🏭 Локация цеха — ${branch === 'zarafshan' ? 'Зарафшан' : 'Навои'}`;
+    `🏭 Локация цеха — ${branchName(branch)}`;
   document.getElementById('branchLocCoords').textContent = '—';
   openModal('modalBranchLoc');
 
   setTimeout(() => {
     if (_branchLocMap) { try { _branchLocMap.remove(); } catch(e){} _branchLocMap = null; }
-    const existing = _parseBranchLoc(document.getElementById(`cfg_branch_${branch}_location`)?.value)
-                  || BRANCH_DEFAULT_CENTERS[branch];
+    const savedLoc = _cfgOriginal[`branch_${branch}_location`];
+    const brObj = _getBranchCenterObj(branch);
+    const existing = _parseBranchLoc(savedLoc) || brObj;
     _branchLocMap = L.map('branchLocMapEl').setView([existing.lat, existing.lon], 15);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(_branchLocMap);
 
     // Если уже есть сохранённая точка — показать маркер
-    if (_parseBranchLoc(document.getElementById(`cfg_branch_${branch}_location`)?.value)) {
+    if (_parseBranchLoc(savedLoc)) {
       _branchLocMarker = L.marker([existing.lat, existing.lon], { draggable: true }).addTo(_branchLocMap);
       _branchLocLatLon = existing;
       document.getElementById('branchLocCoords').textContent = `${existing.lat.toFixed(6)}, ${existing.lon.toFixed(6)}`;
@@ -16026,10 +16017,9 @@ function openBranchLocPicker(branch) {
 function confirmBranchLoc() {
   if (!_branchLocLatLon) { showToast('Нажмите на карту чтобы выбрать точку', 'error'); return; }
   const val = `${_branchLocLatLon.lat.toFixed(6)},${_branchLocLatLon.lon.toFixed(6)}`;
-  const inp = document.getElementById(`cfg_branch_${_branchLocBranch}_location`);
-  if (inp) inp.value = val;
+  _cfgOriginal[`branch_${_branchLocBranch}_location`] = val;
   closeModal('modalBranchLoc');
-  showToast(`📍 Локация цеха ${_branchLocBranch === 'zarafshan' ? 'Зарафшана' : 'Навои'} обновлена — сохраните вкладку`);
+  showToast(`📍 Локация цеха ${branchName(_branchLocBranch)} обновлена — сохраните филиал`);
 }
 
 </script>
@@ -16613,10 +16603,8 @@ function confirmBranchLoc() {
       </label>
       <label style="display:flex;flex-direction:column;gap:5px">
         <span style="font-size:12px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.04em">Филиал</span>
-        <select id="aoe_branch" class="form-input">
+        <select id="aoe_branch" class="form-input" data-branch-select>
           <option value="">— выбрать —</option>
-          <option value="zarafshan">Зарафшан</option>
-          <option value="navoi">Навои</option>
         </select>
       </label>
       <label style="display:flex;flex-direction:column;gap:5px">
