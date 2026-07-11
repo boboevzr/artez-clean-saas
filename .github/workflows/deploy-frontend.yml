@@ -1,15 +1,8 @@
 name: Deploy Frontend to ahost.uz
 
 on:
-  push:
-    branches: [ main ]
-    paths:
-      - '**.html'
-      - '**.js'
-      - '**.json'
-      - '**.css'
-      - 'LOGO/**'
-      - '.github/workflows/**'
+  workflow_dispatch:
+    # SaaS: автодеплой отключён — каждая компания деплоится отдельно с config.js
 
 jobs:
   deploy:
