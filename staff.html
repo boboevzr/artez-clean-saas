@@ -788,12 +788,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-s
     </div>
     <div class="field">
       <div class="field-label" id="ldBranchLabel">Филиал *</div>
-      <div style="display:flex;gap:8px;margin-top:4px">
-        <button type="button" id="ld_branch_btn_zarafshan" onclick="_setLdBranch('zarafshan')"
-          style="flex:1;padding:10px;border-radius:10px;border:1.5px solid var(--sep);background:none;color:var(--text2);font-size:14px;font-weight:600;cursor:pointer">📍 Зарафшан</button>
-        <button type="button" id="ld_branch_btn_navoi" onclick="_setLdBranch('navoi')"
-          style="flex:1;padding:10px;border-radius:10px;border:1.5px solid var(--sep);background:none;color:var(--text2);font-size:14px;font-weight:600;cursor:pointer">📍 Навои</button>
-      </div>
+      <div id="ldBranchBtns" style="display:flex;gap:8px;margin-top:4px"></div>
       <input type="hidden" id="ld_branch" value="">
     </div>
     <div class="field-inline" style="margin-bottom:12px">
@@ -941,13 +936,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-s
     </div>
     <div class="field">
       <div class="field-label" id="orBranchLabel">Филиал *</div>
-      <div style="display:flex;gap:8px;margin-top:4px">
-        <button type="button" id="or_branch_btn_zarafshan" onclick="_setOrBranch('zarafshan')"
-          style="flex:1;padding:10px;border-radius:10px;border:1.5px solid var(--accent);background:var(--accent);color:#fff;font-size:14px;font-weight:600;cursor:pointer">📍 Зарафшан</button>
-        <button type="button" id="or_branch_btn_navoi" onclick="_setOrBranch('navoi')"
-          style="flex:1;padding:10px;border-radius:10px;border:1.5px solid var(--sep);background:none;color:var(--text2);font-size:14px;font-weight:600;cursor:pointer">📍 Навои</button>
-      </div>
-      <input type="hidden" id="or_branch" value="zarafshan">
+      <div id="orBranchBtns" style="display:flex;gap:8px;margin-top:4px"></div>
+      <input type="hidden" id="or_branch" value="">
     </div>
     <div class="field-inline" style="margin-bottom:14px">
       <div class="field-label" id="orShortAddrLabel">Кр. адрес</div>
@@ -1245,7 +1235,6 @@ const _i18n = {
     'lead.goto_order':'Перейти к заказу',
     'pickup.self':'🏠 Клиент привозит','pickup.courier':'🚗 Забираем сами',
     'delivery.self':'🏠 Клиент забирает','delivery.courier':'🚚 Доставляем сами',
-    'lead.branch_zarafshan':'📍 Зарафшан','lead.branch_navoi':'📍 Навои',
     'lead.map_close':'✕ Закрыть',
     'lead.send_created':'Лид создан!','lead.send_question':'Что делать с этим лидом?',
     'lead.send_tg':'📢 Отправить в группу ТГ','lead.send_take':'✋ Взять себе',
@@ -1395,7 +1384,7 @@ const _i18n = {
     'pm.review.confirm':'✅ Подтвердить','pm.review.decline':'❌ Отказать',
     'soe.title':'✏️ Редактировать заявку',
     'soe.phone':'Телефон','soe.name':'Имя клиента',
-    'soe.branch_pick':'— выбрать —','soe.branch_zarafshan':'Зарафшан','soe.branch_navoi':'Навои',
+    'soe.branch_pick':'— выбрать —',
     'soe.deadline':'Срок','soe.short_addr':'Кр. адрес','soe.full_addr':'Полный адрес',
     'soe.loc_optional':'(необязательно)','soe.loc_update':'🔄 Обновить','soe.loc_drag':'Нажмите или перетащите метку',
     'soe.svc_type':'Тип обслуживания','soe.pickup_disc':'Скидка при самопривозе, %',
@@ -1482,7 +1471,6 @@ const _i18n = {
     'lead.goto_order':`Buyurtmaga oʻtish`,
     'pickup.self':'🏠 Mijoz olib keladi','pickup.courier':'🚗 Biz olib ketamiz',
     'delivery.self':'🏠 Mijoz olib ketadi','delivery.courier':'🚚 Biz yetkazamiz',
-    'lead.branch_zarafshan':'📍 Zarafshon','lead.branch_navoi':'📍 Navoiy',
     'lead.map_close':'✕ Yopish',
     'lead.send_created':'Lid yaratildi!','lead.send_question':'Bu lid bilan nima qilish?',
     'lead.send_tg':'📢 TG guruhiga yuborish','lead.send_take':'✋ Oʻzim olaman',
@@ -1632,7 +1620,7 @@ const _i18n = {
     'pm.review.confirm':'✅ Tasdiqlash','pm.review.decline':'❌ Rad etish',
     'soe.title':'✏️ Buyurtmani tahrirlash',
     'soe.phone':'Telefon','soe.name':'Mijoz ismi',
-    'soe.branch_pick':'— tanlash —','soe.branch_zarafshan':'Zarafshon','soe.branch_navoi':'Navoiy',
+    'soe.branch_pick':'— tanlash —',
     'soe.deadline':'Muddat','soe.short_addr':'Qisqa manzil','soe.full_addr':`Toʻliq manzil`,
     'soe.loc_optional':'(ixtiyoriy)','soe.loc_update':`🔄 Yangilash`,'soe.loc_drag':'Belgi bosing yoki sudrang',
     'soe.svc_type':'Xizmat turi','soe.pickup_disc':`Oʻzi olib kelganda chegirma, %`,
@@ -1818,6 +1806,15 @@ async function checkAuth() {
     currentStaff = (await res.json()).staff;
     return true;
   } catch { return false; }
+}
+
+window._BRANCHES = window._BRANCHES || [];
+async function loadStaffBranches() {
+  try {
+    const r = await apiFetch('/branches');
+    const j = await r.json();
+    if (j.ok) window._BRANCHES = j.branches || [];
+  } catch(e) {}
 }
 
 function doLogout() {
@@ -2187,7 +2184,7 @@ function clearOrderForm() {
     const el = document.getElementById(id); if (el) el.value = '';
   });
   const svc = document.getElementById('or_service'); if (svc) svc.value = '';
-  _setOrBranch(currentStaff?.branch || 'zarafshan');
+  _setOrBranch(currentStaff?.branch || window._BRANCHES?.[0]?.slug || '');
   const locDisp = document.getElementById('locDisplay');
   if (locDisp) locDisp.textContent = 'Не указана';
   const locBtn = document.getElementById('locBtn');
@@ -2217,7 +2214,7 @@ function _openLeadModalNew() {
   const branchField = document.getElementById('ld_branch')?.closest('.field');
   if (branchField) branchField.style.display = '';
   const brEl = document.getElementById('ld_branch');
-  if (brEl && !brEl.value) _setLdBranch(_normBranchVal(currentStaff?.branch) || 'zarafshan');
+  if (brEl && !brEl.value) _setLdBranch(_normBranchVal(currentStaff?.branch) || window._BRANCHES?.[0]?.slug || '');
   const addrFullField = document.getElementById('ld_address')?.closest('.field');
   if (addrFullField) addrFullField.style.display = isAgent ? 'none' : '';
   if (!isAgent) loadAgentOptions();
@@ -2398,13 +2395,16 @@ function _toggleLocMapFs() {
   setTimeout(() => _locYmap && _locYmap.container.fitToViewport(), 100);
 }
 
-const _STAFF_BRANCH_CENTERS = {
-  zarafshan: [41.5714, 64.1953],
-  navoi:     [40.1032, 65.3791],
-};
+function _getBranchCenter(slug) {
+  const b = (window._BRANCHES || []).find(b => b.slug === slug);
+  if (b && b.lat && b.lon) return [parseFloat(b.lat), parseFloat(b.lon)];
+  const first = window._BRANCHES?.[0];
+  if (first?.lat && first?.lon) return [parseFloat(first.lat), parseFloat(first.lon)];
+  return [41.5714, 64.1953];
+}
 function _branchCenter(branchInputId) {
-  const b = (document.getElementById(branchInputId)?.value || 'zarafshan').toLowerCase();
-  return _STAFF_BRANCH_CENTERS[b] || _STAFF_BRANCH_CENTERS.zarafshan;
+  const b = (document.getElementById(branchInputId)?.value || '').toLowerCase();
+  return _getBranchCenter(b);
 }
 
 function pickLocation() {
@@ -2536,10 +2536,10 @@ function ldPickLocation() {
 function _setLdBranch(branch) {
   const inp = document.getElementById('ld_branch');
   if (inp) inp.value = branch || '';
-  ['zarafshan','navoi'].forEach(b => {
-    const btn = document.getElementById('ld_branch_btn_' + b);
+  (window._BRANCHES || []).forEach(br => {
+    const btn = document.getElementById('ld_branch_btn_' + br.slug);
     if (!btn) return;
-    const active = !!branch && b === branch;
+    const active = !!branch && br.slug === branch;
     btn.style.background  = active ? 'var(--accent)' : 'none';
     btn.style.color       = active ? '#fff' : 'var(--text2)';
     btn.style.borderColor = active ? 'var(--accent)' : 'var(--sep)';
@@ -2547,15 +2547,61 @@ function _setLdBranch(branch) {
 }
 function _setOrBranch(branch) {
   const inp = document.getElementById('or_branch');
-  if (inp) inp.value = branch;
-  ['zarafshan','navoi'].forEach(b => {
-    const btn = document.getElementById('or_branch_btn_' + b);
+  if (inp) inp.value = branch || '';
+  (window._BRANCHES || []).forEach(br => {
+    const btn = document.getElementById('or_branch_btn_' + br.slug);
     if (!btn) return;
-    const active = b === branch;
+    const active = br.slug === branch;
     btn.style.background   = active ? 'var(--accent)' : 'none';
     btn.style.color        = active ? '#fff' : 'var(--text2)';
     btn.style.borderColor  = active ? 'var(--accent)' : 'var(--sep)';
   });
+}
+
+function renderLdBranchBtns() {
+  const wrap = document.getElementById('ldBranchBtns');
+  if (!wrap) return;
+  const cur = document.getElementById('ld_branch')?.value || '';
+  wrap.innerHTML = (window._BRANCHES || []).map(b => {
+    const active = b.slug === cur;
+    const st = active
+      ? 'background:var(--accent);color:#fff;border-color:var(--accent)'
+      : 'background:none;color:var(--text2);border-color:var(--sep)';
+    return `<button type="button" id="ld_branch_btn_${b.slug}" onclick="_setLdBranch('${b.slug}')"
+      style="flex:1;padding:10px;border-radius:10px;border:1.5px solid var(--sep);font-size:14px;font-weight:600;cursor:pointer;${st}">📍 ${b.name_ru}</button>`;
+  }).join('');
+}
+
+function renderOrBranchBtns() {
+  const wrap = document.getElementById('orBranchBtns');
+  if (!wrap) return;
+  const cur = document.getElementById('or_branch')?.value || (window._BRANCHES?.[0]?.slug || '');
+  wrap.innerHTML = (window._BRANCHES || []).map(b => {
+    const active = b.slug === cur;
+    const st = active
+      ? 'background:var(--accent);color:#fff;border-color:var(--accent)'
+      : 'background:none;color:var(--text2);border-color:var(--sep)';
+    return `<button type="button" id="or_branch_btn_${b.slug}" onclick="_setOrBranch('${b.slug}')"
+      style="flex:1;padding:10px;border-radius:10px;border:1.5px solid var(--sep);font-size:14px;font-weight:600;cursor:pointer;${st}">📍 ${b.name_ru}</button>`;
+  }).join('');
+  const inp = document.getElementById('or_branch');
+  if (inp && !inp.value && window._BRANCHES?.[0]) _setOrBranch(window._BRANCHES[0].slug);
+}
+
+function renderSoeBranchOptions() {
+  const sel = document.getElementById('soe_branch');
+  if (!sel) return;
+  const cur = sel.value;
+  const firstOpt = sel.querySelector('option[value=""]');
+  sel.innerHTML = '';
+  if (firstOpt) sel.appendChild(firstOpt);
+  (window._BRANCHES || []).forEach(b => {
+    const opt = document.createElement('option');
+    opt.value = b.slug;
+    opt.textContent = b.name_ru;
+    sel.appendChild(opt);
+  });
+  if (cur) sel.value = cur;
 }
 
 function orSetServiceType(type) {
@@ -3274,16 +3320,22 @@ function renderLeads() {
 
 const LEAD_STATUS_ICONS = { new:'🆕', no_answer:'📵', callback:'🔔', converted:'🏆', lost:'❌' };
 const LEAD_STATUS_CLASS = { no_answer:'s-no-answer', callback:'s-callback', converted:'s-converted', lost:'s-lost' };
-const BRANCH_RU = { zarafshan:'Зарафшан', navoi:'Навои', Зарафшан:'Зарафшан', Навои:'Навои' };
-const BRANCH_UZ = { zarafshan:'Zarafshon', navoi:'Navoiy', Зарафшан:'Zarafshon', Навои:'Navoiy' };
-function branchLabel(b) { return (_lang==='uz' ? BRANCH_UZ[b] : BRANCH_RU[b]) || b || '—'; }
+function branchLabel(slug) {
+  if (!slug) return '—';
+  const b = (window._BRANCHES || []).find(b => b.slug === slug || b.name_ru === slug || b.name_uz === slug);
+  if (!b) return slug;
+  return _lang === 'uz' ? (b.name_uz || b.name_ru) : b.name_ru;
+}
 
 function _normBranchVal(b) {
   if (!b) return '';
   const k = b.toLowerCase().replace(/📍/g,'').trim();
-  if (k.includes('зараф') || k.includes('zaraf')) return 'zarafshan';
-  if (k.includes('навои') || k.includes('navoi')) return 'navoi';
-  return '';
+  const match = (window._BRANCHES || []).find(br =>
+    br.slug === k || br.name_ru?.toLowerCase() === k || br.name_uz?.toLowerCase() === k ||
+    k.includes(br.slug) || (br.name_ru && k.includes(br.name_ru.toLowerCase())) ||
+    (br.name_uz && k.includes(br.name_uz.toLowerCase()))
+  );
+  return match ? match.slug : (b.length > 2 ? b : '');
 }
 
 // PostgreSQL возвращает UTC без 'Z' — принудительно трактуем как UTC и показываем в UTC+5
@@ -3711,7 +3763,7 @@ function openLeadEdit(id) {
   _editLeadId = id;
   document.getElementById('ld_phone').value         = lead.client_phone || '';
   document.getElementById('ld_name').value          = lead.client_name  || '';
-  _setLdBranch(_normBranchVal(lead.branch) || 'zarafshan');
+  _setLdBranch(_normBranchVal(lead.branch) || window._BRANCHES?.[0]?.slug || '');
   document.getElementById('ld_short_address').value = lead.short_address|| '';
   document.getElementById('ld_address').value       = lead.address      || '';
   document.getElementById('ld_note').value          = lead.note         || '';
@@ -5269,8 +5321,7 @@ function _applyLeadsFormI18n() {
   _s('ldAgentOptional', t('lead.agent_optional'));
   _s('ldAgentPickBtn', t('lead.agent_pick'));
   // branch buttons
-  _s('ld_branch_btn_zarafshan', t('lead.branch_zarafshan'));
-  _s('ld_branch_btn_navoi',     t('lead.branch_navoi'));
+  renderLdBranchBtns();
   // pickup/delivery button labels
   const pc = document.getElementById('ldPickupCourier'); if(pc) pc.textContent = t('lead.pickup_courier');
   const ps = document.getElementById('ldPickupSelf');    if(ps) ps.textContent = t('lead.pickup_self');
@@ -5516,8 +5567,7 @@ function _applySoeI18n() {
   _s('soeNameLabel',        t('soe.name'));
   _s('soeBranchLabel',      t('lead.branch_lbl'));
   _s('soeBranchPick',       t('soe.branch_pick'));
-  _s('soeBranchZrf',        t('soe.branch_zarafshan'));
-  _s('soeBranchNvoi',       t('soe.branch_navoi'));
+  renderSoeBranchOptions();
   _s('soeDeadlineLabel',    t('soe.deadline'));
   _s('soeShortAddrLabel',   t('soe.short_addr'));
   _s('soeFullAddrLabel',    t('soe.full_addr'));
@@ -5582,8 +5632,7 @@ function _applyOrderFormI18n() {
   _s('orCancelBtn',        t('btn.cancel'));
   _s('orSubmitBtn',        t('btn.create_order'));
   // branch buttons
-  const bz=document.getElementById('or_branch_btn_zarafshan'); if(bz) bz.textContent=t('lead.branch_zarafshan');
-  const bn=document.getElementById('or_branch_btn_navoi');     if(bn) bn.textContent=t('lead.branch_navoi');
+  renderOrBranchBtns();
   // service type / pickup / delivery buttons
   const ts=document.getElementById('orTypeStd'); if(ts) ts.textContent=t('or.std');
   const te=document.getElementById('orTypeExp'); if(te) te.textContent=t('or.express');
@@ -6959,8 +7008,7 @@ function pageProfile() {
         <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em">📍 ${t('prof.branch')}</div>
         <select id="prof_branch" disabled style="width:100%;padding:13px 14px;border-radius:12px;border:1.5px solid var(--sep);font-size:15px;background:var(--bg);color:var(--text);opacity:.6;-webkit-appearance:none;appearance:none;background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23999' stroke-width='1.5' fill='none'/%3E%3C/svg%3E\");background-repeat:no-repeat;background-position:right 14px center">
           <option value="">${t('prof.branch_none')}</option>
-          <option value="zarafshan" ${_normBranchVal(s.branch)==='zarafshan'?'selected':''}>${branchLabel('zarafshan')}</option>
-          <option value="navoi" ${_normBranchVal(s.branch)==='navoi'?'selected':''}>${branchLabel('navoi')}</option>
+          ${(window._BRANCHES||[]).map(b=>`<option value="${b.slug}" ${_normBranchVal(s.branch)===b.slug?'selected':''}>${branchLabel(b.slug)}</option>`).join('')}
         </select>
       </div>
 
@@ -7561,7 +7609,13 @@ document.addEventListener('click', e => {
 
 // ─── Инициализация ─────────────────────────────────────
 (async () => {
-  if (await checkAuth()) startApp();
+  if (await checkAuth()) {
+    await loadStaffBranches();
+    renderLdBranchBtns();
+    renderOrBranchBtns();
+    renderSoeBranchOptions();
+    startApp();
+  }
 })();
 
 // ─── Pull-to-refresh ────────────────────────────────────
@@ -13823,8 +13877,6 @@ function staffChatSend() {
         <div class="field-inp" style="height:48px">
           <select id="soe_branch" style="height:100%">
             <option id="soeBranchPick" value="">— выбрать —</option>
-            <option id="soeBranchZrf" value="zarafshan">Зарафшан</option>
-            <option id="soeBranchNvoi" value="navoi">Навои</option>
           </select>
         </div>
       </div>
