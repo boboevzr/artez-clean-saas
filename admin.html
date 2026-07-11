@@ -1261,6 +1261,7 @@
   }
 
 </style>
+<script src="config.js"></script>
 <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -5312,7 +5313,7 @@
 </div>
 
 <script>
-const API_BASE = 'https://artez-api-production.up.railway.app/api';
+const API_BASE = (window.APP_API_URL || 'https://artez-api-production.up.railway.app') + '/api';
 const TOKEN_KEY = 'artez_admin_token';
 const mediaUrl = id => `${API_BASE}/media/${id}?t=${localStorage.getItem(TOKEN_KEY)||''}`;
 

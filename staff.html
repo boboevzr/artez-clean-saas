@@ -15,6 +15,7 @@
 <meta http-equiv="Expires" content="0">
 <title>ARTEZ Staff</title>
 <link rel="manifest" href="staff-manifest.json">
+<script src="config.js"></script>
 <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -1133,7 +1134,7 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-const API_BASE = 'https://artez-api-production.up.railway.app/api';
+const API_BASE = (window.APP_API_URL || 'https://artez-api-production.up.railway.app') + '/api';
 const TOKEN_KEY = 'artez_staff_token';
 const mediaUrl = id => `${API_BASE}/media/${id}?t=${localStorage.getItem(TOKEN_KEY)||''}`;
 function apiFetch(path, opts = {}) {
