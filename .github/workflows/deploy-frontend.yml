@@ -59,7 +59,7 @@ jobs:
           set ftp:ssl-allow no
           set net:timeout 60
           set net:max-retries 3
-          mirror --reverse --no-perms --parallel=4 --ignore-time --verbose --exclude-glob=.git/ --exclude-glob=.github/ --exclude-glob=*.md --exclude-glob=.gitignore . ${DEPLOY_PATH}
+          mirror --reverse --no-perms --parallel=4 --transfer-all --verbose --exclude-glob=.git/ --exclude-glob=.github/ --exclude-glob=*.md --exclude-glob=.gitignore . ${DEPLOY_PATH}
           put config.js -o ${DEPLOY_PATH}config.js
           bye
           EOF
