@@ -6030,7 +6030,7 @@ function _activatePage(page) {
   if (page === 'clients')     adminLoadClients();
   if (page === 'contacts')    adminLoadContacts();
   if (page === 'site-users')  adminLoadSiteUsers();
-  if (page === 'siteconfig')  { loadSiteSettings(); }
+  if (page === 'siteconfig')  { loadSiteSettings(); loadBranches().then(() => { renderBranchContactCards(); }); }
   if (page === 'tg-bot')      loadSiteSettings();
   if (page === 'tg-messages') loadTgSettings();
   if (page === 'tg-clients')  loadTgClients();

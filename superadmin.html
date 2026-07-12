@@ -193,7 +193,7 @@
     </div>
     <div class="field"><label>Макс. филиалов</label><input id="co_branches" type="number" value="5"></div>
     <div class="field"><label>Макс. сотрудников</label><input id="co_staff" type="number" value="50"></div>
-    <div class="field"><label>Пароль admin <span style="font-size:11px;opacity:.6">(логин будет: admin)</span></label><input id="co_admin_pass" type="password" placeholder="мин. 4 символа"></div>
+    <div style="font-size:12px;color:var(--text2);margin:-4px 0 8px;padding:6px 10px;background:var(--surface2);border-radius:6px">Логин: <b>admin</b> / Пароль: <b>admin</b> — клиент сменит сам в admin.html</div>
     <div class="modal-err" id="coErr"></div>
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="closeModal('modalCompany')">Отмена</button>
@@ -462,7 +462,7 @@ async function saveEditCompany() {
 }
 
 function openCreateCompany() {
-  ['co_name','co_slug','co_admin_pass'].forEach(id => document.getElementById(id).value = '');
+  ['co_name','co_slug'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('co_plan').value = 'starter';
   document.getElementById('co_branches').value = '5';
   document.getElementById('co_staff').value = '50';
@@ -476,12 +476,10 @@ async function createCompany() {
   const plan          = document.getElementById('co_plan').value;
   const max_branches  = parseInt(document.getElementById('co_branches').value) || 5;
   const max_staff     = parseInt(document.getElementById('co_staff').value) || 50;
-  const admin_password = document.getElementById('co_admin_pass').value.trim();
   document.getElementById('coErr').textContent = '';
   if (!name || !slug) { document.getElementById('coErr').textContent = 'Заполните название и slug'; return; }
-  if (admin_password && admin_password.length < 4) { document.getElementById('coErr').textContent = 'Пароль минимум 4 символа'; return; }
   try {
-    await api('/saas/companies', 'POST', { name, slug, plan, max_branches, max_staff, admin_password: admin_password || 'admin' });
+    await api('/saas/companies', 'POST', { name, slug, plan, max_branches, max_staff, admin_password: 'admin' });
     closeModal('modalCompany');
     await loadCompanies();
     // Scroll to bottom to see new company
