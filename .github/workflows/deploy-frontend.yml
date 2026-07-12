@@ -69,4 +69,4 @@ jobs:
           cat /tmp/deploy.lftp
           echo "=== config.js content ==="
           cat config.js
-          lftp -u "$FTP_USER,$FTP_PASS" "$FTP_SERVER" -f /tmp/deploy.lftp
+          lftp -u "$FTP_USER,$FTP_PASS" "$FTP_SERVER" < /tmp/deploy.lftp
