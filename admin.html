@@ -1344,19 +1344,19 @@
       </svg></span> <span>ARTEZ</span> <span style="color:var(--text2); font-weight:400; font-size:14px;">Админ</span></div>
     <div class="topbar-right">
       <div class="profile-btn" id="profileBtn" onclick="toggleProfileMenu()">
-        <div class="profile-avatar">А</div>
+        <div class="profile-avatar" id="profileAvatar">А</div>
         <div class="profile-info">
-          <div class="profile-name">Админ</div>
-          <div class="profile-role">ADMIN</div>
+          <div class="profile-name" id="profileName">Админ</div>
+          <div class="profile-role" id="profileSlug">—</div>
         </div>
         <div class="profile-chevron">▾</div>
       </div>
       <div class="profile-menu" id="profileMenu" style="display:none;">
         <div class="profile-menu-head">
-          <div class="profile-menu-avatar">А</div>
+          <div class="profile-menu-avatar" id="profileMenuAvatar">А</div>
           <div>
-            <div style="font-weight:600;font-size:14px;">Администратор</div>
-            <div style="font-size:12px;color:var(--muted);">ARTEZ CRM</div>
+            <div style="font-weight:600;font-size:14px;" id="profileMenuName">Администратор</div>
+            <div style="font-size:12px;color:var(--muted);" id="profileMenuSlug">—</div>
           </div>
         </div>
         <div class="profile-menu-divider"></div>
@@ -5355,6 +5355,7 @@ async function doLogin() {
     if (!res.ok) throw new Error(data.detail || 'Ошибка входа');
     adminToken = data.token;
     localStorage.setItem(TOKEN_KEY, adminToken);
+    localStorage.setItem('admin_company_slug', slug);
     showAdmin();
   } catch (e) {
     document.getElementById('loginError').textContent = e.message;
@@ -5381,6 +5382,7 @@ function _closeProfileMenu(e) {
 function doLogout() {
   adminToken = '';
   localStorage.removeItem(TOKEN_KEY);
+  localStorage.removeItem('admin_company_slug');
   document.getElementById('adminScreen').style.display = 'none';
   document.getElementById('loginScreen').style.display = 'flex';
   document.getElementById('passwordInput').value = '';
@@ -5785,9 +5787,28 @@ function _enforceRoutesOnly() {
   _activatePage('routes');
 }
 
+function _updateProfileUI() {
+  const slug = localStorage.getItem('admin_company_slug') || '—';
+  const setEl = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  setEl('profileSlug', slug);
+  setEl('profileMenuSlug', slug);
+}
+
 function showAdmin() {
   initStaffSections();
-  _adminMePromise = apiGet('/staff/me').then(d => { _adminMe = d?.staff || null; }).catch(() => {});
+  _updateProfileUI();
+  _adminMePromise = apiGet('/staff/me').then(d => {
+    _adminMe = d?.staff || null;
+    if (_adminMe) {
+      const name = _adminMe.name || 'Админ';
+      const letter = name.charAt(0).toUpperCase();
+      const setEl = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+      setEl('profileName', name);
+      setEl('profileMenuName', name);
+      setEl('profileAvatar', letter);
+      setEl('profileMenuAvatar', letter);
+    }
+  }).catch(() => {});
   loadBranches().then(() => { initBranchSelects(); renderRtBranchPills(); renderBranchContactCards(); });
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('adminScreen').style.display = 'block';
