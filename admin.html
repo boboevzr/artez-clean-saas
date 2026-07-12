@@ -5194,6 +5194,25 @@
   </div>
 </div>
 
+<!-- ADD BRANCH MODAL -->
+<div id="modalAddBranch" class="modal-overlay hidden" onclick="if(event.target===this)closeModal('modalAddBranch')">
+  <div class="modal-box">
+    <div class="modal-title">Добавить филиал</div>
+    <div class="form-grid">
+      <div class="form-group"><label class="form-label">Название (RU) *</label><input class="form-input" id="nb_name_ru" placeholder="Зарафшан"></div>
+      <div class="form-group"><label class="form-label">Название (UZ)</label><input class="form-input" id="nb_name_uz" placeholder="Zarafshon"></div>
+      <div class="form-group"><label class="form-label">Slug * (латиница)</label><input class="form-input" id="nb_slug" placeholder="zarafshan"></div>
+      <div class="form-group"><label class="form-label">Телефоны (через запятую)</label><input class="form-input" id="nb_phones" placeholder="+998 88 200-12-21"></div>
+      <div class="form-group"><label class="form-label">Широта (lat)</label><input class="form-input" id="nb_lat" placeholder="41.5714" inputmode="decimal"></div>
+      <div class="form-group"><label class="form-label">Долгота (lon)</label><input class="form-input" id="nb_lon" placeholder="64.1953" inputmode="decimal"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost btn-sm" onclick="closeModal('modalAddBranch')">Отмена</button>
+      <button class="btn btn-save btn-sm" onclick="saveNewBranch()">Создать</button>
+    </div>
+  </div>
+</div>
+
 <!-- POS MODAL -->
 <div id="modalPos" class="modal-overlay hidden">
   <div class="modal-box">
@@ -5552,7 +5571,34 @@ async function saveBranchCard(id) {
 function cancelBranchCard(id) { renderBranchContactCards(); }
 
 function openAddBranchModal() {
-  showToast('Добавление филиала через POST /api/branches', 'warn');
+  ['nb_name_ru','nb_name_uz','nb_slug','nb_phones','nb_lat','nb_lon'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  openModal('modalAddBranch');
+}
+
+async function saveNewBranch() {
+  const name_ru = document.getElementById('nb_name_ru').value.trim();
+  const slug    = document.getElementById('nb_slug').value.trim().toLowerCase();
+  if (!name_ru || !slug) { showToast('Заполните название и slug', 'error'); return; }
+  const phones_raw = document.getElementById('nb_phones').value.trim();
+  const phones = phones_raw ? phones_raw.split(',').map(p => p.trim()).filter(Boolean) : [];
+  const lat = parseFloat(document.getElementById('nb_lat').value) || null;
+  const lon = parseFloat(document.getElementById('nb_lon').value) || null;
+  const body = {
+    name_ru, slug,
+    name_uz: document.getElementById('nb_name_uz').value.trim() || null,
+    phones, lat, lon
+  };
+  const r = await apiFetch('/branches', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) }).then(res => res.json());
+  if (r.ok) {
+    closeModal('modalAddBranch');
+    await loadBranches();
+    renderBranchContactCards();
+    showToast('Филиал создан');
+  } else {
+    showToast(r.detail || 'Ошибка', 'error');
+  }
 }
 
 function _enforceRoutesOnly() {
