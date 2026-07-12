@@ -516,10 +516,12 @@ async function loadEditExtras(companyId) {
     if (!branches.length) {
       document.getElementById('ecBranchList').innerHTML = '<span style="color:var(--text2)">Нет филиалов</span>';
     } else {
+      const minBrId = Math.min(...branches.map(x => x.id));
       document.getElementById('ecBranchList').innerHTML = branches.map(b =>
         `<div style="padding:5px 0;border-bottom:1px solid var(--border);display:flex;gap:8px;align-items:center">
           <span style="font-weight:600">${escHtml(b.name_ru)}</span>
           <span class="mono" style="opacity:.6;font-size:12px">${escHtml(b.slug)}</span>
+          ${branches.length > 1 && b.id !== minBrId ? `<button onclick="deleteSuperBranch(${companyId},${b.id})" style="margin-left:auto;background:none;border:1px solid #dc3545;color:#dc3545;padding:2px 8px;border-radius:4px;cursor:pointer;font-size:12px">🗑️</button>` : ''}
         </div>`
       ).join('');
     }
@@ -548,6 +550,14 @@ async function createBranchForCompany() {
   } catch(e) {
     document.getElementById('nbErr').textContent = e.message;
   }
+}
+
+async function deleteSuperBranch(companyId, branchId) {
+  if (!confirm('Удалить этот филиал?')) return;
+  try {
+    await api(`/saas/companies/${companyId}/branches/${branchId}`, 'DELETE');
+    await loadEditExtras(companyId);
+  } catch(e) { alert(e.message); }
 }
 
 async function regenKey() {

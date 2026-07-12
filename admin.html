@@ -5121,7 +5121,7 @@
 </div>
 
 <!-- ADD BRANCH MODAL -->
-<div id="modalAddBranch" class="modal-overlay hidden" onclick="if(event.target===this)closeModal('modalAddBranch')">
+<div id="modalAddBranch" class="modal-overlay hidden">
   <div class="modal-box" style="max-width:600px;max-height:90vh;overflow-y:auto">
     <div class="modal-title">Добавить филиал</div>
 
@@ -5456,13 +5456,16 @@ function renderRtBranchPills() {
 function renderBranchContactCards() {
   const wrap = document.getElementById('branchContactsContainer');
   if (!wrap) return;
-  wrap.innerHTML = (window._BRANCHES || []).map(b => `
+  const branches = window._BRANCHES || [];
+  const minId = branches.length > 0 ? Math.min(...branches.map(x => x.id)) : null;
+  wrap.innerHTML = branches.map(b => `
     <div class="card" id="branchCard_${b.id}" style="margin-bottom:12px">
       <div class="cfg-title-row">
         <h3 class="cfg-title">${b.name_ru}${b.name_uz ? ' / ' + b.name_uz : ''} <span style="font-size:12px;font-weight:400;color:var(--text2)">(${b.slug})</span></h3>
         <button class="btn s-edit-btn" onclick="editBranchCard(${b.id})">✏️</button>
         <button class="btn btn-primary s-save-btn" onclick="saveBranchCard(${b.id})" style="display:none">💾 Сохранить</button>
         <button class="btn btn-ghost s-cancel-btn" onclick="cancelBranchCard(${b.id})" style="display:none">Отмена</button>
+        ${branches.length > 1 && b.id !== minId ? `<button class="btn btn-ghost" onclick="deleteBranch(${b.id})" style="color:var(--danger);margin-left:auto" title="Удалить филиал">🗑️</button>` : ''}
       </div>
       <div class="contacts-grid">
         <div class="cfg-field"><label>Широта (lat)</label>
@@ -5472,7 +5475,7 @@ function renderBranchContactCards() {
           <input id="br_${b.id}_lon" class="form-input" disabled value="${b.lon || ''}" placeholder="64.1953" style="font-family:monospace">
         </div>
         <div class="cfg-field"><label>Телефоны (через запятую)</label>
-          <input id="br_${b.id}_phones" class="form-input" disabled value="${(b.phones || []).join(', ')}" placeholder="+998 88 200-12-21">
+          <input id="br_${b.id}_phones" class="form-input" disabled value="${(b.phones || []).map(p => typeof p === 'object' ? (p.n || '') : p).filter(Boolean).join(', ')}" placeholder="+998 88 200-12-21">
         </div>
         <div class="cfg-field"><label>Telegram группа</label>
           <input id="br_${b.id}_telegram_link" class="form-input" disabled value="${b.telegram_link || ''}" placeholder="https://t.me/...">
@@ -5543,6 +5546,22 @@ async function saveBranchCard(id) {
 }
 
 function cancelBranchCard(id) { renderBranchContactCards(); }
+
+async function deleteBranch(id) {
+  if (!confirm('Удалить этот филиал? Это действие необратимо.')) return;
+  try {
+    const r = await apiFetch(`${API_BASE}/branches/${id}`, { method: 'DELETE' }).then(res => res.json());
+    if (r.ok) {
+      await loadBranches();
+      renderBranchContactCards();
+      showToast('Филиал удалён');
+    } else {
+      showToast(r.detail || 'Ошибка', 'error');
+    }
+  } catch(e) {
+    if (e.message !== '401') showToast('Ошибка: ' + e.message, 'error');
+  }
+}
 
 // ── Add Branch Modal ─────────────────────────────────────────────────────
 let _nbPhones = []; // [{n:'', receipt:true, site:true}, ...]
