@@ -206,7 +206,7 @@
     <h3>✏️ Редактировать компанию</h3>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 16px">
       <div class="field"><label>Название</label><input id="ec_name" placeholder="ООО Химчистка"></div>
-      <div class="field"><label>Slug</label><input id="ec_slug" placeholder="cleanpro" disabled style="opacity:.5"></div>
+      <div class="field"><label>Slug <span style="font-size:11px;opacity:.6">(для логина)</span></label><input id="ec_slug" placeholder="artez"></div>
       <div class="field"><label>Юридическое название</label><input id="ec_legal_name" placeholder="ООО «Артез Сервис»"></div>
       <div class="field"><label>ИНН / ПИНФЛ</label><input id="ec_inn" placeholder="123456789"></div>
       <div class="field" style="grid-column:1/-1"><label>Адрес</label><input id="ec_address" placeholder="г. Навои, ул. Мустакиллик, 1"></div>
@@ -422,6 +422,7 @@ function openEditCompany(id) {
 async function saveEditCompany() {
   const body = {
     name:          document.getElementById('ec_name').value.trim() || undefined,
+    slug:          document.getElementById('ec_slug').value.trim() || undefined,
     legal_name:    document.getElementById('ec_legal_name').value.trim() || null,
     inn:           document.getElementById('ec_inn').value.trim() || null,
     address:       document.getElementById('ec_address').value.trim() || null,
