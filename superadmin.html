@@ -192,6 +192,7 @@
     </div>
     <div class="field"><label>Макс. филиалов</label><input id="co_branches" type="number" value="5"></div>
     <div class="field"><label>Макс. сотрудников</label><input id="co_staff" type="number" value="50"></div>
+    <div class="field"><label>Пароль admin <span style="font-size:11px;opacity:.6">(логин будет: admin)</span></label><input id="co_admin_pass" type="password" placeholder="мин. 4 символа"></div>
     <div class="modal-err" id="coErr"></div>
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="closeModal('modalCompany')">Отмена</button>
@@ -232,15 +233,10 @@
     </div>
     <div class="modal-err" id="ecErr"></div>
     <div style="border-top:1px solid var(--border);margin-top:14px;padding-top:14px">
-      <div style="font-weight:600;font-size:13px;margin-bottom:10px">🔐 Admin доступ</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 16px;align-items:end">
-        <div class="field" style="margin-bottom:0"><label>Логин</label><div id="ec_admin_login" style="padding:9px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;font-size:14px;color:var(--text)">…</div></div>
-        <div class="field" style="margin-bottom:0"><label>Новый пароль</label>
-          <div style="display:flex;gap:8px">
-            <input id="ec_admin_pass" type="password" placeholder="мин. 4 символа" style="flex:1">
-            <button class="btn btn-ghost btn-sm" onclick="saveAdminPassword()">💾</button>
-          </div>
-        </div>
+      <div style="font-weight:600;font-size:13px;margin-bottom:10px">🔐 Admin доступ <span style="font-weight:400;opacity:.6;font-size:12px">логин: <b>admin</b> (фиксировано)</span></div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input id="ec_admin_pass" type="password" placeholder="Новый пароль (мин. 4 символа)" style="flex:1">
+        <button class="btn btn-ghost btn-sm" onclick="saveAdminPassword()">💾 Сохранить пароль</button>
       </div>
       <div class="modal-err" id="ecPassErr" style="margin-top:6px"></div>
     </div>
@@ -431,12 +427,7 @@ async function openEditCompany(id) {
   document.getElementById('ecErr').textContent      = '';
   document.getElementById('ecPassErr').textContent  = '';
   document.getElementById('ec_admin_pass').value    = '';
-  document.getElementById('ec_admin_login').textContent = '…';
   openModal('modalEditCompany');
-  try {
-    const d = await api(`/saas/companies/${id}`);
-    document.getElementById('ec_admin_login').textContent = d.admin_login || '—';
-  } catch { document.getElementById('ec_admin_login').textContent = '—'; }
 }
 
 async function saveAdminPassword() {
@@ -483,7 +474,7 @@ async function saveEditCompany() {
 }
 
 function openCreateCompany() {
-  ['co_name','co_slug'].forEach(id => document.getElementById(id).value = '');
+  ['co_name','co_slug','co_admin_pass'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('co_plan').value = 'starter';
   document.getElementById('co_branches').value = '5';
   document.getElementById('co_staff').value = '50';
@@ -492,15 +483,17 @@ function openCreateCompany() {
 }
 
 async function createCompany() {
-  const name = document.getElementById('co_name').value.trim();
-  const slug = document.getElementById('co_slug').value.trim();
-  const plan = document.getElementById('co_plan').value;
-  const max_branches = parseInt(document.getElementById('co_branches').value) || 5;
-  const max_staff    = parseInt(document.getElementById('co_staff').value) || 50;
+  const name          = document.getElementById('co_name').value.trim();
+  const slug          = document.getElementById('co_slug').value.trim();
+  const plan          = document.getElementById('co_plan').value;
+  const max_branches  = parseInt(document.getElementById('co_branches').value) || 5;
+  const max_staff     = parseInt(document.getElementById('co_staff').value) || 50;
+  const admin_password = document.getElementById('co_admin_pass').value.trim();
   document.getElementById('coErr').textContent = '';
   if (!name || !slug) { document.getElementById('coErr').textContent = 'Заполните название и slug'; return; }
+  if (admin_password && admin_password.length < 4) { document.getElementById('coErr').textContent = 'Пароль минимум 4 символа'; return; }
   try {
-    await api('/saas/companies', 'POST', { name, slug, plan, max_branches, max_staff });
+    await api('/saas/companies', 'POST', { name, slug, plan, max_branches, max_staff, admin_password: admin_password || 'admin1234' });
     closeModal('modalCompany');
     await loadCompanies();
   } catch(e) {
