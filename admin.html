@@ -1301,7 +1301,8 @@
     <h1>ARTEZ Admin</h1><!-- v2 -->
     <p>Войдите для управления системой</p>
     <div class="error" id="loginError"></div>
-    <input type="password" id="passwordInput" placeholder="Пароль администратора" autocomplete="current-password">
+    <input type="text" id="loginInput" placeholder="Логин" autocomplete="username" style="margin-bottom:10px">
+    <input type="password" id="passwordInput" placeholder="Пароль" autocomplete="current-password">
     <button class="btn btn-save" style="width:100%; justify-content:center; padding:12px;" id="loginBtn" onclick="doLogin()">
       Войти →
     </button>
@@ -5341,16 +5342,21 @@ let _adminMe = null;
 let _adminMePromise = Promise.resolve();
 
 async function doLogin() {
-  const pass = document.getElementById('passwordInput').value;
-  const btn  = document.getElementById('loginBtn');
+  const login = document.getElementById('loginInput').value.trim();
+  const pass  = document.getElementById('passwordInput').value;
+  const btn   = document.getElementById('loginBtn');
   btn.disabled = true;
   btn.textContent = 'Вход…';
   document.getElementById('loginError').textContent = '';
+  if (!login || !pass) {
+    document.getElementById('loginError').textContent = 'Введите логин и пароль';
+    btn.disabled = false; btn.textContent = 'Войти →'; return;
+  }
   try {
     const res  = await fetch(`${API_BASE}/admin/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ password: pass }),
+      body: JSON.stringify({ login, password: pass, company_id: window.APP_COMPANY_ID || 1 }),
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.detail || 'Ошибка входа');
