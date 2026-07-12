@@ -138,6 +138,7 @@
         <div class="section-header">
           <div class="page-title" style="margin:0">🏢 Компании</div>
           <button class="btn btn-primary btn-sm" onclick="openCreateCompany()">+ Новая компания</button>
+          <button class="btn btn-ghost btn-sm" onclick="migrateAdminLogins()" title="Установить логин=admin всем сотрудникам с ролью admin">🔧 Логин → admin</button>
         </div>
         <div class="table-wrap">
           <table>
@@ -499,6 +500,13 @@ async function createCompany() {
   } catch(e) {
     document.getElementById('coErr').textContent = e.message;
   }
+}
+
+async function migrateAdminLogins() {
+  try {
+    const d = await api('/saas/migrate/admin-logins', 'POST', {});
+    alert(`✓ Обновлено: ${d.updated} сотрудников → логин "admin"`);
+  } catch(e) { alert('Ошибка: ' + e.message); }
 }
 
 async function toggleCompany(id, isActive) {
