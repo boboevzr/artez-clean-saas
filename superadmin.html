@@ -96,6 +96,24 @@
   </div>
   <div class="content">
 
+    <!-- Global Settings -->
+    <div class="section-header" style="margin-bottom:12px">
+      <h2>⚙️ Глобальные настройки</h2>
+    </div>
+    <div class="table-wrap" style="padding:20px;margin-bottom:24px">
+      <div class="field" style="max-width:500px">
+        <label>🗺 Яндекс Карты — API ключ (общий для всех компаний)</label>
+        <div style="display:flex;gap:8px">
+          <input id="gs_ymaps_key" type="password" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" style="flex:1">
+          <button class="btn btn-ghost btn-sm" onclick="toggleGsKey()" tabindex="-1">👁</button>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;margin-top:4px">
+        <button class="btn btn-primary btn-sm" onclick="saveGlobalSettings()">💾 Сохранить</button>
+        <span id="gs_msg" style="font-size:12px;color:var(--green);display:none">✓ Сохранено</span>
+      </div>
+    </div>
+
     <!-- Companies -->
     <div class="section-header">
       <h2>🏢 Компании</h2>
@@ -228,7 +246,31 @@ async function api(path, method = 'GET', body = null) {
 async function showMain() {
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('mainScreen').style.display = 'block';
-  await loadCompanies();
+  await Promise.all([loadCompanies(), loadGlobalSettings()]);
+}
+
+// ── GLOBAL SETTINGS ───────────────────────────────────
+async function loadGlobalSettings() {
+  try {
+    const d = await api('/saas/global-settings');
+    document.getElementById('gs_ymaps_key').value = d.settings?.yandex_maps_key || '';
+  } catch(e) {}
+}
+
+function toggleGsKey() {
+  const el = document.getElementById('gs_ymaps_key');
+  el.type = el.type === 'password' ? 'text' : 'password';
+}
+
+async function saveGlobalSettings() {
+  const key = document.getElementById('gs_ymaps_key').value.trim();
+  const msg = document.getElementById('gs_msg');
+  msg.style.display = 'none';
+  try {
+    await api('/saas/global-settings', 'PUT', { yandex_maps_key: key });
+    msg.style.display = '';
+    setTimeout(() => msg.style.display = 'none', 3000);
+  } catch(e) { alert(e.message); }
 }
 
 async function loadCompanies() {
