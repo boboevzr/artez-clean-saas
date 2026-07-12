@@ -231,6 +231,19 @@
       <div class="field" style="grid-column:1/-1"><label>Заметки</label><textarea id="ec_notes" rows="2" style="width:100%;padding:9px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;resize:vertical;outline:none" placeholder="Внутренние заметки…"></textarea></div>
     </div>
     <div class="modal-err" id="ecErr"></div>
+    <div style="border-top:1px solid var(--border);margin-top:14px;padding-top:14px">
+      <div style="font-weight:600;font-size:13px;margin-bottom:10px">🔐 Admin доступ</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 16px;align-items:end">
+        <div class="field" style="margin-bottom:0"><label>Логин</label><input id="ec_admin_login" readonly style="opacity:.7;cursor:default"></div>
+        <div class="field" style="margin-bottom:0"><label>Новый пароль</label>
+          <div style="display:flex;gap:8px">
+            <input id="ec_admin_pass" type="password" placeholder="мин. 4 символа" style="flex:1">
+            <button class="btn btn-ghost btn-sm" onclick="saveAdminPassword()">💾</button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-err" id="ecPassErr" style="margin-top:6px"></div>
+    </div>
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="closeModal('modalEditCompany')">Отмена</button>
       <button class="btn btn-primary" onclick="saveEditCompany()">💾 Сохранить</button>
@@ -398,7 +411,7 @@ function renderCompanies(list) {
   `).join('');
 }
 
-function openEditCompany(id) {
+async function openEditCompany(id) {
   const c = _companiesCache.find(x => x.id === id);
   if (!c) return;
   _currentCompanyId = id;
@@ -415,8 +428,32 @@ function openEditCompany(id) {
   document.getElementById('ec_max_branches').value  = c.max_branches || 5;
   document.getElementById('ec_max_staff').value     = c.max_staff || 50;
   document.getElementById('ec_notes').value         = c.notes || '';
-  document.getElementById('ecErr').textContent = '';
+  document.getElementById('ecErr').textContent      = '';
+  document.getElementById('ecPassErr').textContent  = '';
+  document.getElementById('ec_admin_pass').value    = '';
+  document.getElementById('ec_admin_login').value   = '…';
   openModal('modalEditCompany');
+  try {
+    const d = await api(`/saas/companies/${id}`);
+    document.getElementById('ec_admin_login').value = d.admin_login || '—';
+  } catch { document.getElementById('ec_admin_login').value = '—'; }
+}
+
+async function saveAdminPassword() {
+  const pass = document.getElementById('ec_admin_pass').value.trim();
+  const errEl = document.getElementById('ecPassErr');
+  errEl.textContent = '';
+  if (pass.length < 4) { errEl.textContent = 'Минимум 4 символа'; return; }
+  try {
+    await api(`/saas/companies/${_currentCompanyId}/admin-password`, 'POST', { password: pass });
+    document.getElementById('ec_admin_pass').value = '';
+    errEl.style.color = 'var(--green, #22c55e)';
+    errEl.textContent = '✓ Пароль обновлён';
+    setTimeout(() => { errEl.textContent = ''; errEl.style.color = ''; }, 3000);
+  } catch(e) {
+    errEl.style.color = '';
+    errEl.textContent = e.message;
+  }
 }
 
 async function saveEditCompany() {
