@@ -5196,21 +5196,67 @@
 
 <!-- ADD BRANCH MODAL -->
 <div id="modalAddBranch" class="modal-overlay hidden" onclick="if(event.target===this)closeModal('modalAddBranch')">
-  <div class="modal-box">
+  <div class="modal-box" style="max-width:600px;max-height:90vh;overflow-y:auto">
     <div class="modal-title">Добавить филиал</div>
+
+    <!-- Основное -->
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--text2);margin:0 0 8px">Основное</div>
     <div class="form-grid">
       <div class="form-group"><label class="form-label">Название (RU) *</label><input class="form-input" id="nb_name_ru" placeholder="Зарафшан"></div>
       <div class="form-group"><label class="form-label">Название (UZ)</label><input class="form-input" id="nb_name_uz" placeholder="Zarafshon"></div>
-      <div class="form-group"><label class="form-label">Slug * (латиница)</label><input class="form-input" id="nb_slug" placeholder="zarafshan"></div>
-      <div class="form-group"><label class="form-label">Телефоны (через запятую)</label><input class="form-input" id="nb_phones" placeholder="+998 88 200-12-21"></div>
-      <div class="form-group"><label class="form-label">Широта (lat)</label><input class="form-input" id="nb_lat" placeholder="41.5714" inputmode="decimal"></div>
-      <div class="form-group"><label class="form-label">Долгота (lon)</label><input class="form-input" id="nb_lon" placeholder="64.1953" inputmode="decimal"></div>
+      <div class="form-group span-full"><label class="form-label">Slug * (латиница, уникальный)</label><input class="form-input" id="nb_slug" placeholder="zarafshan"></div>
     </div>
+
+    <!-- Телефоны -->
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--text2);margin:12px 0 8px">Телефоны</div>
+    <div id="nb_phones_list"></div>
+    <button class="btn btn-ghost btn-sm" id="nb_add_phone_btn" onclick="nbAddPhone()" style="margin-top:6px">+ Добавить номер</button>
+
+    <!-- Координаты центра города -->
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--text2);margin:12px 0 8px">Центр города (для карты)</div>
+    <div class="form-grid">
+      <div class="form-group span-full" style="display:flex;gap:8px;align-items:flex-end">
+        <div style="flex:1"><label class="form-label">Координаты (lat, lon)</label>
+          <input class="form-input" id="nb_city_coords" placeholder="41.5714, 64.1953" inputmode="decimal"></div>
+        <button class="btn btn-ghost btn-sm" onclick="nbOpenMap('city')" style="white-space:nowrap">📍 Карта</button>
+      </div>
+    </div>
+
+    <!-- Координаты цеха -->
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--text2);margin:12px 0 8px">Координаты цеха (для маршрутов)</div>
+    <div class="form-grid">
+      <div class="form-group span-full" style="display:flex;gap:8px;align-items:flex-end">
+        <div style="flex:1"><label class="form-label">Координаты (lat, lon)</label>
+          <input class="form-input" id="nb_workshop_coords" placeholder="41.5714, 64.1953" inputmode="decimal"></div>
+        <button class="btn btn-ghost btn-sm" onclick="nbOpenMap('workshop')" style="white-space:nowrap">📍 Карта</button>
+      </div>
+    </div>
+
+    <!-- Социальные -->
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--text2);margin:12px 0 8px">Контакты и соцсети</div>
+    <div class="form-grid">
+      <div class="form-group span-full"><label class="form-label">Telegram группа</label><input class="form-input" id="nb_telegram_link" placeholder="https://t.me/artez_gilam_group"></div>
+      <div class="form-group span-full"><label class="form-label">Telegram администратора</label><input class="form-input" id="nb_admin_tg_link" placeholder="https://t.me/artez_gilam_yuvish"></div>
+      <div class="form-group"><label class="form-label">WhatsApp (номер без +)</label><input class="form-input" id="nb_whatsapp" placeholder="998882001221" inputmode="tel"></div>
+      <div class="form-group"><label class="form-label">Instagram</label><input class="form-input" id="nb_instagram" placeholder="ziyoboboev"></div>
+    </div>
+
     <div class="modal-footer">
       <button class="btn btn-ghost btn-sm" onclick="closeModal('modalAddBranch')">Отмена</button>
       <button class="btn btn-save btn-sm" onclick="saveNewBranch()">Создать</button>
     </div>
   </div>
+</div>
+
+<!-- MAP PICKER для филиала -->
+<div id="nbMapModal" style="display:none;position:fixed;inset:0;z-index:10001;background:#000;flex-direction:column">
+  <div style="display:flex;align-items:center;gap:12px;padding:10px 16px;background:#111;color:#fff;flex-shrink:0">
+    <span id="nbMapTitle" style="flex:1;font-weight:700">Выбрать на карте</span>
+    <span style="font-size:12px;color:#aaa">Нажмите на карту чтобы поставить метку</span>
+    <button onclick="nbMapDone()" style="background:#f5a623;color:#000;border:none;padding:8px 18px;border-radius:8px;font-weight:700;cursor:pointer">✅ Готово</button>
+    <button onclick="nbMapClose()" style="background:#333;color:#fff;border:none;padding:8px 14px;border-radius:8px;cursor:pointer">✕</button>
+  </div>
+  <div id="nbMapContainer" style="flex:1"></div>
 </div>
 
 <!-- POS MODAL -->
@@ -5570,25 +5616,69 @@ async function saveBranchCard(id) {
 
 function cancelBranchCard(id) { renderBranchContactCards(); }
 
+// ── Add Branch Modal ─────────────────────────────────────────────────────
+let _nbPhones = []; // [{n:'', receipt:true, site:true}, ...]
+let _nbMapTarget = 'city'; // 'city' | 'workshop'
+let _nbYmap = null, _nbYmarker = null, _nbYmapsReady = false;
+
 function openAddBranchModal() {
-  ['nb_name_ru','nb_name_uz','nb_slug','nb_phones','nb_lat','nb_lon'].forEach(id => {
+  ['nb_name_ru','nb_name_uz','nb_slug','nb_city_coords','nb_workshop_coords',
+   'nb_telegram_link','nb_admin_tg_link','nb_whatsapp','nb_instagram'].forEach(id => {
     document.getElementById(id).value = '';
   });
+  _nbPhones = [{ n: '', receipt: true, site: true }];
+  _nbRenderPhones();
   openModal('modalAddBranch');
+}
+
+function _nbRenderPhones() {
+  const list = document.getElementById('nb_phones_list');
+  list.innerHTML = _nbPhones.map((p, i) => `
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+      <input class="form-input" style="flex:1" placeholder="${i===0?'Основной номер':'+998 ...'}"
+        value="${p.n}" oninput="_nbPhones[${i}].n=this.value">
+      <label style="display:flex;align-items:center;gap:4px;font-size:12px;white-space:nowrap;cursor:pointer">
+        <input type="checkbox" ${p.receipt?'checked':''} onchange="_nbPhones[${i}].receipt=this.checked"
+          ${i===0?'disabled':''}>в чеке
+      </label>
+      <label style="display:flex;align-items:center;gap:4px;font-size:12px;white-space:nowrap;cursor:pointer">
+        <input type="checkbox" ${p.site?'checked':''} onchange="_nbPhones[${i}].site=this.checked"
+          ${i===0?'disabled':''}>на сайте
+      </label>
+      ${i>0?`<button onclick="_nbPhones.splice(${i},1);_nbRenderPhones()" style="background:none;border:none;color:var(--danger);cursor:pointer;font-size:16px">✕</button>`:''}
+    </div>
+  `).join('');
+  document.getElementById('nb_add_phone_btn').style.display = _nbPhones.length >= 3 ? 'none' : '';
+}
+
+function nbAddPhone() {
+  if (_nbPhones.length >= 3) return;
+  _nbPhones.push({ n: '', receipt: false, site: true });
+  _nbRenderPhones();
+}
+
+function _nbParseCoords(val) {
+  if (!val) return [null, null];
+  const parts = val.split(',').map(s => parseFloat(s.trim()));
+  if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) return parts;
+  return [null, null];
 }
 
 async function saveNewBranch() {
   const name_ru = document.getElementById('nb_name_ru').value.trim();
   const slug    = document.getElementById('nb_slug').value.trim().toLowerCase();
   if (!name_ru || !slug) { showToast('Заполните название и slug', 'error'); return; }
-  const phones_raw = document.getElementById('nb_phones').value.trim();
-  const phones = phones_raw ? phones_raw.split(',').map(p => p.trim()).filter(Boolean) : [];
-  const lat = parseFloat(document.getElementById('nb_lat').value) || null;
-  const lon = parseFloat(document.getElementById('nb_lon').value) || null;
+  const phones = _nbPhones.filter(p => p.n.trim()).map(p => ({n: p.n.trim(), receipt: p.receipt, site: p.site}));
+  const [lat, lon] = _nbParseCoords(document.getElementById('nb_city_coords').value);
+  const [wlat, wlon] = _nbParseCoords(document.getElementById('nb_workshop_coords').value);
   const body = {
     name_ru, slug,
-    name_uz: document.getElementById('nb_name_uz').value.trim() || null,
-    phones, lat, lon
+    name_uz:       document.getElementById('nb_name_uz').value.trim() || null,
+    phones, lat, lon, workshop_lat: wlat, workshop_lon: wlon,
+    telegram_link: document.getElementById('nb_telegram_link').value.trim() || null,
+    admin_tg_link: document.getElementById('nb_admin_tg_link').value.trim() || null,
+    whatsapp:      document.getElementById('nb_whatsapp').value.trim() || null,
+    instagram:     document.getElementById('nb_instagram').value.trim() || null,
   };
   const r = await apiFetch('/branches', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) }).then(res => res.json());
   if (r.ok) {
@@ -5599,6 +5689,47 @@ async function saveNewBranch() {
   } else {
     showToast(r.detail || 'Ошибка', 'error');
   }
+}
+
+// ── Map picker ───────────────────────────────────────────────────────────
+function nbOpenMap(target) {
+  _nbMapTarget = target;
+  document.getElementById('nbMapTitle').textContent = target === 'city' ? '📍 Центр города' : '📍 Координаты цеха';
+  const modal = document.getElementById('nbMapModal');
+  modal.style.display = 'flex';
+  const coordsEl = document.getElementById(target === 'city' ? 'nb_city_coords' : 'nb_workshop_coords');
+  const [initLat, initLon] = _nbParseCoords(coordsEl.value);
+  _loadAoeYmaps(() => _nbInitMap(initLat || 41.5714, initLon || 64.1953, !!(initLat)));
+}
+
+function _nbInitMap(lat, lon, hasPin) {
+  const container = document.getElementById('nbMapContainer');
+  if (_nbYmap) { try { _nbYmap.destroy(); } catch(e){} _nbYmap = null; _nbYmarker = null; }
+  _nbYmap = new ymaps.Map(container, { center: [lat, lon], zoom: hasPin ? 14 : 11 }, { suppressMapOpenBlock: true });
+  if (hasPin) {
+    _nbYmarker = new ymaps.Placemark([lat, lon], {}, { preset: 'islands#redDotIcon' });
+    _nbYmap.geoObjects.add(_nbYmarker);
+  }
+  _nbYmap.events.add('click', e => {
+    const coords = e.get('coords');
+    if (_nbYmarker) _nbYmap.geoObjects.remove(_nbYmarker);
+    _nbYmarker = new ymaps.Placemark(coords, {}, { preset: 'islands#redDotIcon' });
+    _nbYmap.geoObjects.add(_nbYmarker);
+  });
+}
+
+function nbMapDone() {
+  if (_nbYmarker) {
+    const [lat, lon] = _nbYmarker.geometry.getCoordinates();
+    const field = _nbMapTarget === 'city' ? 'nb_city_coords' : 'nb_workshop_coords';
+    document.getElementById(field).value = `${lat.toFixed(6)}, ${lon.toFixed(6)}`;
+  }
+  nbMapClose();
+}
+
+function nbMapClose() {
+  document.getElementById('nbMapModal').style.display = 'none';
+  if (_nbYmap) { try { _nbYmap.destroy(); } catch(e){} _nbYmap = null; _nbYmarker = null; }
 }
 
 function _enforceRoutesOnly() {
