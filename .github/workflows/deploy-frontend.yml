@@ -58,6 +58,7 @@ jobs:
           DEPLOY_PATH: ${{ steps.cfg.outputs.ftp_path }}
         run: |
           cat > /tmp/deploy.lftp << EOF
+          debug 3
           set ftp:ssl-allow no
           set net:timeout 60
           set net:max-retries 3
