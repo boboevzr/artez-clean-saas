@@ -214,7 +214,7 @@
       <div class="field" style="grid-column:1/-1"><label>Адрес</label><input id="ec_address" placeholder="г. Навои, ул. Мустакиллик, 1"></div>
       <div class="field"><label>Ответственное лицо</label><input id="ec_contact_name" placeholder="Иванов Иван"></div>
       <div class="field"><label>Телефон</label><input id="ec_contact_phone" placeholder="+998 90 000-00-00"></div>
-      <div class="field" style="grid-column:1/-1"><label>Email</label><input id="ec_contact_email" placeholder="info@company.uz"></div>
+      <div class="field" style="grid-column:1/-1"><label>Email</label><input id="ec_contact_email" placeholder="info@company.uz" autocomplete="off"></div>
       <div class="field"><label>План</label>
         <select id="ec_plan">
           <option value="starter">Starter</option>
@@ -234,12 +234,30 @@
     </div>
     <div class="modal-err" id="ecErr"></div>
     <div style="border-top:1px solid var(--border);margin-top:14px;padding-top:14px">
-      <div style="font-weight:600;font-size:13px;margin-bottom:10px">🔐 Admin доступ <span style="font-weight:400;opacity:.6;font-size:12px">логин: <b>admin</b> (фиксировано)</span></div>
+      <div style="font-weight:600;font-size:13px;margin-bottom:8px">🔐 Admin доступ <span style="font-weight:400;opacity:.6;font-size:12px">логин: <b>admin</b> (фиксировано)</span></div>
       <div style="display:flex;gap:8px;align-items:center">
-        <input id="ec_admin_pass" type="password" placeholder="Новый пароль (мин. 4 символа)" style="flex:1">
-        <button class="btn btn-ghost btn-sm" onclick="saveAdminPassword()">💾 Сохранить пароль</button>
+        <div style="position:relative;flex:1">
+          <input id="ec_admin_pass" type="password" placeholder="Новый пароль (мин. 4 символа)" autocomplete="new-password" style="width:100%;padding-right:36px;box-sizing:border-box">
+          <button onclick="togglePassVis('ec_admin_pass',this)" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;color:var(--text2);padding:0">👁</button>
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="saveAdminPassword()">💾</button>
       </div>
       <div class="modal-err" id="ecPassErr" style="margin-top:6px"></div>
+    </div>
+    <div style="border-top:1px solid var(--border);margin-top:14px;padding-top:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <div style="font-weight:600;font-size:13px">🏢 Филиалы</div>
+        <button id="ecAddBranchBtn" class="btn btn-ghost btn-sm" onclick="openAddBranchModal()" style="display:none">+ Добавить филиал</button>
+      </div>
+      <div id="ecBranchList" style="font-size:13px;margin-bottom:4px"></div>
+      <div class="modal-err" id="ecBranchErr" style="margin-top:4px"></div>
+    </div>
+    <div style="border-top:1px solid var(--border);margin-top:14px;padding-top:10px">
+      <div style="font-size:11px;color:var(--text2);margin-bottom:4px">API Key</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <code id="ecApiKey" class="mono" style="flex:1;background:var(--surface2);padding:6px 10px;border-radius:6px;font-size:12px;word-break:break-all;color:var(--text)">—</code>
+        <button class="btn btn-ghost btn-sm" onclick="regenKey()" title="Сгенерировать новый ключ">🔄</button>
+      </div>
     </div>
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="closeModal('modalEditCompany')">Отмена</button>
@@ -248,34 +266,7 @@
   </div>
 </div>
 
-<!-- MODAL: Company detail -->
-<div class="modal-bg" id="modalDetail">
-  <div class="modal" style="width:540px">
-    <h3 id="detailTitle">Компания</h3>
-    <div style="margin-bottom:16px">
-      <div style="font-size:12px;color:var(--text2);margin-bottom:4px">API Key (secret_key)</div>
-      <div style="display:flex;gap:8px;align-items:center">
-        <code id="detailKey" class="mono" style="flex:1;background:var(--surface2);padding:6px 10px;border-radius:6px;word-break:break-all"></code>
-        <button class="btn btn-ghost btn-sm" onclick="regenKey()">🔄</button>
-      </div>
-    </div>
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-      <div style="font-weight:700;font-size:13px">🏢 Филиалы</div>
-      <button id="detailAddBranchBtn" class="btn btn-ghost btn-sm" onclick="openAddBranchDetail()" style="display:none">+ Добавить филиал</button>
-    </div>
-    <div id="branchList" style="margin-bottom:16px;font-size:13px"></div>
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-      <div style="font-weight:700;font-size:13px">👤 Сотрудники</div>
-      <button class="btn btn-primary btn-sm" onclick="openCreateStaff()">+ Добавить</button>
-    </div>
-    <div id="staffList" class="staff-list"></div>
-    <div class="modal-actions" style="margin-top:16px">
-      <button class="btn btn-ghost" onclick="closeModal('modalDetail')">Закрыть</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL: Add branch -->
+<!-- MODAL: Add branch (from edit company) -->
 <div class="modal-bg" id="modalBranch">
   <div class="modal">
     <h3>🏢 Добавить филиал</h3>
@@ -285,29 +276,6 @@
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="closeModal('modalBranch')">Отмена</button>
       <button class="btn btn-primary" onclick="createBranchForCompany()">Создать</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL: Create staff -->
-<div class="modal-bg" id="modalStaff">
-  <div class="modal">
-    <h3>👤 Добавить сотрудника</h3>
-    <div class="field"><label>Имя</label><input id="st_name" placeholder="Иван"></div>
-    <div class="field"><label>Фамилия</label><input id="st_last" placeholder="Иванов"></div>
-    <div class="field"><label>Логин</label><input id="st_login" placeholder="ivan_admin"></div>
-    <div class="field"><label>Пароль</label><input id="st_pass" type="password" placeholder="мин. 4 символа"></div>
-    <div class="field"><label>Роль</label>
-      <select id="st_role">
-        <option value="admin">admin</option>
-        <option value="manager">manager</option>
-        <option value="callcenter">callcenter</option>
-      </select>
-    </div>
-    <div class="modal-err" id="stErr"></div>
-    <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeModal('modalStaff')">Отмена</button>
-      <button class="btn btn-primary" onclick="createStaff()">Создать</button>
     </div>
   </div>
 </div>
@@ -421,7 +389,6 @@ function renderCompanies(list) {
         : '<span class="badge badge-red">Отключена</span>'}</td>
       <td style="display:flex;gap:6px;flex-wrap:wrap">
         <button class="btn btn-primary btn-sm" onclick="openEditCompany(${c.id})">✏️</button>
-        <button class="btn btn-ghost btn-sm" onclick="openDetail(${c.id},'${escHtml(c.name)}')">👥</button>
       </td>
     </tr>
   `).join('');
@@ -448,6 +415,7 @@ async function openEditCompany(id) {
   document.getElementById('ecPassErr').textContent  = '';
   document.getElementById('ec_admin_pass').value    = '';
   openModal('modalEditCompany');
+  loadEditExtras(id);
 }
 
 async function saveAdminPassword() {
@@ -513,9 +481,11 @@ async function createCompany() {
   if (!name || !slug) { document.getElementById('coErr').textContent = 'Заполните название и slug'; return; }
   if (admin_password && admin_password.length < 4) { document.getElementById('coErr').textContent = 'Пароль минимум 4 символа'; return; }
   try {
-    await api('/saas/companies', 'POST', { name, slug, plan, max_branches, max_staff, admin_password: admin_password || 'admin1234' });
+    await api('/saas/companies', 'POST', { name, slug, plan, max_branches, max_staff, admin_password: admin_password || 'admin' });
     closeModal('modalCompany');
     await loadCompanies();
+    // Scroll to bottom to see new company
+    document.getElementById('companiesBody').lastElementChild?.scrollIntoView({behavior:'smooth'});
   } catch(e) {
     document.getElementById('coErr').textContent = e.message;
   }
@@ -535,49 +505,33 @@ async function toggleCompany(id, isActive) {
   } catch(e) { alert(e.message); }
 }
 
-// ── DETAIL ────────────────────────────────────────────
-let _detailCompany = null;
-
-async function openDetail(companyId, name) {
-  _currentCompanyId = companyId;
-  _detailCompany = null;
-  document.getElementById('detailTitle').textContent = '🏢 ' + name;
-  document.getElementById('detailKey').textContent = 'Загрузка…';
-  document.getElementById('staffList').innerHTML = '<div style="color:var(--text2);font-size:13px">Загрузка…</div>';
-  document.getElementById('branchList').innerHTML = '<div style="color:var(--text2);font-size:13px">Загрузка…</div>';
-  document.getElementById('detailAddBranchBtn').style.display = 'none';
-  openModal('modalDetail');
+// ── EDIT — branches + API key ─────────────────────────
+async function loadEditExtras(companyId) {
+  document.getElementById('ecBranchList').innerHTML = '<span style="color:var(--text2)">Загрузка…</span>';
+  document.getElementById('ecApiKey').textContent   = '…';
+  document.getElementById('ecAddBranchBtn').style.display = 'none';
   try {
-    const [cd, sd] = await Promise.all([
-      api(`/saas/companies/${companyId}`),
-      api(`/saas/companies/${companyId}/staff`)
-    ]);
-    _detailCompany = cd.company;
-    document.getElementById('detailKey').textContent = cd.company?.secret_key || '—';
-    renderBranchList(cd.branches || [], cd.company?.max_branches || 1);
-    renderStaffList(sd.staff || []);
+    const d = await api(`/saas/companies/${companyId}`);
+    const branches   = d.branches || [];
+    const maxBranches = d.company?.max_branches || 1;
+    document.getElementById('ecApiKey').textContent = d.company?.secret_key || '—';
+    if (!branches.length) {
+      document.getElementById('ecBranchList').innerHTML = '<span style="color:var(--text2)">Нет филиалов</span>';
+    } else {
+      document.getElementById('ecBranchList').innerHTML = branches.map(b =>
+        `<div style="padding:5px 0;border-bottom:1px solid var(--border);display:flex;gap:8px;align-items:center">
+          <span style="font-weight:600">${escHtml(b.name_ru)}</span>
+          <span class="mono" style="opacity:.6;font-size:12px">${escHtml(b.slug)}</span>
+        </div>`
+      ).join('');
+    }
+    document.getElementById('ecAddBranchBtn').style.display = branches.length < maxBranches ? '' : 'none';
   } catch(e) {
-    document.getElementById('detailKey').textContent = e.message;
+    document.getElementById('ecBranchList').innerHTML = `<span style="color:var(--red)">${e.message}</span>`;
   }
 }
 
-function renderBranchList(branches, maxBranches) {
-  const el = document.getElementById('branchList');
-  if (!branches.length) {
-    el.innerHTML = '<div style="color:var(--text2);padding:4px 0">Нет филиалов</div>';
-  } else {
-    el.innerHTML = branches.map(b =>
-      `<div style="padding:6px 0;border-bottom:1px solid var(--border);display:flex;gap:8px;align-items:center">
-        <span style="font-weight:600">${escHtml(b.name_ru)}</span>
-        <span class="mono" style="opacity:.6;font-size:12px">${escHtml(b.slug)}</span>
-      </div>`
-    ).join('');
-  }
-  const canAdd = branches.length < maxBranches;
-  document.getElementById('detailAddBranchBtn').style.display = canAdd ? '' : 'none';
-}
-
-function openAddBranchDetail() {
+function openAddBranchModal() {
   document.getElementById('nb_name').value = '';
   document.getElementById('nb_slug_sa').value = '';
   document.getElementById('nbErr').textContent = '';
@@ -592,60 +546,24 @@ async function createBranchForCompany() {
   try {
     await api(`/saas/companies/${_currentCompanyId}/branches`, 'POST', { name_ru, slug });
     closeModal('modalBranch');
-    const cd = await api(`/saas/companies/${_currentCompanyId}`);
-    renderBranchList(cd.branches || [], cd.company?.max_branches || 1);
+    await loadEditExtras(_currentCompanyId);
   } catch(e) {
     document.getElementById('nbErr').textContent = e.message;
   }
-}
-
-function renderStaffList(list) {
-  const el = document.getElementById('staffList');
-  if (!list.length) { el.innerHTML = '<div style="color:var(--text2);font-size:13px;padding:8px 0">Нет сотрудников</div>'; return; }
-  el.innerHTML = list.map(s => `
-    <div class="staff-item">
-      <span style="font-weight:600">${escHtml(s.first_name)} ${escHtml(s.last_name||'')}</span>
-      <span class="mono" style="flex:1">${escHtml(s.login)}</span>
-      <span class="badge ${s.role==='admin'?'badge-blue':''}">${s.role}</span>
-      <span class="badge ${s.active?'badge-green':'badge-red'}">${s.active?'active':'off'}</span>
-    </div>
-  `).join('');
 }
 
 async function regenKey() {
   if (!confirm('Сгенерировать новый ключ? Старый перестанет работать.')) return;
   try {
     const d = await api(`/saas/companies/${_currentCompanyId}/regenerate-key`, 'POST');
-    document.getElementById('detailKey').textContent = d.secret_key;
+    document.getElementById('ecApiKey').textContent = d.secret_key;
   } catch(e) { alert(e.message); }
 }
 
-// ── CREATE STAFF ──────────────────────────────────────
-function openCreateStaff() {
-  ['st_name','st_last','st_login','st_pass'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('st_role').value = 'admin';
-  document.getElementById('stErr').textContent = '';
-  openModal('modalStaff');
-}
-
-async function createStaff() {
-  const first_name = document.getElementById('st_name').value.trim();
-  const last_name  = document.getElementById('st_last').value.trim();
-  const login      = document.getElementById('st_login').value.trim();
-  const password   = document.getElementById('st_pass').value;
-  const role       = document.getElementById('st_role').value;
-  document.getElementById('stErr').textContent = '';
-  if (!first_name || !login || !password) { document.getElementById('stErr').textContent = 'Заполните имя, логин и пароль'; return; }
-  if (password.length < 4) { document.getElementById('stErr').textContent = 'Пароль мин. 4 символа'; return; }
-  try {
-    await api(`/saas/companies/${_currentCompanyId}/staff`, 'POST',
-      { first_name, last_name, login, password, role });
-    closeModal('modalStaff');
-    const sd = await api(`/saas/companies/${_currentCompanyId}/staff`);
-    renderStaffList(sd.staff || []);
-  } catch(e) {
-    document.getElementById('stErr').textContent = e.message;
-  }
+function togglePassVis(inputId, btn) {
+  const inp = document.getElementById(inputId);
+  if (inp.type === 'password') { inp.type = 'text'; btn.textContent = '🙈'; }
+  else { inp.type = 'password'; btn.textContent = '👁'; }
 }
 
 // ── UTILS ─────────────────────────────────────────────

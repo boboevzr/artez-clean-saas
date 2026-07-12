@@ -2759,6 +2759,7 @@
         <div style="display:flex;gap:6px;flex-wrap:nowrap;overflow-x:auto;margin-bottom:20px;padding-bottom:4px;-webkit-overflow-scrolling:touch;scrollbar-width:none;">
 
           <button class="s-tab active" data-stab="contacts" onclick="switchStab(this)">📞 Контакты</button>
+          <button class="s-tab"        data-stab="staff-mgmt" onclick="switchStab(this);staffMgmtLoad()">👤 Сотрудники</button>
           <button class="s-tab"        data-stab="eskiz"    onclick="switchStab(this)">📨 SMS (Eskiz)</button>
           <button class="s-tab"        data-stab="sheets"     onclick="switchStab(this)">📊 Google Sheets</button>
           <button class="s-tab"        data-stab="agents"     onclick="switchStab(this)">🤝 Агенты</button>
@@ -2794,6 +2795,17 @@
               <h3 style="margin:0 0 12px;font-size:15px;font-weight:700">🏢 Филиалы</h3>
               <div id="branchContactsContainer"></div>
               <button class="btn btn-primary" onclick="openAddBranchModal()" style="margin-top:12px">+ Добавить филиал</button>
+            </div>
+          </div>
+
+          <!-- ─── Сотрудники ─── -->
+          <div class="s-panel" id="stab-staff-mgmt" style="display:none;">
+            <div class="card" style="margin-bottom:16px">
+              <div class="cfg-title-row">
+                <h3 class="cfg-title">👤 Сотрудники с доступом в admin</h3>
+                <button class="btn btn-primary btn-sm" onclick="staffMgmtOpenCreate()">+ Добавить</button>
+              </div>
+              <div id="staffMgmtList" style="margin-top:12px;font-size:14px"><div style="color:var(--text2)">Загрузка…</div></div>
             </div>
           </div>
 
@@ -5082,6 +5094,32 @@
   </div>
 </div>
 
+<!-- STAFF MGMT MODAL -->
+<div id="modalStaffMgmt" class="modal-overlay hidden">
+  <div class="modal-box" style="max-width:420px">
+    <div class="modal-title" id="staffMgmtModalTitle">Добавить сотрудника</div>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-top:12px">
+      <input class="form-input" id="sm_fname" placeholder="Имя *">
+      <input class="form-input" id="sm_lname" placeholder="Фамилия">
+      <input class="form-input" id="sm_login" placeholder="Логин *" autocomplete="off">
+      <div style="position:relative">
+        <input class="form-input" id="sm_pass" type="password" placeholder="Пароль *" autocomplete="new-password" style="width:100%;padding-right:36px;box-sizing:border-box">
+        <button onclick="toggleSmPass()" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;color:var(--text-secondary)">👁</button>
+      </div>
+      <select class="form-input" id="sm_role">
+        <option value="admin">admin (полный доступ)</option>
+        <option value="manager">manager</option>
+        <option value="callcenter">callcenter</option>
+      </select>
+    </div>
+    <div id="staffMgmtErr" style="color:var(--danger,#e53e3e);font-size:13px;margin-top:8px"></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px">
+      <button class="btn btn-ghost" onclick="closeModal('modalStaffMgmt')">Отмена</button>
+      <button class="btn btn-primary" id="staffMgmtSaveBtn" onclick="staffMgmtSave()">Создать</button>
+    </div>
+  </div>
+</div>
+
 <!-- ADD BRANCH MODAL -->
 <div id="modalAddBranch" class="modal-overlay hidden" onclick="if(event.target===this)closeModal('modalAddBranch')">
   <div class="modal-box" style="max-width:600px;max-height:90vh;overflow-y:auto">
@@ -5584,6 +5622,84 @@ async function saveNewBranch() {
   } catch(e) {
     if (e.message !== '401') showToast('Ошибка: ' + e.message, 'error');
   }
+}
+
+// ── Staff management (admin panel) ───────────────────────────────────────
+let _smEditId = null;
+
+async function staffMgmtLoad() {
+  const el = document.getElementById('staffMgmtList');
+  if (!el) return;
+  el.innerHTML = '<div style="color:var(--text-secondary)">Загрузка…</div>';
+  try {
+    const r = await apiGet('/staff/list');
+    const list = (r?.staff || []).filter(s => ['admin','manager','callcenter'].includes(s.role));
+    if (!list.length) { el.innerHTML = '<div style="color:var(--text-secondary)">Нет сотрудников</div>'; return; }
+    el.innerHTML = list.map(s => `
+      <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border-color,#e2e8f0)">
+        <div style="flex:1">
+          <span style="font-weight:600">${escHtml(s.first_name||'')} ${escHtml(s.last_name||'')}</span>
+          <span class="badge" style="margin-left:6px;background:var(--accent,#3b82f6);color:#fff;font-size:11px;padding:2px 7px;border-radius:20px">${s.role}</span>
+          ${s.active===false?'<span class="badge" style="margin-left:4px;background:#e53e3e;color:#fff;font-size:11px;padding:2px 7px;border-radius:20px">откл</span>':''}
+        </div>
+        <span style="font-size:12px;color:var(--text-secondary);font-family:monospace">${escHtml(s.login||'')}</span>
+        <button class="btn btn-ghost btn-sm" onclick="staffMgmtToggle(${s.id},${s.active!==false})" title="${s.active!==false?'Деактивировать':'Активировать'}">
+          ${s.active!==false?'🚫':'✅'}
+        </button>
+      </div>
+    `).join('');
+  } catch(e) { el.innerHTML = `<div style="color:var(--danger,#e53e3e)">${e.message}</div>`; }
+}
+
+function staffMgmtOpenCreate() {
+  _smEditId = null;
+  ['sm_fname','sm_lname','sm_login','sm_pass'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+  const role = document.getElementById('sm_role'); if(role) role.value='admin';
+  document.getElementById('staffMgmtErr').textContent = '';
+  document.getElementById('staffMgmtModalTitle').textContent = 'Добавить сотрудника';
+  document.getElementById('staffMgmtSaveBtn').textContent = 'Создать';
+  document.getElementById('sm_pass').required = true;
+  openModal('modalStaffMgmt');
+}
+
+async function staffMgmtSave() {
+  const first_name = document.getElementById('sm_fname').value.trim();
+  const last_name  = document.getElementById('sm_lname').value.trim();
+  const login      = document.getElementById('sm_login').value.trim();
+  const password   = document.getElementById('sm_pass').value;
+  const role       = document.getElementById('sm_role').value;
+  const errEl      = document.getElementById('staffMgmtErr');
+  errEl.textContent = '';
+  if (!first_name || !login) { errEl.textContent = 'Заполните имя и логин'; return; }
+  if (!password || password.length < 4) { errEl.textContent = 'Пароль мин. 4 символа'; return; }
+  try {
+    const res = await apiFetch(`${API_BASE}/staff/create`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ first_name, last_name, login, password, role })
+    });
+    const r = await res.json();
+    if (!r.ok) { errEl.textContent = r.detail || 'Ошибка'; return; }
+    closeModal('modalStaffMgmt');
+    await staffMgmtLoad();
+    showToast('Сотрудник создан');
+  } catch(e) { if(e.message!=='401') errEl.textContent = e.message; }
+}
+
+async function staffMgmtToggle(id, isActive) {
+  try {
+    const res = await apiFetch(`${API_BASE}/staff/${id}`, {
+      method: 'PATCH',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ active: !isActive })
+    });
+    await staffMgmtLoad();
+  } catch(e) { showToast(e.message,'error'); }
+}
+
+function toggleSmPass() {
+  const inp = document.getElementById('sm_pass');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
 }
 
 // ── Map picker ───────────────────────────────────────────────────────────
