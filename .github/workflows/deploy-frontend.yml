@@ -36,12 +36,14 @@ jobs:
         id: cfg
         run: |
           SUB="${{ github.event.inputs.subdomain }}"
-          echo "ftp_user=${{ secrets.FTP_USERNAME }}" >> $GITHUB_OUTPUT
-          echo "ftp_pass=${{ secrets.FTP_PASSWORD }}" >> $GITHUB_OUTPUT
           if [ -z "$SUB" ]; then
-            echo "ftp_path=/"                         >> $GITHUB_OUTPUT
+            echo "ftp_user=${{ secrets.FTP_USERNAME }}"     >> $GITHUB_OUTPUT
+            echo "ftp_pass=${{ secrets.FTP_PASSWORD }}"     >> $GITHUB_OUTPUT
+            echo "ftp_path=/"                               >> $GITHUB_OUTPUT
           else
-            echo "ftp_path=/${SUB}/"                  >> $GITHUB_OUTPUT
+            echo "ftp_user=${{ secrets.FTP_USERNAME_SAAS }}" >> $GITHUB_OUTPUT
+            echo "ftp_pass=${{ secrets.FTP_PASSWORD_SAAS }}" >> $GITHUB_OUTPUT
+            echo "ftp_path=/"                                >> $GITHUB_OUTPUT
           fi
 
       - name: Install lftp
