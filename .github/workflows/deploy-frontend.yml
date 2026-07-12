@@ -27,10 +27,11 @@ jobs:
 
       - name: Generate config.js
         run: |
-          cat > config.js << EOF
-          window.APP_COMPANY_NAME = "${{ github.event.inputs.company_name }}";
-          window.APP_API_URL      = "${{ github.event.inputs.api_url }}";
-          EOF
+          printf 'window.APP_COMPANY_NAME = "%s";\nwindow.APP_API_URL      = "%s";\n' \
+            "${{ github.event.inputs.company_name }}" \
+            "${{ github.event.inputs.api_url }}" > config.js
+          echo "Generated config.js:"
+          cat config.js
 
       - name: Set FTP credentials and path
         id: cfg
@@ -56,15 +57,16 @@ jobs:
           FTP_PASS: ${{ steps.cfg.outputs.ftp_pass }}
           DEPLOY_PATH: ${{ steps.cfg.outputs.ftp_path }}
         run: |
-          lftp -u "$FTP_USER,$FTP_PASS" "$FTP_SERVER" -e "
-            set ftp:ssl-allow no;
-            set net:timeout 60;
-            set net:max-retries 3;
-            mirror --reverse --no-perms --parallel=4 --ignore-time --verbose \
-              --exclude-glob=.git \
-              --exclude-glob=.github \
-              --exclude-glob=*.md \
-              --exclude-glob=.gitignore \
-              . $DEPLOY_PATH;
-            put -O $DEPLOY_PATH config.js;
-            bye"
+          cat > /tmp/deploy.lftp << EOF
+          set ftp:ssl-allow no
+          set net:timeout 60
+          set net:max-retries 3
+          mirror --reverse --no-perms --parallel=4 --ignore-time --verbose --exclude-glob=.git --exclude-glob=.github --exclude-glob=*.md --exclude-glob=.gitignore . ${DEPLOY_PATH}
+          put config.js -o ${DEPLOY_PATH}config.js
+          bye
+          EOF
+          echo "=== lftp script ==="
+          cat /tmp/deploy.lftp
+          echo "=== config.js content ==="
+          cat config.js
+          lftp -u "$FTP_USER,$FTP_PASS" "$FTP_SERVER" -f /tmp/deploy.lftp
