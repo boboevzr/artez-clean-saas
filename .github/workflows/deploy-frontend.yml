@@ -64,4 +64,5 @@ jobs:
               --exclude-glob=*.md \
               --exclude-glob=.gitignore \
               . $DEPLOY_PATH;
+            put -O $DEPLOY_PATH config.js;
             bye"
