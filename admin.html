@@ -5481,6 +5481,7 @@ function renderBranchContactCards() {
     const ph1 = phones[0] ? (typeof phones[0] === 'object' ? (phones[0].n || '') : phones[0]) : '';
     const ph2 = phones[1] ? (typeof phones[1] === 'object' ? (phones[1].n || '') : phones[1]) : '';
     const coords = (b.lat && b.lon) ? `${b.lat}, ${b.lon}` : '';
+    const wcoords = (b.workshop_lat && b.workshop_lon) ? `${b.workshop_lat}, ${b.workshop_lon}` : '';
     const canDel = branches.length > 1 && b.id !== minId;
     return `
     <div class="card" id="branchCard_${b.id}" style="margin-bottom:12px">
@@ -5494,11 +5495,18 @@ function renderBranchContactCards() {
 
       ${_brSectionLabel('📍 Местоположение')}
       <div class="contacts-grid">
-        <div class="cfg-field" style="grid-column:1/-1">
-          <label>Координаты (широта, долгота)</label>
+        <div class="cfg-field">
+          <label>Центр города / района</label>
           <div style="display:flex;gap:8px;align-items:center">
             <input id="br_${b.id}_coords" class="form-input" disabled value="${coords}" placeholder="41.5714, 64.1953" style="font-family:monospace;flex:1">
-            <button class="btn btn-ghost br-map-btn" onclick="bcOpenMap(${b.id})" style="display:none;white-space:nowrap">🗺️ Карта</button>
+            <button class="btn btn-ghost br-map-btn" onclick="bcOpenMap(${b.id},'city')" style="display:none;white-space:nowrap">🗺️</button>
+          </div>
+        </div>
+        <div class="cfg-field">
+          <label>Координаты цеха</label>
+          <div style="display:flex;gap:8px;align-items:center">
+            <input id="br_${b.id}_workshop_coords" class="form-input" disabled value="${wcoords}" placeholder="41.5714, 64.1953" style="font-family:monospace;flex:1">
+            <button class="btn btn-ghost br-map-btn" onclick="bcOpenMap(${b.id},'workshop')" style="display:none;white-space:nowrap">🗺️</button>
           </div>
         </div>
         <div class="cfg-field">
@@ -5577,12 +5585,13 @@ function editBranchCard(id) {
 async function saveBranchCard(id) {
   const g = field => document.getElementById(`br_${id}_${field}`)?.value?.trim() || null;
   const [lat, lon] = _nbParseCoords(g('coords'));
+  const [workshop_lat, workshop_lon] = _nbParseCoords(g('workshop_coords'));
   const ph1 = g('phone1'), ph2 = g('phone2');
   const phones = [];
   if (ph1) phones.push({ n: ph1, receipt: true, site: true });
   if (ph2) phones.push({ n: ph2, receipt: false, site: true });
   const body = {
-    lat, lon, phones,
+    lat, lon, workshop_lat, workshop_lon, phones,
     telegram_link: g('telegram_link'),
     admin_tg_link: g('admin_tg_link'),
     whatsapp: g('whatsapp'),
@@ -5606,14 +5615,15 @@ async function saveBranchCard(id) {
 function cancelBranchCard(id) { renderBranchContactCards(); }
 
 // Map picker for branch card editing — reuses nbMapModal
-let _bcMapBranchId = null;
-function bcOpenMap(branchId) {
+let _bcMapBranchId = null, _bcMapTarget = 'city';
+function bcOpenMap(branchId, target = 'city') {
   _bcMapBranchId = branchId;
-  document.getElementById('nbMapTitle').textContent = '📍 Координаты филиала';
-  const modal = document.getElementById('nbMapModal');
-  modal.style.display = 'flex';
-  const coordsEl = document.getElementById(`br_${branchId}_coords`);
-  const [initLat, initLon] = _nbParseCoords(coordsEl?.value);
+  _bcMapTarget = target;
+  const titles = { city: '📍 Центр города / района', workshop: '📍 Координаты цеха' };
+  document.getElementById('nbMapTitle').textContent = titles[target] || '📍 Координаты';
+  document.getElementById('nbMapModal').style.display = 'flex';
+  const fieldId = target === 'workshop' ? `br_${branchId}_workshop_coords` : `br_${branchId}_coords`;
+  const [initLat, initLon] = _nbParseCoords(document.getElementById(fieldId)?.value);
   _loadAoeYmaps(() => _nbInitMap(initLat || 41.5714, initLon || 64.1953, !!(initLat)));
 }
 
@@ -5823,7 +5833,8 @@ function nbMapDone() {
     const [lat, lon] = _nbYmarker.geometry.getCoordinates();
     const coordsStr = `${lat.toFixed(6)}, ${lon.toFixed(6)}`;
     if (_bcMapBranchId !== null) {
-      const el = document.getElementById(`br_${_bcMapBranchId}_coords`);
+      const fieldId = _bcMapTarget === 'workshop' ? `br_${_bcMapBranchId}_workshop_coords` : `br_${_bcMapBranchId}_coords`;
+      const el = document.getElementById(fieldId);
       if (el) el.value = coordsStr;
     } else {
       const field = _nbMapTarget === 'city' ? 'nb_city_coords' : 'nb_workshop_coords';
