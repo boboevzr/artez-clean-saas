@@ -5567,14 +5567,19 @@ async function saveNewBranch() {
     whatsapp:      document.getElementById('nb_whatsapp').value.trim() || null,
     instagram:     document.getElementById('nb_instagram').value.trim() || null,
   };
-  const r = await apiFetch(`${API_BASE}/branches`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) }).then(res => res.json());
-  if (r.ok) {
-    closeModal('modalAddBranch');
-    await loadBranches();
-    renderBranchContactCards();
-    showToast('Филиал создан');
-  } else {
-    showToast(r.detail || 'Ошибка', 'error');
+  try {
+    const res = await apiFetch(`${API_BASE}/branches`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
+    const r = await res.json();
+    if (r.ok) {
+      closeModal('modalAddBranch');
+      await loadBranches();
+      renderBranchContactCards();
+      showToast('Филиал создан');
+    } else {
+      showToast(r.detail || 'Ошибка сервера', 'error');
+    }
+  } catch(e) {
+    if (e.message !== '401') showToast('Ошибка: ' + e.message, 'error');
   }
 }
 
