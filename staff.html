@@ -653,6 +653,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-s
 
   <div class="login-form">
     <div class="input-wrap">
+      <span class="inp-icon">🏢</span>
+      <input id="slugInput" type="text" placeholder="Slug компании (напр: artez)"
+        autocomplete="organization" autocapitalize="none" autocorrect="off">
+    </div>
+    <div class="input-wrap">
       <span class="inp-icon">👤</span>
       <input id="loginInput" type="text" placeholder="Имя пользователя"
         autocomplete="username" autocapitalize="none" autocorrect="off">
@@ -1733,8 +1738,10 @@ function closeModal(id) {
 
 // ─── Авторизация ───────────────────────────────────────
 async function doLogin() {
+  const slug     = document.getElementById('slugInput').value.trim();
   const login    = document.getElementById('loginInput').value.trim();
   const password = document.getElementById('passInput').value;
+  if (!slug) { showLoginError('Введите slug компании'); return; }
   const btn  = document.getElementById('loginBtn');
   const err  = document.getElementById('loginError');
   err.style.display = 'none';
@@ -1743,7 +1750,7 @@ async function doLogin() {
   try {
     const res  = await fetch(`${API_BASE}/staff/login`, {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ login, password, company_id: window.APP_COMPANY_ID || 1 })
+      body: JSON.stringify({ login, password, company_slug: slug })
     });
     const data = await res.json();
     if (!res.ok) { showLoginError(data.detail || 'Неверный логин или пароль'); return; }
