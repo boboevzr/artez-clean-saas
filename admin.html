@@ -5850,11 +5850,21 @@ function _enforceRoutesOnly() {
   _activatePage('routes');
 }
 
-function _updateProfileUI() {
-  const slug = localStorage.getItem('admin_company_slug') || '—';
+function _setProfileSlug(slug) {
   const setEl = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
   setEl('profileSlug', slug);
   setEl('profileMenuSlug', slug);
+}
+
+function _updateProfileUI() {
+  const cached = localStorage.getItem('admin_company_slug');
+  if (cached) { _setProfileSlug(cached); return; }
+  apiGet('/company/info').then(d => {
+    if (d?.slug) {
+      localStorage.setItem('admin_company_slug', d.slug);
+      _setProfileSlug(d.slug);
+    }
+  }).catch(() => {});
 }
 
 function showAdmin() {
