@@ -234,7 +234,7 @@
     <div style="border-top:1px solid var(--border);margin-top:14px;padding-top:14px">
       <div style="font-weight:600;font-size:13px;margin-bottom:10px">🔐 Admin доступ</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 16px;align-items:end">
-        <div class="field" style="margin-bottom:0"><label>Логин</label><input id="ec_admin_login" readonly style="opacity:.7;cursor:default"></div>
+        <div class="field" style="margin-bottom:0"><label>Логин</label><div id="ec_admin_login" style="padding:9px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;font-size:14px;color:var(--text)">…</div></div>
         <div class="field" style="margin-bottom:0"><label>Новый пароль</label>
           <div style="display:flex;gap:8px">
             <input id="ec_admin_pass" type="password" placeholder="мин. 4 символа" style="flex:1">
@@ -431,12 +431,12 @@ async function openEditCompany(id) {
   document.getElementById('ecErr').textContent      = '';
   document.getElementById('ecPassErr').textContent  = '';
   document.getElementById('ec_admin_pass').value    = '';
-  document.getElementById('ec_admin_login').value   = '…';
+  document.getElementById('ec_admin_login').textContent = '…';
   openModal('modalEditCompany');
   try {
     const d = await api(`/saas/companies/${id}`);
-    document.getElementById('ec_admin_login').value = d.admin_login || '—';
-  } catch { document.getElementById('ec_admin_login').value = '—'; }
+    document.getElementById('ec_admin_login').textContent = d.admin_login || '—';
+  } catch { document.getElementById('ec_admin_login').textContent = '—'; }
 }
 
 async function saveAdminPassword() {
