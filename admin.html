@@ -5459,6 +5459,12 @@ function renderRtBranchPills() {
   ).join('');
 }
 
+function _brPhones(v) {
+  if (!v) return [];
+  if (Array.isArray(v)) return v;
+  try { return JSON.parse(v) || []; } catch { return []; }
+}
+
 function renderBranchContactCards() {
   const wrap = document.getElementById('branchContactsContainer');
   if (!wrap) return;
@@ -5481,7 +5487,7 @@ function renderBranchContactCards() {
           <input id="br_${b.id}_lon" class="form-input" disabled value="${b.lon || ''}" placeholder="64.1953" style="font-family:monospace">
         </div>
         <div class="cfg-field"><label>Телефоны (через запятую)</label>
-          <input id="br_${b.id}_phones" class="form-input" disabled value="${(b.phones || []).map(p => typeof p === 'object' ? (p.n || '') : p).filter(Boolean).join(', ')}" placeholder="+998 88 200-12-21">
+          <input id="br_${b.id}_phones" class="form-input" disabled value="${_brPhones(b.phones).map(p => typeof p === 'object' ? (p.n || '') : p).filter(Boolean).join(', ')}" placeholder="+998 88 200-12-21">
         </div>
         <div class="cfg-field"><label>Telegram группа</label>
           <input id="br_${b.id}_telegram_link" class="form-input" disabled value="${b.telegram_link || ''}" placeholder="https://t.me/...">
