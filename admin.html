@@ -2758,9 +2758,7 @@
         <div style="display:flex;gap:6px;flex-wrap:nowrap;overflow-x:auto;margin-bottom:20px;padding-bottom:4px;-webkit-overflow-scrolling:touch;scrollbar-width:none;">
 
           <button class="s-tab active" data-stab="contacts" onclick="switchStab(this)">📞 Контакты</button>
-          <button class="s-tab"        data-stab="maps"     onclick="switchStab(this)">🗺 Яндекс Карты</button>
           <button class="s-tab"        data-stab="eskiz"    onclick="switchStab(this)">📨 SMS (Eskiz)</button>
-          <button class="s-tab"        data-stab="osago"      onclick="switchStab(this)">🚗 ОСАГО</button>
           <button class="s-tab"        data-stab="sheets"     onclick="switchStab(this)">📊 Google Sheets</button>
           <button class="s-tab"        data-stab="agents"     onclick="switchStab(this)">🤝 Агенты</button>
           <button class="s-tab"        data-stab="receipt"    onclick="switchStab(this)">🧾 Чек</button>
@@ -2798,28 +2796,6 @@
             </div>
           </div>
 
-          <!-- ─── Яндекс Карты ─── -->
-          <div class="s-panel" id="stab-maps" style="display:none;">
-            <div class="card">
-              <div class="cfg-title-row">
-                <h3 class="cfg-title">🗺 Яндекс Карты</h3>
-                <button class="btn s-edit-btn" onclick="editTab('maps')">✏️</button>
-              </div>
-              <div class="cfg-field">
-                <label>API ключ</label>
-                <div class="cfg-pwd-wrap">
-                  <input type="text" id="cfg_yandex_maps_key" class="form-input" disabled placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx">
-                  <button type="button" class="cfg-eye" onclick="togglePwd('cfg_yandex_maps_key',this)" tabindex="-1">👁</button>
-                </div>
-              </div>
-              <div class="cfg-actions" style="margin-top:12px">
-                <button class="btn btn-primary  s-save-btn"  onclick="saveTab('maps')"  style="display:none;">💾 Сохранить</button>
-                <button class="btn btn-ghost    s-cancel-btn" onclick="cancelTab('maps')" style="display:none;">Отмена</button>
-                <span class="s-msg" id="msg_maps"></span>
-              </div>
-            </div>
-          </div>
-
           <!-- ─── Eskiz SMS ─── -->
           <div class="s-panel" id="stab-eskiz" style="display:none;">
 
@@ -2854,95 +2830,6 @@
               <div style="font-size:13px;color:var(--text2)">📝 Тексты SMS перенесены в раздел <b>SMS-рассылка → 📝 Тексты SMS</b></div>
             </div>
 
-          </div>
-
-          <!-- ─── ОСАГО ─── -->
-          <div class="s-panel" id="stab-osago" style="display:none;">
-
-            <!-- Пороги скидок -->
-            <div class="card" id="card-osago-tiers">
-              <div class="cfg-title-row">
-                <h3 class="cfg-title">🎁 Пороги скидок</h3>
-                <button class="btn s-edit-btn" id="osagoTiersEditBtn" onclick="editOsagoTiers()">✏️</button>
-              </div>
-              <p class="cfg-hint">Минимальная сумма заказов для получения скидки на ОСАГО. Отображается в личном кабинете клиентов.</p>
-              <div style="display:grid;gap:12px;">
-                <div style="background:var(--surface2);border-radius:10px;padding:14px 18px;border-left:4px solid #f59e0b;">
-                  <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
-                    <div>
-                      <div style="font-weight:600;margin-bottom:2px;">Уровень 1</div>
-                      <div style="color:var(--text2);font-size:12px;">Мин. сумма заказов (сум)</div>
-                    </div>
-                    <div style="display:flex;align-items:center;gap:8px;">
-                      <input type="number" id="osagoTier1" class="form-input" style="width:130px;text-align:right;" min="0" step="10000">
-                      <span style="color:var(--text2);font-size:13px;">сум →</span>
-                      <input type="number" id="osagoPct1" class="form-input" style="width:65px;text-align:center;" min="0" max="100" step="1">
-                      <span style="color:var(--text2);font-size:13px;">%</span>
-                    </div>
-                  </div>
-                </div>
-                <div style="background:var(--surface2);border-radius:10px;padding:14px 18px;border-left:4px solid #f59e0b;">
-                  <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
-                    <div>
-                      <div style="font-weight:600;margin-bottom:2px;">Уровень 2</div>
-                      <div style="color:var(--text2);font-size:12px;">Мин. сумма заказов (сум)</div>
-                    </div>
-                    <div style="display:flex;align-items:center;gap:8px;">
-                      <input type="number" id="osagoTier2" class="form-input" style="width:130px;text-align:right;" min="0" step="10000">
-                      <span style="color:var(--text2);font-size:13px;">сум →</span>
-                      <input type="number" id="osagoPct2" class="form-input" style="width:65px;text-align:center;" min="0" max="100" step="1">
-                      <span style="color:var(--text2);font-size:13px;">%</span>
-                    </div>
-                  </div>
-                </div>
-                <div style="background:var(--surface2);border-radius:10px;padding:14px 18px;border-left:4px solid #f59e0b;">
-                  <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
-                    <div>
-                      <div style="font-weight:600;margin-bottom:2px;">Уровень 3</div>
-                      <div style="color:var(--text2);font-size:12px;">Мин. сумма заказов (сум)</div>
-                    </div>
-                    <div style="display:flex;align-items:center;gap:8px;">
-                      <input type="number" id="osagoTier3" class="form-input" style="width:130px;text-align:right;" min="0" step="10000">
-                      <span style="color:var(--text2);font-size:13px;">сум →</span>
-                      <input type="number" id="osagoPct3" class="form-input" style="width:65px;text-align:center;" min="0" max="100" step="1">
-                      <span style="color:var(--text2);font-size:13px;">%</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="cfg-actions">
-                <button class="btn btn-primary  s-save-btn"   id="osagoTiersSaveBtn"   onclick="saveOsagoSettings()" style="display:none;">💾 Сохранить</button>
-                <button class="btn btn-ghost    s-cancel-btn" id="osagoTiersCancelBtn" onclick="cancelOsagoTiers()"  style="display:none;">Отмена</button>
-                <span id="osagoSaveMsg" style="font-size:13px;display:none;"></span>
-              </div>
-            </div>
-
-            <!-- Партнёр -->
-            <div class="card" id="card-osago-partner" style="margin-top:16px;">
-              <div class="cfg-title-row">
-                <h3 class="cfg-title">🚗 Партнёр по ОСАГО</h3>
-                <button class="btn s-edit-btn" onclick="editCard('card-osago-partner')">✏️</button>
-              </div>
-              <p class="cfg-hint">Отображается в разделе «Бонус» на сайте — телефон и промокод для клиентов.</p>
-              <div class="cfg-field" style="margin-bottom:10px">
-                <label>Телефон партнёра</label>
-                <input type="text" id="cfg_osago_partner_phone" class="form-input" disabled placeholder="+998936121300" oninput="_updateOsagoPreview()">
-              </div>
-              <div class="cfg-field" style="margin-bottom:12px">
-                <label>Промокод</label>
-                <input type="text" id="cfg_osago_partner_promo" class="form-input" disabled placeholder="ARTEZ" oninput="_updateOsagoPreview()">
-              </div>
-              <div class="cfg-hint" style="padding:10px 12px;background:var(--surface2);border-radius:8px;border-left:3px solid var(--accent);margin-bottom:12px">
-                <b>Пример на сайте (RU):</b><br>
-                <span id="osago_preview_ru" style="font-style:italic;">—</span><br><br>
-                <b>Пример на сайте (UZ):</b><br>
-                <span id="osago_preview_uz" style="font-style:italic;">—</span>
-              </div>
-              <div class="cfg-actions">
-                <button class="btn btn-primary  s-save-btn"   onclick="saveCard('card-osago-partner',['osago_partner_phone','osago_partner_promo'])" style="display:none;">💾 Сохранить</button>
-                <button class="btn btn-ghost    s-cancel-btn" onclick="cancelCard('card-osago-partner',['osago_partner_phone','osago_partner_promo'])" style="display:none;">Отмена</button>
-              </div>
-            </div>
           </div>
 
           <!-- ─── Google Sheets ─── -->
@@ -5604,7 +5491,7 @@ async function saveBranchCard(id) {
     tg_delivery_channel_link: g('tg_delivery_channel_link'),
     tg_delivery_group_id: g('tg_delivery_group_id') ? parseInt(g('tg_delivery_group_id')) : null,
   };
-  const r = await apiFetch('/api/branches/' + id, { method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) }).then(res => res.json());
+  const r = await apiFetch(`${API_BASE}/branches/` + id, { method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) }).then(res => res.json());
   if (r.ok) {
     await loadBranches();
     renderBranchContactCards();
@@ -5680,7 +5567,7 @@ async function saveNewBranch() {
     whatsapp:      document.getElementById('nb_whatsapp').value.trim() || null,
     instagram:     document.getElementById('nb_instagram').value.trim() || null,
   };
-  const r = await apiFetch('/branches', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) }).then(res => res.json());
+  const r = await apiFetch(`${API_BASE}/branches`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) }).then(res => res.json());
   if (r.ok) {
     closeModal('modalAddBranch');
     await loadBranches();
@@ -6019,7 +5906,7 @@ function _activatePage(page) {
   if (page === 'clients')     adminLoadClients();
   if (page === 'contacts')    adminLoadContacts();
   if (page === 'site-users')  adminLoadSiteUsers();
-  if (page === 'siteconfig')  { loadSiteSettings(); loadOsagoSettings(); }
+  if (page === 'siteconfig')  { loadSiteSettings(); }
   if (page === 'tg-bot')      loadSiteSettings();
   if (page === 'tg-messages') loadTgSettings();
   if (page === 'tg-clients')  loadTgClients();
@@ -8710,70 +8597,6 @@ async function tsResetMonth() {
   else showToast(d?.detail || 'Ошибка', true);
 }
 
-// ── OSAGO SETTINGS ──
-let _osagoTiersOriginal = {};
-
-async function loadOsagoSettings() {
-  const res = await fetch(`${API_BASE}/settings/osago`);
-  const data = await res.json();
-  const t = data.tiers || {};
-  _osagoTiersOriginal = {
-    tier1: t.tier1 ?? 200000, tier2: t.tier2 ?? 400000, tier3: t.tier3 ?? 700000,
-    pct1:  t.pct1  ?? 5,      pct2:  t.pct2  ?? 10,     pct3:  t.pct3  ?? 20,
-  };
-  document.getElementById('osagoTier1').value = _osagoTiersOriginal.tier1;
-  document.getElementById('osagoTier2').value = _osagoTiersOriginal.tier2;
-  document.getElementById('osagoTier3').value = _osagoTiersOriginal.tier3;
-  document.getElementById('osagoPct1').value  = _osagoTiersOriginal.pct1;
-  document.getElementById('osagoPct2').value  = _osagoTiersOriginal.pct2;
-  document.getElementById('osagoPct3').value  = _osagoTiersOriginal.pct3;
-}
-
-function editOsagoTiers() {
-  document.getElementById('osagoTiersEditBtn').style.display   = 'none';
-  document.getElementById('osagoTiersSaveBtn').style.display   = '';
-  document.getElementById('osagoTiersCancelBtn').style.display = '';
-}
-
-function cancelOsagoTiers() {
-  document.getElementById('osagoTier1').value = _osagoTiersOriginal.tier1;
-  document.getElementById('osagoTier2').value = _osagoTiersOriginal.tier2;
-  document.getElementById('osagoTier3').value = _osagoTiersOriginal.tier3;
-  document.getElementById('osagoPct1').value  = _osagoTiersOriginal.pct1;
-  document.getElementById('osagoPct2').value  = _osagoTiersOriginal.pct2;
-  document.getElementById('osagoPct3').value  = _osagoTiersOriginal.pct3;
-  document.getElementById('osagoTiersEditBtn').style.display   = '';
-  document.getElementById('osagoTiersSaveBtn').style.display   = 'none';
-  document.getElementById('osagoTiersCancelBtn').style.display = 'none';
-  document.getElementById('osagoSaveMsg').style.display = 'none';
-}
-
-async function saveOsagoSettings() {
-  const body = {
-    tier1: parseInt(document.getElementById('osagoTier1').value) || 0,
-    tier2: parseInt(document.getElementById('osagoTier2').value) || 0,
-    tier3: parseInt(document.getElementById('osagoTier3').value) || 0,
-    pct1:  parseInt(document.getElementById('osagoPct1').value)  || 0,
-    pct2:  parseInt(document.getElementById('osagoPct2').value)  || 0,
-    pct3:  parseInt(document.getElementById('osagoPct3').value)  || 0,
-  };
-  const msg = document.getElementById('osagoSaveMsg');
-  msg.style.display = 'none';
-  try {
-    const res = await fetch(`${API_BASE}/admin/settings/osago`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${adminToken}` },
-      body: JSON.stringify(body)
-    });
-    if (!res.ok) throw new Error(await res.text());
-    Object.assign(_osagoTiersOriginal, body);
-    cancelOsagoTiers();
-    showToast('Изменения сохранены');
-  } catch (e) {
-    showToast('Ошибка: ' + e.message, 'error');
-  }
-}
-
 // ── SITE SETTINGS ──
 const SITE_KEYS = [
   'social_instagram','social_tg_bot','social_tg_group',
@@ -8782,10 +8605,8 @@ const SITE_KEYS = [
   'leads_group_id','leads_group_enabled','lead_notify_ru','callback_overdue_minutes',
   'new_clients_group_id',
   'delivery_group_id', 'delivery_group_template',
-  'yandex_maps_key',
   'eskiz_email','eskiz_password','eskiz_from',
   'sms_text_register','sms_text_login','sms_text_reset',
-  'osago_partner_phone','osago_partner_promo',
   'sheets_url',
   'receipt_header_text','receipt_slogan','receipt_footer_note',
 ];
@@ -8794,9 +8615,7 @@ const TAB_KEYS = {
   contacts: [
     'contact_short','contact_main',
   ],
-  maps:     ['yandex_maps_key'],
   eskiz:    ['eskiz_email','eskiz_password','eskiz_from','sms_text_register','sms_text_login','sms_text_reset'],
-  osago:    ['osago_partner_phone','osago_partner_promo'],
   sheets:   ['sheets_url'],
   receipt:  ['receipt_header_text', 'receipt_slogan', 'receipt_footer_note'],
 };
@@ -8809,7 +8628,6 @@ function switchStab(btn) {
   const tab = btn.dataset.stab;
   const panel = document.getElementById('stab-' + tab);
   if (panel) panel.style.display = '';
-  if (tab === 'osago') loadOsagoSettings();
   if (tab === 'agents') {
     loadAgentCommissionSettings();
     // Инициализировать выбор года
@@ -8833,15 +8651,6 @@ function togglePwd(id, btn) {
   if (!inp) return;
   inp.type = inp.type === 'password' ? 'text' : 'password';
   btn.textContent = inp.type === 'password' ? '👁' : '🙈';
-}
-
-function _updateOsagoPreview() {
-  const phone = (document.getElementById('cfg_osago_partner_phone') || {}).value || '+998 93 612-13-00';
-  const promo = (document.getElementById('cfg_osago_partner_promo') || {}).value || 'ARTEZ';
-  const ru = document.getElementById('osago_preview_ru');
-  const uz = document.getElementById('osago_preview_uz');
-  if (ru) ru.textContent = `📞 ${phone}. При оформлении страховки назовите промокод ${promo}.`;
-  if (uz) uz.textContent = `📞 ${phone}. Sug'urta rasmiylashtirishda ${promo} promo-kodini ayting.`;
 }
 
 let _receiptPreviewTimer = null;
@@ -9125,7 +8934,6 @@ function editTab(tab) {
   const panel = document.getElementById('stab-' + tab);
   panel.querySelectorAll('.form-input').forEach(el => {
     el.disabled = false;
-    if (tab === 'osago') el.addEventListener('input', _updateOsagoPreview);
   });
   if (tab === 'contacts') {
     const shortWrap = document.getElementById('cfg_contact_short')?.closest('.cfg-field');
@@ -12767,7 +12575,6 @@ async function loadSiteSettings() {
     const shortWrap = document.getElementById('cfg_contact_short')?.closest('.cfg-field');
     if (shortWrap) shortWrap.style.display = s.contact_short ? '' : 'none';
     updateLeadsGroupStatus();
-    _updateOsagoPreview();
     _updateReceiptPreview();
     // Загружаем ID канала кассы и замеров
     apiGet('/admin/settings/cash-channel').then(d => {
@@ -12882,12 +12689,6 @@ const PROJ_VAR_CATEGORIES = [
     ]
   },
   {
-    id: 'maps', icon: '🗺', title: 'Яндекс Карты',
-    vars: [
-      { key: 'yandex_maps_key', label: 'API-ключ', type: 'password', placeholder: 'xxxxxxxx-xxxx-...' },
-    ]
-  },
-  {
     id: 'sheets', icon: '📊', title: 'Google Sheets',
     vars: [
       { key: 'sheets_url', label: 'URL скрипта', type: 'url', placeholder: 'https://script.google.com/macros/s/...' },
@@ -12904,13 +12705,6 @@ const PROJ_VAR_CATEGORIES = [
     id: 'social', icon: '📱', title: 'Соцсети',
     vars: [
       { key: 'social_instagram', label: 'Instagram', type: 'url', placeholder: 'https://instagram.com/artez...' },
-    ]
-  },
-  {
-    id: 'osago', icon: '🚗', title: 'ОСАГО',
-    vars: [
-      { key: 'osago_partner_phone', label: 'Телефон партнёра', type: 'text', placeholder: '93 612-13-00' },
-      { key: 'osago_partner_promo', label: 'Промокод',         type: 'text', placeholder: 'ARTEZ' },
     ]
   },
 ];
