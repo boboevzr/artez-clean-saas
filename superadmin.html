@@ -389,6 +389,7 @@ function renderCompanies(list) {
         : '<span class="badge badge-red">Отключена</span>'}</td>
       <td style="display:flex;gap:6px;flex-wrap:wrap">
         <button class="btn btn-primary btn-sm" onclick="openEditCompany(${c.id})">✏️</button>
+        <button class="btn btn-sm" onclick="deleteCompany(${c.id})" style="background:#dc3545;color:#fff;border:none" title="Удалить компанию и все данные">🗑️</button>
       </td>
     </tr>
   `).join('');
@@ -550,6 +551,16 @@ async function createBranchForCompany() {
   } catch(e) {
     document.getElementById('nbErr').textContent = e.message;
   }
+}
+
+async function deleteCompany(id) {
+  const c = _companiesCache.find(x => x.id === id);
+  const name = c?.name || `#${id}`;
+  if (!confirm(`⚠️ Удалить компанию "${name}"?\n\nВСЕ данные (заказы, лиды, сотрудники, филиалы, настройки) будут БЕЗВОЗВРАТНО удалены!\n\nНажмите OK для подтверждения.`)) return;
+  try {
+    await api(`/saas/companies/${id}`, 'DELETE');
+    await loadCompanies();
+  } catch(e) { alert(e.message); }
 }
 
 async function deleteSuperBranch(companyId, branchId) {

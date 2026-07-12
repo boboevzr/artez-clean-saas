@@ -5582,7 +5582,7 @@ function _nbRenderPhones() {
   const list = document.getElementById('nb_phones_list');
   list.innerHTML = _nbPhones.map((p, i) => `
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
-      <input class="form-input" style="flex:1" placeholder="${i===0?'Основной номер':'+998 ...'}"
+      <input class="form-input" style="flex:1" placeholder="${i===0?'Телефон филиала':'+998 ...'}"
         value="${p.n}" oninput="_nbPhones[${i}].n=this.value">
       <label style="display:flex;align-items:center;gap:4px;font-size:12px;white-space:nowrap;cursor:pointer">
         <input type="checkbox" ${p.receipt?'checked':''} onchange="_nbPhones[${i}].receipt=this.checked"
