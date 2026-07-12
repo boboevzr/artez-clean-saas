@@ -5467,60 +5467,101 @@ function _brPhones(v) {
   try { return JSON.parse(v) || []; } catch { return []; }
 }
 
+function _brSectionLabel(text) {
+  return `<div style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin:14px 0 8px;padding-top:12px;border-top:1px solid var(--border)">${text}</div>`;
+}
+
 function renderBranchContactCards() {
   const wrap = document.getElementById('branchContactsContainer');
   if (!wrap) return;
   const branches = window._BRANCHES || [];
   const minId = branches.length > 0 ? Math.min(...branches.map(x => x.id)) : null;
-  wrap.innerHTML = branches.map(b => `
+  wrap.innerHTML = branches.map(b => {
+    const phones = _brPhones(b.phones);
+    const ph1 = phones[0] ? (typeof phones[0] === 'object' ? (phones[0].n || '') : phones[0]) : '';
+    const ph2 = phones[1] ? (typeof phones[1] === 'object' ? (phones[1].n || '') : phones[1]) : '';
+    const coords = (b.lat && b.lon) ? `${b.lat}, ${b.lon}` : '';
+    const canDel = branches.length > 1 && b.id !== minId;
+    return `
     <div class="card" id="branchCard_${b.id}" style="margin-bottom:12px">
       <div class="cfg-title-row">
         <h3 class="cfg-title">${b.name_ru}${b.name_uz ? ' / ' + b.name_uz : ''} <span style="font-size:12px;font-weight:400;color:var(--text2)">(${b.slug})</span></h3>
         <button class="btn s-edit-btn" onclick="editBranchCard(${b.id})">✏️</button>
         <button class="btn btn-primary s-save-btn" onclick="saveBranchCard(${b.id})" style="display:none">💾 Сохранить</button>
         <button class="btn btn-ghost s-cancel-btn" onclick="cancelBranchCard(${b.id})" style="display:none">Отмена</button>
-        ${branches.length > 1 && b.id !== minId ? `<button class="btn btn-ghost" onclick="deleteBranch(${b.id})" style="color:var(--danger);margin-left:auto" title="Удалить филиал">🗑️</button>` : ''}
+        ${canDel ? `<button class="btn btn-ghost" onclick="deleteBranch(${b.id})" style="color:var(--danger);margin-left:auto" title="Удалить филиал">🗑️</button>` : ''}
       </div>
+
+      ${_brSectionLabel('📍 Местоположение')}
       <div class="contacts-grid">
-        <div class="cfg-field"><label>Широта (lat)</label>
-          <input id="br_${b.id}_lat" class="form-input" disabled value="${b.lat || ''}" placeholder="41.5714" style="font-family:monospace">
+        <div class="cfg-field" style="grid-column:1/-1">
+          <label>Координаты (широта, долгота)</label>
+          <div style="display:flex;gap:8px;align-items:center">
+            <input id="br_${b.id}_coords" class="form-input" disabled value="${coords}" placeholder="41.5714, 64.1953" style="font-family:monospace;flex:1">
+            <button class="btn btn-ghost br-map-btn" onclick="bcOpenMap(${b.id})" style="display:none;white-space:nowrap">🗺️ Карта</button>
+          </div>
         </div>
-        <div class="cfg-field"><label>Долгота (lon)</label>
-          <input id="br_${b.id}_lon" class="form-input" disabled value="${b.lon || ''}" placeholder="64.1953" style="font-family:monospace">
+        <div class="cfg-field">
+          <label>Номер 1</label>
+          <input id="br_${b.id}_phone1" class="form-input" disabled value="${ph1}" placeholder="+998 88 000-00-00" inputmode="tel">
         </div>
-        <div class="cfg-field"><label>Телефоны (через запятую)</label>
-          <input id="br_${b.id}_phones" class="form-input" disabled value="${_brPhones(b.phones).map(p => typeof p === 'object' ? (p.n || '') : p).filter(Boolean).join(', ')}" placeholder="+998 88 200-12-21">
+        <div class="cfg-field">
+          <label>Номер 2</label>
+          <input id="br_${b.id}_phone2" class="form-input" disabled value="${ph2}" placeholder="+998 ...">
         </div>
-        <div class="cfg-field"><label>Telegram группа</label>
+      </div>
+
+      ${_brSectionLabel('🔗 Контакты и соцсети')}
+      <div class="contacts-grid">
+        <div class="cfg-field">
+          <label>Telegram (ссылка на группу/канал)</label>
           <input id="br_${b.id}_telegram_link" class="form-input" disabled value="${b.telegram_link || ''}" placeholder="https://t.me/...">
         </div>
-        <div class="cfg-field"><label>Admin TG</label>
+        <div class="cfg-field">
+          <label>Admin Telegram</label>
           <input id="br_${b.id}_admin_tg_link" class="form-input" disabled value="${b.admin_tg_link || ''}" placeholder="https://t.me/username">
         </div>
-        <div class="cfg-field"><label>WhatsApp</label>
+        <div class="cfg-field">
+          <label>WhatsApp</label>
           <input id="br_${b.id}_whatsapp" class="form-input" disabled value="${b.whatsapp || ''}" placeholder="998882001221">
         </div>
-        <div class="cfg-field"><label>Instagram</label>
+        <div class="cfg-field">
+          <label>Instagram</label>
           <input id="br_${b.id}_instagram" class="form-input" disabled value="${b.instagram || ''}" placeholder="https://instagram.com/...">
         </div>
-        <div class="cfg-field"><label>Группа заказов (TG ID)</label>
-          <input id="br_${b.id}_tg_orders_channel_id" class="form-input" disabled value="${b.tg_orders_channel_id || ''}" placeholder="-100XXXXXXXXXX" inputmode="numeric">
+      </div>
+
+      ${_brSectionLabel('📱 Telegram — группы и каналы')}
+      <div class="contacts-grid">
+        <div class="cfg-field">
+          <label>Группа заказов — ID</label>
+          <input id="br_${b.id}_tg_orders_channel_id" class="form-input" disabled value="${b.tg_orders_channel_id || ''}" placeholder="-100XXXXXXXXXX" inputmode="numeric" style="font-family:monospace">
         </div>
-        <div class="cfg-field"><label>Группа лидов (TG ID)</label>
-          <input id="br_${b.id}_tg_leads_group_id" class="form-input" disabled value="${b.tg_leads_group_id || ''}" placeholder="-100..." inputmode="numeric">
+        <div class="cfg-field">
+          <label>Группа лидов — ID</label>
+          <input id="br_${b.id}_tg_leads_group_id" class="form-input" disabled value="${b.tg_leads_group_id || ''}" placeholder="-100XXXXXXXXXX" inputmode="numeric" style="font-family:monospace">
         </div>
-        <div class="cfg-field"><label>Канал доставки (ID)</label>
-          <input id="br_${b.id}_tg_delivery_channel_id" class="form-input" disabled value="${b.tg_delivery_channel_id || ''}" placeholder="-1004483444044" inputmode="numeric">
-        </div>
-        <div class="cfg-field"><label>Канал доставки (ссылка)</label>
+        <div class="cfg-field">
+          <label>Канал доставки — Ссылка</label>
           <input id="br_${b.id}_tg_delivery_channel_link" class="form-input" disabled value="${b.tg_delivery_channel_link || ''}" placeholder="https://t.me/+...">
         </div>
-        <div class="cfg-field"><label>Группа доставки (TG ID)</label>
-          <input id="br_${b.id}_tg_delivery_group_id" class="form-input" disabled value="${b.tg_delivery_group_id || ''}" placeholder="-1004327266702" inputmode="numeric">
+        <div class="cfg-field">
+          <label>Канал доставки — ID</label>
+          <input id="br_${b.id}_tg_delivery_channel_id" class="form-input" disabled value="${b.tg_delivery_channel_id || ''}" placeholder="-100XXXXXXXXXX" inputmode="numeric" style="font-family:monospace">
+        </div>
+        <div class="cfg-field">
+          <label>Группа водителей — ID</label>
+          <input id="br_${b.id}_tg_delivery_group_id" class="form-input" disabled value="${b.tg_delivery_group_id || ''}" placeholder="-100XXXXXXXXXX" inputmode="numeric" style="font-family:monospace">
         </div>
       </div>
-    </div>
-  `).join('') || '<p style="color:var(--text2)">Нет филиалов. Добавьте первый.</p>';
+      <div style="margin-top:12px;padding:10px 14px;background:var(--bg-secondary);border-radius:10px;font-size:12px;color:var(--text2);line-height:1.6">
+        <strong style="color:var(--text)">ℹ️ Как узнать ID группы или канала:</strong><br>
+        1. Добавьте бота <strong>@userinfobot</strong> в вашу группу или канал (как участника)<br>
+        2. Бот автоматически отправит сообщение с ID группы/канала (число начинается на <code style="background:var(--border);padding:1px 4px;border-radius:4px">-100...</code>)<br>
+        3. Скопируйте ID и вставьте в нужное поле выше. После этого бота можно удалить.
+      </div>
+    </div>`;
+  }).join('') || '<p style="color:var(--text2)">Нет филиалов. Добавьте первый.</p>';
 }
 
 function editBranchCard(id) {
@@ -5530,15 +5571,18 @@ function editBranchCard(id) {
   card.querySelector('.s-edit-btn').style.display = 'none';
   card.querySelector('.s-save-btn').style.display = '';
   card.querySelector('.s-cancel-btn').style.display = '';
+  card.querySelectorAll('.br-map-btn').forEach(b => b.style.display = '');
 }
 
 async function saveBranchCard(id) {
   const g = field => document.getElementById(`br_${id}_${field}`)?.value?.trim() || null;
-  const phones = (g('phones') || '').split(',').map(p => p.trim()).filter(Boolean);
+  const [lat, lon] = _nbParseCoords(g('coords'));
+  const ph1 = g('phone1'), ph2 = g('phone2');
+  const phones = [];
+  if (ph1) phones.push({ n: ph1, receipt: true, site: true });
+  if (ph2) phones.push({ n: ph2, receipt: false, site: true });
   const body = {
-    lat: g('lat') ? parseFloat(g('lat')) : null,
-    lon: g('lon') ? parseFloat(g('lon')) : null,
-    phones,
+    lat, lon, phones,
     telegram_link: g('telegram_link'),
     admin_tg_link: g('admin_tg_link'),
     whatsapp: g('whatsapp'),
@@ -5560,6 +5604,18 @@ async function saveBranchCard(id) {
 }
 
 function cancelBranchCard(id) { renderBranchContactCards(); }
+
+// Map picker for branch card editing — reuses nbMapModal
+let _bcMapBranchId = null;
+function bcOpenMap(branchId) {
+  _bcMapBranchId = branchId;
+  document.getElementById('nbMapTitle').textContent = '📍 Координаты филиала';
+  const modal = document.getElementById('nbMapModal');
+  modal.style.display = 'flex';
+  const coordsEl = document.getElementById(`br_${branchId}_coords`);
+  const [initLat, initLon] = _nbParseCoords(coordsEl?.value);
+  _loadAoeYmaps(() => _nbInitMap(initLat || 41.5714, initLon || 64.1953, !!(initLat)));
+}
 
 async function deleteBranch(id) {
   if (!confirm('Удалить этот филиал? Это действие необратимо.')) return;
@@ -5765,8 +5821,14 @@ function _nbInitMap(lat, lon, hasPin) {
 function nbMapDone() {
   if (_nbYmarker) {
     const [lat, lon] = _nbYmarker.geometry.getCoordinates();
-    const field = _nbMapTarget === 'city' ? 'nb_city_coords' : 'nb_workshop_coords';
-    document.getElementById(field).value = `${lat.toFixed(6)}, ${lon.toFixed(6)}`;
+    const coordsStr = `${lat.toFixed(6)}, ${lon.toFixed(6)}`;
+    if (_bcMapBranchId !== null) {
+      const el = document.getElementById(`br_${_bcMapBranchId}_coords`);
+      if (el) el.value = coordsStr;
+    } else {
+      const field = _nbMapTarget === 'city' ? 'nb_city_coords' : 'nb_workshop_coords';
+      document.getElementById(field).value = coordsStr;
+    }
   }
   nbMapClose();
 }
@@ -5774,6 +5836,7 @@ function nbMapDone() {
 function nbMapClose() {
   document.getElementById('nbMapModal').style.display = 'none';
   if (_nbYmap) { try { _nbYmap.destroy(); } catch(e){} _nbYmap = null; _nbYmarker = null; }
+  _bcMapBranchId = null;
 }
 
 function _enforceRoutesOnly() {
