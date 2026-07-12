@@ -2776,13 +2776,13 @@
                 <button class="btn s-edit-btn" onclick="editTab('contacts')">✏️</button>
               </div>
               <div class="contacts-grid">
-                <div class="cfg-field">
+                <div class="cfg-field" id="shortNumWrap" style="display:none">
                   <label>Короткий номер</label>
                   <input type="text" id="cfg_contact_short" class="form-input" disabled placeholder="1221" inputmode="tel">
                 </div>
                 <div class="cfg-field">
                   <label>Основной номер</label>
-                  <input type="text" id="cfg_contact_main" class="form-input" disabled placeholder="+998792221221" inputmode="tel">
+                  <input type="text" id="cfg_contact_main" class="form-input" disabled placeholder="+998 XX XXX-XX-XX" inputmode="tel">
                 </div>
               </div>
             </div>
@@ -5400,8 +5400,14 @@ window._BRANCHES = [];
 async function loadBranches() {
   try {
     const r = await apiGet('/branches');
-    if (r?.ok) window._BRANCHES = r.branches || [];
-  } catch(e) {}
+    if (r?.ok) {
+      window._BRANCHES = r.branches || [];
+    } else {
+      console.warn('[branches] API ok=false', r);
+    }
+  } catch(e) {
+    console.warn('[branches] fetch error', e);
+  }
 }
 
 function branchName(slug) {
@@ -6049,7 +6055,7 @@ function _activatePage(page) {
   if (page === 'clients')     adminLoadClients();
   if (page === 'contacts')    adminLoadContacts();
   if (page === 'site-users')  adminLoadSiteUsers();
-  if (page === 'siteconfig')  { loadSiteSettings(); loadBranches().then(() => { renderBranchContactCards(); }); }
+  if (page === 'siteconfig')  { loadSiteSettings(); renderBranchContactCards(); loadBranches().then(() => renderBranchContactCards()); }
   if (page === 'tg-bot')      loadSiteSettings();
   if (page === 'tg-messages') loadTgSettings();
   if (page === 'tg-clients')  loadTgClients();
@@ -8771,6 +8777,7 @@ function switchStab(btn) {
   const tab = btn.dataset.stab;
   const panel = document.getElementById('stab-' + tab);
   if (panel) panel.style.display = '';
+  if (tab === 'contacts') renderBranchContactCards();
   if (tab === 'agents') {
     loadAgentCommissionSettings();
     // Инициализировать выбор года
@@ -9079,7 +9086,7 @@ function editTab(tab) {
     el.disabled = false;
   });
   if (tab === 'contacts') {
-    const shortWrap = document.getElementById('cfg_contact_short')?.closest('.cfg-field');
+    const shortWrap = document.getElementById('shortNumWrap');
     if (shortWrap) shortWrap.style.display = '';
   }
   panel.querySelector('.s-edit-btn').style.display   = 'none';
@@ -9095,7 +9102,7 @@ function cancelTab(tab) {
   });
   panel.querySelectorAll('.form-input').forEach(el => { el.disabled = true; });
   if (tab === 'contacts') {
-    const shortWrap = document.getElementById('cfg_contact_short')?.closest('.cfg-field');
+    const shortWrap = document.getElementById('shortNumWrap');
     if (shortWrap) shortWrap.style.display = document.getElementById('cfg_contact_short')?.value ? '' : 'none';
   }
   panel.querySelector('.s-edit-btn').style.display   = '';
@@ -12715,7 +12722,7 @@ async function loadSiteSettings() {
       }
     });
     // Скрыть короткий номер если пустой (в режиме просмотра)
-    const shortWrap = document.getElementById('cfg_contact_short')?.closest('.cfg-field');
+    const shortWrap = document.getElementById('shortNumWrap');
     if (shortWrap) shortWrap.style.display = s.contact_short ? '' : 'none';
     updateLeadsGroupStatus();
     _updateReceiptPreview();
