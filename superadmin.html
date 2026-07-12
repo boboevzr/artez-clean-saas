@@ -259,6 +259,11 @@
         <button class="btn btn-ghost btn-sm" onclick="regenKey()">🔄</button>
       </div>
     </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+      <div style="font-weight:700;font-size:13px">🏢 Филиалы</div>
+      <button id="detailAddBranchBtn" class="btn btn-ghost btn-sm" onclick="openAddBranchDetail()" style="display:none">+ Добавить филиал</button>
+    </div>
+    <div id="branchList" style="margin-bottom:16px;font-size:13px"></div>
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
       <div style="font-weight:700;font-size:13px">👤 Сотрудники</div>
       <button class="btn btn-primary btn-sm" onclick="openCreateStaff()">+ Добавить</button>
@@ -266,6 +271,20 @@
     <div id="staffList" class="staff-list"></div>
     <div class="modal-actions" style="margin-top:16px">
       <button class="btn btn-ghost" onclick="closeModal('modalDetail')">Закрыть</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Add branch -->
+<div class="modal-bg" id="modalBranch">
+  <div class="modal">
+    <h3>🏢 Добавить филиал</h3>
+    <div class="field"><label>Название (рус)</label><input id="nb_name" placeholder="Главный офис"></div>
+    <div class="field"><label>Slug (латиница)</label><input id="nb_slug_sa" placeholder="main"></div>
+    <div class="modal-err" id="nbErr"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modalBranch')">Отмена</button>
+      <button class="btn btn-primary" onclick="createBranchForCompany()">Создать</button>
     </div>
   </div>
 </div>
@@ -517,21 +536,66 @@ async function toggleCompany(id, isActive) {
 }
 
 // ── DETAIL ────────────────────────────────────────────
+let _detailCompany = null;
+
 async function openDetail(companyId, name) {
   _currentCompanyId = companyId;
+  _detailCompany = null;
   document.getElementById('detailTitle').textContent = '🏢 ' + name;
   document.getElementById('detailKey').textContent = 'Загрузка…';
   document.getElementById('staffList').innerHTML = '<div style="color:var(--text2);font-size:13px">Загрузка…</div>';
+  document.getElementById('branchList').innerHTML = '<div style="color:var(--text2);font-size:13px">Загрузка…</div>';
+  document.getElementById('detailAddBranchBtn').style.display = 'none';
   openModal('modalDetail');
   try {
     const [cd, sd] = await Promise.all([
       api(`/saas/companies/${companyId}`),
       api(`/saas/companies/${companyId}/staff`)
     ]);
+    _detailCompany = cd.company;
     document.getElementById('detailKey').textContent = cd.company?.secret_key || '—';
+    renderBranchList(cd.branches || [], cd.company?.max_branches || 1);
     renderStaffList(sd.staff || []);
   } catch(e) {
     document.getElementById('detailKey').textContent = e.message;
+  }
+}
+
+function renderBranchList(branches, maxBranches) {
+  const el = document.getElementById('branchList');
+  if (!branches.length) {
+    el.innerHTML = '<div style="color:var(--text2);padding:4px 0">Нет филиалов</div>';
+  } else {
+    el.innerHTML = branches.map(b =>
+      `<div style="padding:6px 0;border-bottom:1px solid var(--border);display:flex;gap:8px;align-items:center">
+        <span style="font-weight:600">${escHtml(b.name_ru)}</span>
+        <span class="mono" style="opacity:.6;font-size:12px">${escHtml(b.slug)}</span>
+      </div>`
+    ).join('');
+  }
+  const canAdd = branches.length < maxBranches;
+  document.getElementById('detailAddBranchBtn').style.display = canAdd ? '' : 'none';
+}
+
+function openAddBranchDetail() {
+  document.getElementById('nb_name').value = '';
+  document.getElementById('nb_slug_sa').value = '';
+  document.getElementById('nbErr').textContent = '';
+  openModal('modalBranch');
+}
+
+async function createBranchForCompany() {
+  const name_ru = document.getElementById('nb_name').value.trim();
+  const slug    = document.getElementById('nb_slug_sa').value.trim().toLowerCase();
+  document.getElementById('nbErr').textContent = '';
+  if (!name_ru || !slug) { document.getElementById('nbErr').textContent = 'Заполните название и slug'; return; }
+  try {
+    await api(`/saas/companies/${_currentCompanyId}/branches`, 'POST', { name_ru, slug });
+    closeModal('modalBranch');
+    const cd = await api(`/saas/companies/${_currentCompanyId}`);
+    renderBranchList(cd.branches || [], cd.company?.max_branches || 1);
+  } catch(e) {
+    document.getElementById('nbErr').textContent = e.message;
   }
 }
 
@@ -589,9 +653,7 @@ function openModal(id)  { document.getElementById(id).classList.add('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 function escHtml(s)     { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-document.querySelectorAll('.modal-bg').forEach(m => {
-  m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
-});
+// Modal closes only via buttons (not backdrop click)
 
 // ── INIT ──────────────────────────────────────────────
 if (_token) {
