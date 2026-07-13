@@ -140,15 +140,16 @@
           <button class="btn btn-primary btn-sm" onclick="openCreateCompany()">+ Новая компания</button>
           <button class="btn btn-ghost btn-sm" onclick="migrateAdminLogins()" title="Установить логин=admin всем сотрудникам с ролью admin">🔧 Логин → admin</button>
         </div>
+        <div id="companiesStats" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px"></div>
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
-                <th>ID</th><th>Название</th><th>Slug</th><th>Отв. лицо</th><th>План</th><th>Статус</th><th>Действия</th>
+                <th>ID</th><th>Название</th><th>Slug</th><th>Отв. лицо</th><th>План</th><th>Статус</th><th>Создан</th><th>Действия</th>
               </tr>
             </thead>
             <tbody id="companiesBody">
-              <tr><td colspan="7" class="empty">Загрузка…</td></tr>
+              <tr><td colspan="8" class="empty">Загрузка…</td></tr>
             </tbody>
           </table>
         </div>
@@ -234,7 +235,7 @@
     </div>
     <div class="modal-err" id="ecErr"></div>
     <div style="border-top:1px solid var(--border);margin-top:14px;padding-top:14px">
-      <div style="font-weight:600;font-size:13px;margin-bottom:8px">🔐 Admin доступ <span style="font-weight:400;opacity:.6;font-size:12px">логин: <b>admin</b> (фиксировано)</span></div>
+      <div style="font-weight:600;font-size:13px;margin-bottom:8px">🔐 Admin доступ <span id="ecAdminCreds" style="font-weight:400;opacity:.8;font-size:12px">…</span></div>
       <div style="display:flex;gap:8px;align-items:center">
         <div style="position:relative;flex:1">
           <input id="ec_admin_pass" type="password" placeholder="Новый пароль (мин. 4 символа)" autocomplete="new-password" style="width:100%;padding-right:36px;box-sizing:border-box">
@@ -375,9 +376,25 @@ let _companiesCache = [];
 
 function renderCompanies(list) {
   _companiesCache = list;
+
+  // Stats
+  const total = list.length;
+  const active = list.filter(c => c.active !== false).length;
+  const byPlan = {};
+  list.forEach(c => { byPlan[c.plan] = (byPlan[c.plan]||0)+1; });
+  const statStyle = 'background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:6px 14px;font-size:13px;white-space:nowrap';
+  document.getElementById('companiesStats').innerHTML = [
+    `<span style="${statStyle}">🏢 Всего: <b>${total}</b></span>`,
+    `<span style="${statStyle};color:var(--green)">✅ Активных: <b>${active}</b></span>`,
+    total - active ? `<span style="${statStyle};color:var(--red)">❌ Откл.: <b>${total-active}</b></span>` : '',
+    ...Object.entries(byPlan).map(([p,n]) => `<span style="${statStyle}">📦 ${p}: <b>${n}</b></span>`),
+  ].join('');
+
   const tb = document.getElementById('companiesBody');
-  if (!list.length) { tb.innerHTML = '<tr><td colspan="7" class="empty">Нет компаний</td></tr>'; return; }
-  tb.innerHTML = list.map(c => `
+  if (!list.length) { tb.innerHTML = '<tr><td colspan="8" class="empty">Нет компаний</td></tr>'; return; }
+  tb.innerHTML = list.map(c => {
+    const createdAt = c.created_at ? new Date(c.created_at).toLocaleDateString('ru-RU') : '—';
+    return `
     <tr>
       <td class="mono">${c.id}</td>
       <td style="font-weight:600">${escHtml(c.name)}</td>
@@ -387,12 +404,14 @@ function renderCompanies(list) {
       <td>${c.active !== false
         ? '<span class="badge badge-green">Активна</span>'
         : '<span class="badge badge-red">Отключена</span>'}</td>
+      <td class="mono" style="font-size:12px;color:var(--text2)">${createdAt}</td>
       <td style="display:flex;gap:6px;flex-wrap:wrap">
         <button class="btn btn-primary btn-sm" onclick="openEditCompany(${c.id})">✏️</button>
+        <button class="btn btn-ghost btn-sm" onclick="impersonateCompany(${c.id})" title="Войти как admin этой компании">🔑</button>
         <button class="btn btn-sm" onclick="deleteCompany(${c.id})" style="background:#dc3545;color:#fff;border:none" title="Удалить компанию и все данные">🗑️</button>
       </td>
-    </tr>
-  `).join('');
+    </tr>`
+  }).join('');
 }
 
 async function openEditCompany(id) {
@@ -497,6 +516,15 @@ async function migrateAdminLogins() {
   } catch(e) { alert('Ошибка: ' + e.message); }
 }
 
+async function impersonateCompany(id) {
+  try {
+    const d = await api(`/saas/companies/${id}/impersonate`, 'POST');
+    localStorage.setItem('artez_admin_token', d.token);
+    localStorage.setItem('admin_company_slug', d.slug || '');
+    window.open('admin.html', '_blank');
+  } catch(e) { alert('Ошибка: ' + e.message); }
+}
+
 async function toggleCompany(id, isActive) {
   try {
     await api(`/saas/companies/${id}`, 'PUT', { active: !isActive });
@@ -514,6 +542,11 @@ async function loadEditExtras(companyId) {
     const branches   = d.branches || [];
     const maxBranches = d.company?.max_branches || 1;
     document.getElementById('ecApiKey').textContent = d.company?.secret_key || '—';
+    // Show current admin credentials
+    const adminLogin = d.admin_login || 'admin';
+    const adminPass  = d.admin_password || '?';
+    document.getElementById('ecAdminCreds').innerHTML =
+      `логин: <b>${escHtml(adminLogin)}</b> &nbsp;/&nbsp; текущий пароль: <b style="color:var(--accent)">${escHtml(adminPass)}</b>`;
     if (!branches.length) {
       document.getElementById('ecBranchList').innerHTML = '<span style="color:var(--text2)">Нет филиалов</span>';
     } else {
