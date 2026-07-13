@@ -102,6 +102,10 @@
   .tab-btn { padding: 8px 16px; background: none; border: none; border-bottom: 2px solid transparent; color: var(--text2); cursor: pointer; font-size: 13px; font-weight: 600; transition: color .15s, border-color .15s; white-space: nowrap; }
   .tab-btn:hover { color: var(--text); }
   .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+  /* TARIFF DURATION BUTTONS */
+  .tp-dur { padding: 5px 14px; border-radius: 20px; border: 1px solid var(--border); background: var(--surface2); color: var(--text2); cursor: pointer; font-size: 12px; font-weight: 600; transition: all .15s; }
+  .tp-dur:hover { border-color: var(--accent); color: var(--accent); }
+  .tp-dur.active { background: var(--accent); color: #000; border-color: var(--accent); }
 
   /* CRED PANEL */
   .cred-table { width: 100%; border-collapse: collapse; margin: 8px 0; }
@@ -272,7 +276,7 @@
     <div class="tab-bar">
       <button class="tab-btn active" id="ecTabBtnData"     onclick="ecTab('data')">📋 Данные компании</button>
       <button class="tab-btn"        id="ecTabBtnBranches" onclick="ecTab('branches')">🏢 Филиалы</button>
-      <button class="tab-btn"        id="ecTabBtnPayment"  onclick="ecTab('payment')">💳 Оплата</button>
+      <button class="tab-btn"        id="ecTabBtnPayment"  onclick="ecTab('payment')">📊 Тариф</button>
     </div>
 
     <!-- Tab: Данные -->
@@ -288,21 +292,13 @@
         <div class="field" style="grid-column:1/-1"><label>Email</label><input id="ec_contact_email" placeholder="info@company.uz" autocomplete="off"></div>
         <div class="field"><label>Короткий номер</label><input id="ec_contact_short" placeholder="1221"></div>
         <div class="field"><label>Основной номер</label><input id="ec_contact_main" placeholder="+998 XX XXX-XX-XX"></div>
-        <div class="field"><label>План</label>
-          <select id="ec_plan">
-            <option value="starter">Starter</option>
-            <option value="basic">Basic</option>
-            <option value="pro">Pro</option>
-          </select>
-        </div>
         <div class="field"><label>Статус</label>
           <select id="ec_active">
             <option value="true">Активна</option>
             <option value="false">Отключена</option>
           </select>
         </div>
-        <div class="field"><label>Макс. филиалов</label><input id="ec_max_branches" type="number"></div>
-        <div class="field"><label>Макс. сотрудников</label><input id="ec_max_staff" type="number"></div>
+        <div class="field"><label>Тест. период (дней)</label><input id="ec_trial_days" type="number" min="1" max="365" placeholder="14"></div>
         <div class="field" style="grid-column:1/-1"><label>Заметки</label>
           <textarea id="ec_notes" rows="2" style="width:100%;padding:9px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;resize:vertical;outline:none" placeholder="Внутренние заметки…"></textarea>
         </div>
@@ -324,14 +320,50 @@
       <div class="modal-err" id="ecBranchErr" style="margin-top:8px"></div>
     </div>
 
-    <!-- Tab: Оплата -->
+    <!-- Tab: Тариф -->
     <div id="ecTabPayment" style="display:none">
-      <div id="ecSubInfo" style="background:var(--surface2);border-radius:10px;padding:14px;margin-bottom:16px">
-        <div style="color:var(--text2);font-size:13px">Загрузка подписки…</div>
+
+      <!-- Блок: выбор тарифа -->
+      <div style="background:var(--surface2);border-radius:10px;padding:14px;margin-bottom:12px">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--text2);margin-bottom:10px">📊 Тариф</div>
+        <div class="field">
+          <label>Тариф</label>
+          <select id="tp_plan_id" onchange="onTpPlanChange()" style="width:100%;padding:9px 12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;outline:none"></select>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 16px">
+          <div class="field"><label>Макс. филиалов</label><input id="tp_max_branches" type="number" min="1" style="width:100%;padding:9px 12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;outline:none"></div>
+          <div class="field"><label>Макс. сотрудников</label><input id="tp_max_staff" type="number" min="1" style="width:100%;padding:9px 12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;outline:none"></div>
+        </div>
+        <!-- Тестовый период (только для Starter) -->
+        <div id="tp_trial_block" style="display:none;margin-bottom:10px">
+          <button class="btn btn-ghost" onclick="applyTrial()" style="width:100%;text-align:center">
+            🎁 Начать тестовый период · <span id="tp_trial_days_label">14</span> дней · бесплатно
+          </button>
+        </div>
+        <!-- Платная подписка -->
+        <div id="tp_paid_block">
+          <div style="font-size:12px;color:var(--text2);margin-bottom:6px">Срок подписки:</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
+            <button class="tp-dur active" data-m="1" onclick="onTpDur(this)">1 мес</button>
+            <button class="tp-dur" data-m="3" onclick="onTpDur(this)">3 мес</button>
+            <button class="tp-dur" data-m="6" onclick="onTpDur(this)">6 мес</button>
+            <button class="tp-dur" data-m="12" onclick="onTpDur(this)">12 мес</button>
+          </div>
+          <div id="tp_price_row" style="font-size:13px;color:var(--text2);margin-bottom:10px"></div>
+          <button class="btn btn-primary" onclick="applyTariff()" style="width:100%">💾 Применить тариф</button>
+        </div>
+        <div class="modal-err" id="tpErr" style="margin-top:8px"></div>
       </div>
-      <div style="display:flex;gap:8px;margin-bottom:12px">
-        <button class="btn btn-ghost btn-sm" onclick="openSubscriptionModal()">📋 Подписка</button>
-        <button class="btn btn-primary btn-sm" onclick="openPaymentModal()">+ Добавить оплату</button>
+
+      <!-- История тарифов -->
+      <div id="tpSubHistory" style="margin-bottom:14px"></div>
+
+      <!-- Оплаты -->
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--text2)">Оплаты</div>
+        <div id="tpBalance"></div>
+        <div style="flex:1"></div>
+        <button class="btn btn-primary btn-sm" onclick="openPaymentModal()">+ Добавить</button>
       </div>
       <div id="ecPaymentsHistory"></div>
     </div>
@@ -523,35 +555,6 @@
   </div>
 </div>
 
-<!-- MODAL: Subscription -->
-<div class="modal-bg" id="modalSubscription">
-  <div class="modal" style="width:420px">
-    <h3>📋 Подписка компании</h3>
-    <div class="field"><label>Тариф</label>
-      <select id="sub_plan_id" style="width:100%;padding:9px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;outline:none">
-      </select>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 16px">
-      <div class="field"><label>Дата начала</label><input id="sub_start_date" type="date"></div>
-      <div class="field"><label>Дата конца</label><input id="sub_end_date" type="date"></div>
-    </div>
-    <div class="field"><label>Статус</label>
-      <select id="sub_status" style="width:100%;padding:9px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;outline:none">
-        <option value="active">Активна</option>
-        <option value="expired">Истекла</option>
-        <option value="cancelled">Отменена</option>
-      </select>
-    </div>
-    <div class="field"><label>Заметки</label>
-      <input id="sub_notes" placeholder="Продлено по просьбе клиента…">
-    </div>
-    <div class="modal-err" id="subErr" style="margin-top:6px"></div>
-    <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeModal('modalSubscription')">Отмена</button>
-      <button class="btn btn-primary" onclick="saveSubscription()">💾 Сохранить</button>
-    </div>
-  </div>
-</div>
 
 <!-- MODAL: Payment -->
 <div class="modal-bg" id="modalPayment">
@@ -715,8 +718,7 @@ async function openEditCompany(id) {
   document.getElementById('ec_contact_phone').value = c.contact_phone || '';
   document.getElementById('ec_contact_email').value = c.contact_email || '';
   document.getElementById('ec_active').value        = c.active !== false ? 'true' : 'false';
-  document.getElementById('ec_max_branches').value  = c.max_branches || 5;
-  document.getElementById('ec_max_staff').value     = c.max_staff || 50;
+  document.getElementById('ec_trial_days').value    = c.trial_days ?? 14;
   document.getElementById('ec_notes').value         = c.notes || '';
   document.getElementById('ecErr').textContent      = '';
   document.getElementById('ec_contact_short').value = '';
@@ -751,10 +753,8 @@ async function saveEditCompany() {
     contact_name:  document.getElementById('ec_contact_name').value.trim() || null,
     contact_phone: document.getElementById('ec_contact_phone').value.trim() || null,
     contact_email: document.getElementById('ec_contact_email').value.trim() || null,
-    plan:          document.getElementById('ec_plan').selectedOptions[0]?.dataset?.slug || document.getElementById('ec_plan').value,
     active:        document.getElementById('ec_active').value === 'true',
-    max_branches:  parseInt(document.getElementById('ec_max_branches').value) || 5,
-    max_staff:     parseInt(document.getElementById('ec_max_staff').value) || 50,
+    trial_days:    parseInt(document.getElementById('ec_trial_days').value) || 14,
     notes:         document.getElementById('ec_notes').value.trim() || null,
   };
   document.getElementById('ecErr').textContent = '';
@@ -1238,7 +1238,7 @@ async function loadPlansIntoSelects() {
     } catch(e) { return; }
   }
   const html = _plansCache.map(p => `<option value="${p.id}" data-slug="${escHtml(p.slug)}" data-branches="${p.max_branches}" data-staff="${p.max_staff}">${escHtml(p.display_name)} — ${p.max_branches} фил. / ${p.max_staff} сотр.</option>`).join('');
-  ['co_plan', 'ec_plan'].forEach(id => {
+  ['co_plan', 'tp_plan_id'].forEach(id => {
     const el = document.getElementById(id);
     if (!el) return;
     const cur = el.value;
@@ -1352,92 +1352,157 @@ async function saveEditPlan() {
   } catch(e) { document.getElementById('epErr').textContent = e.message; }
 }
 
-// ── PAYMENT TAB ───────────────────────────────────────
+// ── TARIFF TAB ────────────────────────────────────────
 let _currentSubId = null;
+let _tpMonths = 1;
 
 async function loadPaymentTab() {
-  const subEl = document.getElementById('ecSubInfo');
-  const payEl = document.getElementById('ecPaymentsHistory');
-  subEl.innerHTML = '<div style="color:var(--text2);font-size:13px">Загрузка…</div>';
-  payEl.innerHTML = '';
+  // Загружаем планы в селект тарифа
+  if (!_plansCache.length) {
+    try { const d = await api('/saas/plans'); _plansCache = d.plans || []; } catch(_){}
+  }
+  const sel = document.getElementById('tp_plan_id');
+  sel.innerHTML = _plansCache.map(p =>
+    `<option value="${p.id}" data-slug="${escHtml(p.slug)}" data-branches="${p.max_branches}" data-staff="${p.max_staff}">${escHtml(p.display_name)} — ${p.max_branches} фил. / ${p.max_staff} сотр.</option>`
+  ).join('');
+
+  const histEl = document.getElementById('tpSubHistory');
+  const payEl  = document.getElementById('ecPaymentsHistory');
+  const balEl  = document.getElementById('tpBalance');
+  histEl.innerHTML = '<div style="color:var(--text2);font-size:13px">Загрузка…</div>';
+  payEl.innerHTML  = '';
+
   try {
-    const [subD, payD] = await Promise.all([
-      api(`/saas/companies/${_currentCompanyId}/subscription`),
+    const [subsD, payD] = await Promise.all([
+      api(`/saas/companies/${_currentCompanyId}/subscriptions`),
       api(`/saas/companies/${_currentCompanyId}/payments`)
     ]);
-    const sub = subD.subscription;
-    _currentSubId = sub?.id || null;
-    if (!sub) {
-      subEl.innerHTML = '<div style="color:var(--text2)">Подписка не настроена. Нажмите «📋 Подписка».</div>';
+    const subs   = subsD.subscriptions || [];
+    const active = subs.find(s => s.status === 'active' || s.status === 'trial') || subs[0];
+    _currentSubId = active?.id || null;
+
+    // Предвыбираем активный план в селекте
+    if (active) {
+      for (const opt of sel.options) {
+        if (parseInt(opt.value) === active.plan_id) { sel.value = opt.value; break; }
+      }
+      document.getElementById('tp_max_branches').value = active.max_branches || '';
+      document.getElementById('tp_max_staff').value    = active.max_staff    || '';
+    }
+    onTpPlanChange();
+
+    // История тарифов
+    if (!subs.length) {
+      histEl.innerHTML = '<div style="color:var(--text2);font-size:13px;padding:4px 0">Подписок нет</div>';
     } else {
-      const statusColor = sub.status === 'active' ? 'var(--green)' : 'var(--red)';
-      const balColor = sub.balance >= 0 ? 'var(--green)' : 'var(--red)';
-      subEl.innerHTML = `
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:13px">
-          <div><span style="color:var(--text2)">Тариф:</span> <b>${escHtml(sub.plan_name||sub.plan_id)}</b></div>
-          <div><span style="color:var(--text2)">Статус:</span> <span style="color:${statusColor};font-weight:700">${sub.status}</span></div>
-          <div><span style="color:var(--text2)">Начало:</span> ${sub.start_date}</div>
-          <div><span style="color:var(--text2)">Конец:</span> ${sub.end_date}</div>
-          <div style="grid-column:1/-1"><span style="color:var(--text2)">Баланс:</span> <span style="color:${balColor};font-weight:700;font-size:15px">${Number(sub.balance||0).toLocaleString('ru-RU')} сум</span></div>
-          ${sub.notes ? `<div style="grid-column:1/-1;color:var(--text2);font-size:12px">${escHtml(sub.notes)}</div>` : ''}
+      const STATUS = {active:'● Активна', trial:'🎁 Тест', expired:'Истекла', cancelled:'Отменена'};
+      const SCOLOR = {active:'var(--green)', trial:'var(--blue)', expired:'var(--text2)', cancelled:'var(--red)'};
+      histEl.innerHTML = `
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--text2);margin-bottom:8px">История тарифов</div>
+        <div style="background:var(--surface2);border-radius:8px;overflow:hidden">
+          ${subs.map(s => `
+            <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-bottom:1px solid var(--border);font-size:13px">
+              <span style="font-weight:700;min-width:100px">${escHtml(s.plan_name||'—')}</span>
+              <span style="color:var(--text2);font-size:12px;flex:1">${s.start_date} → ${s.end_date}</span>
+              <span style="font-weight:700;font-size:12px;color:${SCOLOR[s.status]||'var(--text2)'}">${STATUS[s.status]||s.status}</span>
+            </div>`).join('')}
         </div>`;
     }
+
+    // Оплаты
     const payments = payD.payments || [];
-    if (!payments.length) {
-      payEl.innerHTML = '<div style="color:var(--text2);font-size:13px;padding:10px 0">Нет оплат</div>';
-    } else {
-      payEl.innerHTML = `<div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--text2);margin-bottom:8px">История оплат</div>
-        <div style="background:var(--surface2);border-radius:8px;overflow:hidden">
-        ${payments.map(p => `
-          <div style="display:flex;align-items:center;gap:12px;padding:8px 12px;border-bottom:1px solid var(--border);font-size:13px">
+    const total    = payments.reduce((a, p) => a + (p.amount || 0), 0);
+    balEl.innerHTML = `<span style="font-size:13px;font-weight:700;color:var(--green)">${Number(total).toLocaleString('ru-RU')} сум</span>`;
+    payEl.innerHTML = payments.length
+      ? `<div style="background:var(--surface2);border-radius:8px;overflow:hidden">${payments.map(p => `
+          <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;border-bottom:1px solid var(--border);font-size:13px">
             <span style="color:var(--text2);font-size:12px;min-width:80px">${p.payment_date}</span>
             <span style="color:var(--green);font-weight:700;font-family:monospace">+${Number(p.amount).toLocaleString('ru-RU')}</span>
             <span style="flex:1;color:var(--text2)">${escHtml(p.note||'')}</span>
-          </div>`).join('')}
-        </div>`;
-    }
+          </div>`).join('')}</div>`
+      : '<div style="color:var(--text2);font-size:13px;padding:4px 0">Нет оплат</div>';
+
   } catch(e) {
-    subEl.innerHTML = `<span style="color:var(--red)">${e.message}</span>`;
+    histEl.innerHTML = `<span style="color:var(--red)">${e.message}</span>`;
   }
 }
 
-function openSubscriptionModal() {
-  document.getElementById('sub_plan_id').value   = '';
-  document.getElementById('sub_start_date').value = new Date().toISOString().slice(0,10);
-  const end = new Date(); end.setMonth(end.getMonth()+1);
-  document.getElementById('sub_end_date').value  = end.toISOString().slice(0,10);
-  document.getElementById('sub_status').value    = 'active';
-  document.getElementById('sub_notes').value     = '';
-  document.getElementById('subErr').textContent  = '';
-  const sel = document.getElementById('sub_plan_id');
-  sel.innerHTML = _plansCache.map(p => `<option value="${p.id}">${escHtml(p.display_name)}</option>`).join('');
-  if (!_plansCache.length) {
-    api('/saas/plans').then(d => {
-      _plansCache = d.plans || [];
-      sel.innerHTML = _plansCache.map(p => `<option value="${p.id}">${escHtml(p.display_name)}</option>`).join('');
-    }).catch(()=>{});
-  }
-  openModal('modalSubscription');
+function onTpPlanChange() {
+  const sel = document.getElementById('tp_plan_id');
+  const opt = sel.selectedOptions[0];
+  if (!opt) return;
+  document.getElementById('tp_max_branches').value = opt.dataset.branches || '';
+  document.getElementById('tp_max_staff').value    = opt.dataset.staff    || '';
+  const isStarter = opt.dataset.slug === 'starter';
+  const c = _companiesCache.find(x => x.id === _currentCompanyId);
+  document.getElementById('tp_trial_days_label').textContent = c?.trial_days ?? 14;
+  document.getElementById('tp_trial_block').style.display = isStarter ? '' : 'none';
+  document.getElementById('tp_paid_block').style.display  = isStarter ? 'none' : '';
+  if (!isStarter) _tpCalcPrice();
 }
 
-async function saveSubscription() {
-  const body = {
-    plan_id:    parseInt(document.getElementById('sub_plan_id').value),
-    start_date: document.getElementById('sub_start_date').value,
-    end_date:   document.getElementById('sub_end_date').value,
-    notes:      document.getElementById('sub_notes').value.trim() || null,
-  };
-  const status = document.getElementById('sub_status').value;
-  document.getElementById('subErr').textContent = '';
+function onTpDur(btn) {
+  document.querySelectorAll('.tp-dur').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  _tpMonths = parseInt(btn.dataset.m);
+  _tpCalcPrice();
+}
+
+function _tpCalcPrice() {
+  const sel    = document.getElementById('tp_plan_id');
+  const planId = parseInt(sel.value);
+  const plan   = _plansCache.find(p => p.id === planId);
+  if (!plan) return;
+  const price  = plan.monthly_prices?.[_tpMonths] ?? (plan.base_price * _tpMonths);
+  const start  = new Date();
+  const end    = new Date(start);
+  end.setMonth(end.getMonth() + _tpMonths);
+  const fmt = d => d.toLocaleDateString('ru-RU', {day:'2-digit',month:'2-digit',year:'numeric'});
+  document.getElementById('tp_price_row').innerHTML =
+    `<b style="color:var(--text)">${Number(price).toLocaleString('ru-RU')} сум</b>&nbsp;&nbsp;<span style="color:var(--text2)">${fmt(start)} → ${fmt(end)}</span>`;
+}
+
+async function applyTariff() {
+  const sel    = document.getElementById('tp_plan_id');
+  const planId = parseInt(sel.value);
+  if (!planId) return;
+  const planSlug    = sel.selectedOptions[0]?.dataset?.slug;
+  const maxBranches = parseInt(document.getElementById('tp_max_branches').value) || undefined;
+  const maxStaff    = parseInt(document.getElementById('tp_max_staff').value)    || undefined;
+  const start = new Date().toISOString().slice(0,10);
+  const endD  = new Date(); endD.setMonth(endD.getMonth() + _tpMonths);
+  const end   = endD.toISOString().slice(0,10);
+  document.getElementById('tpErr').textContent = '';
   try {
-    if (_currentSubId) {
-      await api(`/saas/companies/${_currentCompanyId}/subscription/${_currentSubId}`, 'PUT', { status, end_date: body.end_date, notes: body.notes });
-    } else {
-      await api(`/saas/companies/${_currentCompanyId}/subscription`, 'POST', body);
-    }
-    closeModal('modalSubscription');
+    await Promise.all([
+      api(`/saas/companies/${_currentCompanyId}/subscription`, 'POST', {
+        plan_id: planId, start_date: start, end_date: end, status: 'active'
+      }),
+      api(`/saas/companies/${_currentCompanyId}`, 'PUT', {
+        plan: planSlug, max_branches: maxBranches, max_staff: maxStaff
+      }),
+    ]);
     await loadPaymentTab();
-  } catch(e) { document.getElementById('subErr').textContent = e.message; }
+    await loadCompanies();
+  } catch(e) { document.getElementById('tpErr').textContent = e.message; }
+}
+
+async function applyTrial() {
+  const sel    = document.getElementById('tp_plan_id');
+  const planId = parseInt(sel.value);
+  if (!planId) return;
+  const c = _companiesCache.find(x => x.id === _currentCompanyId);
+  const trialDays = c?.trial_days ?? 14;
+  const start = new Date().toISOString().slice(0,10);
+  const endD  = new Date(); endD.setDate(endD.getDate() + trialDays);
+  const end   = endD.toISOString().slice(0,10);
+  document.getElementById('tpErr').textContent = '';
+  try {
+    await api(`/saas/companies/${_currentCompanyId}/subscription`, 'POST', {
+      plan_id: planId, start_date: start, end_date: end, status: 'trial'
+    });
+    await loadPaymentTab();
+  } catch(e) { document.getElementById('tpErr').textContent = e.message; }
 }
 
 function openPaymentModal() {
