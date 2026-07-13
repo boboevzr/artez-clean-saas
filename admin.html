@@ -1500,6 +1500,7 @@
         </div>
         <div class="nav-group-items" id="ng-items-sys" style="display:none;">
           <div class="nav-sub-item" data-page="siteconfig"     onclick="switchSubPage(this)">⚙️ Настройки сайта</div>
+          <div class="nav-sub-item" data-page="role-perms"     onclick="switchSubPage(this)">🔐 Роли и доступы</div>
           <div class="nav-sub-item" data-page="db-maintenance" onclick="switchSubPage(this)">🗄️ Обслуживание БД</div>
           <div class="nav-sub-item" data-page="temp"           onclick="switchSubPage(this)">🗑️ Чистка БД</div>
         </div>
@@ -3424,6 +3425,16 @@
       </div>
 
       <!-- TEMP: ЧИСТКА БД (удалить группу после чистки) -->
+      <div class="page" id="page-role-perms">
+        <div class="section-header" style="margin-bottom:16px">
+          <h2>🔐 Роли и доступы</h2>
+        </div>
+        <p style="font-size:13px;color:var(--text2);margin-bottom:16px">
+          Настройте, какие разделы видит каждая роль. Admin всегда видит всё.
+        </p>
+        <div id="rolePermsContent"></div>
+      </div>
+
       <div class="page" id="page-temp">
         <div class="section-header" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px">
           <h2>🗑️ Чистка БД</h2>
@@ -5859,6 +5870,147 @@ function toggleSmPass() {
   inp.type = inp.type === 'password' ? 'text' : 'password';
 }
 
+// ── Role permissions ──────────────────────────────────────────────────────────
+const _ALL_NAV_PAGES = [
+  { page:'dashboard',          label:'📊 Дашборд',           group:null },
+  { page:'plans',              label:'📋 План работы',        group:null },
+  { page:'leads',              label:'🎯 Лиды',               group:null },
+  { page:'orders',             label:'📋 Заказы',             group:null },
+  { page:'routes',             label:'🚗 Маршруты',           group:null },
+  { page:'cash',               label:'💰 Касса',              group:null },
+  { page:'promotions',         label:'🎉 Акции',              group:null },
+  { page:'clients',            label:'👤 Клиенты',            group:'CRM' },
+  { page:'contacts',           label:'📒 Справочник',         group:'CRM' },
+  { page:'site-users',         label:'🌐 Польз. сайта',       group:'CRM' },
+  { page:'autodial-groups',    label:'👥 Группы контактов',   group:'Автодозвон' },
+  { page:'autodial-campaigns', label:'📋 Кампании',           group:'Автодозвон' },
+  { page:'autodial-greetings', label:'🎉 Поздравления',       group:'Автодозвон' },
+  { page:'autodial-settings',  label:'⚙️ Настройки',          group:'Автодозвон' },
+  { page:'sms-send',           label:'✉️ Отправить SMS',      group:'SMS' },
+  { page:'sms-contacts',       label:'👤 Контакты',           group:'SMS' },
+  { page:'sms-groups',         label:'📂 Группы',             group:'SMS' },
+  { page:'sms-templates',      label:'📝 Тексты SMS',         group:'SMS' },
+  { page:'sms-reports',        label:'📊 Отчёты',             group:'SMS' },
+  { page:'sms-pricing',        label:'💰 Тарифы',             group:'SMS' },
+  { page:'sms-settings',       label:'⚙️ Настройки SMS',      group:'SMS' },
+  { page:'tg-bot',             label:'⚙️ Настройки бота',     group:'Telegram' },
+  { page:'tg-messages',        label:'💬 Уведомления',        group:'Telegram' },
+  { page:'tg-clients',         label:'👥 Клиенты',            group:'Telegram' },
+  { page:'tg-vars',            label:'⚙️ Переменные',         group:'Telegram' },
+  { page:'staff',              label:'👥 Сотрудники',         group:'HR' },
+  { page:'agents',             label:'🤝 Агенты',             group:'HR' },
+  { page:'departments',        label:'🏢 Отделы',             group:'HR' },
+  { page:'positions',          label:'🎯 Должности',          group:'HR' },
+  { page:'timesheet',          label:'📅 Табель',             group:'HR' },
+  { page:'workon',             label:'✅ WorkOn',             group:'HR' },
+  { page:'salary-calc',        label:'💰 Зарплата',           group:'HR' },
+  { page:'agent-monitoring',   label:'📊 Мониторинг',         group:'HR' },
+  { page:'prices',             label:'💰 Цены',               group:'Справочники' },
+  { page:'units',              label:'📏 Единицы',            group:'Справочники' },
+  { page:'expenses-admin',     label:'🧾 Расходы',            group:'Справочники' },
+  { page:'chat-templates',     label:'💬 Шаблоны чата',       group:'Справочники' },
+  { page:'siteconfig',         label:'⚙️ Настройки сайта',    group:'Система' },
+  { page:'role-perms',         label:'🔐 Роли и доступы',     group:'Система' },
+  { page:'db-maintenance',     label:'🗄️ Обслуживание БД',    group:'Система' },
+  { page:'temp',               label:'🗑️ Чистка БД',          group:'Система' },
+];
+
+const _ROLE_PERMS_DEFAULT = {
+  manager:    ['dashboard','plans','leads','orders','routes','cash','promotions',
+               'clients','contacts','site-users',
+               'autodial-groups','autodial-campaigns','autodial-greetings','autodial-settings',
+               'timesheet','workon','salary-calc','agent-monitoring',
+               'prices','units','expenses-admin','chat-templates'],
+  callcenter: ['dashboard','leads','orders','clients','contacts']
+};
+
+let _ROLE_PERMS = null;
+
+async function _loadRolePerms() {
+  try {
+    const r = await apiGet('/settings/role-permissions');
+    _ROLE_PERMS = r?.permissions || _ROLE_PERMS_DEFAULT;
+  } catch(e) {
+    _ROLE_PERMS = _ROLE_PERMS_DEFAULT;
+  }
+  if (_adminMe?.role && _adminMe.role !== 'admin') {
+    _applyRoleNav(_adminMe.role);
+  }
+}
+
+function _applyRoleNav(role) {
+  const allowed = new Set(_ROLE_PERMS?.[role] || []);
+  document.querySelectorAll('.nav-item[data-page], .nav-sub-item[data-page], .mob-drawer-sub-item[data-page]').forEach(el => {
+    el.style.display = allowed.has(el.dataset.page) ? '' : 'none';
+  });
+  document.querySelectorAll('.nav-group').forEach(grp => {
+    const anyVisible = [...grp.querySelectorAll('.nav-sub-item[data-page]')].some(i => i.style.display !== 'none');
+    grp.style.display = anyVisible ? '' : 'none';
+  });
+}
+
+function renderRolePermsPage() {
+  const el = document.getElementById('rolePermsContent');
+  if (!el) return;
+  const perms = _ROLE_PERMS || _ROLE_PERMS_DEFAULT;
+  const roles = ['manager','callcenter'];
+  let lastGroup = null;
+  let rows = '';
+  for (const p of _ALL_NAV_PAGES) {
+    const g = p.group || 'Основное';
+    if (g !== lastGroup) {
+      rows += `<tr><td colspan="3" style="padding:10px 12px 4px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text2);background:var(--surface2,#f8fafc)">${g}</td></tr>`;
+      lastGroup = g;
+    }
+    rows += `<tr style="border-bottom:1px solid var(--border)">
+      <td style="padding:8px 12px;font-size:13px">${p.label}</td>
+      ${roles.map(r => {
+        const chk = (perms[r]||[]).includes(p.page);
+        return `<td style="text-align:center;padding:8px"><input type="checkbox" data-role="${r}" data-page="${p.page}" ${chk?'checked':''} style="width:16px;height:16px;cursor:pointer;accent-color:var(--accent)"></td>`;
+      }).join('')}
+    </tr>`;
+  }
+  el.innerHTML = `
+    <div style="overflow-x:auto">
+      <table style="width:100%;border-collapse:collapse">
+        <thead>
+          <tr style="border-bottom:2px solid var(--border)">
+            <th style="text-align:left;padding:8px 12px;font-size:12px;font-weight:600;color:var(--text2)">Раздел</th>
+            ${roles.map(r => `<th style="padding:8px 20px;text-align:center;font-size:12px;font-weight:600">${r}</th>`).join('')}
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+    <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="saveRolePerms()">💾 Сохранить</button>
+      <button class="btn btn-ghost" onclick="resetRolePerms()">↺ Сбросить к дефолту</button>
+    </div>`;
+}
+
+async function saveRolePerms() {
+  const body = { manager: [], callcenter: [] };
+  document.querySelectorAll('#rolePermsContent input[type=checkbox]').forEach(cb => {
+    if (cb.checked) body[cb.dataset.role].push(cb.dataset.page);
+  });
+  try {
+    const res = await apiFetch(`${API_BASE}/settings/role-permissions`, {
+      method: 'PUT',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(body)
+    });
+    const r = await res.json();
+    if (!r.ok) { showToast(r.detail || 'Ошибка', 'error'); return; }
+    _ROLE_PERMS = body;
+    showToast('Доступы сохранены');
+  } catch(e) { showToast(e.message, 'error'); }
+}
+
+function resetRolePerms() {
+  _ROLE_PERMS = JSON.parse(JSON.stringify(_ROLE_PERMS_DEFAULT));
+  renderRolePermsPage();
+}
+
 function _nbInitMap(lat, lon, hasPin) {
   const container = document.getElementById('nbMapContainer');
   if (_nbYmap) { try { _nbYmap.destroy(); } catch(e){} _nbYmap = null; _nbYmarker = null; }
@@ -5920,7 +6072,7 @@ function _updateProfileUI() {
 function showAdmin() {
   initStaffSections();
   _updateProfileUI();
-  _adminMePromise = apiGet('/staff/me').then(d => {
+  _adminMePromise = apiGet('/staff/me').then(async d => {
     _adminMe = d?.staff || null;
     if (_adminMe) {
       const name = _adminMe.name || 'Админ';
@@ -5930,6 +6082,7 @@ function showAdmin() {
       setEl('profileMenuName', name);
       setEl('profileAvatar', letter);
       setEl('profileMenuAvatar', letter);
+      await _loadRolePerms();
     }
   }).catch(() => {});
   loadBranches().then(() => { initBranchSelects(); renderRtBranchPills(); renderBranchContactCards(); });
@@ -6229,6 +6382,7 @@ function _activatePage(page) {
   if (page === 'sms-reports')   smsRepLoad();
   if (page === 'sms-pricing')   smsPricingLoad();
   if (page === 'sms-settings')  smsSettingsLoad();
+  if (page === 'role-perms')    renderRolePermsPage();
 }
 
 // ── API HELPER ──
@@ -17481,6 +17635,7 @@ function confirmBranchLoc() {
     </div>
     <div class="mob-drawer-sub" style="display:none;">
       <div class="mob-drawer-sub-item" data-page="siteconfig"     onclick="switchSubPage(this);closeMobDrawer()">⚙️ Настройки сайта</div>
+      <div class="mob-drawer-sub-item" data-page="role-perms"     onclick="switchSubPage(this);closeMobDrawer()">🔐 Роли и доступы</div>
       <div class="mob-drawer-sub-item" data-page="db-maintenance" onclick="switchSubPage(this);closeMobDrawer()">🗄️ Обслуживание БД</div>
       <div class="mob-drawer-sub-item" data-page="temp"           onclick="switchSubPage(this);closeMobDrawer()">🗑️ Чистка БД</div>
     </div>
