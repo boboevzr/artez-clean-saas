@@ -284,8 +284,10 @@
         <div class="field"><label>ИНН / ПИНФЛ</label><input id="ec_inn" placeholder="123456789"></div>
         <div class="field" style="grid-column:1/-1"><label>Адрес</label><input id="ec_address" placeholder="г. Навои, ул. Мустакиллик, 1"></div>
         <div class="field"><label>Ответственное лицо</label><input id="ec_contact_name" placeholder="Иванов Иван"></div>
-        <div class="field"><label>Телефон</label><input id="ec_contact_phone" placeholder="+998 90 000-00-00"></div>
+        <div class="field"><label>Телефон (ответств. лицо)</label><input id="ec_contact_phone" placeholder="+998 90 000-00-00"></div>
         <div class="field" style="grid-column:1/-1"><label>Email</label><input id="ec_contact_email" placeholder="info@company.uz" autocomplete="off"></div>
+        <div class="field"><label>Короткий номер</label><input id="ec_contact_short" placeholder="1221"></div>
+        <div class="field"><label>Основной номер</label><input id="ec_contact_main" placeholder="+998 XX XXX-XX-XX"></div>
         <div class="field"><label>План</label>
           <select id="ec_plan">
             <option value="starter">Starter</option>
@@ -717,6 +719,13 @@ async function openEditCompany(id) {
   document.getElementById('ec_max_staff').value     = c.max_staff || 50;
   document.getElementById('ec_notes').value         = c.notes || '';
   document.getElementById('ecErr').textContent      = '';
+  document.getElementById('ec_contact_short').value = '';
+  document.getElementById('ec_contact_main').value  = '';
+  try {
+    const cfg = await api(`/saas/companies/${id}/config`);
+    document.getElementById('ec_contact_short').value = cfg.config?.contact_short || '';
+    document.getElementById('ec_contact_main').value  = cfg.config?.contact_main  || '';
+  } catch(_) {}
   await loadPlansIntoSelects();
   // Set plan by slug
   const ecPlan = document.getElementById('ec_plan');
@@ -751,6 +760,10 @@ async function saveEditCompany() {
   document.getElementById('ecErr').textContent = '';
   try {
     await api(`/saas/companies/${_currentCompanyId}`, 'PUT', body);
+    await api(`/saas/companies/${_currentCompanyId}/config`, 'PUT', {
+      contact_short: document.getElementById('ec_contact_short').value.trim(),
+      contact_main:  document.getElementById('ec_contact_main').value.trim(),
+    });
     closeModal('modalEditCompany');
     await loadCompanies();
   } catch(e) {
@@ -960,8 +973,8 @@ function openBranchEdit(companyId, branch) {
   g('be_workshop_coords').value = wlat && wlon ? `${wlat}, ${wlon}` : '';
   // Phones
   const phones = Array.isArray(branch.phones) ? branch.phones : [];
-  g('be_phone1').value = phones[0]?.number || '';
-  g('be_phone2').value = phones[1]?.number || '';
+  g('be_phone1').value = phones[0]?.n || phones[0]?.number || '';
+  g('be_phone2').value = phones[1]?.n || phones[1]?.number || '';
   g('be_whatsapp').value  = branch.whatsapp || '';
   g('be_instagram').value = branch.instagram || '';
   // Telegram
@@ -987,8 +1000,8 @@ async function saveBranchEdit() {
   const [lat, lon] = _parseCoords(g('be_city_coords'));
   const [wlat, wlon] = _parseCoords(g('be_workshop_coords'));
   const phones = [];
-  if (g('be_phone1')) phones.push({ number: g('be_phone1'), receipt: true });
-  if (g('be_phone2')) phones.push({ number: g('be_phone2'), receipt: false });
+  if (g('be_phone1')) phones.push({ n: g('be_phone1'), receipt: true, site: true });
+  if (g('be_phone2')) phones.push({ n: g('be_phone2'), receipt: false, site: true });
   const body = {
     name_ru:             g('be_name_ru') || undefined,
     name_uz:             g('be_name_uz') || null,
