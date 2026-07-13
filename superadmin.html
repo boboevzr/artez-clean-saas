@@ -952,6 +952,12 @@ function bTab(name) {
 }
 
 // ── BRANCH EDIT ───────────────────────────────────────
+function _saParsePhones(v) {
+  if (!v) return [];
+  if (Array.isArray(v)) return v;
+  try { return JSON.parse(v) || []; } catch { return []; }
+}
+
 let _beBranchId = null;
 
 function _parseCoords(str) {
@@ -972,7 +978,7 @@ function openBranchEdit(companyId, branch) {
   const wlat = branch.workshop_lat, wlon = branch.workshop_lon;
   g('be_workshop_coords').value = wlat && wlon ? `${wlat}, ${wlon}` : '';
   // Phones
-  const phones = Array.isArray(branch.phones) ? branch.phones : [];
+  const phones = _saParsePhones(branch.phones);
   g('be_phone1').value = phones[0]?.n || phones[0]?.number || '';
   g('be_phone2').value = phones[1]?.n || phones[1]?.number || '';
   g('be_whatsapp').value  = branch.whatsapp || '';
