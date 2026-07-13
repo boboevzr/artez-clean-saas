@@ -96,6 +96,30 @@
 
   .empty { text-align: center; padding: 40px; color: var(--text2); }
   .save-msg { font-size: 12px; color: var(--green); }
+
+  /* TABS */
+  .tab-bar { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
+  .tab-btn { padding: 8px 16px; background: none; border: none; border-bottom: 2px solid transparent; color: var(--text2); cursor: pointer; font-size: 13px; font-weight: 600; transition: color .15s, border-color .15s; white-space: nowrap; }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* CRED PANEL */
+  .cred-table { width: 100%; border-collapse: collapse; margin: 8px 0; }
+  .cred-table td { padding: 7px 12px; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .cred-table td:first-child { width: 110px; color: var(--text2); font-weight: 600; }
+  .cred-table .login { font-family: monospace; color: var(--accent); font-weight: 700; }
+  .cred-table .pass  { font-family: monospace; color: var(--green); font-weight: 700; }
+
+  /* BRANCH CARD */
+  .branch-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+  .branch-card-info { flex: 1; min-width: 0; }
+  .branch-card-name { font-weight: 700; font-size: 14px; }
+  .branch-card-slug { font-family: monospace; font-size: 11px; color: var(--text2); }
+
+  /* STAFF ROW */
+  .staff-row { display: flex; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .staff-row:last-child { border-bottom: none; }
+  .staff-edit-form { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 8px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 </style>
 </head>
 <body>
@@ -183,6 +207,7 @@
 <div class="modal-bg" id="modalCompany">
   <div class="modal">
     <h3>🏢 Новая компания</h3>
+    <div id="coForm">
     <div class="field"><label>Название</label><input id="co_name" placeholder="ООО Химчистка"></div>
     <div class="field"><label>Slug (латиница, уникальный)</label><input id="co_slug" placeholder="cleanpro"></div>
     <div class="field"><label>План</label>
@@ -194,75 +219,99 @@
     </div>
     <div class="field"><label>Макс. филиалов</label><input id="co_branches" type="number" value="5"></div>
     <div class="field"><label>Макс. сотрудников</label><input id="co_staff" type="number" value="50"></div>
-    <div style="font-size:12px;color:var(--text2);margin:-4px 0 8px;padding:6px 10px;background:var(--surface2);border-radius:6px">Логин: <b>admin</b> / Пароль: <b>admin</b> — клиент сменит сам в admin.html</div>
+    <div style="font-size:12px;color:var(--text2);margin:-4px 0 8px;padding:6px 10px;background:var(--surface2);border-radius:6px">После создания автоматически появятся логины для admin / manager / callcenter</div>
     <div class="modal-err" id="coErr"></div>
-    <div class="modal-actions">
+    </div><!-- /coForm -->
+    <div class="modal-actions" id="coFormActions">
       <button class="btn btn-ghost" onclick="closeModal('modalCompany')">Отмена</button>
       <button class="btn btn-primary" onclick="createCompany()">Создать</button>
+    </div>
+    <!-- Credentials panel (shown after creation) -->
+    <div id="coCredPanel" style="display:none">
+      <div style="color:var(--green);font-weight:700;font-size:15px;margin-bottom:10px">✅ Компания создана!</div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:8px">Передайте клиенту эти данные для входа:</div>
+      <table class="cred-table" id="coCredTable"></table>
+      <div style="font-size:11px;color:var(--text2);margin-top:8px;padding:8px;background:var(--surface2);border-radius:6px">
+        ⚠️ Логин и пароль совпадают с названием роли. Клиент должен сменить пароль после первого входа.
+      </div>
+      <div class="modal-actions" style="margin-top:16px">
+        <button class="btn btn-primary" onclick="closeModal('modalCompany')">Закрыть</button>
+      </div>
     </div>
   </div>
 </div>
 
 <!-- MODAL: Edit company -->
 <div class="modal-bg" id="modalEditCompany">
-  <div class="modal" style="width:560px">
-    <h3>✏️ Редактировать компанию</h3>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 16px">
-      <div class="field"><label>Название</label><input id="ec_name" placeholder="ООО Химчистка"></div>
-      <div class="field"><label>Slug <span style="font-size:11px;opacity:.6">(для логина)</span></label><input id="ec_slug" placeholder="artez"></div>
-      <div class="field"><label>Юридическое название</label><input id="ec_legal_name" placeholder="ООО «Артез Сервис»"></div>
-      <div class="field"><label>ИНН / ПИНФЛ</label><input id="ec_inn" placeholder="123456789"></div>
-      <div class="field" style="grid-column:1/-1"><label>Адрес</label><input id="ec_address" placeholder="г. Навои, ул. Мустакиллик, 1"></div>
-      <div class="field"><label>Ответственное лицо</label><input id="ec_contact_name" placeholder="Иванов Иван"></div>
-      <div class="field"><label>Телефон</label><input id="ec_contact_phone" placeholder="+998 90 000-00-00"></div>
-      <div class="field" style="grid-column:1/-1"><label>Email</label><input id="ec_contact_email" placeholder="info@company.uz" autocomplete="off"></div>
-      <div class="field"><label>План</label>
-        <select id="ec_plan">
-          <option value="starter">Starter</option>
-          <option value="basic">Basic</option>
-          <option value="pro">Pro</option>
-        </select>
-      </div>
-      <div class="field"><label>Статус</label>
-        <select id="ec_active">
-          <option value="true">Активна</option>
-          <option value="false">Отключена</option>
-        </select>
-      </div>
-      <div class="field"><label>Макс. филиалов</label><input id="ec_max_branches" type="number"></div>
-      <div class="field"><label>Макс. сотрудников</label><input id="ec_max_staff" type="number"></div>
-      <div class="field" style="grid-column:1/-1"><label>Заметки</label><textarea id="ec_notes" rows="2" style="width:100%;padding:9px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;resize:vertical;outline:none" placeholder="Внутренние заметки…"></textarea></div>
+  <div class="modal" style="width:640px;max-height:90vh;overflow-y:auto">
+    <h3>✏️ <span id="ecTitle">Редактировать компанию</span></h3>
+
+    <div class="tab-bar">
+      <button class="tab-btn active" id="ecTabBtnData"     onclick="ecTab('data')">📋 Данные компании</button>
+      <button class="tab-btn"        id="ecTabBtnBranches" onclick="ecTab('branches')">🏢 Филиалы</button>
     </div>
-    <div class="modal-err" id="ecErr"></div>
-    <div style="border-top:1px solid var(--border);margin-top:14px;padding-top:14px">
-      <div style="font-weight:600;font-size:13px;margin-bottom:8px">🔐 Admin доступ <span id="ecAdminCreds" style="font-weight:400;opacity:.8;font-size:12px">…</span></div>
-      <div style="display:flex;gap:8px;align-items:center">
-        <div style="position:relative;flex:1">
-          <input id="ec_admin_pass" type="password" placeholder="Новый пароль (мин. 4 символа)" autocomplete="new-password" style="width:100%;padding-right:36px;box-sizing:border-box">
-          <button onclick="togglePassVis('ec_admin_pass',this)" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;color:var(--text2);padding:0">👁</button>
+
+    <!-- Tab: Данные -->
+    <div id="ecTabData">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 16px">
+        <div class="field"><label>Название</label><input id="ec_name" placeholder="ООО Химчистка"></div>
+        <div class="field"><label>Slug</label><input id="ec_slug" placeholder="artez"></div>
+        <div class="field"><label>Юр. название</label><input id="ec_legal_name" placeholder="ООО «Артез Сервис»"></div>
+        <div class="field"><label>ИНН / ПИНФЛ</label><input id="ec_inn" placeholder="123456789"></div>
+        <div class="field" style="grid-column:1/-1"><label>Адрес</label><input id="ec_address" placeholder="г. Навои, ул. Мустакиллик, 1"></div>
+        <div class="field"><label>Ответственное лицо</label><input id="ec_contact_name" placeholder="Иванов Иван"></div>
+        <div class="field"><label>Телефон</label><input id="ec_contact_phone" placeholder="+998 90 000-00-00"></div>
+        <div class="field" style="grid-column:1/-1"><label>Email</label><input id="ec_contact_email" placeholder="info@company.uz" autocomplete="off"></div>
+        <div class="field"><label>План</label>
+          <select id="ec_plan">
+            <option value="starter">Starter</option>
+            <option value="basic">Basic</option>
+            <option value="pro">Pro</option>
+          </select>
         </div>
-        <button class="btn btn-ghost btn-sm" onclick="saveAdminPassword()">💾</button>
+        <div class="field"><label>Статус</label>
+          <select id="ec_active">
+            <option value="true">Активна</option>
+            <option value="false">Отключена</option>
+          </select>
+        </div>
+        <div class="field"><label>Макс. филиалов</label><input id="ec_max_branches" type="number"></div>
+        <div class="field"><label>Макс. сотрудников</label><input id="ec_max_staff" type="number"></div>
+        <div class="field" style="grid-column:1/-1"><label>Заметки</label>
+          <textarea id="ec_notes" rows="2" style="width:100%;padding:9px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;resize:vertical;outline:none" placeholder="Внутренние заметки…"></textarea>
+        </div>
       </div>
-      <div class="modal-err" id="ecPassErr" style="margin-top:6px"></div>
-    </div>
-    <div style="border-top:1px solid var(--border);margin-top:14px;padding-top:14px">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-        <div style="font-weight:600;font-size:13px">🏢 Филиалы</div>
-        <button id="ecAddBranchBtn" class="btn btn-ghost btn-sm" onclick="openAddBranchModal()" style="display:none">+ Добавить филиал</button>
+      <div class="modal-err" id="ecErr"></div>
+      <div style="border-top:1px solid var(--border);margin-top:14px;padding-top:14px">
+        <div style="font-weight:600;font-size:13px;margin-bottom:8px">🔐 Admin доступ <span id="ecAdminCreds" style="font-weight:400;opacity:.8;font-size:12px">…</span></div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <div style="position:relative;flex:1">
+            <input id="ec_admin_pass" type="password" placeholder="Новый пароль (мин. 4 символа)" autocomplete="new-password" style="width:100%;padding-right:36px;box-sizing:border-box">
+            <button onclick="togglePassVis('ec_admin_pass',this)" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;color:var(--text2);padding:0">👁</button>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="saveAdminPassword()">💾</button>
+        </div>
+        <div class="modal-err" id="ecPassErr" style="margin-top:6px"></div>
       </div>
-      <div id="ecBranchList" style="font-size:13px;margin-bottom:4px"></div>
-      <div class="modal-err" id="ecBranchErr" style="margin-top:4px"></div>
-    </div>
-    <div style="border-top:1px solid var(--border);margin-top:14px;padding-top:10px">
-      <div style="font-size:11px;color:var(--text2);margin-bottom:4px">API Key</div>
-      <div style="display:flex;gap:8px;align-items:center">
-        <code id="ecApiKey" class="mono" style="flex:1;background:var(--surface2);padding:6px 10px;border-radius:6px;font-size:12px;word-break:break-all;color:var(--text)">—</code>
-        <button class="btn btn-ghost btn-sm" onclick="regenKey()" title="Сгенерировать новый ключ">🔄</button>
+      <div style="border-top:1px solid var(--border);margin-top:14px;padding-top:10px">
+        <div style="font-size:11px;color:var(--text2);margin-bottom:4px">API Key</div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <code id="ecApiKey" class="mono" style="flex:1;background:var(--surface2);padding:6px 10px;border-radius:6px;font-size:12px;word-break:break-all;color:var(--text)">—</code>
+          <button class="btn btn-ghost btn-sm" onclick="regenKey()" title="Сгенерировать новый ключ">🔄</button>
+        </div>
       </div>
     </div>
+
+    <!-- Tab: Филиалы -->
+    <div id="ecTabBranches" style="display:none">
+      <div id="ecBranchCards"></div>
+      <button id="ecAddBranchBtn" class="btn btn-ghost" onclick="openAddBranchModal()" style="display:none;margin-top:8px">+ Добавить филиал</button>
+      <div class="modal-err" id="ecBranchErr" style="margin-top:8px"></div>
+    </div>
+
     <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeModal('modalEditCompany')">Отмена</button>
-      <button class="btn btn-primary" onclick="saveEditCompany()">💾 Сохранить</button>
+      <button class="btn btn-ghost" onclick="closeModal('modalEditCompany')">Закрыть</button>
+      <button class="btn btn-primary" id="ecSaveBtn" onclick="saveEditCompany()">💾 Сохранить</button>
     </div>
   </div>
 </div>
@@ -277,6 +326,75 @@
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="closeModal('modalBranch')">Отмена</button>
       <button class="btn btn-primary" onclick="createBranchForCompany()">Создать</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Branch edit (opens at top of screen) -->
+<div class="modal-bg" id="modalBranchEdit" style="align-items:flex-start;padding-top:16px;overflow-y:auto">
+  <div class="modal" style="width:640px;max-height:92vh;overflow-y:auto">
+    <h3>🏢 <span id="beTitle">Редактировать филиал</span></h3>
+
+    <div class="tab-bar">
+      <button class="tab-btn active" id="bTabBtnData"  onclick="bTab('data')">📋 Данные филиала</button>
+      <button class="tab-btn"        id="bTabBtnStaff" onclick="bTab('staff')">👤 Сотрудники</button>
+    </div>
+
+    <!-- Tab: Branch data -->
+    <div id="bTabData">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 16px">
+        <div class="field"><label>Название (рус)</label><input id="be_name_ru" placeholder="Главный офис"></div>
+        <div class="field"><label>Название (уз)</label><input id="be_name_uz" placeholder="Bosh ofis"></div>
+        <div class="field"><label>Центр города / района (lat, lon)</label><input id="be_city_coords" placeholder="41.5714, 64.1953"></div>
+        <div class="field"><label>Координаты цеха (lat, lon)</label><input id="be_workshop_coords" placeholder="41.5714, 64.1953"></div>
+        <div class="field"><label>Телефон 1</label><input id="be_phone1" placeholder="+998 88 000-00-00"></div>
+        <div class="field"><label>Телефон 2</label><input id="be_phone2" placeholder="+998 ..."></div>
+        <div class="field"><label>WhatsApp</label><input id="be_whatsapp" placeholder="+998901234567"></div>
+        <div class="field"><label>Instagram</label><input id="be_instagram" placeholder="@artez_uz"></div>
+      </div>
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--text2);margin:12px 0 8px">Telegram</div>
+      <div style="display:grid;grid-template-columns:1fr auto;gap:0 8px;align-items:end">
+        <div class="field"><label>Admin TG — ссылка</label><input id="be_admin_tg_link" placeholder="https://t.me/..."></div>
+        <div class="field" style="width:130px"><label>ID</label><input id="be_admin_tg_id" placeholder="-100123..."></div>
+        <div class="field"><label>Группа лидов — ссылка</label><input id="be_tg_leads_link" placeholder="https://t.me/..."></div>
+        <div class="field" style="width:130px"><label>ID</label><input id="be_tg_leads_id" placeholder="-100123..."></div>
+        <div class="field"><label>Канал заказов — ссылка</label><input id="be_tg_orders_link" placeholder="https://t.me/..."></div>
+        <div class="field" style="width:130px"><label>ID</label><input id="be_tg_orders_id" placeholder="-100123..."></div>
+        <div class="field"><label>Группа водителей — ссылка</label><input id="be_tg_delivery_link" placeholder="https://t.me/..."></div>
+        <div class="field" style="width:130px"><label>ID</label><input id="be_tg_delivery_id" placeholder="-100123..."></div>
+        <div class="field"><label>Канал доставки — ссылка</label><input id="be_tg_dchannel_link" placeholder="https://t.me/..."></div>
+        <div class="field" style="width:130px"><label>ID</label><input id="be_tg_dchannel_id" placeholder="-100123..."></div>
+      </div>
+      <div style="font-size:11px;color:var(--text2);padding:8px 12px;background:var(--surface2);border-radius:6px;margin-top:4px">
+        Как узнать ID группы/канала: добавьте бота <b>@userinfobot</b> в группу и он сразу пришлёт ID.
+      </div>
+      <div class="modal-err" id="beErr" style="margin-top:8px"></div>
+    </div>
+
+    <!-- Tab: Staff -->
+    <div id="bTabStaff" style="display:none">
+      <div id="beStaffList"><div style="color:var(--text2)">Загрузка…</div></div>
+      <div style="border-top:1px solid var(--border);margin-top:12px;padding-top:12px">
+        <div style="font-weight:600;font-size:13px;margin-bottom:10px">+ Добавить сотрудника</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <input class="field" id="ns_fname" placeholder="Имя *" style="padding:9px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;outline:none;width:100%">
+          <input class="field" id="ns_lname" placeholder="Фамилия" style="padding:9px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;outline:none;width:100%">
+          <input class="field" id="ns_login" placeholder="Логин *" autocomplete="off" style="padding:9px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;outline:none;width:100%">
+          <input class="field" id="ns_pass"  placeholder="Пароль *" style="padding:9px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;outline:none;width:100%">
+          <select id="ns_role" style="padding:9px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;outline:none;grid-column:1/-1">
+            <option value="admin">admin</option>
+            <option value="manager" selected>manager</option>
+            <option value="callcenter">callcenter</option>
+          </select>
+        </div>
+        <div class="modal-err" id="nsErr" style="margin-top:6px"></div>
+        <button class="btn btn-primary btn-sm" onclick="addStaffSubmit()" style="margin-top:10px">+ Создать</button>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modalBranchEdit')">Закрыть</button>
+      <button class="btn btn-primary" id="beSaveBtn" onclick="saveBranchEdit()">💾 Сохранить данные</button>
     </div>
   </div>
 </div>
@@ -434,6 +552,7 @@ async function openEditCompany(id) {
   document.getElementById('ecErr').textContent      = '';
   document.getElementById('ecPassErr').textContent  = '';
   document.getElementById('ec_admin_pass').value    = '';
+  ecTab('data');
   openModal('modalEditCompany');
   loadEditExtras(id);
 }
@@ -487,23 +606,34 @@ function openCreateCompany() {
   document.getElementById('co_branches').value = '5';
   document.getElementById('co_staff').value = '50';
   document.getElementById('coErr').textContent = '';
+  document.getElementById('coForm').style.display = '';
+  document.getElementById('coFormActions').style.display = '';
+  document.getElementById('coCredPanel').style.display = 'none';
   openModal('modalCompany');
 }
 
 async function createCompany() {
-  const name          = document.getElementById('co_name').value.trim();
-  const slug          = document.getElementById('co_slug').value.trim();
-  const plan          = document.getElementById('co_plan').value;
-  const max_branches  = parseInt(document.getElementById('co_branches').value) || 5;
-  const max_staff     = parseInt(document.getElementById('co_staff').value) || 50;
+  const name         = document.getElementById('co_name').value.trim();
+  const slug         = document.getElementById('co_slug').value.trim();
+  const plan         = document.getElementById('co_plan').value;
+  const max_branches = parseInt(document.getElementById('co_branches').value) || 5;
+  const max_staff    = parseInt(document.getElementById('co_staff').value) || 50;
   document.getElementById('coErr').textContent = '';
   if (!name || !slug) { document.getElementById('coErr').textContent = 'Заполните название и slug'; return; }
   try {
-    await api('/saas/companies', 'POST', { name, slug, plan, max_branches, max_staff, admin_password: 'admin' });
-    closeModal('modalCompany');
+    const d = await api('/saas/companies', 'POST', { name, slug, plan, max_branches, max_staff, admin_password: 'admin' });
+    const creds = d.credentials || [];
+    const roleLabel = { admin: '👑 Admin', manager: '🧑‍💼 Менеджер', callcenter: '📞 Колл-центр' };
+    document.getElementById('coCredTable').innerHTML = creds.map(c => `
+      <tr>
+        <td>${roleLabel[c.role] || c.role}</td>
+        <td><span class="login">${escHtml(c.login)}</span></td>
+        <td><span class="pass">${escHtml(c.password)}</span></td>
+      </tr>`).join('');
+    document.getElementById('coForm').style.display = 'none';
+    document.getElementById('coFormActions').style.display = 'none';
+    document.getElementById('coCredPanel').style.display = '';
     await loadCompanies();
-    // Scroll to bottom to see new company
-    document.getElementById('companiesBody').lastElementChild?.scrollIntoView({behavior:'smooth'});
   } catch(e) {
     document.getElementById('coErr').textContent = e.message;
   }
@@ -534,34 +664,34 @@ async function toggleCompany(id, isActive) {
 
 // ── EDIT — branches + API key ─────────────────────────
 async function loadEditExtras(companyId) {
-  document.getElementById('ecBranchList').innerHTML = '<span style="color:var(--text2)">Загрузка…</span>';
-  document.getElementById('ecApiKey').textContent   = '…';
+  document.getElementById('ecBranchCards').innerHTML = '<span style="color:var(--text2)">Загрузка…</span>';
+  document.getElementById('ecApiKey').textContent    = '…';
+  document.getElementById('ecAdminCreds').textContent = '…';
   document.getElementById('ecAddBranchBtn').style.display = 'none';
   try {
     const d = await api(`/saas/companies/${companyId}`);
-    const branches   = d.branches || [];
+    const branches    = d.branches || [];
     const maxBranches = d.company?.max_branches || 1;
     document.getElementById('ecApiKey').textContent = d.company?.secret_key || '—';
-    // Show current admin credentials
-    const adminLogin = d.admin_login || 'admin';
-    const adminPass  = d.admin_password || '?';
     document.getElementById('ecAdminCreds').innerHTML =
-      `логин: <b>${escHtml(adminLogin)}</b> &nbsp;/&nbsp; текущий пароль: <b style="color:var(--accent)">${escHtml(adminPass)}</b>`;
+      `логин: <b>${escHtml(d.admin_login||'admin')}</b> &nbsp;/&nbsp; пароль: <b style="color:var(--accent)">${escHtml(d.admin_password||'?')}</b>`;
     if (!branches.length) {
-      document.getElementById('ecBranchList').innerHTML = '<span style="color:var(--text2)">Нет филиалов</span>';
+      document.getElementById('ecBranchCards').innerHTML = '<span style="color:var(--text2)">Нет филиалов</span>';
     } else {
       const minBrId = Math.min(...branches.map(x => x.id));
-      document.getElementById('ecBranchList').innerHTML = branches.map(b =>
-        `<div style="padding:5px 0;border-bottom:1px solid var(--border);display:flex;gap:8px;align-items:center">
-          <span style="font-weight:600">${escHtml(b.name_ru)}</span>
-          <span class="mono" style="opacity:.6;font-size:12px">${escHtml(b.slug)}</span>
-          ${branches.length > 1 && b.id !== minBrId ? `<button onclick="deleteSuperBranch(${companyId},${b.id})" style="margin-left:auto;background:none;border:1px solid #dc3545;color:#dc3545;padding:2px 8px;border-radius:4px;cursor:pointer;font-size:12px">🗑️</button>` : ''}
-        </div>`
-      ).join('');
+      document.getElementById('ecBranchCards').innerHTML = branches.map(b => `
+        <div class="branch-card">
+          <div class="branch-card-info">
+            <div class="branch-card-name">${escHtml(b.name_ru||'—')}</div>
+            <div class="branch-card-slug">${escHtml(b.slug)}</div>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="openBranchEdit(${companyId},${JSON.stringify(b).replace(/"/g,'&quot;')})">✏️ Редактировать</button>
+          ${branches.length > 1 && b.id !== minBrId ? `<button class="btn btn-sm" onclick="deleteSuperBranch(${companyId},${b.id})" style="background:#dc3545;color:#fff;border:none">🗑️</button>` : ''}
+        </div>`).join('');
     }
     document.getElementById('ecAddBranchBtn').style.display = branches.length < maxBranches ? '' : 'none';
   } catch(e) {
-    document.getElementById('ecBranchList').innerHTML = `<span style="color:var(--red)">${e.message}</span>`;
+    document.getElementById('ecBranchCards').innerHTML = `<span style="color:var(--red)">${e.message}</span>`;
   }
 }
 
@@ -616,6 +746,187 @@ function togglePassVis(inputId, btn) {
   const inp = document.getElementById(inputId);
   if (inp.type === 'password') { inp.type = 'text'; btn.textContent = '🙈'; }
   else { inp.type = 'password'; btn.textContent = '👁'; }
+}
+
+// ── TAB HELPERS ───────────────────────────────────────
+function ecTab(name) {
+  document.getElementById('ecTabData').style.display     = name==='data'     ? '' : 'none';
+  document.getElementById('ecTabBranches').style.display = name==='branches' ? '' : 'none';
+  document.getElementById('ecSaveBtn').style.display     = name==='data'     ? '' : 'none';
+  document.getElementById('ecTabBtnData').classList.toggle('active',     name==='data');
+  document.getElementById('ecTabBtnBranches').classList.toggle('active', name==='branches');
+  if (name === 'branches' && _currentCompanyId) loadEditExtras(_currentCompanyId);
+}
+
+function bTab(name) {
+  document.getElementById('bTabData').style.display  = name==='data'  ? '' : 'none';
+  document.getElementById('bTabStaff').style.display = name==='staff' ? '' : 'none';
+  document.getElementById('beSaveBtn').style.display = name==='data'  ? '' : 'none';
+  document.getElementById('bTabBtnData').classList.toggle('active',  name==='data');
+  document.getElementById('bTabBtnStaff').classList.toggle('active', name==='staff');
+  if (name === 'staff') loadBranchStaff();
+}
+
+// ── BRANCH EDIT ───────────────────────────────────────
+let _beBranchId = null;
+
+function _parseCoords(str) {
+  if (!str) return [null, null];
+  const parts = String(str).split(',').map(s => parseFloat(s.trim()));
+  return parts.length >= 2 && !isNaN(parts[0]) && !isNaN(parts[1]) ? [parts[0], parts[1]] : [null, null];
+}
+
+function openBranchEdit(companyId, branch) {
+  _currentCompanyId = companyId;
+  _beBranchId = branch.id;
+  document.getElementById('beTitle').textContent = escHtml(branch.name_ru || 'Филиал');
+  const g = id => document.getElementById(id);
+  g('be_name_ru').value = branch.name_ru || '';
+  g('be_name_uz').value = branch.name_uz || '';
+  const lat = branch.lat, lon = branch.lon;
+  g('be_city_coords').value = lat && lon ? `${lat}, ${lon}` : '';
+  const wlat = branch.workshop_lat, wlon = branch.workshop_lon;
+  g('be_workshop_coords').value = wlat && wlon ? `${wlat}, ${wlon}` : '';
+  // Phones
+  const phones = Array.isArray(branch.phones) ? branch.phones : [];
+  g('be_phone1').value = phones[0]?.number || '';
+  g('be_phone2').value = phones[1]?.number || '';
+  g('be_whatsapp').value  = branch.whatsapp || '';
+  g('be_instagram').value = branch.instagram || '';
+  // Telegram
+  g('be_admin_tg_link').value    = branch.admin_tg_link || '';
+  g('be_admin_tg_id').value      = branch.admin_tg_id   || '';
+  g('be_tg_leads_link').value    = branch.tg_leads_group_link || '';
+  g('be_tg_leads_id').value      = branch.tg_leads_group_id   || '';
+  g('be_tg_orders_link').value   = branch.tg_orders_channel_link || '';
+  g('be_tg_orders_id').value     = branch.tg_orders_channel_id   || '';
+  g('be_tg_delivery_link').value = branch.tg_delivery_group_link || '';
+  g('be_tg_delivery_id').value   = branch.tg_delivery_group_id   || '';
+  g('be_tg_dchannel_link').value = branch.tg_delivery_channel_link || '';
+  g('be_tg_dchannel_id').value   = branch.tg_delivery_channel_id   || '';
+  g('beErr').textContent = '';
+  g('nsErr').textContent = '';
+  bTab('data');
+  openModal('modalBranchEdit');
+}
+
+async function saveBranchEdit() {
+  const g = id => document.getElementById(id).value.trim();
+  const intOrNull = v => v ? (parseInt(v) || null) : null;
+  const [lat, lon] = _parseCoords(g('be_city_coords'));
+  const [wlat, wlon] = _parseCoords(g('be_workshop_coords'));
+  const phones = [];
+  if (g('be_phone1')) phones.push({ number: g('be_phone1'), receipt: true });
+  if (g('be_phone2')) phones.push({ number: g('be_phone2'), receipt: false });
+  const body = {
+    name_ru:             g('be_name_ru') || undefined,
+    name_uz:             g('be_name_uz') || null,
+    lat, lon, workshop_lat: wlat, workshop_lon: wlon,
+    phones,
+    whatsapp:            g('be_whatsapp') || null,
+    instagram:           g('be_instagram') || null,
+    admin_tg_link:       g('be_admin_tg_link') || null,
+    admin_tg_id:         intOrNull(g('be_admin_tg_id')),
+    tg_leads_group_link: g('be_tg_leads_link') || null,
+    tg_leads_group_id:   intOrNull(g('be_tg_leads_id')),
+    tg_orders_channel_link: g('be_tg_orders_link') || null,
+    tg_orders_channel_id:   intOrNull(g('be_tg_orders_id')),
+    tg_delivery_group_link: g('be_tg_delivery_link') || null,
+    tg_delivery_group_id:   intOrNull(g('be_tg_delivery_id')),
+    tg_delivery_channel_link: g('be_tg_dchannel_link') || null,
+    tg_delivery_channel_id:   intOrNull(g('be_tg_dchannel_id')),
+  };
+  document.getElementById('beErr').textContent = '';
+  try {
+    await api(`/saas/companies/${_currentCompanyId}/branches/${_beBranchId}`, 'PUT', body);
+    closeModal('modalBranchEdit');
+    loadEditExtras(_currentCompanyId);
+  } catch(e) { document.getElementById('beErr').textContent = e.message; }
+}
+
+// ── STAFF (in branch modal) ───────────────────────────
+let _beStaff = [];
+
+async function loadBranchStaff() {
+  document.getElementById('beStaffList').innerHTML = '<span style="color:var(--text2)">Загрузка…</span>';
+  try {
+    const d = await api(`/saas/companies/${_currentCompanyId}/staff`);
+    _beStaff = d.staff || [];
+    renderBranchStaff();
+  } catch(e) {
+    document.getElementById('beStaffList').innerHTML = `<span style="color:var(--red)">${e.message}</span>`;
+  }
+}
+
+const _roleColors = { admin: '#f5a623', manager: '#3b82f6', callcenter: '#22c55e' };
+
+function renderBranchStaff(editId = null) {
+  const minId = _beStaff.length ? Math.min(..._beStaff.map(s => s.id)) : null;
+  document.getElementById('beStaffList').innerHTML = _beStaff.map(s => {
+    const isProtected = s.id === minId;
+    if (editId === s.id) {
+      return `<div class="staff-edit-form" id="sef_${s.id}">
+        <input id="sef_fn_${s.id}"    value="${escHtml(s.first_name||'')}" placeholder="Имя" style="padding:7px 10px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;outline:none">
+        <input id="sef_ln_${s.id}"    value="${escHtml(s.last_name||'')}" placeholder="Фамилия" style="padding:7px 10px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;outline:none">
+        <input id="sef_login_${s.id}" value="${escHtml(s.login||'')}" placeholder="Логин" style="padding:7px 10px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;outline:none">
+        <input id="sef_pass_${s.id}"  placeholder="Новый пароль" style="padding:7px 10px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;outline:none">
+        <select id="sef_role_${s.id}" style="padding:7px 10px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;outline:none;grid-column:1/-1">
+          ${['admin','manager','callcenter'].map(r => `<option value="${r}" ${s.role===r?'selected':''}>${r}</option>`).join('')}
+        </select>
+        <div style="grid-column:1/-1;display:flex;gap:8px">
+          <button class="btn btn-primary btn-sm" onclick="saveStaffEdit(${s.id})">💾 Сохранить</button>
+          <button class="btn btn-ghost btn-sm" onclick="renderBranchStaff()">Отмена</button>
+        </div>
+      </div>`;
+    }
+    return `<div class="staff-row">
+      <span style="background:${_roleColors[s.role]||'#64748b'}22;color:${_roleColors[s.role]||'#64748b'};padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700;min-width:72px;text-align:center">${s.role}</span>
+      <span style="font-weight:600;flex:1">${escHtml(s.first_name||'')} ${escHtml(s.last_name||'')}</span>
+      <span class="mono" style="font-size:12px;color:var(--text2)">🔑 ${escHtml(s.login)}</span>
+      <span class="mono" style="font-size:12px;color:var(--accent)">🔒 ${escHtml(s.plain_password||'—')}</span>
+      <button class="btn btn-ghost btn-sm" onclick="renderBranchStaff(${s.id})">✏️</button>
+      ${!isProtected ? `<button class="btn btn-sm" onclick="deleteStaff(${s.id})" style="background:#dc3545;color:#fff;border:none">🗑️</button>` : ''}
+    </div>`;
+  }).join('') || '<span style="color:var(--text2)">Нет сотрудников</span>';
+}
+
+async function saveStaffEdit(staffId) {
+  const g = id => document.getElementById(id)?.value?.trim();
+  const body = {
+    first_name: g(`sef_fn_${staffId}`),
+    last_name:  g(`sef_ln_${staffId}`) || null,
+    login:      g(`sef_login_${staffId}`),
+    role:       document.getElementById(`sef_role_${staffId}`)?.value,
+  };
+  const pass = g(`sef_pass_${staffId}`);
+  if (pass) body.password = pass;
+  try {
+    await api(`/saas/companies/${_currentCompanyId}/staff/${staffId}`, 'PUT', body);
+    await loadBranchStaff();
+  } catch(e) { alert(e.message); }
+}
+
+async function deleteStaff(staffId) {
+  if (!confirm('Удалить сотрудника?')) return;
+  try {
+    await api(`/saas/companies/${_currentCompanyId}/staff/${staffId}`, 'DELETE');
+    await loadBranchStaff();
+  } catch(e) { alert(e.message); }
+}
+
+async function addStaffSubmit() {
+  const g = id => document.getElementById(id)?.value?.trim();
+  const first_name = g('ns_fname'), login = g('ns_login'), password = g('ns_pass');
+  const role = document.getElementById('ns_role')?.value || 'manager';
+  document.getElementById('nsErr').textContent = '';
+  if (!first_name || !login || !password) { document.getElementById('nsErr').textContent = 'Заполните имя, логин и пароль'; return; }
+  try {
+    await api(`/saas/companies/${_currentCompanyId}/staff`, 'POST', {
+      first_name, last_name: g('ns_lname')||'', login, password, role
+    });
+    ['ns_fname','ns_lname','ns_login','ns_pass'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+    await loadBranchStaff();
+  } catch(e) { document.getElementById('nsErr').textContent = e.message; }
 }
 
 // ── UTILS ─────────────────────────────────────────────
