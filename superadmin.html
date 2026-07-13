@@ -149,6 +149,9 @@
       <div class="nav-item active" data-page="companies" onclick="showPage('companies',this)">
         <span class="icon">🏢</span> Компании
       </div>
+      <div class="nav-item" data-page="plans" onclick="showPage('plans',this)">
+        <span class="icon">📦</span> Планы
+      </div>
       <div class="nav-item" data-page="settings" onclick="showPage('settings',this)">
         <span class="icon">⚙️</span> Настройки
       </div>
@@ -196,6 +199,25 @@
             <button class="btn btn-primary btn-sm" onclick="saveGlobalSettings()">💾 Сохранить</button>
             <span id="gs_msg" class="save-msg" style="display:none">✓ Сохранено</span>
           </div>
+        </div>
+      </div>
+
+      <!-- PAGE: Plans -->
+      <div class="page" id="page-plans">
+        <div class="section-header">
+          <div class="page-title" style="margin:0">📦 Тарифные планы</div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Название</th><th>Макс. филиалов</th><th>Макс. сотрудников</th><th>Цена/мес (сум)</th><th>Статус</th><th>Действия</th>
+              </tr>
+            </thead>
+            <tbody id="plansBody">
+              <tr><td colspan="6" class="empty">Загрузка…</td></tr>
+            </tbody>
+          </table>
         </div>
       </div>
 
@@ -249,6 +271,7 @@
     <div class="tab-bar">
       <button class="tab-btn active" id="ecTabBtnData"     onclick="ecTab('data')">📋 Данные компании</button>
       <button class="tab-btn"        id="ecTabBtnBranches" onclick="ecTab('branches')">🏢 Филиалы</button>
+      <button class="tab-btn"        id="ecTabBtnPayment"  onclick="ecTab('payment')">💳 Оплата</button>
     </div>
 
     <!-- Tab: Данные -->
@@ -282,17 +305,6 @@
         </div>
       </div>
       <div class="modal-err" id="ecErr"></div>
-      <div style="border-top:1px solid var(--border);margin-top:14px;padding-top:14px">
-        <div style="font-weight:600;font-size:13px;margin-bottom:8px">🔐 Admin доступ <span id="ecAdminCreds" style="font-weight:400;opacity:.8;font-size:12px">…</span></div>
-        <div style="display:flex;gap:8px;align-items:center">
-          <div style="position:relative;flex:1">
-            <input id="ec_admin_pass" type="password" placeholder="Новый пароль (мин. 4 символа)" autocomplete="new-password" style="width:100%;padding-right:36px;box-sizing:border-box">
-            <button onclick="togglePassVis('ec_admin_pass',this)" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;color:var(--text2);padding:0">👁</button>
-          </div>
-          <button class="btn btn-ghost btn-sm" onclick="saveAdminPassword()">💾</button>
-        </div>
-        <div class="modal-err" id="ecPassErr" style="margin-top:6px"></div>
-      </div>
       <div style="border-top:1px solid var(--border);margin-top:14px;padding-top:10px">
         <div style="font-size:11px;color:var(--text2);margin-bottom:4px">API Key</div>
         <div style="display:flex;gap:8px;align-items:center">
@@ -307,6 +319,18 @@
       <div id="ecBranchCards"></div>
       <button id="ecAddBranchBtn" class="btn btn-ghost" onclick="openAddBranchModal()" style="display:none;margin-top:8px">+ Добавить филиал</button>
       <div class="modal-err" id="ecBranchErr" style="margin-top:8px"></div>
+    </div>
+
+    <!-- Tab: Оплата -->
+    <div id="ecTabPayment" style="display:none">
+      <div id="ecSubInfo" style="background:var(--surface2);border-radius:10px;padding:14px;margin-bottom:16px">
+        <div style="color:var(--text2);font-size:13px">Загрузка подписки…</div>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:12px">
+        <button class="btn btn-ghost btn-sm" onclick="openSubscriptionModal()">📋 Подписка</button>
+        <button class="btn btn-primary btn-sm" onclick="openPaymentModal()">+ Добавить оплату</button>
+      </div>
+      <div id="ecPaymentsHistory"></div>
     </div>
 
     <div class="modal-actions">
@@ -345,8 +369,20 @@
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 16px">
         <div class="field"><label>Название (рус)</label><input id="be_name_ru" placeholder="Главный офис"></div>
         <div class="field"><label>Название (уз)</label><input id="be_name_uz" placeholder="Bosh ofis"></div>
-        <div class="field"><label>Центр города / района (lat, lon)</label><input id="be_city_coords" placeholder="41.5714, 64.1953"></div>
-        <div class="field"><label>Координаты цеха (lat, lon)</label><input id="be_workshop_coords" placeholder="41.5714, 64.1953"></div>
+        <div class="field" style="grid-column:1/-1">
+          <label>Центр города / района</label>
+          <div style="display:flex;gap:6px">
+            <input id="be_city_coords" placeholder="41.5714, 64.1953" style="flex:1">
+            <button class="btn btn-ghost btn-sm" onclick="openCoordMap('city')" type="button">📍 Карта</button>
+          </div>
+        </div>
+        <div class="field" style="grid-column:1/-1">
+          <label>Координаты цеха</label>
+          <div style="display:flex;gap:6px">
+            <input id="be_workshop_coords" placeholder="41.5714, 64.1953" style="flex:1">
+            <button class="btn btn-ghost btn-sm" onclick="openCoordMap('workshop')" type="button">📍 Карта</button>
+          </div>
+        </div>
         <div class="field"><label>Телефон 1</label><input id="be_phone1" placeholder="+998 88 000-00-00"></div>
         <div class="field"><label>Телефон 2</label><input id="be_phone2" placeholder="+998 ..."></div>
         <div class="field"><label>WhatsApp</label><input id="be_whatsapp" placeholder="+998901234567"></div>
@@ -374,27 +410,157 @@
     <!-- Tab: Staff -->
     <div id="bTabStaff" style="display:none">
       <div id="beStaffList"><div style="color:var(--text2)">Загрузка…</div></div>
-      <div style="border-top:1px solid var(--border);margin-top:12px;padding-top:12px">
-        <div style="font-weight:600;font-size:13px;margin-bottom:10px">+ Добавить сотрудника</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-          <input class="field" id="ns_fname" placeholder="Имя *" style="padding:9px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;outline:none;width:100%">
-          <input class="field" id="ns_lname" placeholder="Фамилия" style="padding:9px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;outline:none;width:100%">
-          <input class="field" id="ns_login" placeholder="Логин *" autocomplete="off" style="padding:9px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;outline:none;width:100%">
-          <input class="field" id="ns_pass"  placeholder="Пароль *" style="padding:9px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;outline:none;width:100%">
-          <select id="ns_role" style="padding:9px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;outline:none;grid-column:1/-1">
-            <option value="admin">admin</option>
-            <option value="manager" selected>manager</option>
-            <option value="callcenter">callcenter</option>
-          </select>
-        </div>
-        <div class="modal-err" id="nsErr" style="margin-top:6px"></div>
-        <button class="btn btn-primary btn-sm" onclick="addStaffSubmit()" style="margin-top:10px">+ Создать</button>
-      </div>
+      <div class="modal-err" id="nsErr" style="margin-top:6px"></div>
+      <button class="btn btn-ghost" onclick="openAddStaffModal()" style="margin-top:12px">+ Добавить сотрудника</button>
     </div>
 
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="closeModal('modalBranchEdit')">Закрыть</button>
       <button class="btn btn-primary" id="beSaveBtn" onclick="saveBranchEdit()">💾 Сохранить данные</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Add staff -->
+<div class="modal-bg" id="modalAddStaff">
+  <div class="modal" style="width:400px">
+    <h3>👤 Новый сотрудник</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="field"><label>Имя *</label><input id="ns_fname" placeholder="Имя"></div>
+      <div class="field"><label>Фамилия</label><input id="ns_lname" placeholder="Фамилия"></div>
+      <div class="field"><label>Логин *</label><input id="ns_login" autocomplete="off" placeholder="Логин"></div>
+      <div class="field"><label>Пароль *</label><input id="ns_pass" placeholder="Пароль"></div>
+      <div class="field" style="grid-column:1/-1"><label>Роль</label>
+        <select id="ns_role" style="width:100%;padding:9px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;outline:none">
+          <option value="admin">admin — 👑 Admin</option>
+          <option value="manager" selected>manager — 🧑‍💼 Менеджер</option>
+          <option value="callcenter">callcenter — 📞 Колл-центр</option>
+          <option value="driver">driver — 🚗 Водитель</option>
+          <option value="packer">packer — 📦 Упаковщик</option>
+          <option value="logistics">logistics — 🚚 Логистика</option>
+          <option value="washer">washer — 🫧 Мойщик</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-err" id="nsModalErr" style="margin-top:6px"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modalAddStaff')">Отмена</button>
+      <button class="btn btn-primary" onclick="addStaffSubmit()">+ Добавить сотрудника</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Edit staff -->
+<div class="modal-bg" id="modalEditStaff">
+  <div class="modal" style="width:400px">
+    <h3>✏️ Редактировать сотрудника</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="field"><label>Имя *</label><input id="sef_fname" placeholder="Имя"></div>
+      <div class="field"><label>Фамилия</label><input id="sef_lname" placeholder="Фамилия"></div>
+      <div class="field"><label>Логин *</label><input id="sef_login" autocomplete="off" placeholder="Логин"></div>
+      <div class="field"><label>Новый пароль</label><input id="sef_pass" placeholder="Оставьте пустым чтобы не менять"></div>
+      <div class="field" style="grid-column:1/-1"><label>Роль</label>
+        <select id="sef_role" style="width:100%;padding:9px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;outline:none">
+          <option value="admin">admin — 👑 Admin</option>
+          <option value="manager">manager — 🧑‍💼 Менеджер</option>
+          <option value="callcenter">callcenter — 📞 Колл-центр</option>
+          <option value="driver">driver — 🚗 Водитель</option>
+          <option value="packer">packer — 📦 Упаковщик</option>
+          <option value="logistics">logistics — 🚚 Логистика</option>
+          <option value="washer">washer — 🫧 Мойщик</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-err" id="sefErr" style="margin-top:6px"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modalEditStaff')">Отмена</button>
+      <button class="btn btn-primary" onclick="saveStaffEditModal()">💾 Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Coord map picker -->
+<div class="modal-bg" id="modalCoordMap" style="align-items:flex-start;padding-top:0;overflow:hidden">
+  <div style="width:100%;max-width:700px;background:var(--surface);border:1px solid var(--border);border-radius:16px;margin:16px auto;max-height:96vh;display:flex;flex-direction:column">
+    <div style="padding:14px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border)">
+      <span style="font-weight:700;font-size:15px" id="coordMapTitle">📍 Выберите точку</span>
+      <span style="flex:1;font-size:12px;color:var(--text2)" id="coordMapHint">Кликните на карту для выбора координат</span>
+      <button class="btn btn-ghost btn-sm" onclick="closeModal('modalCoordMap')">✕ Отмена</button>
+      <button class="btn btn-primary btn-sm" onclick="applyCoordMap()">✅ Выбрать</button>
+    </div>
+    <div id="coordMapEl" style="flex:1;min-height:400px"></div>
+  </div>
+</div>
+
+<!-- MODAL: Edit plan -->
+<div class="modal-bg" id="modalEditPlan">
+  <div class="modal" style="width:560px;max-height:90vh;overflow-y:auto">
+    <h3>✏️ Редактировать тариф</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 16px">
+      <div class="field" style="grid-column:1/-1"><label>Название</label><input id="ep_display_name" placeholder="Starter+"></div>
+      <div class="field"><label>Макс. филиалов</label><input id="ep_max_branches" type="number" min="1"></div>
+      <div class="field"><label>Макс. сотрудников</label><input id="ep_max_staff" type="number" min="1"></div>
+      <div class="field"><label>Базовая цена (сум/мес)</label><input id="ep_base_price" type="number" min="0"></div>
+      <div class="field"><label>Статус</label>
+        <select id="ep_active">
+          <option value="true">Активен</option>
+          <option value="false">Отключён</option>
+        </select>
+      </div>
+    </div>
+    <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--text2);margin:12px 0 8px">Цены по месяцам</div>
+    <table style="width:100%;border-collapse:collapse">
+      <tbody id="epPricingTable"></tbody>
+    </table>
+    <div class="modal-err" id="epErr" style="margin-top:8px"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modalEditPlan')">Отмена</button>
+      <button class="btn btn-primary" onclick="saveEditPlan()">💾 Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Subscription -->
+<div class="modal-bg" id="modalSubscription">
+  <div class="modal" style="width:420px">
+    <h3>📋 Подписка компании</h3>
+    <div class="field"><label>Тариф</label>
+      <select id="sub_plan_id" style="width:100%;padding:9px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;outline:none">
+      </select>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 16px">
+      <div class="field"><label>Дата начала</label><input id="sub_start_date" type="date"></div>
+      <div class="field"><label>Дата конца</label><input id="sub_end_date" type="date"></div>
+    </div>
+    <div class="field"><label>Статус</label>
+      <select id="sub_status" style="width:100%;padding:9px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;outline:none">
+        <option value="active">Активна</option>
+        <option value="expired">Истекла</option>
+        <option value="cancelled">Отменена</option>
+      </select>
+    </div>
+    <div class="field"><label>Заметки</label>
+      <input id="sub_notes" placeholder="Продлено по просьбе клиента…">
+    </div>
+    <div class="modal-err" id="subErr" style="margin-top:6px"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modalSubscription')">Отмена</button>
+      <button class="btn btn-primary" onclick="saveSubscription()">💾 Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Payment -->
+<div class="modal-bg" id="modalPayment">
+  <div class="modal" style="width:380px">
+    <h3>💳 Добавить оплату</h3>
+    <div class="field"><label>Сумма (сум) *</label><input id="pay_amount" type="number" min="1" placeholder="500000"></div>
+    <div class="field"><label>Дата оплаты</label><input id="pay_date" type="date"></div>
+    <div class="field"><label>Примечание</label><input id="pay_note" placeholder="Оплата за июль…"></div>
+    <div class="modal-err" id="payErr" style="margin-top:6px"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modalPayment')">Отмена</button>
+      <button class="btn btn-primary" onclick="addPayment()">💾 Добавить</button>
     </div>
   </div>
 </div>
@@ -413,6 +579,7 @@ function showPage(name, navEl) {
   document.getElementById('page-' + name).classList.add('active');
   if (navEl) navEl.classList.add('active');
   if (name === 'settings') loadGlobalSettings();
+  if (name === 'plans') loadPlans();
 }
 
 // ── AUTH ──────────────────────────────────────────────
@@ -550,29 +717,11 @@ async function openEditCompany(id) {
   document.getElementById('ec_max_staff').value     = c.max_staff || 50;
   document.getElementById('ec_notes').value         = c.notes || '';
   document.getElementById('ecErr').textContent      = '';
-  document.getElementById('ecPassErr').textContent  = '';
-  document.getElementById('ec_admin_pass').value    = '';
   ecTab('data');
   openModal('modalEditCompany');
   loadEditExtras(id);
 }
 
-async function saveAdminPassword() {
-  const pass = document.getElementById('ec_admin_pass').value.trim();
-  const errEl = document.getElementById('ecPassErr');
-  errEl.textContent = '';
-  if (pass.length < 4) { errEl.textContent = 'Минимум 4 символа'; return; }
-  try {
-    await api(`/saas/companies/${_currentCompanyId}/admin-password`, 'POST', { password: pass });
-    document.getElementById('ec_admin_pass').value = '';
-    errEl.style.color = 'var(--green, #22c55e)';
-    errEl.textContent = '✓ Пароль обновлён';
-    setTimeout(() => { errEl.textContent = ''; errEl.style.color = ''; }, 3000);
-  } catch(e) {
-    errEl.style.color = '';
-    errEl.textContent = e.message;
-  }
-}
 
 async function saveEditCompany() {
   const body = {
@@ -623,7 +772,15 @@ async function createCompany() {
   try {
     const d = await api('/saas/companies', 'POST', { name, slug, plan, max_branches, max_staff, admin_password: 'admin' });
     const creds = d.credentials || [];
-    const roleLabel = { admin: '👑 Admin', manager: '🧑‍💼 Менеджер', callcenter: '📞 Колл-центр' };
+    const roleLabel = {
+      admin: '👑 Admin',
+      manager: '🧑‍💼 Менеджер',
+      callcenter: '📞 Колл-центр',
+      driver: '🚗 Водитель',
+      packer: '📦 Упаковщик',
+      logistics: '🚚 Логистика',
+      washer: '🫧 Мойщик'
+    };
     document.getElementById('coCredTable').innerHTML = creds.map(c => `
       <tr>
         <td>${roleLabel[c.role] || c.role}</td>
@@ -666,15 +823,12 @@ async function toggleCompany(id, isActive) {
 async function loadEditExtras(companyId) {
   document.getElementById('ecBranchCards').innerHTML = '<span style="color:var(--text2)">Загрузка…</span>';
   document.getElementById('ecApiKey').textContent    = '…';
-  document.getElementById('ecAdminCreds').textContent = '…';
   document.getElementById('ecAddBranchBtn').style.display = 'none';
   try {
     const d = await api(`/saas/companies/${companyId}`);
     const branches    = d.branches || [];
     const maxBranches = d.company?.max_branches || 1;
     document.getElementById('ecApiKey').textContent = d.company?.secret_key || '—';
-    document.getElementById('ecAdminCreds').innerHTML =
-      `логин: <b>${escHtml(d.admin_login||'admin')}</b> &nbsp;/&nbsp; пароль: <b style="color:var(--accent)">${escHtml(d.admin_password||'?')}</b>`;
     if (!branches.length) {
       document.getElementById('ecBranchCards').innerHTML = '<span style="color:var(--text2)">Нет филиалов</span>';
     } else {
@@ -752,10 +906,13 @@ function togglePassVis(inputId, btn) {
 function ecTab(name) {
   document.getElementById('ecTabData').style.display     = name==='data'     ? '' : 'none';
   document.getElementById('ecTabBranches').style.display = name==='branches' ? '' : 'none';
+  document.getElementById('ecTabPayment').style.display  = name==='payment'  ? '' : 'none';
   document.getElementById('ecSaveBtn').style.display     = name==='data'     ? '' : 'none';
   document.getElementById('ecTabBtnData').classList.toggle('active',     name==='data');
   document.getElementById('ecTabBtnBranches').classList.toggle('active', name==='branches');
+  document.getElementById('ecTabBtnPayment').classList.toggle('active',  name==='payment');
   if (name === 'branches' && _currentCompanyId) loadEditExtras(_currentCompanyId);
+  if (name === 'payment'  && _currentCompanyId) loadPaymentTab();
 }
 
 function bTab(name) {
@@ -858,52 +1015,21 @@ async function loadBranchStaff() {
   }
 }
 
-const _roleColors = { admin: '#f5a623', manager: '#3b82f6', callcenter: '#22c55e' };
+const _roleColors = { admin: '#f5a623', manager: '#3b82f6', callcenter: '#22c55e', driver: '#8b5cf6', packer: '#f59e0b', logistics: '#06b6d4', washer: '#ec4899' };
 
-function renderBranchStaff(editId = null) {
+function renderBranchStaff() {
   const minId = _beStaff.length ? Math.min(..._beStaff.map(s => s.id)) : null;
   document.getElementById('beStaffList').innerHTML = _beStaff.map(s => {
     const isProtected = s.id === minId;
-    if (editId === s.id) {
-      return `<div class="staff-edit-form" id="sef_${s.id}">
-        <input id="sef_fn_${s.id}"    value="${escHtml(s.first_name||'')}" placeholder="Имя" style="padding:7px 10px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;outline:none">
-        <input id="sef_ln_${s.id}"    value="${escHtml(s.last_name||'')}" placeholder="Фамилия" style="padding:7px 10px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;outline:none">
-        <input id="sef_login_${s.id}" value="${escHtml(s.login||'')}" placeholder="Логин" style="padding:7px 10px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;outline:none">
-        <input id="sef_pass_${s.id}"  placeholder="Новый пароль" style="padding:7px 10px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;outline:none">
-        <select id="sef_role_${s.id}" style="padding:7px 10px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;outline:none;grid-column:1/-1">
-          ${['admin','manager','callcenter'].map(r => `<option value="${r}" ${s.role===r?'selected':''}>${r}</option>`).join('')}
-        </select>
-        <div style="grid-column:1/-1;display:flex;gap:8px">
-          <button class="btn btn-primary btn-sm" onclick="saveStaffEdit(${s.id})">💾 Сохранить</button>
-          <button class="btn btn-ghost btn-sm" onclick="renderBranchStaff()">Отмена</button>
-        </div>
-      </div>`;
-    }
     return `<div class="staff-row">
       <span style="background:${_roleColors[s.role]||'#64748b'}22;color:${_roleColors[s.role]||'#64748b'};padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700;min-width:72px;text-align:center">${s.role}</span>
       <span style="font-weight:600;flex:1">${escHtml(s.first_name||'')} ${escHtml(s.last_name||'')}</span>
       <span class="mono" style="font-size:12px;color:var(--text2)">🔑 ${escHtml(s.login)}</span>
       <span class="mono" style="font-size:12px;color:var(--accent)">🔒 ${escHtml(s.plain_password||'—')}</span>
-      <button class="btn btn-ghost btn-sm" onclick="renderBranchStaff(${s.id})">✏️</button>
+      <button class="btn btn-ghost btn-sm" onclick="openEditStaffModal(${s.id})">✏️</button>
       ${!isProtected ? `<button class="btn btn-sm" onclick="deleteStaff(${s.id})" style="background:#dc3545;color:#fff;border:none">🗑️</button>` : ''}
     </div>`;
   }).join('') || '<span style="color:var(--text2)">Нет сотрудников</span>';
-}
-
-async function saveStaffEdit(staffId) {
-  const g = id => document.getElementById(id)?.value?.trim();
-  const body = {
-    first_name: g(`sef_fn_${staffId}`),
-    last_name:  g(`sef_ln_${staffId}`) || null,
-    login:      g(`sef_login_${staffId}`),
-    role:       document.getElementById(`sef_role_${staffId}`)?.value,
-  };
-  const pass = g(`sef_pass_${staffId}`);
-  if (pass) body.password = pass;
-  try {
-    await api(`/saas/companies/${_currentCompanyId}/staff/${staffId}`, 'PUT', body);
-    await loadBranchStaff();
-  } catch(e) { alert(e.message); }
 }
 
 async function deleteStaff(staffId) {
@@ -914,24 +1040,318 @@ async function deleteStaff(staffId) {
   } catch(e) { alert(e.message); }
 }
 
+function openAddStaffModal() {
+  ['ns_fname','ns_lname','ns_login','ns_pass'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+  document.getElementById('ns_role').value = 'manager';
+  document.getElementById('nsModalErr').textContent = '';
+  openModal('modalAddStaff');
+}
+
 async function addStaffSubmit() {
   const g = id => document.getElementById(id)?.value?.trim();
   const first_name = g('ns_fname'), login = g('ns_login'), password = g('ns_pass');
   const role = document.getElementById('ns_role')?.value || 'manager';
-  document.getElementById('nsErr').textContent = '';
-  if (!first_name || !login || !password) { document.getElementById('nsErr').textContent = 'Заполните имя, логин и пароль'; return; }
+  document.getElementById('nsModalErr').textContent = '';
+  if (!first_name || !login || !password) { document.getElementById('nsModalErr').textContent = 'Заполните имя, логин и пароль'; return; }
   try {
     await api(`/saas/companies/${_currentCompanyId}/staff`, 'POST', {
       first_name, last_name: g('ns_lname')||'', login, password, role
     });
-    ['ns_fname','ns_lname','ns_login','ns_pass'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+    closeModal('modalAddStaff');
     await loadBranchStaff();
-  } catch(e) { document.getElementById('nsErr').textContent = e.message; }
+  } catch(e) { document.getElementById('nsModalErr').textContent = e.message; }
+}
+
+let _editStaffId = null;
+function openEditStaffModal(staffId) {
+  const s = _beStaff.find(x => x.id === staffId);
+  if (!s) return;
+  _editStaffId = staffId;
+  document.getElementById('sef_fname').value = s.first_name || '';
+  document.getElementById('sef_lname').value = s.last_name  || '';
+  document.getElementById('sef_login').value = s.login      || '';
+  document.getElementById('sef_pass').value  = '';
+  document.getElementById('sef_role').value  = s.role       || 'manager';
+  document.getElementById('sefErr').textContent = '';
+  openModal('modalEditStaff');
+}
+
+async function saveStaffEditModal() {
+  const g = id => document.getElementById(id)?.value?.trim();
+  const body = {
+    first_name: g('sef_fname'),
+    last_name:  g('sef_lname') || null,
+    login:      g('sef_login'),
+    role:       document.getElementById('sef_role')?.value,
+  };
+  const pass = g('sef_pass');
+  if (pass) body.password = pass;
+  document.getElementById('sefErr').textContent = '';
+  try {
+    await api(`/saas/companies/${_currentCompanyId}/staff/${_editStaffId}`, 'PUT', body);
+    closeModal('modalEditStaff');
+    await loadBranchStaff();
+  } catch(e) { document.getElementById('sefErr').textContent = e.message; }
+}
+
+// ── COORD MAP ─────────────────────────────────────────
+let _coordMapType = null; // 'city' | 'workshop'
+let _coordYmap = null, _coordYmarker = null;
+let _ymapsLoaded = false;
+
+function openCoordMap(type) {
+  _coordMapType = type;
+  const titleEl = document.getElementById('coordMapTitle');
+  titleEl.textContent = type === 'city' ? '📍 Центр города / района' : '📍 Координаты цеха';
+  const inputId = type === 'city' ? 'be_city_coords' : 'be_workshop_coords';
+  const currentVal = document.getElementById(inputId).value.trim();
+  const parts = currentVal.split(',').map(s => parseFloat(s.trim()));
+  const hasCoords = parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1]);
+  const center = hasCoords ? [parts[0], parts[1]] : [40.1032, 65.3791];
+  openModal('modalCoordMap');
+  if (!_ymapsLoaded) {
+    fetch('/api/settings/site').then(r => r.json()).then(d => {
+      const key = d.yandex_maps_key || '270b3869-dc07-494c-b6ce-89e87e2d2c18';
+      const script = document.createElement('script');
+      script.src = `https://api-maps.yandex.ru/2.1/?apikey=${encodeURIComponent(key)}&lang=ru_RU`;
+      script.onload = () => { _ymapsLoaded = true; _initCoordMap(center, hasCoords ? [parts[0], parts[1]] : null); };
+      document.head.appendChild(script);
+    }).catch(() => {
+      const script = document.createElement('script');
+      script.src = 'https://api-maps.yandex.ru/2.1/?apikey=270b3869-dc07-494c-b6ce-89e87e2d2c18&lang=ru_RU';
+      script.onload = () => { _ymapsLoaded = true; _initCoordMap(center, hasCoords ? [parts[0], parts[1]] : null); };
+      document.head.appendChild(script);
+    });
+  } else {
+    _initCoordMap(center, hasCoords ? [parts[0], parts[1]] : null);
+  }
+}
+
+function _initCoordMap(center, markerCoords) {
+  if (typeof ymaps === 'undefined') return;
+  ymaps.ready(() => {
+    const el = document.getElementById('coordMapEl');
+    if (_coordYmap) { _coordYmap.destroy(); _coordYmap = null; _coordYmarker = null; }
+    _coordYmap = new ymaps.Map(el, { center, zoom: 13 }, { suppressMapOpenBlock: true });
+    if (markerCoords) {
+      _coordYmarker = new ymaps.Placemark(markerCoords, {}, { preset: 'islands#redDotIcon' });
+      _coordYmap.geoObjects.add(_coordYmarker);
+    }
+    _coordYmap.events.add('click', e => {
+      const coords = e.get('coords');
+      if (_coordYmarker) { _coordYmap.geoObjects.remove(_coordYmarker); }
+      _coordYmarker = new ymaps.Placemark(coords, {}, { preset: 'islands#redDotIcon' });
+      _coordYmap.geoObjects.add(_coordYmarker);
+    });
+  });
+}
+
+function applyCoordMap() {
+  if (!_coordYmarker) { alert('Кликните на карту чтобы выбрать точку'); return; }
+  const coords = _coordYmarker.geometry.getCoordinates();
+  const inputId = _coordMapType === 'city' ? 'be_city_coords' : 'be_workshop_coords';
+  document.getElementById(inputId).value = `${coords[0].toFixed(6)}, ${coords[1].toFixed(6)}`;
+  closeModal('modalCoordMap');
+  if (_coordYmap) { _coordYmap.destroy(); _coordYmap = null; _coordYmarker = null; }
+}
+
+// ── PLANS ─────────────────────────────────────────────
+let _plansCache = [];
+
+async function loadPlans() {
+  try {
+    const d = await api('/saas/plans');
+    _plansCache = d.plans || [];
+    renderPlans();
+  } catch(e) {
+    document.getElementById('plansBody').innerHTML = `<tr><td colspan="6" class="empty" style="color:var(--red)">${e.message}</td></tr>`;
+  }
+}
+
+const MONTHS_RU = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+
+function renderPlans() {
+  const tb = document.getElementById('plansBody');
+  if (!_plansCache.length) { tb.innerHTML = '<tr><td colspan="6" class="empty">Нет планов</td></tr>'; return; }
+  tb.innerHTML = _plansCache.map(p => `
+    <tr>
+      <td style="font-weight:700">${escHtml(p.display_name)}</td>
+      <td>${p.max_branches}</td>
+      <td>${p.max_staff}</td>
+      <td>${Number(p.base_price).toLocaleString('ru-RU')} сум</td>
+      <td>${p.active ? '<span class="badge badge-green">Активен</span>' : '<span class="badge badge-red">Откл.</span>'}</td>
+      <td><button class="btn btn-ghost btn-sm" onclick="openEditPlan(${p.id})">✏️ Редактировать</button></td>
+    </tr>`).join('');
+}
+
+let _editPlanId = null;
+
+function openEditPlan(planId) {
+  const p = _plansCache.find(x => x.id === planId);
+  if (!p) return;
+  _editPlanId = planId;
+  document.getElementById('ep_display_name').value = p.display_name || '';
+  document.getElementById('ep_max_branches').value = p.max_branches || 1;
+  document.getElementById('ep_max_staff').value    = p.max_staff    || 7;
+  document.getElementById('ep_base_price').value   = p.base_price   || 0;
+  document.getElementById('ep_active').value       = p.active ? 'true' : 'false';
+  document.getElementById('epErr').textContent     = '';
+  const pricing = p.monthly_pricing || {};
+  const rows = MONTHS_RU.map((mn, i) => {
+    const month = i + 1;
+    const price = pricing[month] ?? p.base_price;
+    return `<tr>
+      <td style="color:var(--text2);font-size:13px;padding:6px 10px;width:110px">${mn}</td>
+      <td style="padding:4px 6px">
+        <input type="number" id="ep_price_${month}" value="${price}" min="0" style="width:140px;padding:5px 8px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;outline:none">
+      </td>
+    </tr>`;
+  }).join('');
+  document.getElementById('epPricingTable').innerHTML = rows;
+  openModal('modalEditPlan');
+}
+
+async function saveEditPlan() {
+  const body = {
+    display_name: document.getElementById('ep_display_name').value.trim(),
+    max_branches: parseInt(document.getElementById('ep_max_branches').value) || 1,
+    max_staff:    parseInt(document.getElementById('ep_max_staff').value)    || 7,
+    base_price:   parseInt(document.getElementById('ep_base_price').value)   || 0,
+    active:       document.getElementById('ep_active').value === 'true',
+  };
+  document.getElementById('epErr').textContent = '';
+  try {
+    await api(`/saas/plans/${_editPlanId}`, 'PUT', body);
+    for (let m = 1; m <= 12; m++) {
+      const el = document.getElementById(`ep_price_${m}`);
+      if (!el) continue;
+      const price = parseInt(el.value) || 0;
+      await api(`/saas/plans/${_editPlanId}/pricing/${m}`, 'PUT', { price });
+    }
+    closeModal('modalEditPlan');
+    await loadPlans();
+  } catch(e) { document.getElementById('epErr').textContent = e.message; }
+}
+
+// ── PAYMENT TAB ───────────────────────────────────────
+let _currentSubId = null;
+
+async function loadPaymentTab() {
+  const subEl = document.getElementById('ecSubInfo');
+  const payEl = document.getElementById('ecPaymentsHistory');
+  subEl.innerHTML = '<div style="color:var(--text2);font-size:13px">Загрузка…</div>';
+  payEl.innerHTML = '';
+  try {
+    const [subD, payD] = await Promise.all([
+      api(`/saas/companies/${_currentCompanyId}/subscription`),
+      api(`/saas/companies/${_currentCompanyId}/payments`)
+    ]);
+    const sub = subD.subscription;
+    _currentSubId = sub?.id || null;
+    if (!sub) {
+      subEl.innerHTML = '<div style="color:var(--text2)">Подписка не настроена. Нажмите «📋 Подписка».</div>';
+    } else {
+      const statusColor = sub.status === 'active' ? 'var(--green)' : 'var(--red)';
+      const balColor = sub.balance >= 0 ? 'var(--green)' : 'var(--red)';
+      subEl.innerHTML = `
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:13px">
+          <div><span style="color:var(--text2)">Тариф:</span> <b>${escHtml(sub.plan_name||sub.plan_id)}</b></div>
+          <div><span style="color:var(--text2)">Статус:</span> <span style="color:${statusColor};font-weight:700">${sub.status}</span></div>
+          <div><span style="color:var(--text2)">Начало:</span> ${sub.start_date}</div>
+          <div><span style="color:var(--text2)">Конец:</span> ${sub.end_date}</div>
+          <div style="grid-column:1/-1"><span style="color:var(--text2)">Баланс:</span> <span style="color:${balColor};font-weight:700;font-size:15px">${Number(sub.balance||0).toLocaleString('ru-RU')} сум</span></div>
+          ${sub.notes ? `<div style="grid-column:1/-1;color:var(--text2);font-size:12px">${escHtml(sub.notes)}</div>` : ''}
+        </div>`;
+    }
+    const payments = payD.payments || [];
+    if (!payments.length) {
+      payEl.innerHTML = '<div style="color:var(--text2);font-size:13px;padding:10px 0">Нет оплат</div>';
+    } else {
+      payEl.innerHTML = `<div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--text2);margin-bottom:8px">История оплат</div>
+        <div style="background:var(--surface2);border-radius:8px;overflow:hidden">
+        ${payments.map(p => `
+          <div style="display:flex;align-items:center;gap:12px;padding:8px 12px;border-bottom:1px solid var(--border);font-size:13px">
+            <span style="color:var(--text2);font-size:12px;min-width:80px">${p.payment_date}</span>
+            <span style="color:var(--green);font-weight:700;font-family:monospace">+${Number(p.amount).toLocaleString('ru-RU')}</span>
+            <span style="flex:1;color:var(--text2)">${escHtml(p.note||'')}</span>
+          </div>`).join('')}
+        </div>`;
+    }
+  } catch(e) {
+    subEl.innerHTML = `<span style="color:var(--red)">${e.message}</span>`;
+  }
+}
+
+function openSubscriptionModal() {
+  document.getElementById('sub_plan_id').value   = '';
+  document.getElementById('sub_start_date').value = new Date().toISOString().slice(0,10);
+  const end = new Date(); end.setMonth(end.getMonth()+1);
+  document.getElementById('sub_end_date').value  = end.toISOString().slice(0,10);
+  document.getElementById('sub_status').value    = 'active';
+  document.getElementById('sub_notes').value     = '';
+  document.getElementById('subErr').textContent  = '';
+  const sel = document.getElementById('sub_plan_id');
+  sel.innerHTML = _plansCache.map(p => `<option value="${p.id}">${escHtml(p.display_name)}</option>`).join('');
+  if (!_plansCache.length) {
+    api('/saas/plans').then(d => {
+      _plansCache = d.plans || [];
+      sel.innerHTML = _plansCache.map(p => `<option value="${p.id}">${escHtml(p.display_name)}</option>`).join('');
+    }).catch(()=>{});
+  }
+  openModal('modalSubscription');
+}
+
+async function saveSubscription() {
+  const body = {
+    plan_id:    parseInt(document.getElementById('sub_plan_id').value),
+    start_date: document.getElementById('sub_start_date').value,
+    end_date:   document.getElementById('sub_end_date').value,
+    notes:      document.getElementById('sub_notes').value.trim() || null,
+  };
+  const status = document.getElementById('sub_status').value;
+  document.getElementById('subErr').textContent = '';
+  try {
+    if (_currentSubId) {
+      await api(`/saas/companies/${_currentCompanyId}/subscription/${_currentSubId}`, 'PUT', { status, end_date: body.end_date, notes: body.notes });
+    } else {
+      await api(`/saas/companies/${_currentCompanyId}/subscription`, 'POST', body);
+    }
+    closeModal('modalSubscription');
+    await loadPaymentTab();
+  } catch(e) { document.getElementById('subErr').textContent = e.message; }
+}
+
+function openPaymentModal() {
+  document.getElementById('pay_amount').value = '';
+  document.getElementById('pay_date').value   = new Date().toISOString().slice(0,10);
+  document.getElementById('pay_note').value   = '';
+  document.getElementById('payErr').textContent = '';
+  openModal('modalPayment');
+}
+
+async function addPayment() {
+  const amount = parseInt(document.getElementById('pay_amount').value);
+  const payment_date = document.getElementById('pay_date').value;
+  const note = document.getElementById('pay_note').value.trim();
+  document.getElementById('payErr').textContent = '';
+  if (!amount || amount <= 0) { document.getElementById('payErr').textContent = 'Введите сумму'; return; }
+  try {
+    await api(`/saas/companies/${_currentCompanyId}/payments`, 'POST', {
+      amount, payment_date, note, subscription_id: _currentSubId
+    });
+    closeModal('modalPayment');
+    await loadPaymentTab();
+  } catch(e) { document.getElementById('payErr').textContent = e.message; }
 }
 
 // ── UTILS ─────────────────────────────────────────────
 function openModal(id)  { document.getElementById(id).classList.add('open'); }
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+  if (id === 'modalCoordMap' && _coordYmap) {
+    _coordYmap.destroy(); _coordYmap = null; _coordYmarker = null;
+  }
+}
 function escHtml(s)     { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 // Modal closes only via buttons (not backdrop click)
