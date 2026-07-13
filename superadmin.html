@@ -233,7 +233,7 @@
     <div class="field"><label>Название</label><input id="co_name" placeholder="ООО Химчистка"></div>
     <div class="field"><label>Slug (латиница, уникальный)</label><input id="co_slug" placeholder="cleanpro"></div>
     <div class="field"><label>План</label>
-      <select id="co_plan">
+      <select id="co_plan" onchange="onCoPlanChange(this)">
         <option value="starter">Starter</option>
         <option value="basic">Basic</option>
         <option value="pro">Pro</option>
@@ -257,6 +257,7 @@
         ⚠️ Логин и пароль совпадают с названием роли. Клиент должен сменить пароль после первого входа.
       </div>
       <div class="modal-actions" style="margin-top:16px">
+        <button class="btn btn-ghost" onclick="copyCredentials()">📋 Скопировать</button>
         <button class="btn btn-primary" onclick="closeModal('modalCompany')">Закрыть</button>
       </div>
     </div>
@@ -711,12 +712,20 @@ async function openEditCompany(id) {
   document.getElementById('ec_contact_name').value  = c.contact_name || '';
   document.getElementById('ec_contact_phone').value = c.contact_phone || '';
   document.getElementById('ec_contact_email').value = c.contact_email || '';
-  document.getElementById('ec_plan').value          = c.plan || 'starter';
   document.getElementById('ec_active').value        = c.active !== false ? 'true' : 'false';
   document.getElementById('ec_max_branches').value  = c.max_branches || 5;
   document.getElementById('ec_max_staff').value     = c.max_staff || 50;
   document.getElementById('ec_notes').value         = c.notes || '';
   document.getElementById('ecErr').textContent      = '';
+  await loadPlansIntoSelects();
+  // Set plan by slug
+  const ecPlan = document.getElementById('ec_plan');
+  const targetSlug = c.plan || 'starter';
+  let matched = false;
+  for (const opt of ecPlan.options) {
+    if (opt.dataset.slug === targetSlug) { ecPlan.value = opt.value; matched = true; break; }
+  }
+  if (!matched && ecPlan.options.length) ecPlan.selectedIndex = 0;
   ecTab('data');
   openModal('modalEditCompany');
   loadEditExtras(id);
@@ -733,7 +742,7 @@ async function saveEditCompany() {
     contact_name:  document.getElementById('ec_contact_name').value.trim() || null,
     contact_phone: document.getElementById('ec_contact_phone').value.trim() || null,
     contact_email: document.getElementById('ec_contact_email').value.trim() || null,
-    plan:          document.getElementById('ec_plan').value,
+    plan:          document.getElementById('ec_plan').selectedOptions[0]?.dataset?.slug || document.getElementById('ec_plan').value,
     active:        document.getElementById('ec_active').value === 'true',
     max_branches:  parseInt(document.getElementById('ec_max_branches').value) || 5,
     max_staff:     parseInt(document.getElementById('ec_max_staff').value) || 50,
@@ -749,22 +758,26 @@ async function saveEditCompany() {
   }
 }
 
-function openCreateCompany() {
+async function openCreateCompany() {
   ['co_name','co_slug'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('co_plan').value = 'starter';
   document.getElementById('co_branches').value = '5';
   document.getElementById('co_staff').value = '50';
   document.getElementById('coErr').textContent = '';
   document.getElementById('coForm').style.display = '';
   document.getElementById('coFormActions').style.display = '';
   document.getElementById('coCredPanel').style.display = 'none';
+  await loadPlansIntoSelects();
+  // Select first option by default
+  const sel = document.getElementById('co_plan');
+  if (sel.options.length) sel.selectedIndex = 0;
+  onCoPlanChange(sel);
   openModal('modalCompany');
 }
 
 async function createCompany() {
   const name         = document.getElementById('co_name').value.trim();
   const slug         = document.getElementById('co_slug').value.trim();
-  const plan         = document.getElementById('co_plan').value;
+  const plan         = document.getElementById('co_plan').selectedOptions[0]?.dataset?.slug || document.getElementById('co_plan').value;
   const max_branches = parseInt(document.getElementById('co_branches').value) || 5;
   const max_staff    = parseInt(document.getElementById('co_staff').value) || 50;
   document.getElementById('coErr').textContent = '';
@@ -772,6 +785,7 @@ async function createCompany() {
   try {
     const d = await api('/saas/companies', 'POST', { name, slug, plan, max_branches, max_staff, admin_password: 'admin' });
     const creds = d.credentials || [];
+    _lastCreatedCredentials = creds;
     const roleLabel = {
       admin: '👑 Admin',
       manager: '🧑‍💼 Менеджер',
@@ -1010,6 +1024,23 @@ async function loadBranchStaff() {
     const d = await api(`/saas/companies/${_currentCompanyId}/staff`);
     _beStaff = d.staff || [];
     renderBranchStaff();
+    // Check staff limit for this company
+    const company = _companiesCache.find(c => c.id === _currentCompanyId);
+    const maxStaff = company?.max_staff || 999;
+    const addBtn = document.querySelector('#bTabStaff button[onclick="openAddStaffModal()"]');
+    if (addBtn) {
+      if (_beStaff.length >= maxStaff) {
+        addBtn.disabled = true;
+        addBtn.title = `Лимит сотрудников: ${maxStaff}. Перейдите на более высокий план.`;
+        addBtn.style.opacity = '0.5';
+        addBtn.textContent = `🚫 Лимит (${_beStaff.length}/${maxStaff})`;
+      } else {
+        addBtn.disabled = false;
+        addBtn.title = '';
+        addBtn.style.opacity = '';
+        addBtn.textContent = `+ Добавить сотрудника (${_beStaff.length}/${maxStaff})`;
+      }
+    }
   } catch(e) {
     document.getElementById('beStaffList').innerHTML = `<span style="color:var(--red)">${e.message}</span>`;
   }
@@ -1101,48 +1132,69 @@ let _ymapsLoaded = false;
 
 function openCoordMap(type) {
   _coordMapType = type;
-  const titleEl = document.getElementById('coordMapTitle');
-  titleEl.textContent = type === 'city' ? '📍 Центр города / района' : '📍 Координаты цеха';
+  document.getElementById('coordMapTitle').textContent = type === 'city' ? '📍 Центр города / района' : '📍 Координаты цеха';
+
   const inputId = type === 'city' ? 'be_city_coords' : 'be_workshop_coords';
   const currentVal = document.getElementById(inputId).value.trim();
   const parts = currentVal.split(',').map(s => parseFloat(s.trim()));
   const hasCoords = parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1]);
-  const center = hasCoords ? [parts[0], parts[1]] : [40.1032, 65.3791];
+
   openModal('modalCoordMap');
-  if (!_ymapsLoaded) {
-    fetch('/api/settings/site').then(r => r.json()).then(d => {
-      const key = d.yandex_maps_key || '270b3869-dc07-494c-b6ce-89e87e2d2c18';
-      const script = document.createElement('script');
-      script.src = `https://api-maps.yandex.ru/2.1/?apikey=${encodeURIComponent(key)}&lang=ru_RU`;
-      script.onload = () => { _ymapsLoaded = true; _initCoordMap(center, hasCoords ? [parts[0], parts[1]] : null); };
-      document.head.appendChild(script);
-    }).catch(() => {
-      const script = document.createElement('script');
-      script.src = 'https://api-maps.yandex.ru/2.1/?apikey=270b3869-dc07-494c-b6ce-89e87e2d2c18&lang=ru_RU';
-      script.onload = () => { _ymapsLoaded = true; _initCoordMap(center, hasCoords ? [parts[0], parts[1]] : null); };
-      document.head.appendChild(script);
+
+  const initMap = (center, markerCoords, useGeo) => {
+    if (typeof ymaps === 'undefined') { setTimeout(() => initMap(center, markerCoords, useGeo), 200); return; }
+    ymaps.ready(() => {
+      const el = document.getElementById('coordMapEl');
+      if (_coordYmap) { _coordYmap.destroy(); _coordYmap = null; _coordYmarker = null; }
+      _coordYmap = new ymaps.Map(el, { center, zoom: 13 }, { suppressMapOpenBlock: true });
+      if (markerCoords) {
+        _coordYmarker = new ymaps.Placemark(markerCoords, {}, { preset: 'islands#redDotIcon' });
+        _coordYmap.geoObjects.add(_coordYmarker);
+      }
+      if (useGeo && navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(pos => {
+          if (!document.getElementById('modalCoordMap').classList.contains('open')) return;
+          _coordYmap.setCenter([pos.coords.latitude, pos.coords.longitude], 14);
+        }, () => {});
+      }
+      _coordYmap.events.add('click', e => {
+        const coords = e.get('coords');
+        if (_coordYmarker) _coordYmap.geoObjects.remove(_coordYmarker);
+        _coordYmarker = new ymaps.Placemark(coords, {}, { preset: 'islands#redDotIcon' });
+        _coordYmap.geoObjects.add(_coordYmarker);
+      });
     });
+  };
+
+  if (hasCoords) {
+    const center = [parts[0], parts[1]];
+    if (!_ymapsLoaded) {
+      _loadYmapsScript(() => initMap(center, center, false));
+    } else {
+      initMap(center, center, false);
+    }
   } else {
-    _initCoordMap(center, hasCoords ? [parts[0], parts[1]] : null);
+    const fallback = [40.1032, 65.3791];
+    if (!_ymapsLoaded) {
+      _loadYmapsScript(() => initMap(fallback, null, true));
+    } else {
+      initMap(fallback, null, true);
+    }
   }
 }
 
-function _initCoordMap(center, markerCoords) {
-  if (typeof ymaps === 'undefined') return;
-  ymaps.ready(() => {
-    const el = document.getElementById('coordMapEl');
-    if (_coordYmap) { _coordYmap.destroy(); _coordYmap = null; _coordYmarker = null; }
-    _coordYmap = new ymaps.Map(el, { center, zoom: 13 }, { suppressMapOpenBlock: true });
-    if (markerCoords) {
-      _coordYmarker = new ymaps.Placemark(markerCoords, {}, { preset: 'islands#redDotIcon' });
-      _coordYmap.geoObjects.add(_coordYmarker);
-    }
-    _coordYmap.events.add('click', e => {
-      const coords = e.get('coords');
-      if (_coordYmarker) { _coordYmap.geoObjects.remove(_coordYmarker); }
-      _coordYmarker = new ymaps.Placemark(coords, {}, { preset: 'islands#redDotIcon' });
-      _coordYmap.geoObjects.add(_coordYmarker);
-    });
+function _loadYmapsScript(cb) {
+  fetch('/api/settings/site').then(r => r.json()).then(d => {
+    const key = d.yandex_maps_key || '270b3869-dc07-494c-b6ce-89e87e2d2c18';
+    const s = document.createElement('script');
+    s.src = `https://api-maps.yandex.ru/2.1/?apikey=${encodeURIComponent(key)}&lang=ru_RU`;
+    s.onload = () => { _ymapsLoaded = true; cb(); };
+    document.head.appendChild(s);
+  }).catch(() => {
+    const s = document.createElement('script');
+    s.src = 'https://api-maps.yandex.ru/2.1/?apikey=270b3869-dc07-494c-b6ce-89e87e2d2c18&lang=ru_RU';
+    s.onload = () => { _ymapsLoaded = true; cb(); };
+    document.head.appendChild(s);
   });
 }
 
@@ -1157,6 +1209,54 @@ function applyCoordMap() {
 
 // ── PLANS ─────────────────────────────────────────────
 let _plansCache = [];
+let _lastCreatedCredentials = [];
+
+async function loadPlansIntoSelects() {
+  if (!_plansCache.length) {
+    try {
+      const d = await api('/saas/plans');
+      _plansCache = d.plans || [];
+    } catch(e) { return; }
+  }
+  const html = _plansCache.map(p => `<option value="${p.id}" data-slug="${escHtml(p.slug)}" data-branches="${p.max_branches}" data-staff="${p.max_staff}">${escHtml(p.display_name)} — ${p.max_branches} фил. / ${p.max_staff} сотр.</option>`).join('');
+  ['co_plan', 'ec_plan'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const cur = el.value;
+    el.innerHTML = html;
+    if (cur) {
+      for (const opt of el.options) {
+        if (opt.value === cur || opt.dataset.slug === cur) { el.value = opt.value; break; }
+      }
+    }
+  });
+}
+
+function onCoPlanChange(sel) {
+  const opt = sel.selectedOptions[0];
+  if (!opt) return;
+  const branches = opt.dataset.branches;
+  const staff    = opt.dataset.staff;
+  if (branches) document.getElementById('co_branches').value = branches;
+  if (staff)    document.getElementById('co_staff').value    = staff;
+}
+
+function copyCredentials() {
+  const roleLabel = {
+    admin: '👑 Admin', manager: '🧑‍💼 Менеджер', callcenter: '📞 Колл-центр',
+    driver: '🚗 Водитель', packer: '📦 Упаковщик', logistics: '🚚 Логистика', washer: '🫧 Мойщик'
+  };
+  const text = _lastCreatedCredentials.map(c =>
+    `${roleLabel[c.role] || c.role}\nЛогин: ${c.login}\nПароль: ${c.password}`
+  ).join('\n\n');
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.querySelector('#coCredPanel .btn-ghost');
+    const orig = btn?.textContent;
+    if (btn) { btn.textContent = '✅ Скопировано!'; setTimeout(() => { btn.textContent = orig; }, 2000); }
+  }).catch(() => {
+    prompt('Скопируйте вручную:', text);
+  });
+}
 
 async function loadPlans() {
   try {

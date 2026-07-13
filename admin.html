@@ -5759,6 +5759,24 @@ async function staffMgmtLoad() {
         </div>
       </div>`;
     }).join('');
+    // Update "+ Добавить" button with staff limit info
+    try {
+      const settingsData = await apiFetch(`${API_BASE}/company/settings`).then(r => r.json());
+      const maxStaff = settingsData?.settings?.max_staff || 999;
+      const staffList = list;
+      const addBtn = document.querySelector('[onclick="staffMgmtOpenCreate()"]');
+      if (addBtn) {
+        if (staffList.length >= maxStaff) {
+          addBtn.disabled = true;
+          addBtn.style.opacity = '0.5';
+          addBtn.title = `Лимит: ${maxStaff}`;
+        } else {
+          addBtn.disabled = false;
+          addBtn.style.opacity = '';
+          addBtn.title = `${staffList.length} из ${maxStaff}`;
+        }
+      }
+    } catch(e) {}
   } catch(e) { el.innerHTML = `<div style="color:var(--danger,#e53e3e)">${e.message}</div>`; }
 }
 
@@ -5839,6 +5857,21 @@ async function staffMgmtSave() {
   } else {
     // Create mode
     if (!password || password.length < 4) { errEl.textContent = 'Пароль мин. 4 символа'; return; }
+    // Check staff limit by plan
+    try {
+      const [settingsRes, staffListRes] = await Promise.all([
+        apiFetch(`${API_BASE}/company/settings`),
+        apiFetch(`${API_BASE}/staff/list`)
+      ]);
+      const settingsData = await settingsRes.json();
+      const staffListData = await staffListRes.json();
+      const maxStaff = settingsData?.settings?.max_staff || 999;
+      const currentCount = (staffListData?.staff || []).filter(s => s.active !== false).length;
+      if (currentCount >= maxStaff) {
+        errEl.textContent = `Лимит сотрудников по тарифу: ${maxStaff}. Перейдите на более высокий план.`;
+        return;
+      }
+    } catch(e) { /* проверка не критична */ }
     try {
       const res = await apiFetch(`${API_BASE}/staff/create`, {
         method: 'POST',
