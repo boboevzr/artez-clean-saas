@@ -5556,6 +5556,22 @@ function _brRowMono(label, val) {
   return `<div class="cfg-field"><label>${label}</label><div class="form-input" style="background:transparent;border-color:transparent;padding-left:0;color:var(--text);font-family:monospace;min-height:36px;display:flex;align-items:center">${_brVal(val)}</div></div>`;
 }
 
+function _brTgCard(icon, title, desc, link, id) {
+  const linkHtml = link
+    ? `<a href="${escHtml(link)}" target="_blank" rel="noopener" style="color:var(--accent);font-size:13px;word-break:break-all;text-decoration:none">${escHtml(link)}</a>`
+    : `<span style="color:var(--text2);font-size:12px">—</span>`;
+  const idHtml = id
+    ? `<span style="font-family:monospace;font-size:12px;color:var(--text2)">${escHtml(String(id))}</span>`
+    : `<span style="color:var(--text2);font-size:12px">—</span>`;
+  return `<div class="tg-group-card" style="margin-bottom:8px">
+    <div class="tg-group-head">
+      <span class="tg-group-icon">${icon}</span>
+      <div><div class="tg-group-title">${escHtml(title)}</div><div class="tg-group-desc">${escHtml(desc)}</div></div>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;gap:4px;justify-content:center">${linkHtml}${idHtml}</div>
+  </div>`;
+}
+
 function renderBranchContactCards() {
   const wrap = document.getElementById('branchContactsContainer');
   if (!wrap) return;
@@ -5592,15 +5608,11 @@ function renderBranchContactCards() {
         ${_brRow('Instagram', b.instagram)}
       </div>
       ${_brSectionLabel('📱 Telegram — группы и каналы')}
-      <div class="contacts-grid">
-        ${_brRow('Группа лидов — Ссылка', b.tg_leads_group_link)}
-        ${_brRowMono('Группа лидов — ID', b.tg_leads_group_id)}
-        ${_brRow('Группа заказов — Ссылка', b.tg_orders_channel_link)}
-        ${_brRowMono('Группа заказов — ID', b.tg_orders_channel_id)}
-        ${_brRow('Группа водителей — Ссылка', b.tg_delivery_group_link)}
-        ${_brRowMono('Группа водителей — ID', b.tg_delivery_group_id)}
-        ${_brRow('Канал доставки — Ссылка', b.tg_delivery_channel_link)}
-        ${_brRowMono('Канал доставки — ID', b.tg_delivery_channel_id)}
+      <div style="margin-top:8px">
+        ${_brTgCard('🧑‍💼', 'Группа лидов',    'Новые заявки из CRM',            b.tg_leads_group_link,      b.tg_leads_group_id)}
+        ${_brTgCard('📦',  'Группа заказов',   'Приём и статусы заказов',         b.tg_orders_channel_link,   b.tg_orders_channel_id)}
+        ${_brTgCard('🚗',  'Группа водителей', 'Маршруты и доставка',             b.tg_delivery_group_link,   b.tg_delivery_group_id)}
+        ${_brTgCard('📢',  'Канал доставки',   'Список маршрутов для водителей',  b.tg_delivery_channel_link, b.tg_delivery_channel_id)}
       </div>
     </div>`;
   }).join('') || '<p style="color:var(--text2)">Нет филиалов. Добавьте первый.</p>';
