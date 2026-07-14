@@ -435,13 +435,6 @@
         </div>
         <div class="field"><label>Телефон 1</label><input id="be_phone1" placeholder="+998 88 000-00-00"></div>
         <div class="field"><label>Телефон 2</label><input id="be_phone2" placeholder="+998 ..."></div>
-        <div class="field"><label>WhatsApp</label><input id="be_whatsapp" placeholder="+998901234567"></div>
-        <div class="field"><label>Instagram</label><input id="be_instagram" placeholder="@artez_uz"></div>
-      </div>
-      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--text2);margin:12px 0 8px">Telegram Admin</div>
-      <div style="display:grid;grid-template-columns:1fr auto;gap:0 8px;align-items:end">
-        <div class="field"><label>Admin TG — ссылка</label><input id="be_admin_tg_link" placeholder="https://t.me/..."></div>
-        <div class="field" style="width:130px"><label>ID</label><input id="be_admin_tg_id" placeholder="-100123..."></div>
       </div>
       <div class="modal-err" id="beErr" style="margin-top:8px"></div>
     </div>
@@ -1022,6 +1015,14 @@ function bTab(name) {
   document.getElementById('bTabBtnTg').classList.toggle('active',    name==='tg');
   document.getElementById('bTabBtnStaff').classList.toggle('active', name==='staff');
   if (name === 'staff') loadBranchStaff();
+  if (name === 'tg') _bTabTgAutoLoad();
+}
+function _bTabTgAutoLoad() {
+  [['be_tg_leads_id','tgn_leads_sa'],['be_tg_orders_id','tgn_orders_sa'],
+   ['be_tg_delivery_id','tgn_delivery_sa'],['be_tg_dchannel_id','tgn_dchannel_sa']
+  ].forEach(([inp, out]) => {
+    if (document.getElementById(inp)?.value) tgCheckId(inp, out);
+  });
 }
 
 // ── BRANCH EDIT ───────────────────────────────────────
@@ -1054,11 +1055,6 @@ function openBranchEdit(companyId, branch) {
   const phones = _saParsePhones(branch.phones);
   g('be_phone1').value = phones[0]?.n || phones[0]?.number || '';
   g('be_phone2').value = phones[1]?.n || phones[1]?.number || '';
-  g('be_whatsapp').value  = branch.whatsapp || '';
-  g('be_instagram').value = branch.instagram || '';
-  // Telegram
-  g('be_admin_tg_link').value    = branch.admin_tg_link || '';
-  g('be_admin_tg_id').value      = branch.admin_tg_id   || '';
   g('be_tg_leads_id').value      = branch.tg_leads_group_id        || '';
   g('be_tg_orders_id').value     = branch.tg_orders_channel_id     || '';
   g('be_tg_delivery_id').value   = branch.tg_delivery_group_id     || '';
@@ -1086,10 +1082,6 @@ async function saveBranchEdit() {
     name_uz:             g('be_name_uz') || null,
     lat, lon, workshop_lat: wlat, workshop_lon: wlon,
     phones,
-    whatsapp:            g('be_whatsapp') || null,
-    instagram:           g('be_instagram') || null,
-    admin_tg_link:       g('be_admin_tg_link') || null,
-    admin_tg_id:         intOrNull(g('be_admin_tg_id')),
     tg_leads_group_id:       intOrNull(g('be_tg_leads_id')),
     tg_orders_channel_id:    intOrNull(g('be_tg_orders_id')),
     tg_delivery_group_id:    intOrNull(g('be_tg_delivery_id')),
