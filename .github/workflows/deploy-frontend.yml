@@ -28,14 +28,17 @@ jobs:
           submodules: false
 
       - name: Generate config.js
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          INPUT_API_URL: ${{ github.event.inputs.api_url }}
+          INPUT_CO_NAME: ${{ github.event.inputs.company_name }}
         run: |
-          # При push в main — всегда saas-test со своим API
-          if [ "${{ github.event_name }}" = "push" ]; then
+          if [ "$EVENT_NAME" = "push" ]; then
             API_URL="https://web-production-eef2a.up.railway.app"
             CO_NAME="ARTEZ"
           else
-            API_URL="${{ github.event.inputs.api_url }}"
-            CO_NAME="${{ github.event.inputs.company_name }}"
+            API_URL="$INPUT_API_URL"
+            CO_NAME="$INPUT_CO_NAME"
           fi
           printf 'window.APP_COMPANY_NAME = "%s";\nwindow.APP_API_URL      = "%s";\n' \
             "$CO_NAME" "$API_URL" > config.js
@@ -44,9 +47,10 @@ jobs:
 
       - name: Validate subdomain (manual dispatch only)
         if: github.event_name == 'workflow_dispatch'
+        env:
+          INPUT_SUB: ${{ github.event.inputs.subdomain }}
         run: |
-          SUB="${{ github.event.inputs.subdomain }}"
-          if [ -z "$SUB" ]; then
+          if [ -z "$INPUT_SUB" ]; then
             echo "ERROR: subdomain не может быть пустым. Укажите поддомен (например: saas-test, client1)."
             exit 1
           fi
