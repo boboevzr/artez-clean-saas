@@ -4607,7 +4607,7 @@
           <div class="form-group">
             <label class="form-label">Филиал</label>
             <select class="form-input" id="sf_branch" data-branch-select>
-              <option value="">Не указан</option>
+              <option value="">— Уровень компании (без филиала) —</option>
             </select>
           </div>
           <div class="form-group">
@@ -5203,12 +5203,24 @@
   <div class="modal-box" style="max-width:420px">
     <div class="modal-title" id="staffMgmtModalTitle">Добавить сотрудника</div>
     <div style="display:flex;flex-direction:column;gap:10px;margin-top:12px">
-      <input class="form-input" id="sm_fname" placeholder="Имя *" autocomplete="off">
-      <input class="form-input" id="sm_lname" placeholder="Фамилия" autocomplete="off">
-      <input class="form-input" id="sm_login" placeholder="Логин *" autocomplete="off">
-      <div style="position:relative">
-        <input class="form-input" id="sm_pass" type="password" placeholder="Пароль *" autocomplete="new-password" style="width:100%;padding-right:36px;box-sizing:border-box">
-        <button onclick="toggleSmPass()" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;color:var(--text-secondary)">👁</button>
+      <!-- Режим выбора деактивированного сотрудника -->
+      <div id="sm_pick_row" style="display:none">
+        <label class="form-label">Сотрудник</label>
+        <select class="form-input" id="sm_pick_staff" autocomplete="off">
+          <option value="">— выберите —</option>
+        </select>
+      </div>
+      <!-- Режим создания нового / редактирования -->
+      <div id="sm_form_row">
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <input class="form-input" id="sm_fname" placeholder="Имя *" autocomplete="off">
+          <input class="form-input" id="sm_lname" placeholder="Фамилия" autocomplete="off">
+          <input class="form-input" id="sm_login" placeholder="Логин *" autocomplete="off">
+          <div style="position:relative">
+            <input class="form-input" id="sm_pass" type="password" placeholder="Пароль *" autocomplete="new-password" style="width:100%;padding-right:36px;box-sizing:border-box">
+            <button onclick="toggleSmPass()" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;color:var(--text-secondary)">👁</button>
+          </div>
+        </div>
       </div>
       <select class="form-input" id="sm_role">
         <option value="admin">admin (полный доступ)</option>
@@ -5966,76 +5978,89 @@ async function staffMgmtLoad() {
   el.innerHTML = '<div style="color:var(--text-secondary)">Загрузка…</div>';
   try {
     const r = await apiGet('/staff/list');
-    const list = (r?.staff || []).filter(s => ['admin','manager','callcenter'].includes(s.role));
-    if (!list.length) { el.innerHTML = '<div style="color:var(--text-secondary)">Нет сотрудников</div>'; return; }
-    const minId = Math.min(...list.map(s => s.id));
+    const ADMIN_ROLES = ['admin','manager','callcenter'];
+    const list = (r?.staff || []).filter(s => ADMIN_ROLES.includes(s.role));
     const meId = _adminMe?.id;
-    el.innerHTML = list.map(s => {
-      const isProtected = s.id === minId || s.id === meId;
-      return `
-      <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border-color,#e2e8f0)">
-        <div style="flex:1;min-width:0">
-          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
-            <span style="font-weight:600">${escHtml(s.first_name||'')} ${escHtml(s.last_name||'')}</span>
-            <span style="background:var(--accent,#3b82f6);color:#fff;font-size:11px;padding:2px 7px;border-radius:20px">${s.role}</span>
-            ${s.active===false?'<span style="background:#e53e3e;color:#fff;font-size:11px;padding:2px 7px;border-radius:20px">откл</span>':''}
+    if (!list.length) {
+      el.innerHTML = '<div style="color:var(--text-secondary)">Нет сотрудников с доступом в admin</div>';
+    } else {
+      el.innerHTML = list.map(s => {
+        const isActive = s.active !== false;
+        const isMe = s.id === meId;
+        return `
+        <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border-color,#e2e8f0)">
+          <div style="flex:1;min-width:0">
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+              <span style="font-weight:600">${escHtml(s.first_name||'')} ${escHtml(s.last_name||'')}</span>
+              <span style="background:var(--accent,#3b82f6);color:#fff;font-size:11px;padding:2px 7px;border-radius:20px">${s.role}</span>
+              ${!isActive?'<span style="background:#e53e3e;color:#fff;font-size:11px;padding:2px 7px;border-radius:20px">откл</span>':''}
+            </div>
+            <div style="margin-top:4px;font-size:12px;font-family:monospace;color:var(--text-secondary)">
+              <span style="margin-right:12px">🔑 ${escHtml(s.login||'')}</span>
+              <span style="color:var(--text2,#64748b)">🔒 ${escHtml(s.plain_password||'—')}</span>
+            </div>
           </div>
-          <div style="margin-top:4px;font-size:12px;font-family:monospace;color:var(--text-secondary)">
-            <span style="margin-right:12px">🔑 ${escHtml(s.login||'')}</span>
-            <span style="color:var(--text2,#64748b)">🔒 ${escHtml(s.plain_password||'—')}</span>
+          <div style="display:flex;gap:4px;align-items:center;flex-shrink:0">
+            ${!isMe ? `<button class="btn btn-ghost btn-sm" onclick="staffMgmtToggle(${s.id},${isActive})" title="${isActive?'Деактивировать':'Активировать'}">${isActive?'🚫':'✅'}</button>` : ''}
+            <button class="btn btn-ghost btn-sm" onclick='staffMgmtOpenEdit(${JSON.stringify(s)})' title="Редактировать">✏️</button>
           </div>
-        </div>
-        <div style="display:flex;gap:4px;align-items:center;flex-shrink:0">
-          <button class="btn btn-ghost btn-sm" onclick="staffMgmtToggle(${s.id},${s.active!==false})" title="${s.active!==false?'Деактивировать':'Активировать'}">
-            ${s.active!==false?'🚫':'✅'}
-          </button>
-          <button class="btn btn-ghost btn-sm" onclick='staffMgmtOpenEdit(${JSON.stringify(s)})' title="Редактировать">✏️</button>
-          ${!isProtected ? `<button class="btn btn-ghost btn-sm" onclick="staffMgmtDelete(${s.id},'${escHtml(s.first_name||'')} ${escHtml(s.last_name||'')}')" title="Удалить" style="color:var(--danger,#e53e3e)">🗑️</button>` : ''}
-        </div>
-      </div>`;
-    }).join('');
-    // Update "+ Добавить" button with staff limit info
-    try {
-      const settingsData = await apiFetch(`${API_BASE}/company/settings`).then(r => r.json());
-      const maxStaff = settingsData?.settings?.max_staff || 999;
-      const staffList = list;
-      const addBtn = document.querySelector('[onclick="staffMgmtOpenCreate()"]');
-      if (addBtn) {
-        if (staffList.length >= maxStaff) {
-          addBtn.disabled = true;
-          addBtn.style.opacity = '0.5';
-          addBtn.title = `Лимит: ${maxStaff}`;
-        } else {
-          addBtn.disabled = false;
-          addBtn.style.opacity = '';
-          addBtn.title = `${staffList.length} из ${maxStaff}`;
-        }
-      }
-    } catch(e) {}
+        </div>`;
+      }).join('');
+    }
+    // "+Добавить" скрываем, если уже 3 записи (активных + деактивированных)
+    const addBtn = document.querySelector('[onclick="staffMgmtOpenCreate()"]');
+    if (addBtn) {
+      if (list.length >= 3) { addBtn.style.display = 'none'; }
+      else { addBtn.style.display = ''; addBtn.title = `${list.length} из 3`; }
+    }
   } catch(e) { el.innerHTML = `<div style="color:var(--danger,#e53e3e)">${e.message}</div>`; }
 }
 
-function staffMgmtOpenCreate() {
+async function staffMgmtOpenCreate() {
   _smEditId = null;
-  ['sm_fname','sm_lname','sm_login','sm_pass'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
-  const role = document.getElementById('sm_role'); if(role) role.value='admin';
   document.getElementById('staffMgmtErr').textContent = '';
   document.getElementById('staffMgmtModalTitle').textContent = 'Добавить сотрудника';
-  document.getElementById('staffMgmtSaveBtn').textContent = 'Создать';
-  const passEl = document.getElementById('sm_pass');
-  passEl.required = true;
-  passEl.placeholder = 'Пароль *';
+  const role = document.getElementById('sm_role'); if(role) role.value = 'manager';
+  // Проверяем деактивированных company-level staff
+  try {
+    const r = await apiGet('/staff/list');
+    const ADMIN_ROLES = ['admin','manager','callcenter'];
+    const inactive = (r?.staff || []).filter(s => ADMIN_ROLES.includes(s.role) && s.active === false && !s.branch);
+    if (inactive.length) {
+      // Показываем picker деактивированных
+      document.getElementById('sm_pick_row').style.display = '';
+      document.getElementById('sm_form_row').style.display = 'none';
+      document.getElementById('staffMgmtSaveBtn').textContent = 'Активировать';
+      const sel = document.getElementById('sm_pick_staff');
+      sel.innerHTML = '<option value="">— выберите —</option>' + inactive.map(s => {
+        const name = [s.first_name, s.last_name].filter(Boolean).join(' ') || s.login;
+        return `<option value="${s.id}">${escHtml(name)} (${s.role})</option>`;
+      }).join('');
+    } else {
+      // Форма создания нового
+      document.getElementById('sm_pick_row').style.display = 'none';
+      document.getElementById('sm_form_row').style.display = '';
+      ['sm_fname','sm_lname','sm_login','sm_pass'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+      const passEl = document.getElementById('sm_pass'); passEl.required = true; passEl.placeholder = 'Пароль *';
+      document.getElementById('staffMgmtSaveBtn').textContent = 'Создать';
+    }
+  } catch(e) {
+    document.getElementById('sm_pick_row').style.display = 'none';
+    document.getElementById('sm_form_row').style.display = '';
+    document.getElementById('staffMgmtSaveBtn').textContent = 'Создать';
+  }
   openModal('modalStaffMgmt');
 }
 
 function staffMgmtOpenEdit(s) {
   _smEditId = s.id;
+  document.getElementById('sm_pick_row').style.display = 'none';
+  document.getElementById('sm_form_row').style.display = '';
   document.getElementById('sm_fname').value = s.first_name || '';
   document.getElementById('sm_lname').value = s.last_name || '';
   document.getElementById('sm_login').value = s.login || '';
   const passEl = document.getElementById('sm_pass');
-  passEl.value = '';
-  passEl.required = false;
+  passEl.value = ''; passEl.required = false;
   passEl.placeholder = 'Новый пароль (оставьте пустым, чтобы не менять)';
   const role = document.getElementById('sm_role'); if(role) role.value = s.role || 'admin';
   document.getElementById('staffMgmtErr').textContent = '';
@@ -6044,63 +6069,62 @@ function staffMgmtOpenEdit(s) {
   openModal('modalStaffMgmt');
 }
 
-async function staffMgmtDelete(id, name) {
-  if (!confirm(`Удалить сотрудника «${name}»? Это действие нельзя отменить.`)) return;
-  try {
-    const res = await apiFetch(`${API_BASE}/admin/staff/${id}`, { method: 'DELETE' });
-    const r = await res.json();
-    if (!r.ok) { showToast(r.detail || 'Ошибка удаления', 'error'); return; }
-    showToast('Сотрудник удалён');
-    await staffMgmtLoad();
-  } catch(e) { showToast(e.message, 'error'); }
-}
-
 async function staffMgmtSave() {
-  const first_name = document.getElementById('sm_fname').value.trim();
-  const last_name  = document.getElementById('sm_lname').value.trim();
-  const login      = document.getElementById('sm_login').value.trim();
-  const password   = document.getElementById('sm_pass').value;
-  const role       = document.getElementById('sm_role').value;
-  const errEl      = document.getElementById('staffMgmtErr');
+  const role   = document.getElementById('sm_role').value;
+  const errEl  = document.getElementById('staffMgmtErr');
   errEl.textContent = '';
-  if (!first_name || !login) { errEl.textContent = 'Заполните имя и логин'; return; }
+  const pickerVisible = document.getElementById('sm_pick_row').style.display !== 'none';
 
   if (_smEditId) {
+    const first_name = document.getElementById('sm_fname').value.trim();
+    const last_name  = document.getElementById('sm_lname').value.trim();
+    const login      = document.getElementById('sm_login').value.trim();
+    const password   = document.getElementById('sm_pass').value;
+    if (!first_name || !login) { errEl.textContent = 'Заполните имя и логин'; return; }
     if (password && password.length < 4) { errEl.textContent = 'Пароль мин. 4 символа'; return; }
     try {
       const res = await apiFetch(`${API_BASE}/staff/${_smEditId}`, {
-        method: 'PATCH',
-        headers: {'Content-Type':'application/json'},
+        method: 'PATCH', headers: {'Content-Type':'application/json'},
         body: JSON.stringify({ first_name, last_name, login, role })
       });
       const r = await res.json();
       if (!r.ok) { errEl.textContent = r.detail || 'Ошибка'; return; }
       if (password) {
-        const res2 = await apiFetch(`${API_BASE}/staff/${_smEditId}/password`, {
-          method: 'PUT',
-          headers: {'Content-Type':'application/json'},
+        const r2 = await apiFetch(`${API_BASE}/staff/${_smEditId}/password`, {
+          method: 'PUT', headers: {'Content-Type':'application/json'},
           body: JSON.stringify({ password })
-        });
-        const r2 = await res2.json();
+        }).then(r => r.json());
         if (!r2.ok) { errEl.textContent = r2.detail || 'Ошибка смены пароля'; return; }
       }
-      closeModal('modalStaffMgmt');
-      await staffMgmtLoad();
-      showToast('Сохранено');
+      closeModal('modalStaffMgmt'); await staffMgmtLoad(); showToast('Сохранено');
+    } catch(e) { if(e.message!=='401') errEl.textContent = e.message; }
+  } else if (pickerVisible) {
+    const staffId = document.getElementById('sm_pick_staff').value;
+    if (!staffId) { errEl.textContent = 'Выберите сотрудника'; return; }
+    try {
+      const res = await apiFetch(`${API_BASE}/staff/${staffId}`, {
+        method: 'PATCH', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ active: true, role })
+      });
+      const r = await res.json();
+      if (!r.ok) { errEl.textContent = r.detail || 'Ошибка'; return; }
+      closeModal('modalStaffMgmt'); await staffMgmtLoad(); showToast('Сотрудник активирован');
     } catch(e) { if(e.message!=='401') errEl.textContent = e.message; }
   } else {
+    const first_name = document.getElementById('sm_fname').value.trim();
+    const last_name  = document.getElementById('sm_lname').value.trim();
+    const login      = document.getElementById('sm_login').value.trim();
+    const password   = document.getElementById('sm_pass').value;
+    if (!first_name || !login) { errEl.textContent = 'Заполните имя и логин'; return; }
     if (!password || password.length < 4) { errEl.textContent = 'Пароль мин. 4 символа'; return; }
     try {
       const res = await apiFetch(`${API_BASE}/staff/create`, {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
+        method: 'POST', headers: {'Content-Type':'application/json'},
         body: JSON.stringify({ first_name, last_name, login, password, role })
       });
       const r = await res.json();
       if (!r.ok) { errEl.textContent = r.detail || 'Ошибка'; return; }
-      closeModal('modalStaffMgmt');
-      await staffMgmtLoad();
-      showToast('Сотрудник создан');
+      closeModal('modalStaffMgmt'); await staffMgmtLoad(); showToast('Сотрудник создан');
     } catch(e) { if(e.message!=='401') errEl.textContent = e.message; }
   }
 }
@@ -6108,8 +6132,7 @@ async function staffMgmtSave() {
 async function staffMgmtToggle(id, isActive) {
   try {
     const res = await apiFetch(`${API_BASE}/staff/${id}`, {
-      method: 'PATCH',
-      headers: {'Content-Type':'application/json'},
+      method: 'PATCH', headers: {'Content-Type':'application/json'},
       body: JSON.stringify({ active: !isActive })
     });
     await staffMgmtLoad();

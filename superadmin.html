@@ -292,6 +292,7 @@
       <button class="tab-btn"        id="ecTabBtnContacts"  onclick="ecTab('contacts')">📱 Контакты</button>
       <button class="tab-btn"        id="ecTabBtnBranches"  onclick="ecTab('branches')">🏢 Филиалы</button>
       <button class="tab-btn"        id="ecTabBtnPayment"   onclick="ecTab('payment')">📊 Тариф</button>
+      <button class="tab-btn"        id="ecTabBtnStaff"     onclick="ecTab('staff')">👥 Сотрудники</button>
     </div>
 
     <!-- Tab: Данные -->
@@ -432,6 +433,11 @@
         <button class="btn btn-primary btn-sm" onclick="openPaymentModal()">+ Добавить</button>
       </div>
       <div id="ecPaymentsHistory"></div>
+    </div>
+
+    <!-- Tab: Сотрудники -->
+    <div id="ecTabStaff" style="display:none">
+      <div id="ecStaffList" style="margin-top:4px"><div style="color:var(--text2);font-size:13px">Загрузка…</div></div>
     </div>
 
     <div class="modal-actions">
@@ -1054,14 +1060,58 @@ function ecTab(name) {
   document.getElementById('ecTabContacts').style.display = name==='contacts' ? '' : 'none';
   document.getElementById('ecTabBranches').style.display = name==='branches' ? '' : 'none';
   document.getElementById('ecTabPayment').style.display  = name==='payment'  ? '' : 'none';
+  document.getElementById('ecTabStaff').style.display    = name==='staff'    ? '' : 'none';
   document.getElementById('ecSaveBtn').style.display     = (name==='data' || name==='contacts') ? '' : 'none';
   document.getElementById('ecTabBtnData').classList.toggle('active',     name==='data');
   document.getElementById('ecTabBtnContacts').classList.toggle('active', name==='contacts');
   document.getElementById('ecTabBtnBranches').classList.toggle('active', name==='branches');
   document.getElementById('ecTabBtnPayment').classList.toggle('active',  name==='payment');
+  document.getElementById('ecTabBtnStaff').classList.toggle('active',    name==='staff');
   if (name === 'branches' && _currentCompanyId) loadEditExtras(_currentCompanyId);
   if (name === 'payment'  && _currentCompanyId) loadPaymentTab();
   if (name === 'contacts') _ecContactsLoad();
+  if (name === 'staff'    && _currentCompanyId) _ecStaffLoad();
+}
+
+async function _ecStaffLoad() {
+  const el = document.getElementById('ecStaffList');
+  if (!el || !_currentCompanyId) return;
+  el.innerHTML = '<div style="color:var(--text2);font-size:13px">Загрузка…</div>';
+  try {
+    const d = await api(`/saas/companies/${_currentCompanyId}/staff`);
+    const staff = d?.staff || [];
+    if (!staff.length) { el.innerHTML = '<div style="color:var(--text2);font-size:13px">Нет сотрудников</div>'; return; }
+
+    const ROLE_COLOR = { admin:'#e67e00', manager:'#3b82f6', callcenter:'#8b5cf6',
+                         driver:'#10b981', packer:'#f59e0b', logistics:'#06b6d4', washer:'#6366f1' };
+    const fmt = s => {
+      const name = [s.first_name, s.last_name].filter(Boolean).join(' ') || s.login;
+      const color = ROLE_COLOR[s.role] || '#64748b';
+      const inactive = s.active === false ? '<span style="font-size:10px;color:#e53e3e;margin-left:4px">откл</span>' : '';
+      return `<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border)">
+        <span style="font-size:13px;font-weight:600;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${name}${inactive}</span>
+        <span style="font-size:11px;background:${color}22;color:${color};padding:2px 7px;border-radius:12px;flex-shrink:0">${s.role}</span>
+        <span style="font-size:11px;font-family:monospace;color:var(--text2);flex-shrink:0">🔑 ${s.login || '—'}</span>
+      </div>`;
+    };
+
+    // Уровень компании (branch = NULL / пусто)
+    const companyStaff = staff.filter(s => !s.branch);
+    // Уровень филиала, сгруппировать по branch
+    const byBranch = {};
+    staff.filter(s => s.branch).forEach(s => { (byBranch[s.branch] = byBranch[s.branch] || []).push(s); });
+
+    let html = '';
+    if (companyStaff.length) {
+      html += `<div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--text2);margin:10px 0 4px">🏢 Уровень компании</div>`;
+      html += companyStaff.map(fmt).join('');
+    }
+    for (const [branch, members] of Object.entries(byBranch)) {
+      html += `<div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--text2);margin:12px 0 4px">📍 Филиал: ${branch}</div>`;
+      html += members.map(fmt).join('');
+    }
+    el.innerHTML = html;
+  } catch(e) { el.innerHTML = `<div style="color:var(--danger);font-size:13px">${e.message}</div>`; }
 }
 
 async function _ecContactsLoad() {
