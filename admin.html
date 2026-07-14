@@ -4581,14 +4581,18 @@
             <label class="form-label">Роль (права доступа)</label>
             <div id="sf_role_display" style="padding:10px 14px;border-radius:10px;border:1.5px solid var(--border);font-size:14px;color:var(--text2);background:var(--surface);min-height:42px">— определяется должностью —</div>
             <select class="form-input" id="sf_role" onchange="sfUpdateRoleBadge()" style="display:none">
+              <option value="admin">Администратор</option>
+              <option value="manager">Менеджер</option>
               <option value="callcenter">Колл-центр</option>
-              <option value="manager">Менеджер по продажам</option>
+              <option value="receiver">Приёмщик</option>
+              <option value="storekeeper">Кладовщик</option>
+              <option value="sorter">Сортировщик</option>
+              <option value="technician">Техник / Механик</option>
               <option value="washer">Мойщик</option>
               <option value="packer">Упаковщик</option>
               <option value="logistics">Логистика</option>
               <option value="driver">Водитель-курьер</option>
               <option value="agent">Агент</option>
-              <option value="admin">Администратор</option>
             </select>
           </div>
           <div class="form-group">
@@ -5369,14 +5373,18 @@
       <div class="form-group"><label class="form-label">Роль (права доступа)</label>
         <select class="form-input" id="pos_role">
           <option value="">— не задана —</option>
-          <option value="callcenter">Колл-центр</option>
+          <option value="admin">Администратор</option>
           <option value="manager">Менеджер</option>
+          <option value="callcenter">Колл-центр</option>
+          <option value="receiver">Приёмщик</option>
+          <option value="storekeeper">Кладовщик</option>
+          <option value="sorter">Сортировщик</option>
+          <option value="technician">Техник / Механик</option>
           <option value="washer">Мойщик</option>
           <option value="packer">Упаковщик</option>
           <option value="logistics">Логистика</option>
           <option value="driver">Водитель-курьер</option>
           <option value="agent">Агент</option>
-          <option value="admin">Администратор</option>
         </select>
       </div>
       <div class="form-group"><label class="form-label">Тип зарплаты</label>
@@ -8075,8 +8083,9 @@ function sfToggleStyle(name) {
 }
 
 const _SF_ROLE_LABELS = {
-  callcenter:'Колл-центр', manager:'Менеджер', washer:'Мойщик', packer:'Упаковщик',
-  logistics:'Логистика', driver:'Водитель-курьер', agent:'Агент', admin:'Администратор'
+  admin:'Администратор', manager:'Менеджер', callcenter:'Колл-центр',
+  receiver:'Приёмщик', storekeeper:'Кладовщик', sorter:'Сортировщик', technician:'Техник / Механик',
+  washer:'Мойщик', packer:'Упаковщик', logistics:'Логистика', driver:'Водитель-курьер', agent:'Агент'
 };
 function sfUpdateAvatar() {
   const first = (document.getElementById('sf_firstName')?.value || '').trim();
@@ -8110,11 +8119,11 @@ function sfUpdateRoleBadge() {
   const leftPanel = document.querySelector('.staff-modal-left');
   if (leftPanel) leftPanel.style.borderRight = isAgent ? 'none' : '';
   sfMaybeShowCommissionsTab();
-  // Компанийские роли — без привязки к филиалу
+  // admin и callcenter — всегда без филиала; manager и technician — опционально
   const branchEl = document.getElementById('sf_branch');
   if (branchEl) {
-    const isCompanyRole = ['admin','manager','callcenter'].includes(role);
-    if (isCompanyRole) { branchEl.value = ''; branchEl.disabled = true; branchEl.style.opacity = '0.5'; }
+    const alwaysCompany = ['admin','callcenter'].includes(role);
+    if (alwaysCompany) { branchEl.value = ''; branchEl.disabled = true; branchEl.style.opacity = '0.5'; }
     else { branchEl.disabled = false; branchEl.style.opacity = ''; }
   }
 }
