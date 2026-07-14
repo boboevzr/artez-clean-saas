@@ -8110,6 +8110,13 @@ function sfUpdateRoleBadge() {
   const leftPanel = document.querySelector('.staff-modal-left');
   if (leftPanel) leftPanel.style.borderRight = isAgent ? 'none' : '';
   sfMaybeShowCommissionsTab();
+  // Компанийские роли — без привязки к филиалу
+  const branchEl = document.getElementById('sf_branch');
+  if (branchEl) {
+    const isCompanyRole = ['admin','manager','callcenter'].includes(role);
+    if (isCompanyRole) { branchEl.value = ''; branchEl.disabled = true; branchEl.style.opacity = '0.5'; }
+    else { branchEl.disabled = false; branchEl.style.opacity = ''; }
+  }
 }
 
 function sfSetToggle(name, val) {
