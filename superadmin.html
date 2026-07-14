@@ -1084,14 +1084,15 @@ async function _ecStaffLoad() {
 
     const ROLE_COLOR = { admin:'#e67e00', manager:'#3b82f6', callcenter:'#8b5cf6',
                          driver:'#10b981', packer:'#f59e0b', logistics:'#06b6d4', washer:'#6366f1' };
+    const esc = v => (v||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     const fmt = s => {
-      const name = [s.first_name, s.last_name].filter(Boolean).join(' ') || s.login;
+      const name = esc([s.first_name, s.last_name].filter(Boolean).join(' ') || s.login);
       const color = ROLE_COLOR[s.role] || '#64748b';
       const inactive = s.active === false ? '<span style="font-size:10px;color:#e53e3e;margin-left:4px">откл</span>' : '';
       return `<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border)">
         <span style="font-size:13px;font-weight:600;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${name}${inactive}</span>
-        <span style="font-size:11px;background:${color}22;color:${color};padding:2px 7px;border-radius:12px;flex-shrink:0">${s.role}</span>
-        <span style="font-size:11px;font-family:monospace;color:var(--text2);flex-shrink:0">🔑 ${s.login || '—'}</span>
+        <span style="font-size:11px;background:${color}22;color:${color};padding:2px 7px;border-radius:12px;flex-shrink:0">${esc(s.role)}</span>
+        <span style="font-size:11px;font-family:monospace;color:var(--text2);flex-shrink:0">🔑 ${esc(s.login || '—')}</span>
       </div>`;
     };
 
