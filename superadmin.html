@@ -1061,14 +1061,33 @@ function ecTab(name) {
   document.getElementById('ecTabBtnPayment').classList.toggle('active',  name==='payment');
   if (name === 'branches' && _currentCompanyId) loadEditExtras(_currentCompanyId);
   if (name === 'payment'  && _currentCompanyId) loadPaymentTab();
-  if (name === 'contacts') _ecContactsAutoLoad();
+  if (name === 'contacts') _ecContactsLoad();
 }
 
-function _ecContactsAutoLoad() {
-  [['ec_tg_group_id','tgn_ec_group'],['ec_tg_channel_id','tgn_ec_channel'],['ec_tg_admin_id','tgn_ec_admin']
-  ].forEach(([inp, out]) => {
-    if (document.getElementById(inp)?.value) tgCheckId(inp, out);
-  });
+async function _ecContactsLoad() {
+  if (!_currentCompanyId) return;
+  try {
+    const d = await api(`/saas/companies/${_currentCompanyId}`);
+    if (!d?.company) return;
+    const c = d.company;
+    const set = (id, v) => { const el = document.getElementById(id); if (el) el.value = (v ?? '') + ''; };
+    set('ec_whatsapp',         c.whatsapp);
+    set('ec_instagram',        c.instagram);
+    set('ec_tg_group_link',    c.tg_group_link);
+    set('ec_tg_group_id',      c.tg_group_id);
+    set('ec_tg_channel_link',  c.tg_channel_link);
+    set('ec_tg_channel_id',    c.tg_channel_id);
+    set('ec_tg_admin_link',    c.tg_admin_link);
+    set('ec_tg_admin_id',      c.tg_admin_id);
+    ['tgn_ec_group','tgn_ec_channel','tgn_ec_admin'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) { el.textContent = ''; el.className = 'tg-chat-name'; }
+    });
+    [['ec_tg_group_id','tgn_ec_group'],['ec_tg_channel_id','tgn_ec_channel'],['ec_tg_admin_id','tgn_ec_admin']
+    ].forEach(([inp, out]) => {
+      if (document.getElementById(inp)?.value) tgCheckId(inp, out);
+    });
+  } catch(e) { console.error('_ecContactsLoad:', e); }
 }
 
 async function tgCheckId(inputId, nameElId) {

@@ -5675,12 +5675,11 @@ function _brPhones(v) {
 }
 
 // ── Company Social Contacts ───────────────────────────────────────────────
-let _companySocialLoaded = false;
 async function _loadCompanySocial() {
-  if (_companySocialLoaded) return;
   try {
     const d = await apiGet('/company/info');
-    const set = (id, v) => { const el = document.getElementById(id); if (el) el.value = v || ''; };
+    if (!d) return;
+    const set = (id, v) => { const el = document.getElementById(id); if (el) el.value = (v ?? '') + ''; };
     set('cfg_whatsapp',        d.whatsapp);
     set('cfg_instagram',       d.instagram);
     set('cfg_tg_group_link',   d.tg_group_link);
@@ -5692,8 +5691,7 @@ async function _loadCompanySocial() {
     ['whatsapp','instagram','tg_group_link','tg_group_id','tg_channel_link','tg_channel_id','tg_admin_link','tg_admin_id'].forEach(k => {
       _cfgOriginal[k] = document.getElementById('cfg_' + k)?.value || '';
     });
-    _companySocialLoaded = true;
-  } catch(e) {}
+  } catch(e) { console.error('_loadCompanySocial:', e); }
 }
 
 async function saveCompanySocial() {
