@@ -5557,8 +5557,9 @@ function _brRowMono(label, val) {
 }
 
 function _brTgCard(icon, title, desc, link, id) {
-  const linkHtml = link
-    ? `<a href="${escHtml(link)}" target="_blank" rel="noopener" style="color:var(--accent);font-size:13px;word-break:break-all;text-decoration:none">${escHtml(link)}</a>`
+  const safeLink = link && /^https?:\/\//i.test(link) ? link.replace(/"/g, '%22') : null;
+  const linkHtml = safeLink
+    ? `<a href="${safeLink}" target="_blank" rel="noopener" style="color:var(--accent);font-size:13px;word-break:break-all;text-decoration:none">${escHtml(link)}</a>`
     : `<span style="color:var(--text2);font-size:12px">—</span>`;
   const idHtml = id
     ? `<span style="font-family:monospace;font-size:12px;color:var(--text2)">${escHtml(String(id))}</span>`
