@@ -331,8 +331,8 @@
     <!-- Tab: Контакты -->
     <div id="ecTabContacts" style="display:none">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 16px">
-        <div class="field"><label>WhatsApp (номер без +)</label><input id="ec_whatsapp" placeholder="998882001221" inputmode="tel"></div>
-        <div class="field"><label>Instagram</label><input id="ec_instagram" placeholder="https://instagram.com/..."></div>
+        <div class="field"><label>WhatsApp (номер без +)</label><input id="ec_whatsapp" placeholder="998882001221" inputmode="tel" autocomplete="off"></div>
+        <div class="field"><label>Instagram</label><input id="ec_instagram" placeholder="https://instagram.com/..." autocomplete="off"></div>
       </div>
       <div style="margin:14px 0 8px;font-size:11px;font-weight:700;text-transform:uppercase;color:var(--text2)">Telegram</div>
       <div class="tg-group-card">
@@ -341,9 +341,9 @@
           <div><div class="tg-group-title">Группа компании</div><div class="tg-group-desc">Общая клиентская группа в Telegram</div></div>
         </div>
         <div class="tg-group-inputs">
-          <div class="field" style="margin:0 0 6px"><label style="font-size:11px">Ссылка</label><input id="ec_tg_group_link" placeholder="https://t.me/..."></div>
+          <div class="field" style="margin:0 0 6px"><label style="font-size:11px">Ссылка</label><input id="ec_tg_group_link" placeholder="https://t.me/..." autocomplete="off"></div>
           <div class="tg-id-row">
-            <input id="ec_tg_group_id" placeholder="-100..." inputmode="numeric" style="font-family:monospace">
+            <input id="ec_tg_group_id" placeholder="-100..." inputmode="numeric" style="font-family:monospace" autocomplete="off">
             <button class="btn btn-ghost btn-sm" type="button" onclick="tgCheckId('ec_tg_group_id','tgn_ec_group')">🔍</button>
           </div>
           <span class="tg-chat-name" id="tgn_ec_group"></span>
@@ -355,9 +355,9 @@
           <div><div class="tg-group-title">Канал компании</div><div class="tg-group-desc">Официальный Telegram-канал</div></div>
         </div>
         <div class="tg-group-inputs">
-          <div class="field" style="margin:0 0 6px"><label style="font-size:11px">Ссылка</label><input id="ec_tg_channel_link" placeholder="https://t.me/..."></div>
+          <div class="field" style="margin:0 0 6px"><label style="font-size:11px">Ссылка</label><input id="ec_tg_channel_link" placeholder="https://t.me/..." autocomplete="off"></div>
           <div class="tg-id-row">
-            <input id="ec_tg_channel_id" placeholder="-100..." inputmode="numeric" style="font-family:monospace">
+            <input id="ec_tg_channel_id" placeholder="-100..." inputmode="numeric" style="font-family:monospace" autocomplete="off">
             <button class="btn btn-ghost btn-sm" type="button" onclick="tgCheckId('ec_tg_channel_id','tgn_ec_channel')">🔍</button>
           </div>
           <span class="tg-chat-name" id="tgn_ec_channel"></span>
@@ -369,9 +369,9 @@
           <div><div class="tg-group-title">Telegram Администратора</div><div class="tg-group-desc">Личный аккаунт для связи</div></div>
         </div>
         <div class="tg-group-inputs">
-          <div class="field" style="margin:0 0 6px"><label style="font-size:11px">Ссылка / Username</label><input id="ec_tg_admin_link" placeholder="https://t.me/username"></div>
+          <div class="field" style="margin:0 0 6px"><label style="font-size:11px">Ссылка</label><input id="ec_tg_admin_link" placeholder="https://t.me/..." autocomplete="off"></div>
           <div class="tg-id-row">
-            <input id="ec_tg_admin_id" placeholder="123456789" inputmode="numeric" style="font-family:monospace">
+            <input id="ec_tg_admin_id" placeholder="123456789" inputmode="numeric" style="font-family:monospace" autocomplete="off">
             <button class="btn btn-ghost btn-sm" type="button" onclick="tgCheckId('ec_tg_admin_id','tgn_ec_admin')">🔍</button>
           </div>
           <span class="tg-chat-name" id="tgn_ec_admin"></span>
