@@ -67,6 +67,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-s
 .login-logo-name{font-size:22px;font-weight:700;color:var(--text)}
 .login-logo-sub{font-size:14px;color:var(--text2);margin-top:-6px}
 .login-form{width:100%;max-width:380px;display:flex;flex-direction:column;gap:14px}
+.login-step-hint{font-size:14px;color:var(--text2);text-align:center;margin-bottom:2px}
 .input-wrap{
   background:var(--bg);border-radius:var(--radius);
   display:flex;align-items:center;gap:12px;padding:0 16px;
@@ -651,11 +652,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-s
     <div class="login-logo-sub">Панель сотрудника</div>
   </div>
 
-  <div class="login-form">
+  <!-- Шаг 1: slug компании -->
+  <div id="lsSlugPanel" class="login-form">
+    <div class="login-step-hint">Введите slug вашей компании</div>
     <div class="input-wrap">
       <span class="inp-icon">🏢</span>
       <input id="slugInput" type="text" placeholder="Slug компании (напр: artez)"
         autocomplete="organization" autocapitalize="none" autocorrect="off">
+    </div>
+    <div class="login-error" id="loginError"></div>
+    <button class="btn-login" id="slugBtn" onclick="doSlugStep()">Продолжить</button>
+  </div>
+  <!-- Шаг 2: логин/пароль -->
+  <div id="lsAuthPanel" class="login-form" style="display:none">
+    <div id="lsCompanyName" style="font-size:15px;font-weight:600;text-align:center;color:var(--text)"></div>
+    <div style="text-align:center">
+      <a href="#" onclick="event.preventDefault();_showSlugPanel()" style="font-size:13px;color:var(--text2)">Сменить компанию</a>
     </div>
     <div class="input-wrap">
       <span class="inp-icon">👤</span>
@@ -667,7 +679,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-s
       <input id="passInput" type="password" placeholder="Пароль"
         autocomplete="current-password">
     </div>
-    <div class="login-error" id="loginError"></div>
+    <div class="login-error" id="loginError2"></div>
     <button class="btn-login" id="loginBtn" onclick="doLogin()">Войти</button>
   </div>
 </div>
@@ -1737,15 +1749,62 @@ function closeModal(id) {
 }
 
 // ─── Авторизация ───────────────────────────────────────
-async function doLogin() {
-  const slug     = document.getElementById('slugInput').value.trim();
-  const login    = document.getElementById('loginInput').value.trim();
-  const password = document.getElementById('passInput').value;
-  if (!slug) { showLoginError('Введите slug компании'); return; }
-  const btn  = document.getElementById('loginBtn');
+async function doSlugStep() {
+  const slug = document.getElementById('slugInput').value.trim().toLowerCase();
   const err  = document.getElementById('loginError');
   err.style.display = 'none';
-  if (!login || !password) { showLoginError('Введите логин и пароль'); return; }
+  if (!slug) { err.textContent = 'Введите slug компании'; err.style.display = 'block'; return; }
+  const btn = document.getElementById('slugBtn');
+  btn.disabled = true; btn.textContent = 'Проверка…';
+  try {
+    const res  = await fetch(`${API_BASE}/company/resolve?slug=${encodeURIComponent(slug)}`);
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.detail || 'Компания не найдена');
+    localStorage.setItem('staff_company_slug', data.slug);
+    localStorage.setItem('staff_company_name', data.name);
+    _showAuthPanel();
+  } catch(e) {
+    err.textContent = e.message; err.style.display = 'block';
+  } finally {
+    btn.disabled = false; btn.textContent = 'Продолжить';
+  }
+}
+
+function _showSlugPanel() {
+  document.getElementById('lsSlugPanel').style.display = '';
+  document.getElementById('lsAuthPanel').style.display = 'none';
+  document.getElementById('loginError').style.display = 'none';
+  localStorage.removeItem('staff_company_slug');
+  localStorage.removeItem('staff_company_name');
+}
+
+function _showAuthPanel() {
+  const name = localStorage.getItem('staff_company_name') || localStorage.getItem('staff_company_slug') || '';
+  document.getElementById('lsCompanyName').textContent = name;
+  document.getElementById('lsSlugPanel').style.display = 'none';
+  document.getElementById('lsAuthPanel').style.display = '';
+  document.getElementById('loginError2').style.display = 'none';
+  setTimeout(() => document.getElementById('loginInput')?.focus(), 50);
+}
+
+function _showLoginScreen() {
+  document.getElementById('loginScreen').style.display = 'flex';
+  if (localStorage.getItem('staff_company_slug')) {
+    _showAuthPanel();
+  } else {
+    _showSlugPanel();
+  }
+}
+
+async function doLogin() {
+  const slug     = localStorage.getItem('staff_company_slug') || '';
+  const login    = document.getElementById('loginInput').value.trim();
+  const password = document.getElementById('passInput').value;
+  if (!slug) { _showSlugPanel(); return; }
+  const btn  = document.getElementById('loginBtn');
+  const err  = document.getElementById('loginError2');
+  err.style.display = 'none';
+  if (!login || !password) { err.textContent = 'Введите логин и пароль'; err.style.display = 'block'; return; }
   btn.disabled = true; btn.textContent = 'Вход…';
   try {
     const res  = await fetch(`${API_BASE}/staff/login`, {
@@ -1753,7 +1812,7 @@ async function doLogin() {
       body: JSON.stringify({ login, password, company_slug: slug })
     });
     const data = await res.json();
-    if (!res.ok) { showLoginError(data.detail || 'Неверный логин или пароль'); return; }
+    if (!res.ok) { err.textContent = data.detail || 'Неверный логин или пароль'; err.style.display = 'block'; return; }
     localStorage.setItem(TOKEN_KEY, data.token);
     currentStaff = data.staff;
     if (data.staff && data.staff.must_change_password) {
@@ -1762,11 +1821,11 @@ async function doLogin() {
     }
     try { startApp(); } catch(appErr) {
       console.error('startApp error:', appErr);
-      showLoginError('Ошибка запуска: ' + appErr.message);
+      err.textContent = 'Ошибка запуска: ' + appErr.message; err.style.display = 'block';
     }
   } catch(netErr) {
     if (netErr.message && netErr.message.includes('startApp')) return;
-    showLoginError('Нет соединения с сервером');
+    err.textContent = 'Нет соединения с сервером'; err.style.display = 'block';
   }
   finally { btn.disabled = false; btn.textContent = 'Войти'; }
 }
@@ -1799,11 +1858,12 @@ async function doChangePassword() {
 }
 
 function showLoginError(msg) {
-  const e = document.getElementById('loginError');
+  const e = document.getElementById('loginError2');
   e.textContent = msg; e.style.display = 'block';
 }
 
 document.getElementById('passInput').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+document.getElementById('slugInput').addEventListener('keydown', e => { if (e.key === 'Enter') doSlugStep(); });
 
 async function checkAuth() {
   const token = localStorage.getItem(TOKEN_KEY);
@@ -1829,8 +1889,8 @@ function doLogout() {
   localStorage.removeItem(TOKEN_KEY);
   currentStaff = null;
   document.getElementById('app').style.display = 'none';
-  document.getElementById('loginScreen').style.display = 'flex';
   document.getElementById('fabBtn').style.display = 'none';
+  _showLoginScreen();
 }
 
 // ─── Запуск приложения ─────────────────────────────────
@@ -7623,6 +7683,8 @@ document.addEventListener('click', e => {
     renderOrBranchBtns();
     renderSoeBranchOptions();
     startApp();
+  } else {
+    _showLoginScreen();
   }
 })();
 
