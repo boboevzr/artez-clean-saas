@@ -127,8 +127,12 @@
   .tg-group-title { font-weight:700; font-size:13px; line-height:1.4; }
   .tg-group-desc { font-size:11px; color:var(--text2); margin-top:2px; }
   .tg-group-inputs { flex:1; display:flex; flex-direction:column; gap:6px; }
-  .tg-group-inputs input { width:100%; padding:8px 10px; background:var(--bg); border:1px solid var(--border); border-radius:7px; color:var(--text); font-size:13px; outline:none; }
+  .tg-group-inputs input { width:100%; padding:8px 10px; background:var(--bg); border:1px solid var(--border); border-radius:7px; color:var(--text); font-size:13px; outline:none; font-family:monospace; }
   .tg-group-inputs input:focus { border-color:var(--accent); }
+  .tg-id-row { display:flex; gap:6px; align-items:center; }
+  .tg-id-row input { flex:1; }
+  .tg-chat-name { font-size:12px; color:var(--text2); min-height:16px; display:block; }
+  .tg-chat-name.error { color:var(--red,#e53e3e); }
 
   /* STAFF ROW */
   .staff-row { display: flex; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
@@ -450,8 +454,11 @@
           <div><div class="tg-group-title">Группа лидов</div><div class="tg-group-desc">Новые заявки из CRM</div></div>
         </div>
         <div class="tg-group-inputs">
-          <input id="be_tg_leads_link" placeholder="https://t.me/+...">
-          <input id="be_tg_leads_id" placeholder="-100..." style="font-family:monospace">
+          <div class="tg-id-row">
+            <input id="be_tg_leads_id" placeholder="-100...">
+            <button class="btn btn-ghost btn-sm" type="button" onclick="tgCheckId('be_tg_leads_id','tgn_leads_sa')">🔍</button>
+          </div>
+          <span class="tg-chat-name" id="tgn_leads_sa"></span>
         </div>
       </div>
       <div class="tg-group-card">
@@ -460,8 +467,11 @@
           <div><div class="tg-group-title">Группа заказов</div><div class="tg-group-desc">Приём и статусы заказов</div></div>
         </div>
         <div class="tg-group-inputs">
-          <input id="be_tg_orders_link" placeholder="https://t.me/+...">
-          <input id="be_tg_orders_id" placeholder="-100..." style="font-family:monospace">
+          <div class="tg-id-row">
+            <input id="be_tg_orders_id" placeholder="-100...">
+            <button class="btn btn-ghost btn-sm" type="button" onclick="tgCheckId('be_tg_orders_id','tgn_orders_sa')">🔍</button>
+          </div>
+          <span class="tg-chat-name" id="tgn_orders_sa"></span>
         </div>
       </div>
       <div class="tg-group-card">
@@ -470,8 +480,11 @@
           <div><div class="tg-group-title">Группа водителей</div><div class="tg-group-desc">Маршруты и доставка</div></div>
         </div>
         <div class="tg-group-inputs">
-          <input id="be_tg_delivery_link" placeholder="https://t.me/+...">
-          <input id="be_tg_delivery_id" placeholder="-100..." style="font-family:monospace">
+          <div class="tg-id-row">
+            <input id="be_tg_delivery_id" placeholder="-100...">
+            <button class="btn btn-ghost btn-sm" type="button" onclick="tgCheckId('be_tg_delivery_id','tgn_delivery_sa')">🔍</button>
+          </div>
+          <span class="tg-chat-name" id="tgn_delivery_sa"></span>
         </div>
       </div>
       <div class="tg-group-card">
@@ -480,12 +493,15 @@
           <div><div class="tg-group-title">Канал доставки</div><div class="tg-group-desc">Список маршрутов для водителей</div></div>
         </div>
         <div class="tg-group-inputs">
-          <input id="be_tg_dchannel_link" placeholder="https://t.me/+...">
-          <input id="be_tg_dchannel_id" placeholder="-100..." style="font-family:monospace">
+          <div class="tg-id-row">
+            <input id="be_tg_dchannel_id" placeholder="-100...">
+            <button class="btn btn-ghost btn-sm" type="button" onclick="tgCheckId('be_tg_dchannel_id','tgn_dchannel_sa')">🔍</button>
+          </div>
+          <span class="tg-chat-name" id="tgn_dchannel_sa"></span>
         </div>
       </div>
       <div style="margin-top:8px;padding:8px 12px;background:var(--surface2);border-radius:6px;font-size:11px;color:var(--text2)">
-        Как узнать ID: добавьте бота <b>@userinfobot</b> в группу/канал — он сразу пришлёт ID.
+        ℹ️ Добавьте бота в группу/канал как участника, введите ID и нажмите 🔍 для проверки.
       </div>
     </div>
 
@@ -980,6 +996,23 @@ function ecTab(name) {
   if (name === 'payment'  && _currentCompanyId) loadPaymentTab();
 }
 
+async function tgCheckId(inputId, nameElId) {
+  const id = document.getElementById(inputId)?.value?.trim();
+  const nameEl = document.getElementById(nameElId);
+  if (!nameEl) return;
+  if (!id) { nameEl.textContent = ''; nameEl.className = 'tg-chat-name'; return; }
+  nameEl.textContent = '…';
+  nameEl.className = 'tg-chat-name';
+  try {
+    const d = await api(`/tg/chat-info?chat_id=${encodeURIComponent(id)}`);
+    nameEl.textContent = d.title || '—';
+    nameEl.className = 'tg-chat-name';
+  } catch(e) {
+    nameEl.textContent = e.message || 'ID неверный или бот не является участником';
+    nameEl.className = 'tg-chat-name error';
+  }
+}
+
 function bTab(name) {
   document.getElementById('bTabData').style.display  = name==='data'  ? '' : 'none';
   document.getElementById('bTabTg').style.display    = name==='tg'    ? '' : 'none';
@@ -1026,16 +1059,16 @@ function openBranchEdit(companyId, branch) {
   // Telegram
   g('be_admin_tg_link').value    = branch.admin_tg_link || '';
   g('be_admin_tg_id').value      = branch.admin_tg_id   || '';
-  g('be_tg_leads_link').value    = branch.tg_leads_group_link || '';
-  g('be_tg_leads_id').value      = branch.tg_leads_group_id   || '';
-  g('be_tg_orders_link').value   = branch.tg_orders_channel_link || '';
-  g('be_tg_orders_id').value     = branch.tg_orders_channel_id   || '';
-  g('be_tg_delivery_link').value = branch.tg_delivery_group_link || '';
-  g('be_tg_delivery_id').value   = branch.tg_delivery_group_id   || '';
-  g('be_tg_dchannel_link').value = branch.tg_delivery_channel_link || '';
+  g('be_tg_leads_id').value      = branch.tg_leads_group_id        || '';
+  g('be_tg_orders_id').value     = branch.tg_orders_channel_id     || '';
+  g('be_tg_delivery_id').value   = branch.tg_delivery_group_id     || '';
   g('be_tg_dchannel_id').value   = branch.tg_delivery_channel_id   || '';
   g('beErr').textContent = '';
   g('nsErr').textContent = '';
+  ['tgn_leads_sa','tgn_orders_sa','tgn_delivery_sa','tgn_dchannel_sa'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.textContent = ''; el.className = 'tg-chat-name'; }
+  });
   bTab('data');
   openModal('modalBranchEdit');
 }
@@ -1057,14 +1090,10 @@ async function saveBranchEdit() {
     instagram:           g('be_instagram') || null,
     admin_tg_link:       g('be_admin_tg_link') || null,
     admin_tg_id:         intOrNull(g('be_admin_tg_id')),
-    tg_leads_group_link: g('be_tg_leads_link') || null,
-    tg_leads_group_id:   intOrNull(g('be_tg_leads_id')),
-    tg_orders_channel_link: g('be_tg_orders_link') || null,
-    tg_orders_channel_id:   intOrNull(g('be_tg_orders_id')),
-    tg_delivery_group_link: g('be_tg_delivery_link') || null,
-    tg_delivery_group_id:   intOrNull(g('be_tg_delivery_id')),
-    tg_delivery_channel_link: g('be_tg_dchannel_link') || null,
-    tg_delivery_channel_id:   intOrNull(g('be_tg_dchannel_id')),
+    tg_leads_group_id:       intOrNull(g('be_tg_leads_id')),
+    tg_orders_channel_id:    intOrNull(g('be_tg_orders_id')),
+    tg_delivery_group_id:    intOrNull(g('be_tg_delivery_id')),
+    tg_delivery_channel_id:  intOrNull(g('be_tg_dchannel_id')),
   };
   document.getElementById('beErr').textContent = '';
   try {

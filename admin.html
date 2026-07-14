@@ -680,6 +680,10 @@
   .tg-group-title { font-weight:700; font-size:13px; line-height:1.4; }
   .tg-group-desc { font-size:11px; color:var(--text2); margin-top:2px; }
   .tg-group-inputs { flex:1; display:flex; flex-direction:column; gap:6px; }
+  .tg-id-row { display:flex; gap:6px; align-items:center; }
+  .tg-id-row .form-input { flex:1; font-family:monospace; }
+  .tg-chat-name { font-size:12px; color:var(--text2); min-height:16px; }
+  .tg-chat-name.error { color:var(--danger,#e53e3e); }
   @media(max-width:520px){ .tg-group-card { flex-direction:column; gap:8px; } .tg-group-head { min-width:0; } }
 
   /* ── STAFF MODAL DESKTOP ── */
@@ -5202,8 +5206,11 @@
           <div><div class="tg-group-title">Группа лидов</div><div class="tg-group-desc">Новые заявки из CRM</div></div>
         </div>
         <div class="tg-group-inputs">
-          <input class="form-input" id="bf_tg_leads_group_link" placeholder="https://t.me/+...">
-          <input class="form-input" id="bf_tg_leads_group_id" placeholder="-100..." inputmode="numeric" style="font-family:monospace">
+          <div class="tg-id-row">
+            <input class="form-input" id="bf_tg_leads_group_id" placeholder="-100..." inputmode="numeric">
+            <button class="btn btn-ghost btn-sm" type="button" onclick="tgCheckId('bf_tg_leads_group_id','tgn_leads_bf')">🔍</button>
+          </div>
+          <span class="tg-chat-name" id="tgn_leads_bf"></span>
         </div>
       </div>
       <div class="tg-group-card">
@@ -5212,8 +5219,11 @@
           <div><div class="tg-group-title">Группа заказов</div><div class="tg-group-desc">Приём и статусы заказов</div></div>
         </div>
         <div class="tg-group-inputs">
-          <input class="form-input" id="bf_tg_orders_channel_link" placeholder="https://t.me/+...">
-          <input class="form-input" id="bf_tg_orders_channel_id" placeholder="-100..." inputmode="numeric" style="font-family:monospace">
+          <div class="tg-id-row">
+            <input class="form-input" id="bf_tg_orders_channel_id" placeholder="-100..." inputmode="numeric">
+            <button class="btn btn-ghost btn-sm" type="button" onclick="tgCheckId('bf_tg_orders_channel_id','tgn_orders_bf')">🔍</button>
+          </div>
+          <span class="tg-chat-name" id="tgn_orders_bf"></span>
         </div>
       </div>
       <div class="tg-group-card">
@@ -5222,8 +5232,11 @@
           <div><div class="tg-group-title">Группа водителей</div><div class="tg-group-desc">Маршруты и доставка</div></div>
         </div>
         <div class="tg-group-inputs">
-          <input class="form-input" id="bf_tg_delivery_group_link" placeholder="https://t.me/+...">
-          <input class="form-input" id="bf_tg_delivery_group_id" placeholder="-100..." inputmode="numeric" style="font-family:monospace">
+          <div class="tg-id-row">
+            <input class="form-input" id="bf_tg_delivery_group_id" placeholder="-100..." inputmode="numeric">
+            <button class="btn btn-ghost btn-sm" type="button" onclick="tgCheckId('bf_tg_delivery_group_id','tgn_delivery_bf')">🔍</button>
+          </div>
+          <span class="tg-chat-name" id="tgn_delivery_bf"></span>
         </div>
       </div>
       <div class="tg-group-card">
@@ -5232,15 +5245,15 @@
           <div><div class="tg-group-title">Канал доставки</div><div class="tg-group-desc">Список маршрутов для водителей</div></div>
         </div>
         <div class="tg-group-inputs">
-          <input class="form-input" id="bf_tg_delivery_channel_link" placeholder="https://t.me/+...">
-          <input class="form-input" id="bf_tg_delivery_channel_id" placeholder="-100..." inputmode="numeric" style="font-family:monospace">
+          <div class="tg-id-row">
+            <input class="form-input" id="bf_tg_delivery_channel_id" placeholder="-100..." inputmode="numeric">
+            <button class="btn btn-ghost btn-sm" type="button" onclick="tgCheckId('bf_tg_delivery_channel_id','tgn_dchannel_bf')">🔍</button>
+          </div>
+          <span class="tg-chat-name" id="tgn_dchannel_bf"></span>
         </div>
       </div>
       <div style="margin-top:10px;padding:10px 14px;background:var(--bg-secondary);border-radius:10px;font-size:12px;color:var(--text2);line-height:1.6">
-        <strong style="color:var(--text)">ℹ️ Как узнать ID группы или канала:</strong><br>
-        1. Добавьте бота <strong>@userinfobot</strong> в группу или канал<br>
-        2. Бот отправит сообщение с ID (число начинается на <code style="background:var(--border);padding:1px 4px;border-radius:4px">-100...</code>)<br>
-        3. Вставьте ID в нужное поле. Бота можно удалить после.
+        ℹ️ Добавьте бота в группу/канал как участника, введите ID и нажмите 🔍 для проверки.
       </div>
     </div><!-- end bfTabTg -->
 
@@ -5556,20 +5569,16 @@ function _brRowMono(label, val) {
   return `<div class="cfg-field"><label>${label}</label><div class="form-input" style="background:transparent;border-color:transparent;padding-left:0;color:var(--text);font-family:monospace;min-height:36px;display:flex;align-items:center">${_brVal(val)}</div></div>`;
 }
 
-function _brTgCard(icon, title, desc, link, id) {
-  const safeLink = link && /^https?:\/\//i.test(link) ? link.replace(/"/g, '%22') : null;
-  const linkHtml = safeLink
-    ? `<a href="${safeLink}" target="_blank" rel="noopener" style="color:var(--accent);font-size:13px;word-break:break-all;text-decoration:none">${escHtml(link)}</a>`
-    : `<span style="color:var(--text2);font-size:12px">—</span>`;
+function _brTgCard(icon, title, desc, id) {
   const idHtml = id
-    ? `<span style="font-family:monospace;font-size:12px;color:var(--text2)">${escHtml(String(id))}</span>`
+    ? `<span style="font-family:monospace;font-size:13px">${escHtml(String(id))}</span>`
     : `<span style="color:var(--text2);font-size:12px">—</span>`;
   return `<div class="tg-group-card" style="margin-bottom:8px">
     <div class="tg-group-head">
       <span class="tg-group-icon">${icon}</span>
       <div><div class="tg-group-title">${escHtml(title)}</div><div class="tg-group-desc">${escHtml(desc)}</div></div>
     </div>
-    <div style="flex:1;display:flex;flex-direction:column;gap:4px;justify-content:center">${linkHtml}${idHtml}</div>
+    <div style="flex:1;display:flex;align-items:center">${idHtml}</div>
   </div>`;
 }
 
@@ -5610,13 +5619,31 @@ function renderBranchContactCards() {
       </div>
       ${_brSectionLabel('📱 Telegram — группы и каналы')}
       <div style="margin-top:8px">
-        ${_brTgCard('🧑‍💼', 'Группа лидов',    'Новые заявки из CRM',            b.tg_leads_group_link,      b.tg_leads_group_id)}
-        ${_brTgCard('📦',  'Группа заказов',   'Приём и статусы заказов',         b.tg_orders_channel_link,   b.tg_orders_channel_id)}
-        ${_brTgCard('🚗',  'Группа водителей', 'Маршруты и доставка',             b.tg_delivery_group_link,   b.tg_delivery_group_id)}
-        ${_brTgCard('📢',  'Канал доставки',   'Список маршрутов для водителей',  b.tg_delivery_channel_link, b.tg_delivery_channel_id)}
+        ${_brTgCard('🧑‍💼', 'Группа лидов',    'Новые заявки из CRM',           b.tg_leads_group_id)}
+        ${_brTgCard('📦',  'Группа заказов',   'Приём и статусы заказов',        b.tg_orders_channel_id)}
+        ${_brTgCard('🚗',  'Группа водителей', 'Маршруты и доставка',            b.tg_delivery_group_id)}
+        ${_brTgCard('📢',  'Канал доставки',   'Список маршрутов для водителей', b.tg_delivery_channel_id)}
       </div>
     </div>`;
   }).join('') || '<p style="color:var(--text2)">Нет филиалов. Добавьте первый.</p>';
+}
+
+// ── Telegram chat-info lookup ────────────────────────────────────────────
+async function tgCheckId(inputId, nameElId) {
+  const id = document.getElementById(inputId)?.value?.trim();
+  const nameEl = document.getElementById(nameElId);
+  if (!nameEl) return;
+  if (!id) { nameEl.textContent = ''; nameEl.className = 'tg-chat-name'; return; }
+  nameEl.textContent = '…';
+  nameEl.className = 'tg-chat-name';
+  try {
+    const d = await api(`/tg/chat-info?chat_id=${encodeURIComponent(id)}`);
+    nameEl.textContent = d.title || '—';
+    nameEl.className = 'tg-chat-name';
+  } catch(e) {
+    nameEl.textContent = e.message || 'ID неверный или бот не является участником группы/канала';
+    nameEl.className = 'tg-chat-name error';
+  }
 }
 
 // ── Unified Branch Form (add + edit) ─────────────────────────────────────
@@ -5644,12 +5671,16 @@ function _bfOpenForm(mode, b) {
   document.getElementById('bfSlugRow').style.display = mode === 'add' ? '' : 'none';
   document.getElementById('bfSaveBtn').textContent = mode === 'add' ? '➕ Создать' : '💾 Сохранить';
   const set = (id, v) => { const el = document.getElementById(id); if (el) el.value = v || ''; };
+  ['tgn_leads_bf','tgn_orders_bf','tgn_delivery_bf','tgn_dchannel_bf'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.textContent = ''; el.className = 'tg-chat-name'; }
+  });
   if (mode === 'add') {
     ['bf_name_ru','bf_name_uz','bf_slug','bf_city_coords','bf_workshop_coords',
      'bf_phone1','bf_phone2','bf_telegram_link','bf_telegram_group_id','bf_admin_tg_link',
-     'bf_whatsapp','bf_instagram','bf_tg_leads_group_link','bf_tg_leads_group_id',
-     'bf_tg_orders_channel_link','bf_tg_orders_channel_id','bf_tg_delivery_group_link',
-     'bf_tg_delivery_group_id','bf_tg_delivery_channel_link','bf_tg_delivery_channel_id',
+     'bf_whatsapp','bf_instagram',
+     'bf_tg_leads_group_id','bf_tg_orders_channel_id',
+     'bf_tg_delivery_group_id','bf_tg_delivery_channel_id',
     ].forEach(id => set(id, ''));
   } else {
     const phones = _brPhones(b.phones);
@@ -5667,13 +5698,9 @@ function _bfOpenForm(mode, b) {
     set('bf_admin_tg_id', b.admin_tg_id);
     set('bf_whatsapp', b.whatsapp);
     set('bf_instagram', b.instagram);
-    set('bf_tg_leads_group_link', b.tg_leads_group_link);
     set('bf_tg_leads_group_id', b.tg_leads_group_id);
-    set('bf_tg_orders_channel_link', b.tg_orders_channel_link);
     set('bf_tg_orders_channel_id', b.tg_orders_channel_id);
-    set('bf_tg_delivery_group_link', b.tg_delivery_group_link);
     set('bf_tg_delivery_group_id', b.tg_delivery_group_id);
-    set('bf_tg_delivery_channel_link', b.tg_delivery_channel_link);
     set('bf_tg_delivery_channel_id', b.tg_delivery_channel_id);
   }
   bfTab('main');
@@ -5705,13 +5732,9 @@ async function saveBranchForm() {
     admin_tg_id: intOrNull(g('bf_admin_tg_id')),
     whatsapp: g('bf_whatsapp'),
     instagram: g('bf_instagram'),
-    tg_leads_group_link: g('bf_tg_leads_group_link'),
     tg_leads_group_id: intOrNull(g('bf_tg_leads_group_id')),
-    tg_orders_channel_link: g('bf_tg_orders_channel_link'),
     tg_orders_channel_id: intOrNull(g('bf_tg_orders_channel_id')),
-    tg_delivery_group_link: g('bf_tg_delivery_group_link'),
     tg_delivery_group_id: intOrNull(g('bf_tg_delivery_group_id')),
-    tg_delivery_channel_link: g('bf_tg_delivery_channel_link'),
     tg_delivery_channel_id: intOrNull(g('bf_tg_delivery_channel_id')),
   };
   try {
