@@ -5201,25 +5201,33 @@
 <!-- STAFF MGMT MODAL -->
 <div id="modalStaffMgmt" class="modal-overlay hidden">
   <div class="modal-box" style="max-width:420px">
-    <div class="modal-title" id="staffMgmtModalTitle">Добавить сотрудника</div>
-    <div style="display:flex;flex-direction:column;gap:10px;margin-top:12px">
-      <input class="form-input" id="sm_fname" placeholder="Имя *">
-      <input class="form-input" id="sm_lname" placeholder="Фамилия">
-      <input class="form-input" id="sm_login" placeholder="Логин *" autocomplete="off">
-      <div style="position:relative">
-        <input class="form-input" id="sm_pass" type="password" placeholder="Пароль *" autocomplete="new-password" style="width:100%;padding-right:36px;box-sizing:border-box">
-        <button onclick="toggleSmPass()" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;color:var(--text-secondary)">👁</button>
+    <div class="modal-title" id="staffMgmtModalTitle">Добавить доступ</div>
+    <div style="display:flex;flex-direction:column;gap:12px;margin-top:12px">
+      <!-- Режим добавления: выбор из списка -->
+      <div id="sm_picker_row">
+        <label class="form-label">Сотрудник</label>
+        <select class="form-input" id="sm_pick_staff" autocomplete="off">
+          <option value="">— выберите сотрудника —</option>
+        </select>
       </div>
-      <select class="form-input" id="sm_role">
-        <option value="admin">admin (полный доступ)</option>
-        <option value="manager">manager</option>
-        <option value="callcenter">callcenter</option>
-      </select>
+      <!-- Режим редактирования: имя только для чтения -->
+      <div id="sm_edit_name_row" style="display:none">
+        <label class="form-label">Сотрудник</label>
+        <div id="sm_edit_name" style="font-weight:600;font-size:15px;padding:6px 0"></div>
+      </div>
+      <div>
+        <label class="form-label">Уровень доступа</label>
+        <select class="form-input" id="sm_role">
+          <option value="admin">admin — полный доступ</option>
+          <option value="manager">manager</option>
+          <option value="callcenter">callcenter</option>
+        </select>
+      </div>
     </div>
     <div id="staffMgmtErr" style="color:var(--danger,#e53e3e);font-size:13px;margin-top:8px"></div>
     <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px">
       <button class="btn btn-ghost" onclick="closeModal('modalStaffMgmt')">Отмена</button>
-      <button class="btn btn-primary" id="staffMgmtSaveBtn" onclick="staffMgmtSave()">Создать</button>
+      <button class="btn btn-primary" id="staffMgmtSaveBtn" onclick="staffMgmtSave()">Назначить</button>
     </div>
   </div>
 </div>
@@ -6015,32 +6023,41 @@ async function staffMgmtLoad() {
   } catch(e) { el.innerHTML = `<div style="color:var(--danger,#e53e3e)">${e.message}</div>`; }
 }
 
-function staffMgmtOpenCreate() {
+async function staffMgmtOpenCreate() {
   _smEditId = null;
-  ['sm_fname','sm_lname','sm_login','sm_pass'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
-  const role = document.getElementById('sm_role'); if(role) role.value='admin';
   document.getElementById('staffMgmtErr').textContent = '';
-  document.getElementById('staffMgmtModalTitle').textContent = 'Добавить сотрудника';
-  document.getElementById('staffMgmtSaveBtn').textContent = 'Создать';
-  const passEl = document.getElementById('sm_pass');
-  passEl.required = true;
-  passEl.placeholder = 'Пароль *';
+  document.getElementById('staffMgmtModalTitle').textContent = 'Добавить доступ в Admin';
+  document.getElementById('staffMgmtSaveBtn').textContent = 'Назначить';
+  document.getElementById('sm_picker_row').style.display = '';
+  document.getElementById('sm_edit_name_row').style.display = 'none';
+  const role = document.getElementById('sm_role'); if(role) role.value = 'manager';
+  const sel = document.getElementById('sm_pick_staff');
+  sel.innerHTML = '<option value="">— загрузка… —</option>';
   openModal('modalStaffMgmt');
+  try {
+    const r = await apiGet('/staff/list');
+    const adminRoles = ['admin','manager','callcenter'];
+    const available = (r?.staff || []).filter(s => !adminRoles.includes(s.role) && s.active !== false);
+    sel.innerHTML = '<option value="">— выберите сотрудника —</option>' +
+      available.map(s => {
+        const name = [s.first_name, s.last_name].filter(Boolean).join(' ') || s.login;
+        const branch = s.branch ? ` · ${s.branch}` : '';
+        return `<option value="${s.id}">${escHtml(name)} (${escHtml(s.role||'')}${escHtml(branch)})</option>`;
+      }).join('');
+    if (!available.length) sel.innerHTML = '<option value="">Нет доступных сотрудников</option>';
+  } catch(e) { sel.innerHTML = '<option value="">Ошибка загрузки</option>'; }
 }
 
 function staffMgmtOpenEdit(s) {
   _smEditId = s.id;
-  document.getElementById('sm_fname').value = s.first_name || '';
-  document.getElementById('sm_lname').value = s.last_name || '';
-  document.getElementById('sm_login').value = s.login || '';
-  const passEl = document.getElementById('sm_pass');
-  passEl.value = '';
-  passEl.required = false;
-  passEl.placeholder = 'Новый пароль (оставьте пустым, чтобы не менять)';
-  const role = document.getElementById('sm_role'); if(role) role.value = s.role || 'admin';
   document.getElementById('staffMgmtErr').textContent = '';
-  document.getElementById('staffMgmtModalTitle').textContent = 'Редактировать сотрудника';
+  document.getElementById('staffMgmtModalTitle').textContent = 'Изменить доступ';
   document.getElementById('staffMgmtSaveBtn').textContent = '💾 Сохранить';
+  document.getElementById('sm_picker_row').style.display = 'none';
+  document.getElementById('sm_edit_name_row').style.display = '';
+  const name = [s.first_name, s.last_name].filter(Boolean).join(' ') || s.login;
+  document.getElementById('sm_edit_name').textContent = name;
+  const role = document.getElementById('sm_role'); if(role) role.value = s.role || 'manager';
   openModal('modalStaffMgmt');
 }
 
@@ -6056,70 +6073,23 @@ async function staffMgmtDelete(id, name) {
 }
 
 async function staffMgmtSave() {
-  const first_name = document.getElementById('sm_fname').value.trim();
-  const last_name  = document.getElementById('sm_lname').value.trim();
-  const login      = document.getElementById('sm_login').value.trim();
-  const password   = document.getElementById('sm_pass').value;
-  const role       = document.getElementById('sm_role').value;
-  const errEl      = document.getElementById('staffMgmtErr');
+  const role  = document.getElementById('sm_role').value;
+  const errEl = document.getElementById('staffMgmtErr');
   errEl.textContent = '';
-  if (!first_name || !login) { errEl.textContent = 'Заполните имя и логин'; return; }
-
-  if (_smEditId) {
-    // Edit mode
-    if (password && password.length < 4) { errEl.textContent = 'Пароль мин. 4 символа'; return; }
-    try {
-      const res = await apiFetch(`${API_BASE}/staff/${_smEditId}`, {
-        method: 'PATCH',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({ first_name, last_name, login, role })
-      });
-      const r = await res.json();
-      if (!r.ok) { errEl.textContent = r.detail || 'Ошибка'; return; }
-      if (password) {
-        const res2 = await apiFetch(`${API_BASE}/staff/${_smEditId}/password`, {
-          method: 'PUT',
-          headers: {'Content-Type':'application/json'},
-          body: JSON.stringify({ password })
-        });
-        const r2 = await res2.json();
-        if (!r2.ok) { errEl.textContent = r2.detail || 'Ошибка смены пароля'; return; }
-      }
-      closeModal('modalStaffMgmt');
-      await staffMgmtLoad();
-      showToast('Сохранено');
-    } catch(e) { if(e.message!=='401') errEl.textContent = e.message; }
-  } else {
-    // Create mode
-    if (!password || password.length < 4) { errEl.textContent = 'Пароль мин. 4 символа'; return; }
-    // Check staff limit by plan
-    try {
-      const [settingsRes, staffListRes] = await Promise.all([
-        apiFetch(`${API_BASE}/company/settings`),
-        apiFetch(`${API_BASE}/staff/list`)
-      ]);
-      const settingsData = await settingsRes.json();
-      const staffListData = await staffListRes.json();
-      const maxStaff = settingsData?.settings?.max_staff || 999;
-      const currentCount = (staffListData?.staff || []).filter(s => s.active !== false).length;
-      if (currentCount >= maxStaff) {
-        errEl.textContent = `Лимит сотрудников по тарифу: ${maxStaff}. Перейдите на более высокий план.`;
-        return;
-      }
-    } catch(e) { /* проверка не критична */ }
-    try {
-      const res = await apiFetch(`${API_BASE}/staff/create`, {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({ first_name, last_name, login, password, role })
-      });
-      const r = await res.json();
-      if (!r.ok) { errEl.textContent = r.detail || 'Ошибка'; return; }
-      closeModal('modalStaffMgmt');
-      await staffMgmtLoad();
-      showToast('Сотрудник создан');
-    } catch(e) { if(e.message!=='401') errEl.textContent = e.message; }
-  }
+  const staffId = _smEditId || document.getElementById('sm_pick_staff').value;
+  if (!staffId) { errEl.textContent = 'Выберите сотрудника'; return; }
+  try {
+    const res = await apiFetch(`${API_BASE}/staff/${staffId}`, {
+      method: 'PATCH',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ role })
+    });
+    const r = await res.json();
+    if (!r.ok) { errEl.textContent = r.detail || 'Ошибка'; return; }
+    closeModal('modalStaffMgmt');
+    await staffMgmtLoad();
+    showToast(_smEditId ? 'Доступ обновлён' : 'Доступ назначен');
+  } catch(e) { if(e.message!=='401') errEl.textContent = e.message; }
 }
 
 async function staffMgmtToggle(id, isActive) {
@@ -6131,11 +6101,6 @@ async function staffMgmtToggle(id, isActive) {
     });
     await staffMgmtLoad();
   } catch(e) { showToast(e.message,'error'); }
-}
-
-function toggleSmPass() {
-  const inp = document.getElementById('sm_pass');
-  inp.type = inp.type === 'password' ? 'text' : 'password';
 }
 
 // ── Role permissions ──────────────────────────────────────────────────────────
