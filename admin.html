@@ -2821,6 +2821,70 @@
               <button class="btn btn-ghost    s-cancel-btn" onclick="cancelTab('contacts')" style="display:none;">Отмена</button>
               <span class="s-msg" id="msg_contacts"></span>
             </div>
+            <!-- Соцсети и Telegram компании -->
+            <div class="card" id="card-company-social" style="margin-top:20px">
+              <div class="cfg-title-row">
+                <h3 class="cfg-title">📱 Соцсети и Telegram</h3>
+                <button class="btn s-edit-btn" onclick="editCard('card-company-social')">✏️</button>
+              </div>
+              <div class="contacts-grid">
+                <div class="cfg-field">
+                  <label>WhatsApp (номер без +)</label>
+                  <input type="text" id="cfg_whatsapp" class="form-input" disabled placeholder="998882001221" inputmode="tel">
+                </div>
+                <div class="cfg-field">
+                  <label>Instagram</label>
+                  <input type="url" id="cfg_instagram" class="form-input" disabled placeholder="https://instagram.com/...">
+                </div>
+              </div>
+              <div style="margin-top:12px">
+                <div class="tg-group-card">
+                  <div class="tg-group-head"><span class="tg-group-icon">💬</span>
+                    <div><div class="tg-group-title">Группа компании</div><div class="tg-group-desc">Клиентская группа Telegram</div></div>
+                  </div>
+                  <div class="tg-group-inputs">
+                    <div style="margin-bottom:6px"><input type="url" id="cfg_tg_group_link" class="form-input" disabled placeholder="https://t.me/..."></div>
+                    <div class="tg-id-row">
+                      <input type="text" id="cfg_tg_group_id" class="form-input" disabled placeholder="-100..." inputmode="numeric" style="font-family:monospace">
+                      <button class="btn btn-ghost btn-sm" type="button" onclick="tgCheckId('cfg_tg_group_id','tgn_cfg_group')">🔍</button>
+                    </div>
+                    <span class="tg-chat-name" id="tgn_cfg_group"></span>
+                  </div>
+                </div>
+                <div class="tg-group-card">
+                  <div class="tg-group-head"><span class="tg-group-icon">📢</span>
+                    <div><div class="tg-group-title">Канал компании</div><div class="tg-group-desc">Официальный канал Telegram</div></div>
+                  </div>
+                  <div class="tg-group-inputs">
+                    <div style="margin-bottom:6px"><input type="url" id="cfg_tg_channel_link" class="form-input" disabled placeholder="https://t.me/..."></div>
+                    <div class="tg-id-row">
+                      <input type="text" id="cfg_tg_channel_id" class="form-input" disabled placeholder="-100..." inputmode="numeric" style="font-family:monospace">
+                      <button class="btn btn-ghost btn-sm" type="button" onclick="tgCheckId('cfg_tg_channel_id','tgn_cfg_channel')">🔍</button>
+                    </div>
+                    <span class="tg-chat-name" id="tgn_cfg_channel"></span>
+                  </div>
+                </div>
+                <div class="tg-group-card">
+                  <div class="tg-group-head"><span class="tg-group-icon">👤</span>
+                    <div><div class="tg-group-title">Telegram Администратора</div><div class="tg-group-desc">Личный аккаунт для связи</div></div>
+                  </div>
+                  <div class="tg-group-inputs">
+                    <div style="margin-bottom:6px"><input type="url" id="cfg_tg_admin_link" class="form-input" disabled placeholder="https://t.me/username"></div>
+                    <div class="tg-id-row">
+                      <input type="text" id="cfg_tg_admin_id" class="form-input" disabled placeholder="123456789" inputmode="numeric" style="font-family:monospace">
+                      <button class="btn btn-ghost btn-sm" type="button" onclick="tgCheckId('cfg_tg_admin_id','tgn_cfg_admin')">🔍</button>
+                    </div>
+                    <span class="tg-chat-name" id="tgn_cfg_admin"></span>
+                  </div>
+                </div>
+              </div>
+              <div class="cfg-actions">
+                <button class="btn btn-primary s-save-btn"   onclick="saveCompanySocial()" style="display:none;">💾 Сохранить</button>
+                <button class="btn btn-ghost   s-cancel-btn" onclick="cancelCard('card-company-social',['whatsapp','instagram','tg_group_link','tg_group_id','tg_channel_link','tg_channel_id','tg_admin_link','tg_admin_id'])" style="display:none;">Отмена</button>
+                <span class="s-msg" id="msg_card-company-social"></span>
+              </div>
+            </div>
+
             <div style="margin-top:20px">
               <h3 style="margin:0 0 12px;font-size:15px;font-weight:700">🏢 Филиалы</h3>
               <div id="branchContactsContainer"></div>
@@ -5201,15 +5265,6 @@
       <div class="form-group"><label class="form-label">Номер 2</label><input class="form-input" id="bf_phone2" placeholder="+998 ..."></div>
     </div>
 
-    <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--text2);margin:14px 0 8px">🔗 Контакты и соцсети</div>
-    <div class="form-grid">
-      <div class="form-group"><label class="form-label">Telegram — Ссылка</label><input class="form-input" id="bf_telegram_link" placeholder="https://t.me/..."></div>
-      <div class="form-group"><label class="form-label">Telegram — ID группы/канала</label><input class="form-input" id="bf_telegram_group_id" placeholder="-100..." inputmode="numeric" style="font-family:monospace"></div>
-      <div class="form-group"><label class="form-label">Admin Telegram — Ссылка / Username</label><input class="form-input" id="bf_admin_tg_link" placeholder="https://t.me/username"></div>
-      <div class="form-group"><label class="form-label">Admin Telegram — ID пользователя</label><input class="form-input" id="bf_admin_tg_id" placeholder="123456789" inputmode="numeric" style="font-family:monospace"></div>
-      <div class="form-group"><label class="form-label">WhatsApp (номер без +)</label><input class="form-input" id="bf_whatsapp" placeholder="998882001221" inputmode="tel"></div>
-      <div class="form-group"><label class="form-label">Instagram</label><input class="form-input" id="bf_instagram" placeholder="https://instagram.com/..."></div>
-    </div>
 
     </div><!-- end bfTabMain -->
 
@@ -5619,6 +5674,56 @@ function _brPhones(v) {
   try { return JSON.parse(v) || []; } catch { return []; }
 }
 
+// ── Company Social Contacts ───────────────────────────────────────────────
+let _companySocialLoaded = false;
+async function _loadCompanySocial() {
+  if (_companySocialLoaded) return;
+  try {
+    const d = await apiGet('/company/info');
+    const set = (id, v) => { const el = document.getElementById(id); if (el) el.value = v || ''; };
+    set('cfg_whatsapp',        d.whatsapp);
+    set('cfg_instagram',       d.instagram);
+    set('cfg_tg_group_link',   d.tg_group_link);
+    set('cfg_tg_group_id',     d.tg_group_id);
+    set('cfg_tg_channel_link', d.tg_channel_link);
+    set('cfg_tg_channel_id',   d.tg_channel_id);
+    set('cfg_tg_admin_link',   d.tg_admin_link);
+    set('cfg_tg_admin_id',     d.tg_admin_id);
+    ['whatsapp','instagram','tg_group_link','tg_group_id','tg_channel_link','tg_channel_id','tg_admin_link','tg_admin_id'].forEach(k => {
+      _cfgOriginal[k] = document.getElementById('cfg_' + k)?.value || '';
+    });
+    _companySocialLoaded = true;
+  } catch(e) {}
+}
+
+async function saveCompanySocial() {
+  const g = id => document.getElementById('cfg_' + id)?.value?.trim() || null;
+  const iOrNull = v => v ? (parseInt(v) || null) : null;
+  const body = {
+    whatsapp:        g('whatsapp'),
+    instagram:       g('instagram'),
+    tg_group_link:   g('tg_group_link'),
+    tg_group_id:     iOrNull(g('tg_group_id')),
+    tg_channel_link: g('tg_channel_link'),
+    tg_channel_id:   iOrNull(g('tg_channel_id')),
+    tg_admin_link:   g('tg_admin_link'),
+    tg_admin_id:     iOrNull(g('tg_admin_id')),
+  };
+  try {
+    const res = await apiFetch(`${API_BASE}/company/contacts`, {
+      method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body)
+    });
+    if (!res.ok) throw new Error(await res.text());
+    ['whatsapp','instagram','tg_group_link','tg_group_id','tg_channel_link','tg_channel_id','tg_admin_link','tg_admin_id'].forEach(k => {
+      _cfgOriginal[k] = document.getElementById('cfg_' + k)?.value || '';
+    });
+    cancelCard('card-company-social', ['whatsapp','instagram','tg_group_link','tg_group_id','tg_channel_link','tg_channel_id','tg_admin_link','tg_admin_id']);
+    showToast('Сохранено');
+  } catch(e) {
+    showToast('Ошибка: ' + e.message, 'error');
+  }
+}
+
 // ── Branch Cards (read-only view) ────────────────────────────────────────
 function _brVal(v) { return v || '<span style="color:var(--text2);font-style:italic">—</span>'; }
 function _brSectionLabel(text) {
@@ -5669,15 +5774,6 @@ function renderBranchContactCards() {
         ${_brRowMono('Координаты цеха', wcoords)}
         ${_brRow('Номер 1', ph1)}
         ${_brRow('Номер 2', ph2)}
-      </div>
-      ${_brSectionLabel('🔗 Контакты')}
-      <div class="contacts-grid">
-        ${_brRow('Telegram', b.telegram_link)}
-        ${_brRowMono('Telegram ID', b.telegram_group_id)}
-        ${_brRow('Admin Telegram — Ссылка', b.admin_tg_link)}
-        ${_brRowMono('Admin Telegram — ID', b.admin_tg_id)}
-        ${_brRow('WhatsApp', b.whatsapp)}
-        ${_brRow('Instagram', b.instagram)}
       </div>
       ${_brSectionLabel('📱 Telegram — группы и каналы')}
       <div style="margin-top:8px">
@@ -5739,8 +5835,7 @@ function _bfOpenForm(mode, b) {
   });
   if (mode === 'add') {
     ['bf_name_ru','bf_name_uz','bf_slug','bf_city_coords','bf_workshop_coords',
-     'bf_phone1','bf_phone2','bf_telegram_link','bf_telegram_group_id','bf_admin_tg_link',
-     'bf_whatsapp','bf_instagram',
+     'bf_phone1','bf_phone2',
      'bf_tg_leads_group_id','bf_tg_orders_channel_id',
      'bf_tg_delivery_group_id','bf_tg_delivery_channel_id',
     ].forEach(id => set(id, ''));
@@ -5754,12 +5849,6 @@ function _bfOpenForm(mode, b) {
     set('bf_workshop_coords', (b.workshop_lat && b.workshop_lon) ? `${b.workshop_lat}, ${b.workshop_lon}` : '');
     set('bf_phone1', ph1);
     set('bf_phone2', ph2);
-    set('bf_telegram_link', b.telegram_link);
-    set('bf_telegram_group_id', b.telegram_group_id);
-    set('bf_admin_tg_link', b.admin_tg_link);
-    set('bf_admin_tg_id', b.admin_tg_id);
-    set('bf_whatsapp', b.whatsapp);
-    set('bf_instagram', b.instagram);
     set('bf_tg_leads_group_id', b.tg_leads_group_id);
     set('bf_tg_orders_channel_id', b.tg_orders_channel_id);
     set('bf_tg_delivery_group_id', b.tg_delivery_group_id);
@@ -5788,12 +5877,6 @@ async function saveBranchForm() {
   const body = {
     name_ru, name_uz: g('bf_name_uz'),
     lat, lon, workshop_lat, workshop_lon, phones,
-    telegram_link: g('bf_telegram_link'),
-    telegram_group_id: intOrNull(g('bf_telegram_group_id')),
-    admin_tg_link: g('bf_admin_tg_link'),
-    admin_tg_id: intOrNull(g('bf_admin_tg_id')),
-    whatsapp: g('bf_whatsapp'),
-    instagram: g('bf_instagram'),
     tg_leads_group_id: intOrNull(g('bf_tg_leads_group_id')),
     tg_orders_channel_id: intOrNull(g('bf_tg_orders_channel_id')),
     tg_delivery_group_id: intOrNull(g('bf_tg_delivery_group_id')),
@@ -9271,7 +9354,7 @@ function switchStab(btn) {
   const tab = btn.dataset.stab;
   const panel = document.getElementById('stab-' + tab);
   if (panel) panel.style.display = '';
-  if (tab === 'contacts') renderBranchContactCards();
+  if (tab === 'contacts') { renderBranchContactCards(); _loadCompanySocial(); }
   if (tab === 'agents') {
     loadAgentCommissionSettings();
     // Инициализировать выбор года

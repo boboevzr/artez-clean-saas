@@ -288,9 +288,10 @@
     <h3>✏️ <span id="ecTitle">Редактировать компанию</span></h3>
 
     <div class="tab-bar">
-      <button class="tab-btn active" id="ecTabBtnData"     onclick="ecTab('data')">📋 Данные компании</button>
-      <button class="tab-btn"        id="ecTabBtnBranches" onclick="ecTab('branches')">🏢 Филиалы</button>
-      <button class="tab-btn"        id="ecTabBtnPayment"  onclick="ecTab('payment')">📊 Тариф</button>
+      <button class="tab-btn active" id="ecTabBtnData"      onclick="ecTab('data')">📋 Данные компании</button>
+      <button class="tab-btn"        id="ecTabBtnContacts"  onclick="ecTab('contacts')">📱 Контакты</button>
+      <button class="tab-btn"        id="ecTabBtnBranches"  onclick="ecTab('branches')">🏢 Филиалы</button>
+      <button class="tab-btn"        id="ecTabBtnPayment"   onclick="ecTab('payment')">📊 Тариф</button>
     </div>
 
     <!-- Tab: Данные -->
@@ -323,6 +324,57 @@
         <div style="display:flex;gap:8px;align-items:center">
           <code id="ecApiKey" class="mono" style="flex:1;background:var(--surface2);padding:6px 10px;border-radius:6px;font-size:12px;word-break:break-all;color:var(--text)">—</code>
           <button class="btn btn-ghost btn-sm" onclick="regenKey()" title="Сгенерировать новый ключ">🔄</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab: Контакты -->
+    <div id="ecTabContacts" style="display:none">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 16px">
+        <div class="field"><label>WhatsApp (номер без +)</label><input id="ec_whatsapp" placeholder="998882001221" inputmode="tel"></div>
+        <div class="field"><label>Instagram</label><input id="ec_instagram" placeholder="https://instagram.com/..."></div>
+      </div>
+      <div style="margin:14px 0 8px;font-size:11px;font-weight:700;text-transform:uppercase;color:var(--text2)">Telegram</div>
+      <div class="tg-group-card">
+        <div class="tg-group-head">
+          <span class="tg-group-icon">💬</span>
+          <div><div class="tg-group-title">Группа компании</div><div class="tg-group-desc">Общая клиентская группа в Telegram</div></div>
+        </div>
+        <div class="tg-group-inputs">
+          <div class="field" style="margin:0 0 6px"><label style="font-size:11px">Ссылка</label><input id="ec_tg_group_link" placeholder="https://t.me/..."></div>
+          <div class="tg-id-row">
+            <input id="ec_tg_group_id" placeholder="-100..." inputmode="numeric" style="font-family:monospace">
+            <button class="btn btn-ghost btn-sm" type="button" onclick="tgCheckId('ec_tg_group_id','tgn_ec_group')">🔍</button>
+          </div>
+          <span class="tg-chat-name" id="tgn_ec_group"></span>
+        </div>
+      </div>
+      <div class="tg-group-card">
+        <div class="tg-group-head">
+          <span class="tg-group-icon">📢</span>
+          <div><div class="tg-group-title">Канал компании</div><div class="tg-group-desc">Официальный Telegram-канал</div></div>
+        </div>
+        <div class="tg-group-inputs">
+          <div class="field" style="margin:0 0 6px"><label style="font-size:11px">Ссылка</label><input id="ec_tg_channel_link" placeholder="https://t.me/..."></div>
+          <div class="tg-id-row">
+            <input id="ec_tg_channel_id" placeholder="-100..." inputmode="numeric" style="font-family:monospace">
+            <button class="btn btn-ghost btn-sm" type="button" onclick="tgCheckId('ec_tg_channel_id','tgn_ec_channel')">🔍</button>
+          </div>
+          <span class="tg-chat-name" id="tgn_ec_channel"></span>
+        </div>
+      </div>
+      <div class="tg-group-card">
+        <div class="tg-group-head">
+          <span class="tg-group-icon">👤</span>
+          <div><div class="tg-group-title">Telegram Администратора</div><div class="tg-group-desc">Личный аккаунт для связи</div></div>
+        </div>
+        <div class="tg-group-inputs">
+          <div class="field" style="margin:0 0 6px"><label style="font-size:11px">Ссылка / Username</label><input id="ec_tg_admin_link" placeholder="https://t.me/username"></div>
+          <div class="tg-id-row">
+            <input id="ec_tg_admin_id" placeholder="123456789" inputmode="numeric" style="font-family:monospace">
+            <button class="btn btn-ghost btn-sm" type="button" onclick="tgCheckId('ec_tg_admin_id','tgn_ec_admin')">🔍</button>
+          </div>
+          <span class="tg-chat-name" id="tgn_ec_admin"></span>
         </div>
       </div>
     </div>
@@ -776,6 +828,18 @@ async function openEditCompany(id) {
   document.getElementById('ec_active').value        = c.active !== false ? 'true' : 'false';
   document.getElementById('ec_trial_days').value    = c.trial_days ?? 14;
   document.getElementById('ec_notes').value         = c.notes || '';
+  document.getElementById('ec_whatsapp').value      = c.whatsapp || '';
+  document.getElementById('ec_instagram').value     = c.instagram || '';
+  document.getElementById('ec_tg_group_link').value   = c.tg_group_link || '';
+  document.getElementById('ec_tg_group_id').value     = c.tg_group_id || '';
+  document.getElementById('ec_tg_channel_link').value = c.tg_channel_link || '';
+  document.getElementById('ec_tg_channel_id').value   = c.tg_channel_id || '';
+  document.getElementById('ec_tg_admin_link').value   = c.tg_admin_link || '';
+  document.getElementById('ec_tg_admin_id').value     = c.tg_admin_id || '';
+  ['tgn_ec_group','tgn_ec_channel','tgn_ec_admin'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.textContent = ''; el.className = 'tg-chat-name'; }
+  });
   document.getElementById('ecErr').textContent      = '';
   document.getElementById('ec_contact_short').value = '';
   document.getElementById('ec_contact_main').value  = '';
@@ -800,9 +864,17 @@ async function saveEditCompany() {
     contact_name:  document.getElementById('ec_contact_name').value.trim() || null,
     contact_phone: document.getElementById('ec_contact_phone').value.trim() || null,
     contact_email: document.getElementById('ec_contact_email').value.trim() || null,
-    active:        document.getElementById('ec_active').value === 'true',
-    trial_days:    parseInt(document.getElementById('ec_trial_days').value) || 14,
-    notes:         document.getElementById('ec_notes').value.trim() || null,
+    active:           document.getElementById('ec_active').value === 'true',
+    trial_days:       parseInt(document.getElementById('ec_trial_days').value) || 14,
+    notes:            document.getElementById('ec_notes').value.trim() || null,
+    whatsapp:         document.getElementById('ec_whatsapp').value.trim() || null,
+    instagram:        document.getElementById('ec_instagram').value.trim() || null,
+    tg_group_link:    document.getElementById('ec_tg_group_link').value.trim() || null,
+    tg_group_id:      parseInt(document.getElementById('ec_tg_group_id').value) || null,
+    tg_channel_link:  document.getElementById('ec_tg_channel_link').value.trim() || null,
+    tg_channel_id:    parseInt(document.getElementById('ec_tg_channel_id').value) || null,
+    tg_admin_link:    document.getElementById('ec_tg_admin_link').value.trim() || null,
+    tg_admin_id:      parseInt(document.getElementById('ec_tg_admin_id').value) || null,
   };
   document.getElementById('ecErr').textContent = '';
   try {
@@ -979,14 +1051,24 @@ function togglePassVis(inputId, btn) {
 // ── TAB HELPERS ───────────────────────────────────────
 function ecTab(name) {
   document.getElementById('ecTabData').style.display     = name==='data'     ? '' : 'none';
+  document.getElementById('ecTabContacts').style.display = name==='contacts' ? '' : 'none';
   document.getElementById('ecTabBranches').style.display = name==='branches' ? '' : 'none';
   document.getElementById('ecTabPayment').style.display  = name==='payment'  ? '' : 'none';
-  document.getElementById('ecSaveBtn').style.display     = name==='data'     ? '' : 'none';
+  document.getElementById('ecSaveBtn').style.display     = (name==='data' || name==='contacts') ? '' : 'none';
   document.getElementById('ecTabBtnData').classList.toggle('active',     name==='data');
+  document.getElementById('ecTabBtnContacts').classList.toggle('active', name==='contacts');
   document.getElementById('ecTabBtnBranches').classList.toggle('active', name==='branches');
   document.getElementById('ecTabBtnPayment').classList.toggle('active',  name==='payment');
   if (name === 'branches' && _currentCompanyId) loadEditExtras(_currentCompanyId);
   if (name === 'payment'  && _currentCompanyId) loadPaymentTab();
+  if (name === 'contacts') _ecContactsAutoLoad();
+}
+
+function _ecContactsAutoLoad() {
+  [['ec_tg_group_id','tgn_ec_group'],['ec_tg_channel_id','tgn_ec_channel'],['ec_tg_admin_id','tgn_ec_admin']
+  ].forEach(([inp, out]) => {
+    if (document.getElementById(inp)?.value) tgCheckId(inp, out);
+  });
 }
 
 async function tgCheckId(inputId, nameElId) {
