@@ -728,15 +728,6 @@ async function openEditCompany(id) {
     document.getElementById('ec_contact_short').value = cfg.config?.contact_short || '';
     document.getElementById('ec_contact_main').value  = cfg.config?.contact_main  || '';
   } catch(_) {}
-  await loadPlansIntoSelects();
-  // Set plan by slug
-  const ecPlan = document.getElementById('ec_plan');
-  const targetSlug = c.plan || 'starter';
-  let matched = false;
-  for (const opt of ecPlan.options) {
-    if (opt.dataset.slug === targetSlug) { ecPlan.value = opt.value; matched = true; break; }
-  }
-  if (!matched && ecPlan.options.length) ecPlan.selectedIndex = 0;
   ecTab('data');
   openModal('modalEditCompany');
   loadEditExtras(id);
