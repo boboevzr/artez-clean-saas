@@ -1372,6 +1372,7 @@
         </g>
       </svg></span> <span>ARTEZ</span> <span style="color:var(--text2); font-weight:400; font-size:14px;">Админ</span></div>
     <div class="topbar-right">
+      <button id="adminLangBtn" onclick="_toggleAdminLang()" style="background:none;border:1.5px solid var(--border);border-radius:8px;padding:3px 9px;font-size:12px;font-weight:700;color:var(--text2);cursor:pointer;line-height:1.4">UZ</button>
       <div class="profile-btn" id="profileBtn" onclick="toggleProfileMenu()">
         <div class="profile-avatar" id="profileAvatar">А</div>
         <div class="profile-info">
@@ -5510,6 +5511,90 @@ let adminToken = localStorage.getItem(TOKEN_KEY) || '';
 let _adminMe = null;
 let _adminMePromise = Promise.resolve();
 
+// ── I18N ──
+let _adminLang = localStorage.getItem('admin_lang') || 'ru';
+function _t(k) { return (_adminI18n[_adminLang]||{})[k] || (_adminI18n.ru||{})[k] || k; }
+function _toggleAdminLang() {
+  _adminLang = _adminLang === 'ru' ? 'uz' : 'ru';
+  localStorage.setItem('admin_lang', _adminLang);
+  _applyAdminI18n();
+}
+const _adminNavTr = {
+  ru: {
+    dashboard:'Дашборд', plans:'План работы', leads:'Лиды',
+    orders:'Заказы', routes:'Маршруты', cash:'Касса', promotions:'Акции',
+    'grp.crm':'CRM', clients:'👤 Клиенты', contacts:'📒 Справочник',
+    'site-users':'🌐 Польз. сайта',
+    'grp.ad':'Автодозвон', 'autodial-groups':'👥 Группы контактов',
+    'autodial-campaigns':'📋 Кампании', 'autodial-greetings':'🎉 Поздравления',
+    'autodial-settings':'⚙️ Настройки',
+    'grp.sms':'SMS-рассылка', 'sms-send':'✉️ Отправить SMS',
+    'sms-contacts':'👤 Контакты', 'sms-groups':'📂 Группы',
+    'sms-templates':'📝 Тексты SMS', 'sms-reports':'📊 Отчёты',
+    'sms-pricing':'💰 Тарифы', 'sms-settings':'⚙️ Настройки SMS',
+    'grp.tg':'Telegram', 'tg-bot':'⚙️ Настройки бота',
+    'tg-messages':'💬 Уведомления', 'tg-clients':'👥 Клиенты',
+    'grp.hr':'HR', staff:'👥 Сотрудники', agents:'🤝 Агенты',
+    departments:'🏢 Отделы', positions:'🎯 Должности',
+    timesheet:'📅 Табель', workon:'✅ WorkOn',
+    'salary-calc':'💰 Зарплата', 'agent-monitoring':'📊 Мониторинг',
+    'grp.ref':'Справочники', prices:'💰 Цены',
+    units:'📏 Единицы измерения', 'expenses-admin':'🧾 Расходы',
+    'chat-templates':'💬 Шаблоны чата',
+    'grp.sys':'Система', siteconfig:'⚙️ Настройки сайта',
+    'role-perms':'🔐 Роли и доступы', 'db-maintenance':'🗄️ Обслуживание БД',
+    temp:'🗑️ Чистка БД',
+  },
+  uz: {
+    dashboard:'Bosh sahifa', plans:'Ish rejasi', leads:'Lidlar',
+    orders:'Buyurtmalar', routes:'Marshrutlar', cash:'Kassa', promotions:'Aksiyalar',
+    'grp.crm':'CRM', clients:'👤 Mijozlar', contacts:'📒 Maʼlumotnoma',
+    'site-users':'🌐 Sayt foydalanuvchilari',
+    'grp.ad':'Avtouzatish', 'autodial-groups':'👥 Kontakt guruhlari',
+    'autodial-campaigns':'📋 Kampaniyalar', 'autodial-greetings':'🎉 Tabriklar',
+    'autodial-settings':'⚙️ Sozlamalar',
+    'grp.sms':'SMS-tarqatish', 'sms-send':'✉️ SMS yuborish',
+    'sms-contacts':'👤 Kontaktlar', 'sms-groups':'📂 Guruhlar',
+    'sms-templates':'📝 SMS matnlari', 'sms-reports':'📊 Hisobotlar',
+    'sms-pricing':'💰 Tariflar', 'sms-settings':'⚙️ SMS sozlamalari',
+    'grp.tg':'Telegram', 'tg-bot':'⚙️ Bot sozlamalari',
+    'tg-messages':'💬 Xabarnomalar', 'tg-clients':'👥 Mijozlar',
+    'grp.hr':'HR', staff:'👥 Xodimlar', agents:'🤝 Agentlar',
+    departments:'🏢 Boʻlimlar', positions:'🎯 Lavozimlar',
+    timesheet:'📅 Jadval', workon:'✅ WorkOn',
+    'salary-calc':'💰 Maosh', 'agent-monitoring':'📊 Monitoring',
+    'grp.ref':'Maʼlumotnomalar', prices:'💰 Narxlar',
+    units:'📏 Oʻlchov birliklari', 'expenses-admin':'🧾 Xarajatlar',
+    'chat-templates':'💬 Chat shablonlari',
+    'grp.sys':'Tizim', siteconfig:'⚙️ Sayt sozlamalari',
+    'role-perms':'🔐 Rollar va ruxsatlar', 'db-maintenance':'🗄️ MB xizmati',
+    temp:'🗑️ MB tozalash',
+  },
+};
+const _adminI18n = { ru: {}, uz: {} };
+function _applyAdminI18n() {
+  const btn = document.getElementById('adminLangBtn');
+  if (btn) btn.textContent = _adminLang === 'uz' ? 'RU' : 'UZ';
+  const tr = _adminNavTr[_adminLang] || _adminNavTr.ru;
+  document.querySelectorAll('.nav-item[data-page]').forEach(el => {
+    const label = tr[el.dataset.page];
+    if (!label) return;
+    [...el.childNodes].filter(n => n.nodeType === 3).forEach(n => el.removeChild(n));
+    el.appendChild(document.createTextNode(' ' + label));
+  });
+  document.querySelectorAll('.nav-sub-item[data-page]').forEach(el => {
+    const label = tr[el.dataset.page];
+    if (label) el.textContent = label;
+  });
+  document.querySelectorAll('.nav-group[id]').forEach(el => {
+    const grpId = 'grp.' + el.id.replace('navgroup-', '');
+    const label = tr[grpId];
+    if (!label) return;
+    const span = el.querySelector('.nav-group-header > span:not(.nav-icon):not(.nav-group-arrow)');
+    if (span) span.textContent = label;
+  });
+}
+
 async function doSlugStep() {
   const slug = document.getElementById('slugInput').value.trim().toLowerCase();
   const err  = document.getElementById('loginError');
@@ -6351,6 +6436,7 @@ function _updateProfileUI() {
 }
 
 function showAdmin() {
+  _applyAdminI18n();
   initStaffSections();
   _updateProfileUI();
   _adminMePromise = apiGet('/staff/me').then(async d => {
