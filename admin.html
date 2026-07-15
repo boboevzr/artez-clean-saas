@@ -6668,6 +6668,8 @@ function _activatePage(page) {
   if (page === 'sms-pricing')   smsPricingLoad();
   if (page === 'sms-settings')  smsSettingsLoad();
   if (page === 'role-perms')    renderRolePermsPage();
+  if (page === 'departments')  renderDepts();
+  if (page === 'positions')    renderPositions();
 }
 
 // ── API HELPER ──
@@ -7304,12 +7306,26 @@ function ls(key, def) {
 }
 function lsSet(key, val) { localStorage.setItem('artez_' + key, JSON.stringify(val)); }
 
-let departments = ls('departments', []);
-let positions   = ls('positions', []);
+let departments = [];
+let positions   = [];
 let staff       = ls('staff', []);
 let timesheet   = ls('timesheet', []);
-let _nid = { dept: ls('nid_dept', 1), pos: ls('nid_pos', 1), staff: ls('nid_staff', 1), ts: ls('nid_ts', 1) };
+let _nid = { staff: ls('nid_staff', 1), ts: ls('nid_ts', 1) };
 function newId(t) { const id = _nid[t]; _nid[t]++; lsSet('nid_'+t, _nid[t]); return id; }
+
+async function loadDepartments() {
+  try {
+    const d = await apiGet('/departments');
+    departments = d?.departments || [];
+  } catch(e) { console.error('loadDepartments:', e); }
+}
+
+async function loadPositions() {
+  try {
+    const d = await apiGet('/positions');
+    positions = d?.positions || [];
+  } catch(e) { console.error('loadPositions:', e); }
+}
 
 // ══════════════════════════════════════
 //  INIT STAFF SECTIONS
@@ -7317,82 +7333,10 @@ function newId(t) { const id = _nid[t]; _nid[t]++; lsSet('nid_'+t, _nid[t]); ret
 const SALARY_LABELS = { fixed:'Оклад', hourly:'Почасовая', percent:'% от заказа', mixed:'Смешанная' };
 
 
-// ══════════════════════════════════════
-//  SEED DATA — начальные отделы и должности
-// ══════════════════════════════════════
-function seedIfEmpty() {
-  if (departments.length > 0 || positions.length > 0) return; // уже есть данные
 
-  departments = [
-    { id: newId('dept'), name: 'Работа с клиентами',  desc: 'Продажи, консультации, приём заказов' },
-    { id: newId('dept'), name: 'Логистика',            desc: 'Забор, доставка, маршруты' },
-    { id: newId('dept'), name: 'Производство',         desc: 'Чистка, сушка, упаковка, контроль качества' },
-    { id: newId('dept'), name: 'Склад',                desc: 'Учёт и хранение изделий' },
-    { id: newId('dept'), name: 'Технический отдел',    desc: 'Обслуживание оборудования' },
-    { id: newId('dept'), name: 'Администрация',        desc: 'Управление, бухгалтерия, кадры' },
-  ];
-  lsSet('departments', departments);
-
-  // id отделов (уже созданы выше, берём по индексу)
-  const [dClient, dLogistic, dProd, dWarehouse, dTech, dAdmin] = departments.map(d => d.id);
-
-  positions = [
-    // Работа с клиентами
-    { id: newId('pos'), name: 'Менеджер по продажам',   deptId: dClient,    role: 'manager',    salaryType: 'mixed',  salaryRate: 2000000, desc: 'Консультирует клиентов, оформляет заказы, работает с входящими обращениями' },
-    { id: newId('pos'), name: 'Оператор колл-центра',   deptId: dClient,    role: 'callcenter', salaryType: 'fixed',  salaryRate: 1500000, desc: 'Обрабатывает входящие звонки, мессенджеры и Telegram-бот' },
-    { id: newId('pos'), name: 'Администратор',           deptId: dClient,    role: 'callcenter', salaryType: 'fixed',  salaryRate: 1800000, desc: 'Встречает клиентов в точке приёма, оформляет документы' },
-
-    // Логистика
-    { id: newId('pos'), name: 'Водитель-курьер',         deptId: dLogistic,  role: 'driver',     salaryType: 'mixed',  salaryRate: 1800000, desc: 'Забор и доставка изделий клиентам' },
-    { id: newId('pos'), name: 'Оператор логистики',      deptId: dLogistic,  role: 'logistics',  salaryType: 'fixed',  salaryRate: 1600000, desc: 'Планирует маршруты, контролирует забор и доставку' },
-    { id: newId('pos'), name: 'Экспедитор',              deptId: dLogistic,  role: 'driver',     salaryType: 'fixed',  salaryRate: 1400000, desc: 'Сопровождение груза, оформление документов при передаче' },
-
-    // Производство
-    { id: newId('pos'), name: 'Приёмщик',                deptId: dProd,      role: 'callcenter', salaryType: 'fixed',  salaryRate: 1500000, desc: 'Осмотр изделий при поступлении, фиксация состояния и дефектов' },
-    { id: newId('pos'), name: 'Чистильщик / Мойщик',    deptId: dProd,      role: 'washer',     salaryType: 'mixed',  salaryRate: 1800000, desc: 'Химчистка ковров, мягкой мебели, матрасов и штор' },
-    { id: newId('pos'), name: 'Оператор сушки',          deptId: dProd,      role: 'washer',     salaryType: 'fixed',  salaryRate: 1500000, desc: 'Контроль сушильного оборудования, температурного режима' },
-    { id: newId('pos'), name: 'Оператор упаковки',       deptId: dProd,      role: 'packer',     salaryType: 'fixed',  salaryRate: 1400000, desc: 'Упаковка готовых изделий, маркировка, подготовка к выдаче' },
-    { id: newId('pos'), name: 'Контролёр качества',      deptId: dProd,      role: 'washer',     salaryType: 'fixed',  salaryRate: 1700000, desc: 'Проверка качества до и после чистки, приёмка от мойщика' },
-
-    // Склад
-    { id: newId('pos'), name: 'Кладовщик',               deptId: dWarehouse, role: 'callcenter', salaryType: 'fixed',  salaryRate: 1500000, desc: 'Учёт поступивших и выданных изделий, ведение складского журнала' },
-    { id: newId('pos'), name: 'Сортировщик',             deptId: dWarehouse, role: 'callcenter', salaryType: 'fixed',  salaryRate: 1300000, desc: 'Распределение изделий по типу, срочности и клиенту' },
-
-    // Технический отдел
-    { id: newId('pos'), name: 'Техник / Механик',        deptId: dTech,      role: 'callcenter', salaryType: 'fixed',  salaryRate: 2000000, desc: 'Обслуживание и ремонт чистящего и сушильного оборудования' },
-
-    // Администрация
-    { id: newId('pos'), name: 'Директор',                deptId: dAdmin,     role: 'admin',      salaryType: 'fixed',  salaryRate: 5000000, desc: 'Общее руководство компанией' },
-    { id: newId('pos'), name: 'Бухгалтер',               deptId: dAdmin,     role: 'admin',      salaryType: 'fixed',  salaryRate: 2500000, desc: 'Финансовый учёт, зарплата, налоги' },
-    { id: newId('pos'), name: 'HR-менеджер',             deptId: dAdmin,     role: 'admin',      salaryType: 'fixed',  salaryRate: 2000000, desc: 'Кадры, табель, подбор персонала' },
-    { id: newId('pos'), name: 'IT-администратор',        deptId: dAdmin,     role: 'admin',      salaryType: 'fixed',  salaryRate: 2200000, desc: 'Поддержка сайта, бота, оборудования' },
-  ];
-  lsSet('positions', positions);
-}
-
-function migratePositionRoles() {
-  const NAME_TO_ROLE = {
-    'Менеджер по продажам': 'manager',   'Оператор колл-центра': 'callcenter',
-    'Администратор':        'callcenter', 'Водитель-курьер':       'driver',
-    'Оператор логистики':   'logistics',  'Экспедитор':            'driver',
-    'Приёмщик':             'callcenter', 'Чистильщик / Мойщик':  'washer',
-    'Оператор сушки':       'washer',     'Оператор упаковки':     'packer',
-    'Контролёр качества':   'washer',     'Кладовщик':             'callcenter',
-    'Сортировщик':          'callcenter', 'Техник / Механик':      'callcenter',
-    'Директор':             'admin',      'Бухгалтер':             'admin',
-    'HR-менеджер':          'admin',      'IT-администратор':      'admin',
-  };
-  let changed = false;
-  positions = positions.map(p => {
-    if (!p.role && NAME_TO_ROLE[p.name]) { changed = true; return {...p, role: NAME_TO_ROLE[p.name]}; }
-    return p;
-  });
-  if (changed) lsSet('positions', positions);
-}
-
-function initStaffSections() {
-  seedIfEmpty();
-  migratePositionRoles();
+async function initStaffSections() {
+  await loadDepartments();
+  await loadPositions();
   const now = new Date();
   const el = document.getElementById('tsMonth');
   if (el) el.value = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
@@ -7407,7 +7351,7 @@ function initStaffSections() {
 // ══════════════════════════════════════
 function populateSelects() {
   // dept selects (departments/positions/timesheet only)
-  ['pos_dept','tsFilterDept'].forEach(id => {
+  ['tsFilterDept'].forEach(id => {
     const el = document.getElementById(id); if (!el) return;
     const val = el.value;
     const isFilter = id.startsWith('tsFilter');
@@ -7432,10 +7376,10 @@ function populateStaffPositionSelect(selectedName, filterDeptId=null) {
   const el = document.getElementById('sf_position_name'); if (!el) return;
   const deptMap = Object.fromEntries(departments.map(d => [d.id, d.name]));
   el.innerHTML = '<option value="">— не указана —</option>';
-  const filtered = filterDeptId ? positions.filter(p => p.deptId == filterDeptId) : positions;
+  const filtered = filterDeptId ? positions.filter(p => p.dept_id == filterDeptId) : positions;
   const byDept = {};
   filtered.forEach(p => {
-    const dn = deptMap[p.deptId] || 'Прочее';
+    const dn = deptMap[p.dept_id] || 'Прочее';
     (byDept[dn] = byDept[dn] || []).push(p);
   });
   Object.entries(byDept).forEach(([dept, list]) => {
@@ -8138,7 +8082,7 @@ function sfSetToggle(name, val) {
 function sfSetCanEditItems(val) { sfSetToggle('sf_can_edit_items', val); }
 
 
-function openStaffModal(id=null) {
+async function openStaffModal(id=null) {
   const isEdit = !!id;
   document.getElementById('staffModalTitle').textContent = isEdit ? 'Редактировать сотрудника' : 'Добавить сотрудника';
   document.getElementById('staffEditId').value = id||'';
@@ -8160,6 +8104,8 @@ function openStaffModal(id=null) {
   document.getElementById('sf_role').value = 'callcenter';
   document.getElementById('sf_branch').value = '';
   // populate dept select
+  await loadDepartments();
+  await loadPositions();
   const deptEl = document.getElementById('sf_dept');
   if (deptEl) {
     deptEl.innerHTML = '<option value="">— все отделы —</option>';
@@ -8188,7 +8134,7 @@ function openStaffModal(id=null) {
     document.getElementById('sf_branch').value    = s.branch||'';
     // find position to determine dept and role
     const sPos = positions.find(p => p.name === (s.position||''));
-    const sDeptId = sPos?.deptId || null;
+    const sDeptId = sPos?.dept_id || null;
     if (deptEl && sDeptId) deptEl.value = sDeptId;
     populateStaffPositionSelect(s.position||'', sDeptId);
     // role: from position if available, else from staff record
@@ -8381,8 +8327,8 @@ async function toggleStaff(id, action) {
 // ══════════════════════════════════════
 //  DEPARTMENTS
 // ══════════════════════════════════════
-function renderDepts() {
-  const deptMap = {};
+async function renderDepts() {
+  await loadDepartments();
   const tbody = document.getElementById('deptTable');
   const empty = document.getElementById('deptEmpty');
   if (!departments.length) { tbody.innerHTML=''; empty.style.display='block'; return; }
@@ -8390,59 +8336,55 @@ function renderDepts() {
   tbody.innerHTML = departments.map((d,i) => `
     <tr>
       <td>${i+1}</td>
-      <td style="font-weight:600;">${d.name}</td>
-      <td style="color:var(--text2);font-size:13px;">${d.desc||'—'}</td>
-      <td><span class="chip chip-blue">${deptMap[d.id]||0}</span></td>
-      <td style="display:flex;gap:6px;">
-        <button class="btn btn-sm" style="background:var(--surface2);color:var(--text);" onclick="openDeptModal(${d.id})">✏️</button>
-        <button class="btn btn-sm" style="background:rgba(239,68,68,.2);color:#fca5a5;" onclick="deleteDept(${d.id})">🗑</button>
+      <td><strong>${escHtml(d.name)}</strong></td>
+      <td style="color:var(--text2);font-size:13px">${escHtml(d.description||'')}</td>
+      <td>—</td>
+      <td>
+        <button class="btn btn-ghost btn-sm" onclick="openDeptModal(${d.id})">✏️</button>
+        <button class="btn btn-ghost btn-sm" onclick="deleteDept(${d.id})" style="color:var(--danger)">🗑️</button>
       </td>
-    </tr>
-  `).join('');
+    </tr>`).join('');
 }
 
 function openDeptModal(id=null) {
   document.getElementById('deptModalTitle').textContent = id ? 'Редактировать отдел' : 'Добавить отдел';
-  document.getElementById('deptEditId').value = id||'';
-  document.getElementById('dept_name').value = '';
-  document.getElementById('dept_desc').value = '';
-  if (id) {
-    const d = departments.find(x=>x.id===id); if (!d) return;
-    document.getElementById('dept_name').value = d.name;
-    document.getElementById('dept_desc').value = d.desc||'';
-  }
+  document.getElementById('deptEditId').value = id || '';
+  const d = id ? departments.find(x=>x.id===id) : null;
+  document.getElementById('dept_name').value = d?.name || '';
+  document.getElementById('dept_desc').value = d?.description || '';
   openModal('modalDept');
 }
 
-function saveDept() {
+async function saveDept() {
+  const id = parseInt(document.getElementById('deptEditId').value) || null;
   const name = document.getElementById('dept_name').value.trim();
-  if (!name) { showToast('Укажите название','error'); return; }
-  const id = document.getElementById('deptEditId').value;
-  if (id) {
-    const d = departments.find(x=>x.id===parseInt(id));
-    if (d) { d.name=name; d.desc=document.getElementById('dept_desc').value.trim(); }
-  } else {
-    departments.push({id:newId('dept'), name, desc:document.getElementById('dept_desc').value.trim()});
-  }
-  lsSet('departments', departments);
-  closeModal('modalDept');
-  populateSelects(); renderDepts(); renderStaffStats();
-  showToast(id ? 'Отдел обновлён ✓' : 'Отдел добавлен ✓');
+  const description = document.getElementById('dept_desc').value.trim();
+  if (!name) return;
+  try {
+    if (id) await apiPatch(`/departments/${id}`, { name, description });
+    else    await apiPost('/departments', { name, description });
+    closeModal('modalDept');
+    await renderDepts();
+    populateSelects();
+  } catch(e) { alert(e.message); }
 }
 
-function deleteDept(id) {
+async function deleteDept(id) {
   if (!confirm('Удалить отдел?')) return;
-  departments = departments.filter(d=>d.id!==id);
-  lsSet('departments', departments);
-  populateSelects(); renderDepts(); renderStaffStats();
-  showToast('Отдел удалён');
+  try {
+    await apiDelete(`/departments/${id}`);
+    await renderDepts();
+    populateSelects();
+  } catch(e) { alert(e.message); }
 }
 
 // ══════════════════════════════════════
 //  POSITIONS
 // ══════════════════════════════════════
-function renderPositions() {
-  const deptMap = Object.fromEntries(departments.map(d=>[d.id,d.name]));
+async function renderPositions() {
+  await loadDepartments();
+  await loadPositions();
+  const deptMap = Object.fromEntries(departments.map(d=>[d.id, d.name]));
   const tbody = document.getElementById('posTable');
   const empty = document.getElementById('posEmpty');
   if (!positions.length) { tbody.innerHTML=''; empty.style.display='block'; return; }
@@ -8450,70 +8392,73 @@ function renderPositions() {
   tbody.innerHTML = positions.map((p,i) => `
     <tr>
       <td>${i+1}</td>
-      <td style="font-weight:600;">${p.name}</td>
-      <td>${deptMap[p.deptId]||'—'}</td>
-      <td>${_SF_ROLE_LABELS[p.role]||'—'}</td>
-      <td>${SALARY_LABELS[p.salaryType]||'—'}</td>
-      <td>${p.salaryRate ? Number(p.salaryRate).toLocaleString('ru-RU')+' сум' : '—'}</td>
-      <td style="display:flex;gap:6px;">
-        <button class="btn btn-sm" style="background:var(--surface2);color:var(--text);" onclick="openPosModal(${p.id})">✏️</button>
-        <button class="btn btn-sm" style="background:rgba(239,68,68,.2);color:#fca5a5;" onclick="deletePos(${p.id})">🗑</button>
+      <td><strong>${escHtml(p.name)}</strong></td>
+      <td style="font-size:13px">${escHtml(deptMap[p.dept_id]||'—')}</td>
+      <td style="font-size:12px">${escHtml(p.role||'—')}</td>
+      <td style="font-size:13px">${SALARY_LABELS[p.salary_type]||'—'}</td>
+      <td style="font-size:13px">${p.salary_rate ? p.salary_rate.toLocaleString() : '—'}</td>
+      <td>
+        <button class="btn btn-ghost btn-sm" onclick="openPosModal(${p.id})">✏️</button>
+        <button class="btn btn-ghost btn-sm" onclick="deletePos(${p.id})" style="color:var(--danger)">🗑️</button>
       </td>
-    </tr>
-  `).join('');
+    </tr>`).join('');
 }
 
-function openPosModal(id=null) {
+async function openPosModal(id=null) {
   document.getElementById('posModalTitle').textContent = id ? 'Редактировать должность' : 'Добавить должность';
-  document.getElementById('posEditId').value = id||'';
+  document.getElementById('posEditId').value = id || '';
   document.getElementById('pos_name').value = '';
+  document.getElementById('pos_role').value = '';
+  document.getElementById('pos_salaryType').value = 'fixed';
   document.getElementById('pos_salaryRate').value = '';
   document.getElementById('pos_desc').value = '';
-  document.getElementById('pos_salaryType').value = 'fixed';
-  document.getElementById('pos_role').value = '';
+  await loadDepartments();
   const dEl = document.getElementById('pos_dept');
   dEl.innerHTML = '<option value="">— выберите —</option>';
-  departments.forEach(d => dEl.innerHTML += `<option value="${d.id}">${d.name}</option>`);
+  departments.forEach(d => dEl.innerHTML += `<option value="${d.id}">${escHtml(d.name)}</option>`);
   if (id) {
-    const p = positions.find(x=>x.id===id); if (!p) return;
-    document.getElementById('pos_name').value       = p.name;
-    document.getElementById('pos_dept').value       = p.deptId||'';
-    document.getElementById('pos_role').value       = p.role||'';
-    document.getElementById('pos_salaryType').value = p.salaryType||'fixed';
-    document.getElementById('pos_salaryRate').value = p.salaryRate||'';
-    document.getElementById('pos_desc').value       = p.desc||'';
+    const p = positions.find(x=>x.id===id);
+    if (p) {
+      document.getElementById('pos_name').value       = p.name||'';
+      document.getElementById('pos_dept').value       = p.dept_id||'';
+      document.getElementById('pos_role').value       = p.role||'';
+      document.getElementById('pos_salaryType').value = p.salary_type||'fixed';
+      document.getElementById('pos_salaryRate').value = p.salary_rate||'';
+      document.getElementById('pos_desc').value       = p.description||'';
+    }
   }
   openModal('modalPos');
 }
 
-function savePos() {
-  const name = document.getElementById('pos_name').value.trim();
-  if (!name) { showToast('Укажите название','error'); return; }
-  const id = document.getElementById('posEditId').value;
-  const obj = {
-    name,
-    deptId:     parseInt(document.getElementById('pos_dept').value)||null,
-    role:       document.getElementById('pos_role').value || null,
-    salaryType: document.getElementById('pos_salaryType').value,
-    salaryRate: parseFloat(document.getElementById('pos_salaryRate').value)||null,
-    desc:       document.getElementById('pos_desc').value.trim(),
+async function savePos() {
+  const id = parseInt(document.getElementById('posEditId').value) || null;
+  const body = {
+    name:        document.getElementById('pos_name').value.trim(),
+    dept_id:     parseInt(document.getElementById('pos_dept').value) || null,
+    role:        document.getElementById('pos_role').value || null,
+    salary_type: document.getElementById('pos_salaryType').value || null,
+    salary_rate: parseInt(document.getElementById('pos_salaryRate').value) || null,
+    description: document.getElementById('pos_desc').value.trim() || null,
   };
-  if (id) {
-    const idx = positions.findIndex(p=>p.id===parseInt(id));
-    if (idx>=0) positions[idx] = {...positions[idx], ...obj};
-  } else { positions.push({id:newId('pos'), ...obj}); }
-  lsSet('positions', positions);
-  closeModal('modalPos');
-  populateSelects(); renderPositions(); renderStaffStats();
-  showToast(id ? 'Должность обновлена ✓' : 'Должность добавлена ✓');
+  if (!body.name) return;
+  try {
+    if (id) await apiPatch(`/positions/${id}`, body);
+    else    await apiPost('/positions', body);
+    closeModal('modalPos');
+    await renderPositions();
+    await loadPositions();
+    populateSelects();
+  } catch(e) { alert(e.message); }
 }
 
-function deletePos(id) {
+async function deletePos(id) {
   if (!confirm('Удалить должность?')) return;
-  positions = positions.filter(p=>p.id!==id);
-  lsSet('positions', positions);
-  populateSelects(); renderPositions(); renderStaffStats();
-  showToast('Должность удалена');
+  try {
+    await apiDelete(`/positions/${id}`);
+    await renderPositions();
+    await loadPositions();
+    populateSelects();
+  } catch(e) { alert(e.message); }
 }
 
 // ══════════════════════════════════════
