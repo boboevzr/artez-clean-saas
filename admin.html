@@ -5657,6 +5657,9 @@ const _adminI18n = {
     'role.logistics':'Логистика','role.washer':'Мойщик',
     'role.packer':'Упаковщик','role.agent':'Агент',
     'staff.active':'Активные','staff.inactive':'Уволенные',
+    'staff.st.active':'Активен','staff.st.fired':'Уволен','staff.st.paused':'На паузе',
+    'btn.restore':'✅ Восст.','btn.activate':'▶ Активен','btn.pause.state':'⏸ На паузе',
+    'btn.fire':'🚫 Уволить','btn.pause.short':'⏸ Пауза',
     'client.new':'🆕 Новый','client.active':'✅ Активный',
     'client.vip':'⭐ VIP','client.inactive':'😴 Неактивный',
     'src.bot':'🤖 Бот','src.site':'🌐 Сайт',
@@ -5771,6 +5774,9 @@ const _adminI18n = {
     'role.logistics':'Logistika','role.washer':'Tozalovchi',
     'role.packer':'Qadoqlovchi','role.agent':'Agent',
     'staff.active':'Faollar','staff.inactive':'Ishdan ketganlar',
+    'staff.st.active':'Faol','staff.st.fired':'Ishdan boʻshatilgan','staff.st.paused':'Tanaffus',
+    'btn.restore':'✅ Tiklash','btn.activate':'▶ Faol','btn.pause.state':'⏸ Tanaffus',
+    'btn.fire':'🚫 Ishdan boʻshatish','btn.pause.short':'⏸ Tanaffus',
     'client.new':'🆕 Yangi','client.active':'✅ Faol',
     'client.vip':'⭐ VIP','client.inactive':'😴 Faol emas',
     'src.bot':'🤖 Bot','src.site':'🌐 Sayt',
@@ -7825,6 +7831,17 @@ const ROLE_LABELS_ADMIN = {
   admin:'Администратор', manager:'Менеджер', callcenter:'Колл-центр',
   driver:'Водитель', logistics:'Логистика', washer:'Мойщик', packer:'Упаковщик', agent:'Агент'
 };
+function _roleLabel(role) {
+  const key = 'role.' + role;
+  const v = _t(key);
+  return v !== key ? v : (ROLE_LABELS_ADMIN[role] || role);
+}
+function _staffChip(s, sz='') {
+  const st = sz ? ` style="font-size:${sz}"` : '';
+  if (s.fired)  return `<span class="chip chip-red"${st}>${_t('staff.st.fired')}</span>`;
+  if (s.active) return `<span class="chip chip-green"${st}>${_t('staff.st.active')}</span>`;
+  return `<span class="chip chip-gray"${st}>${_t('staff.st.paused')}</span>`;
+}
 
 let staffApiData = [];
 
@@ -7894,10 +7911,10 @@ function renderStaff() {
         <code style="font-size:12px;background:var(--surface2);padding:2px 6px;border-radius:4px;">${s.login||'—'}</code>
         ${s.plain_password ? `<div style="font-size:11px;color:var(--text2);margin-top:3px;letter-spacing:.03em">🔑 ${s.plain_password}</div>` : ''}
       </td>
-      <td><span class="chip chip-blue" style="font-size:11px;">${ROLE_LABELS_ADMIN[s.role]||s.role}</span></td>
+      <td><span class="chip chip-blue" style="font-size:11px;">${_roleLabel(s.role)}</span></td>
       <td>${s.branch||'—'}</td>
       <td style="font-size:12px;color:${s.tg_id?'var(--text)':'var(--text2)'}">${s.tg_id||'—'}</td>
-      <td>${s.fired ? '<span class="chip chip-red">Уволен</span>' : s.active ? '<span class="chip chip-green">Активен</span>' : '<span class="chip chip-gray">На паузе</span>'}</td>
+      <td>${_staffChip(s)}</td>
       <td style="display:flex;gap:6px;flex-wrap:wrap;">
         <button class="btn btn-sm" style="background:var(--surface2);color:var(--text);" onclick="openStaffModal(${s.id})">✏️</button>
         ${_staffStatusBtns(s)}
@@ -7909,7 +7926,7 @@ function renderStaff() {
   if (cards) cards.innerHTML = rows.map(s => {
     const initials = [(s.first_name||'')[0], (s.last_name||'')[0]].filter(Boolean).join('').toUpperCase() || '?';
     const name     = [s.first_name, s.last_name].filter(Boolean).join(' ') || '—';
-    const roleLabel = ROLE_LABELS_ADMIN[s.role] || s.role || '—';
+    const roleLabel = _roleLabel(s.role) || '—';
     const branch   = branchName(s.branch) !== '—' ? branchName(s.branch) : '';
     const hasHours = s.salary_type !== 'percent';
     return `
@@ -7921,7 +7938,7 @@ function renderStaff() {
           <span class="chip chip-blue" style="font-size:11px">${roleLabel}</span>
           ${hasHours ? '<span style="font-size:11px;color:#f59e0b;font-weight:600">⏱ часы</span>' : ''}
           ${branch ? `<span style="font-size:12px;color:var(--text2)">${branch}</span>` : ''}
-          ${s.fired ? '<span class="chip chip-red" style="font-size:10px">Уволен</span>' : s.active ? '<span class="chip chip-green" style="font-size:10px">Активен</span>' : '<span class="chip chip-gray" style="font-size:10px">На паузе</span>'}
+          ${_staffChip(s,'10px')}
         </div>
         <div class="staff-card-meta">
           ${s.phone ? `📞 ${s.phone}` : ''}
@@ -7973,11 +7990,11 @@ function renderAgents() {
       </td>
       <td>${s.branch||'—'}</td>
       <td style="font-size:12px;color:${s.tg_id?'var(--text)':'var(--text2)'}">${s.tg_id||'—'}</td>
-      <td>${s.active ? '<span class="chip chip-green">Активен</span>' : '<span class="chip chip-gray">На паузе</span>'}</td>
+      <td>${_staffChip(s)}</td>
       <td style="display:flex;gap:6px;flex-wrap:wrap;">
         <button class="btn btn-sm" style="background:var(--surface2);color:var(--text);" onclick="openStaffModal(${s.id})">✏️</button>
         <button class="btn btn-sm" style="background:${s.active?'rgba(239,68,68,.2)':'rgba(34,197,94,.2)'};color:${s.active?'#fca5a5':'#86efac'};" onclick="toggleStaff(${s.id},${s.active?'\'pause\'':'\'unpause\''})">
-          ${s.active?'⏸ Пауза':'▶ Активен'}</button>
+          ${s.active?_t('btn.pause.short'):_t('btn.activate')}</button>
       </td>
     </tr>
   `).join('');
@@ -7995,7 +8012,7 @@ function renderAgents() {
         <div style="display:flex;align-items:center;gap:6px;margin-top:4px;flex-wrap:wrap">
           <span class="chip" style="background:rgba(124,58,237,.2);color:#a78bfa;font-size:11px">Агент</span>
           ${branch ? `<span style="font-size:12px;color:var(--text2)">${branch}</span>` : ''}
-          ${s.fired ? '<span class="chip chip-red" style="font-size:10px">Уволен</span>' : s.active ? '<span class="chip chip-green" style="font-size:10px">Активен</span>' : '<span class="chip chip-gray" style="font-size:10px">На паузе</span>'}
+          ${_staffChip(s,'10px')}
         </div>
         <div class="staff-card-meta">
           ${s.phone ? `📞 ${s.phone}` : ''}
@@ -8042,7 +8059,7 @@ async function _workonInitStaffSelect() {
   staffApiData.filter(s => s.active !== false).forEach(s => {
     const o = document.createElement('option');
     o.value = s.id;
-    o.textContent = (s.last_name || '') + ' ' + (s.first_name || '') + ' (' + (ROLE_LABELS_ADMIN[s.role] || s.role || '') + ')';
+    o.textContent = (s.last_name || '') + ' ' + (s.first_name || '') + ' (' + _roleLabel(s.role) + ')';
     sel.appendChild(o);
   });
 }
@@ -8086,7 +8103,7 @@ function _workonRender() {
     return;
   }
   body.innerHTML = _workonData.map((r, i) => {
-    const roleLabel = ROLE_LABELS_ADMIN[r.role] || r.role || '—';
+    const roleLabel = _roleLabel(r.role);
     const brLabel   = branchName(r.branch);
     const sessionsHtml = _workonFmtSessions(r);
     const hours = r.total_hours || 0;
@@ -8323,7 +8340,7 @@ function monRenderTable() {
   const statusF = document.getElementById('monFilterStatus')?.value || '';
 
   let rows = (monData.agents || []).filter(a => {
-    const hay = `${a.name || ''} ${ROLE_LABELS_ADMIN[a.role] || a.role || ''}`.toLowerCase();
+    const hay = `${a.name || ''} ${_roleLabel(a.role)}`.toLowerCase();
     if (search && !hay.includes(search)) return false;
     if (roleF && a.role !== roleF) return false;
     if (statusF && (a.presence_status || 'offline') !== statusF) return false;
@@ -8334,7 +8351,7 @@ function monRenderTable() {
     let va, vb;
     switch (monSortKey) {
       case 'name':   va = (a.name || '').toLowerCase(); vb = (b.name || '').toLowerCase(); break;
-      case 'role':   va = ROLE_LABELS_ADMIN[a.role] || a.role || ''; vb = ROLE_LABELS_ADMIN[b.role] || b.role || ''; break;
+      case 'role':   va = _roleLabel(a.role); vb = _roleLabel(b.role); break;
       case 'branch': va = a.branch || ''; vb = b.branch || ''; break;
       case 'status': { const r = {online:3,today:2,left:1,offline:0}; va = r[a.presence_status||'offline']??0; vb = r[b.presence_status||'offline']??0; break; }
       case 'orders_in_work': va = a.orders_in_work || 0; vb = b.orders_in_work || 0; break;
@@ -8363,10 +8380,10 @@ function monRenderTable() {
   if (empty) empty.style.display = 'none';
 
   const _presMap = {
-    online:  { color: 'var(--green)', label: 'Онлайн' },
-    today:   { color: '#f59e0b',      label: 'Сегодня' },
-    left:    { color: 'var(--blue)',  label: 'Ушёл' },
-    offline: { color: 'var(--text2)', label: 'Офлайн' },
+    online:  { color: 'var(--green)', label: _t('mon.online').replace(/^[^\s]+\s/,'') },
+    today:   { color: '#f59e0b',      label: _t('mon.today').replace(/^[^\s]+\s/,'') },
+    left:    { color: 'var(--blue)',  label: _t('mon.left').replace(/^[^\s]+\s/,'') },
+    offline: { color: 'var(--text2)', label: _t('mon.offline').replace(/^[^\s]+\s/,'') },
   };
   tbody.innerHTML = rows.map(a => {
     const ps = a.presence_status || 'offline';
@@ -8386,7 +8403,7 @@ function monRenderTable() {
     return `
     <tr>
       <td style="font-weight:600;">${escHtml(a.name || '—')}</td>
-      <td><span class="chip chip-blue" style="font-size:11px;">${ROLE_LABELS_ADMIN[a.role] || a.role || '—'}</span></td>
+      <td><span class="chip chip-blue" style="font-size:11px;">${_roleLabel(a.role)}</span></td>
       <td>${branchLabel}</td>
       <td>
         <span style="display:inline-flex;align-items:center;gap:6px;">
@@ -8678,13 +8695,13 @@ async function saveStaff() {
 
 function _staffStatusBtns(s, pad = '') {
   const p = pad ? `padding:${pad};` : '';
-  if (s.fired) return `<button class="btn btn-sm" style="background:rgba(34,197,94,.2);color:#86efac;${p}" onclick="toggleStaff(${s.id},'restore')">✅ Восст.</button>`;
+  if (s.fired) return `<button class="btn btn-sm" style="background:rgba(34,197,94,.2);color:#86efac;${p}" onclick="toggleStaff(${s.id},'restore')">${_t('btn.restore')}</button>`;
   const pauseColor = s.active ? 'rgba(34,197,94,.2)' : 'rgba(156,163,175,.2)';
   const pauseText  = s.active ? '#86efac' : '#9ca3af';
   const pauseAct   = s.active ? 'pause' : 'unpause';
-  const pauseLabel = s.active ? '▶ Активен' : '⏸ На паузе';
+  const pauseLabel = s.active ? _t('btn.activate') : _t('btn.pause.state');
   return `<button class="btn btn-sm" style="background:${pauseColor};color:${pauseText};${p}" onclick="toggleStaff(${s.id},'${pauseAct}')">${pauseLabel}</button>`
-       + `<button class="btn btn-sm" style="background:rgba(239,68,68,.35);color:#fca5a5;${p}" onclick="toggleStaff(${s.id},'fire')">🚫 Уволить</button>`;
+       + `<button class="btn btn-sm" style="background:rgba(239,68,68,.35);color:#fca5a5;${p}" onclick="toggleStaff(${s.id},'fire')">${_t('btn.fire')}</button>`;
 }
 
 async function toggleStaff(id, action) {
