@@ -170,6 +170,13 @@
       <div class="nav-item" data-page="plans" onclick="showPage('plans',this)">
         <span class="icon">📦</span> Планы
       </div>
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--text2);padding:10px 12px 2px;letter-spacing:.08em">Справочники</div>
+      <div class="nav-item" data-page="sa-departments" onclick="showPage('sa-departments',this)">
+        <span class="icon">🏢</span> Отделы
+      </div>
+      <div class="nav-item" data-page="sa-positions" onclick="showPage('sa-positions',this)">
+        <span class="icon">🎯</span> Должности
+      </div>
       <div class="nav-item" data-page="settings" onclick="showPage('settings',this)">
         <span class="icon">⚙️</span> Настройки
       </div>
@@ -235,6 +242,41 @@
               <tr><td colspan="6" class="empty">Загрузка…</td></tr>
             </tbody>
           </table>
+        </div>
+      </div>
+
+      <!-- PAGE: Template Departments -->
+      <div class="page" id="page-sa-departments">
+        <div class="section-header">
+          <div class="page-title" style="margin:0">🏢 Отделы (шаблон)</div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-ghost btn-sm" onclick="saImportFromCompany()" title="Скопировать отделы и должности из компании в шаблон">↩️ Импорт из компании</button>
+            <button class="btn btn-primary btn-sm" onclick="saOpenDeptModal()">+ Добавить</button>
+          </div>
+        </div>
+        <p style="font-size:13px;color:var(--text2);margin-bottom:12px">Эти отделы будут автоматически созданы для каждой новой компании.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>#</th><th>Название</th><th>Описание</th><th></th></tr></thead>
+            <tbody id="saDeptTable"></tbody>
+          </table>
+          <div id="saDeptEmpty" style="display:none;padding:20px;text-align:center;color:var(--text2)">Нет отделов</div>
+        </div>
+      </div>
+
+      <!-- PAGE: Template Positions -->
+      <div class="page" id="page-sa-positions">
+        <div class="section-header">
+          <div class="page-title" style="margin:0">🎯 Должности (шаблон)</div>
+          <button class="btn btn-primary btn-sm" onclick="saOpenPosModal()">+ Добавить</button>
+        </div>
+        <p style="font-size:13px;color:var(--text2);margin-bottom:12px">Эти должности будут автоматически созданы для каждой новой компании.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>#</th><th>Название</th><th>Отдел</th><th>Роль</th><th>Тип зарплаты</th><th>Ставка</th><th></th></tr></thead>
+            <tbody id="saPosTable"></tbody>
+          </table>
+          <div id="saPosEmpty" style="display:none;padding:20px;text-align:center;color:var(--text2)">Нет должностей</div>
         </div>
       </div>
 
@@ -670,6 +712,65 @@
   </div>
 </div>
 
+<!-- MODAL: Template Dept -->
+<div class="modal-bg" id="modalSaDept">
+  <div class="modal" style="width:420px">
+    <h3 id="saDeptModalTitle">Добавить отдел</h3>
+    <input type="hidden" id="sa_dept_edit_id">
+    <div class="field"><label>Название *</label><input class="form-input" id="sa_dept_name" placeholder="Название отдела" autocomplete="off"></div>
+    <div class="field"><label>Описание</label><input class="form-input" id="sa_dept_desc" placeholder="Краткое описание" autocomplete="off"></div>
+    <div class="modal-err" id="saDeptErr"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modalSaDept')">Отмена</button>
+      <button class="btn btn-primary" onclick="saSaveDept()">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Template Position -->
+<div class="modal-bg" id="modalSaPos">
+  <div class="modal" style="width:480px">
+    <h3 id="saPosModalTitle">Добавить должность</h3>
+    <input type="hidden" id="sa_pos_edit_id">
+    <div class="field"><label>Название *</label><input class="form-input" id="sa_pos_name" placeholder="Название должности" autocomplete="off"></div>
+    <div class="field"><label>Отдел</label>
+      <select class="form-input" id="sa_pos_dept"><option value="">— выберите —</option></select>
+    </div>
+    <div class="field"><label>Роль (права доступа)</label>
+      <select class="form-input" id="sa_pos_role">
+        <option value="">— не задана —</option>
+        <option value="admin">Администратор</option>
+        <option value="manager">Менеджер</option>
+        <option value="callcenter">Колл-центр</option>
+        <option value="receiver">Приёмщик</option>
+        <option value="storekeeper">Кладовщик</option>
+        <option value="sorter">Сортировщик</option>
+        <option value="technician">Техник / Механик</option>
+        <option value="washer">Мойщик</option>
+        <option value="packer">Упаковщик</option>
+        <option value="logistics">Логистика</option>
+        <option value="driver">Водитель-курьер</option>
+        <option value="agent">Агент</option>
+      </select>
+    </div>
+    <div class="field"><label>Тип зарплаты</label>
+      <select class="form-input" id="sa_pos_salary_type">
+        <option value="fixed">Оклад</option>
+        <option value="percent">% от заказа</option>
+        <option value="mixed">Смешанная</option>
+        <option value="hourly">Почасовая</option>
+      </select>
+    </div>
+    <div class="field"><label>Ставка (сум)</label><input class="form-input" type="number" id="sa_pos_salary_rate" placeholder="0"></div>
+    <div class="field"><label>Описание</label><input class="form-input" id="sa_pos_desc" placeholder="Краткое описание" autocomplete="off"></div>
+    <div class="modal-err" id="saPosErr"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modalSaPos')">Отмена</button>
+      <button class="btn btn-primary" onclick="saSavePos()">Сохранить</button>
+    </div>
+  </div>
+</div>
+
 <script src="config.js"></script>
 <script>
 const API = 'https://web-production-eef2a.up.railway.app/api';
@@ -685,6 +786,8 @@ function showPage(name, navEl) {
   if (navEl) navEl.classList.add('active');
   if (name === 'settings') loadGlobalSettings();
   if (name === 'plans') loadPlans();
+  if (name === 'sa-departments') saRenderDepts();
+  if (name === 'sa-positions') saRenderPositions();
 }
 
 // ── AUTH ──────────────────────────────────────────────
@@ -1675,6 +1778,147 @@ async function addPayment() {
     closeModal('modalPayment');
     await loadPaymentTab();
   } catch(e) { document.getElementById('payErr').textContent = e.message; }
+}
+
+// ── TEMPLATE DEPARTMENTS & POSITIONS ─────────────────────────────────────────
+let _saDepts = [];
+let _saPositions = [];
+
+async function saLoadDepts() {
+  try {
+    const d = await api('/saas/template/departments');
+    _saDepts = d.departments || [];
+  } catch(e) { console.error(e); }
+}
+
+async function saLoadPositions() {
+  try {
+    const d = await api('/saas/template/positions');
+    _saPositions = d.positions || [];
+  } catch(e) { console.error(e); }
+}
+
+async function saRenderDepts() {
+  await saLoadDepts();
+  const tbody = document.getElementById('saDeptTable');
+  const empty = document.getElementById('saDeptEmpty');
+  if (!_saDepts.length) { tbody.innerHTML = ''; empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+  tbody.innerHTML = _saDepts.map((d, i) => `<tr>
+    <td>${i + 1}</td>
+    <td><strong>${escHtml(d.name)}</strong></td>
+    <td style="color:var(--text2);font-size:13px">${escHtml(d.description || '')}</td>
+    <td style="white-space:nowrap">
+      <button class="btn btn-ghost btn-sm" onclick="saOpenDeptModal(${d.id})">✏️</button>
+      <button class="btn btn-ghost btn-sm" onclick="saDeleteDept(${d.id})" style="color:var(--red)">🗑️</button>
+    </td>
+  </tr>`).join('');
+}
+
+async function saRenderPositions() {
+  await saLoadDepts();
+  await saLoadPositions();
+  const deptMap = Object.fromEntries(_saDepts.map(d => [d.id, d.name]));
+  const SALARY = { fixed: 'Оклад', percent: '% от заказа', mixed: 'Смешанная', hourly: 'Почасовая' };
+  const tbody = document.getElementById('saPosTable');
+  const empty = document.getElementById('saPosEmpty');
+  if (!_saPositions.length) { tbody.innerHTML = ''; empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+  tbody.innerHTML = _saPositions.map((p, i) => `<tr>
+    <td>${i + 1}</td>
+    <td><strong>${escHtml(p.name)}</strong></td>
+    <td style="font-size:13px">${escHtml(deptMap[p.dept_id] || '—')}</td>
+    <td style="font-size:12px">${escHtml(p.role || '—')}</td>
+    <td style="font-size:13px">${SALARY[p.salary_type] || '—'}</td>
+    <td style="font-size:13px">${p.salary_rate ? Number(p.salary_rate).toLocaleString() : '—'}</td>
+    <td style="white-space:nowrap">
+      <button class="btn btn-ghost btn-sm" onclick="saOpenPosModal(${p.id})">✏️</button>
+      <button class="btn btn-ghost btn-sm" onclick="saDeletePos(${p.id})" style="color:var(--red)">🗑️</button>
+    </td>
+  </tr>`).join('');
+}
+
+function saOpenDeptModal(id = null) {
+  document.getElementById('saDeptModalTitle').textContent = id ? 'Редактировать отдел' : 'Добавить отдел';
+  document.getElementById('sa_dept_edit_id').value = id || '';
+  document.getElementById('saDeptErr').textContent = '';
+  const d = id ? _saDepts.find(x => x.id === id) : null;
+  document.getElementById('sa_dept_name').value = d?.name || '';
+  document.getElementById('sa_dept_desc').value = d?.description || '';
+  openModal('modalSaDept');
+}
+
+async function saSaveDept() {
+  const id = parseInt(document.getElementById('sa_dept_edit_id').value) || null;
+  const name = document.getElementById('sa_dept_name').value.trim();
+  const description = document.getElementById('sa_dept_desc').value.trim() || null;
+  if (!name) { document.getElementById('saDeptErr').textContent = 'Укажите название'; return; }
+  try {
+    if (id) await api(`/saas/template/departments/${id}`, 'PATCH', { name, description });
+    else    await api('/saas/template/departments', 'POST', { name, description });
+    closeModal('modalSaDept');
+    await saRenderDepts();
+  } catch(e) { document.getElementById('saDeptErr').textContent = e.message; }
+}
+
+async function saDeleteDept(id) {
+  if (!confirm('Удалить отдел из шаблона?')) return;
+  try { await api(`/saas/template/departments/${id}`, 'DELETE'); await saRenderDepts(); }
+  catch(e) { alert(e.message); }
+}
+
+async function saOpenPosModal(id = null) {
+  document.getElementById('saPosModalTitle').textContent = id ? 'Редактировать должность' : 'Добавить должность';
+  document.getElementById('sa_pos_edit_id').value = id || '';
+  document.getElementById('saPosErr').textContent = '';
+  await saLoadDepts();
+  const dEl = document.getElementById('sa_pos_dept');
+  dEl.innerHTML = '<option value="">— выберите —</option>';
+  _saDepts.forEach(d => dEl.innerHTML += `<option value="${d.id}">${escHtml(d.name)}</option>`);
+  const p = id ? _saPositions.find(x => x.id === id) : null;
+  document.getElementById('sa_pos_name').value = p?.name || '';
+  document.getElementById('sa_pos_dept').value = p?.dept_id || '';
+  document.getElementById('sa_pos_role').value = p?.role || '';
+  document.getElementById('sa_pos_salary_type').value = p?.salary_type || 'fixed';
+  document.getElementById('sa_pos_salary_rate').value = p?.salary_rate || '';
+  document.getElementById('sa_pos_desc').value = p?.description || '';
+  openModal('modalSaPos');
+}
+
+async function saSavePos() {
+  const id = parseInt(document.getElementById('sa_pos_edit_id').value) || null;
+  const body = {
+    name:        document.getElementById('sa_pos_name').value.trim(),
+    dept_id:     parseInt(document.getElementById('sa_pos_dept').value) || null,
+    role:        document.getElementById('sa_pos_role').value || null,
+    salary_type: document.getElementById('sa_pos_salary_type').value || null,
+    salary_rate: parseInt(document.getElementById('sa_pos_salary_rate').value) || null,
+    description: document.getElementById('sa_pos_desc').value.trim() || null,
+  };
+  if (!body.name) { document.getElementById('saPosErr').textContent = 'Укажите название'; return; }
+  try {
+    if (id) await api(`/saas/template/positions/${id}`, 'PATCH', body);
+    else    await api('/saas/template/positions', 'POST', body);
+    closeModal('modalSaPos');
+    await saRenderPositions();
+  } catch(e) { document.getElementById('saPosErr').textContent = e.message; }
+}
+
+async function saDeletePos(id) {
+  if (!confirm('Удалить должность из шаблона?')) return;
+  try { await api(`/saas/template/positions/${id}`, 'DELETE'); await saRenderPositions(); }
+  catch(e) { alert(e.message); }
+}
+
+async function saImportFromCompany() {
+  const companyId = prompt('ID компании для импорта (например: 1):');
+  if (!companyId || isNaN(parseInt(companyId))) return;
+  if (!confirm(`Импортировать отделы и должности из компании #${companyId}? Текущий шаблон будет ПЕРЕЗАПИСАН.`)) return;
+  try {
+    await api(`/saas/template/import/${parseInt(companyId)}`, 'POST');
+    await saRenderDepts();
+    alert('Импорт выполнен успешно!');
+  } catch(e) { alert(e.message); }
 }
 
 // ── UTILS ─────────────────────────────────────────────
