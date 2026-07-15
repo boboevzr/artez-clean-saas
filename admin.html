@@ -9295,14 +9295,14 @@ async function salShowDaily(staffId, staffName, year, month) {
   const modal = document.getElementById('modalSalDaily');
   if (!modal) return;
   document.getElementById('salDailyTitle').textContent = `📊 Детально: ${staffName} — ${months[mo]} ${yr}`;
-  document.getElementById('salDailyBody').innerHTML = '<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text2)">${_t('lbl.loading')}</td></tr>';
+  document.getElementById('salDailyBody').innerHTML = `<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text2)">${_t('lbl.loading')}</td></tr>`;
   document.getElementById('salDailyFooter').style.display = 'none';
   salDailyOpeningCancel();
   modal.classList.remove('hidden');
 
   const data = await apiGet(`/admin/salary/daily?staff_id=${staffId}&year=${yr}&month=${mo}`).catch(()=>null);
   if (!data?.ok) {
-    document.getElementById('salDailyBody').innerHTML = '<tr><td colspan="7" style="text-align:center;padding:24px;color:#dc2626">${_t('lbl.err.load')}</td></tr>';
+    document.getElementById('salDailyBody').innerHTML = `<tr><td colspan="7" style="text-align:center;padding:24px;color:#dc2626">${_t('lbl.err.load')}</td></tr>`;
     return;
   }
   _salDailyCtx.data = data;
