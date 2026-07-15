@@ -5579,6 +5579,7 @@ const _adminI18n = {
     'btn.refresh':'🔄 Обновить',
     'lbl.all':'Все','lbl.today':'Сегодня','lbl.week':'Неделя',
     'lbl.loading':'Загрузка…','lbl.loading.prices':'Загрузка цен…',
+    'lbl.no.data':'Нет данных','lbl.err.load':'Ошибка загрузки',
     'lbl.period':'Выберите период','lbl.all.statuses':'Все статусы',
     'lbl.all.branches':'Все филиалы','lbl.all.roles':'Все роли',
     'lbl.all.sources':'Все источники','lbl.choose':'— выбрать —',
@@ -5695,6 +5696,7 @@ const _adminI18n = {
     'btn.refresh':'🔄 Yangilash',
     'lbl.all':'Barchasi','lbl.today':'Bugun','lbl.week':'Hafta',
     'lbl.loading':'Yuklanmoqda…','lbl.loading.prices':'Narxlar yuklanmoqda…',
+    'lbl.no.data':'Maʼlumot yoʻq','lbl.err.load':'Yuklash xatosi',
     'lbl.period':'Davrni tanlang','lbl.all.statuses':'Barcha holatlar',
     'lbl.all.branches':'Barcha filiallar','lbl.all.roles':'Barcha rollar',
     'lbl.all.sources':'Barcha manbalar','lbl.choose':'— tanlash —',
@@ -8072,12 +8074,12 @@ async function loadWorkOn() {
   const staffId = document.getElementById('workonStaff')?.value;
   if (!yr || !mo) return;
   const body = document.getElementById('workonBody');
-  if (body) body.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text2)">Загрузка…</td></tr>`;
+  if (body) body.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text2)">${_t('lbl.loading')}</td></tr>`;
   let qs = `year=${yr}&month=${mo}`;
   if (staffId) qs += `&staff_id=${staffId}`;
   const data = await apiGet(`/admin/attendance?${qs}`);
   if (!data?.ok) {
-    if (body) body.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:24px;color:#dc2626">Ошибка загрузки</td></tr>`;
+    if (body) body.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:24px;color:#dc2626">${_t('lbl.err.load')}</td></tr>`;
     return;
   }
   _workonData = data.records || [];
@@ -8099,7 +8101,7 @@ function _workonRender() {
   const body = document.getElementById('workonBody');
   if (!body) return;
   if (!_workonData.length) {
-    body.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--text2)">Нет данных</td></tr>`;
+    body.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--text2)">${_t('lbl.no.data')}</td></tr>`;
     return;
   }
   body.innerHTML = _workonData.map((r, i) => {
@@ -8179,9 +8181,9 @@ function monIsOnline(lastActive) {
 }
 
 function monRelativeTime(dateStr) {
-  if (!dateStr) return 'Нет данных';
+  if (!dateStr) return _t('lbl.no.data');
   const d = new Date(dateStr);
-  if (isNaN(d.getTime())) return 'Нет данных';
+  if (isNaN(d.getTime())) return _t('lbl.no.data');
   const diffMs  = Date.now() - d.getTime();
   const diffMin = Math.floor(diffMs / 60000);
   if (diffMin < 1)  return 'только что';
@@ -8222,7 +8224,7 @@ function _monRoundedTopBarPath(x, y, w, h, r) {
 }
 
 function monBuildBarChart(agents) {
-  if (!agents.length) return `<div class="loader" style="padding:20px;">Нет данных</div>`;
+  if (!agents.length) return `<div class="loader" style="padding:20px;">${_t('lbl.no.data')}</div>`;
   const barW = 22, gap = 16, chartH = 130, padTop = 18, padBottom = 26, padLeft = 8;
   const max = Math.max(1, ...agents.map(a => a.actions_today || 0));
   const svgW = padLeft + agents.length * (barW + gap);
@@ -8253,7 +8255,7 @@ function monBuildBarChart(agents) {
 }
 
 function monBuildLineChart(trend) {
-  if (!trend || !trend.length) return `<div class="loader" style="padding:20px;">Нет данных</div>`;
+  if (!trend || !trend.length) return `<div class="loader" style="padding:20px;">${_t('lbl.no.data')}</div>`;
   const w = 320, h = 150, padL = 20, padR = 20, padT = 16, padB = 28;
   const chartW = w - padL - padR, chartH = h - padT - padB;
   const max = Math.max(1, ...trend.map(t => t.actions || 0));
@@ -8929,10 +8931,10 @@ async function salCalcLoad() {
   const mo = document.getElementById('salCalcMonth')?.value;
   if (!yr || !mo) return;
   const body = document.getElementById('salCalcBody');
-  if (body) body.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text2)">Загрузка…</td></tr>`;
+  if (body) body.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text2)">${_t('lbl.loading')}</td></tr>`;
   const data = await apiGet(`/admin/salary/monthly?year=${yr}&month=${mo}`);
   if (!data?.ok) {
-    if (body) body.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:24px;color:#dc2626">Ошибка загрузки</td></tr>`;
+    if (body) body.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:24px;color:#dc2626">${_t('lbl.err.load')}</td></tr>`;
     return;
   }
   _salCalcData = data.staff || [];
@@ -8948,7 +8950,7 @@ function salCalcRender() {
   const rows = branch ? _salCalcData.filter(s => s.branch === branch) : _salCalcData;
 
   if (!rows.length) {
-    body.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--text2)">Нет данных</td></tr>`;
+    body.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--text2)">${_t('lbl.no.data')}</td></tr>`;
     if (totalEl) totalEl.textContent = '';
     return;
   }
@@ -9293,14 +9295,14 @@ async function salShowDaily(staffId, staffName, year, month) {
   const modal = document.getElementById('modalSalDaily');
   if (!modal) return;
   document.getElementById('salDailyTitle').textContent = `📊 Детально: ${staffName} — ${months[mo]} ${yr}`;
-  document.getElementById('salDailyBody').innerHTML = '<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text2)">Загрузка…</td></tr>';
+  document.getElementById('salDailyBody').innerHTML = '<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text2)">${_t('lbl.loading')}</td></tr>';
   document.getElementById('salDailyFooter').style.display = 'none';
   salDailyOpeningCancel();
   modal.classList.remove('hidden');
 
   const data = await apiGet(`/admin/salary/daily?staff_id=${staffId}&year=${yr}&month=${mo}`).catch(()=>null);
   if (!data?.ok) {
-    document.getElementById('salDailyBody').innerHTML = '<tr><td colspan="7" style="text-align:center;padding:24px;color:#dc2626">Ошибка загрузки</td></tr>';
+    document.getElementById('salDailyBody').innerHTML = '<tr><td colspan="7" style="text-align:center;padding:24px;color:#dc2626">${_t('lbl.err.load')}</td></tr>';
     return;
   }
   _salDailyCtx.data = data;
