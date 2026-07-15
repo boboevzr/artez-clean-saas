@@ -330,6 +330,7 @@
       <button class="tab-btn"        id="ecTabBtnContacts"  onclick="ecTab('contacts')">📱 Контакты</button>
       <button class="tab-btn"        id="ecTabBtnBranches"  onclick="ecTab('branches')">🏢 Филиалы</button>
       <button class="tab-btn"        id="ecTabBtnPayment"   onclick="ecTab('payment')">📊 Тариф</button>
+      <button class="tab-btn"        id="ecTabBtnRestore"   onclick="ecTab('restore')">🔄 Справочники</button>
     </div>
 
     <!-- Tab: Данные -->
@@ -470,6 +471,31 @@
         <button class="btn btn-primary btn-sm" onclick="openPaymentModal()">+ Добавить</button>
       </div>
       <div id="ecPaymentsHistory"></div>
+    </div>
+
+    <!-- Tab: Справочники (восстановление из шаблона) -->
+    <div id="ecTabRestore" style="display:none">
+      <p style="font-size:13px;color:var(--text2);margin-bottom:16px">
+        Импорт заменяет текущие данные компании стандартным шаблоном из раздела «Справочники».
+        Предыдущие записи будут удалены.
+      </p>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="background:var(--surface2);border-radius:10px;padding:14px;display:flex;align-items:center;justify-content:space-between;gap:12px">
+          <div>
+            <div style="font-weight:600;font-size:14px">🏢 Отделы</div>
+            <div style="font-size:12px;color:var(--text2);margin-top:2px">Удалить отделы компании и загрузить из шаблона</div>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="ecImportDepts()" style="flex-shrink:0">↩️ Импортировать</button>
+        </div>
+        <div style="background:var(--surface2);border-radius:10px;padding:14px;display:flex;align-items:center;justify-content:space-between;gap:12px">
+          <div>
+            <div style="font-weight:600;font-size:14px">🎯 Должности</div>
+            <div style="font-size:12px;color:var(--text2);margin-top:2px">Удалить должности компании и загрузить из шаблона</div>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="ecImportPositions()" style="flex-shrink:0">↩️ Импортировать</button>
+        </div>
+      </div>
+      <div class="modal-err" id="ecRestoreErr" style="margin-top:10px"></div>
     </div>
 
     <div class="modal-actions">
@@ -1145,14 +1171,17 @@ function ecTab(name) {
   document.getElementById('ecTabContacts').style.display = name==='contacts' ? '' : 'none';
   document.getElementById('ecTabBranches').style.display = name==='branches' ? '' : 'none';
   document.getElementById('ecTabPayment').style.display  = name==='payment'  ? '' : 'none';
+  document.getElementById('ecTabRestore').style.display  = name==='restore'  ? '' : 'none';
   document.getElementById('ecSaveBtn').style.display     = (name==='data' || name==='contacts') ? '' : 'none';
   document.getElementById('ecTabBtnData').classList.toggle('active',     name==='data');
   document.getElementById('ecTabBtnContacts').classList.toggle('active', name==='contacts');
   document.getElementById('ecTabBtnBranches').classList.toggle('active', name==='branches');
   document.getElementById('ecTabBtnPayment').classList.toggle('active',  name==='payment');
+  document.getElementById('ecTabBtnRestore').classList.toggle('active',  name==='restore');
   if (name === 'branches' && _currentCompanyId) loadEditExtras(_currentCompanyId);
   if (name === 'payment'  && _currentCompanyId) loadPaymentTab();
   if (name === 'contacts') _ecContactsLoad();
+  if (name === 'restore') document.getElementById('ecRestoreErr').textContent = '';
 }
 
 async function _ecContactsLoad() {
@@ -1916,6 +1945,31 @@ async function saImportFromCompany() {
     await saRenderDepts();
     alert('Импорт выполнен успешно!');
   } catch(e) { alert(e.message); }
+}
+
+// ── COMPANY RESTORE FROM TEMPLATE ────────────────────
+async function ecImportDepts() {
+  if (!_currentCompanyId) return;
+  if (!confirm('Удалить все отделы компании и заменить стандартными из шаблона?')) return;
+  const errEl = document.getElementById('ecRestoreErr');
+  errEl.textContent = '';
+  try {
+    await api(`/saas/companies/${_currentCompanyId}/import-departments`, 'POST');
+    errEl.style.color = 'var(--green)';
+    errEl.textContent = '✅ Отделы успешно восстановлены';
+  } catch(e) { errEl.style.color = ''; errEl.textContent = e.message; }
+}
+
+async function ecImportPositions() {
+  if (!_currentCompanyId) return;
+  if (!confirm('Удалить все должности компании и заменить стандартными из шаблона?')) return;
+  const errEl = document.getElementById('ecRestoreErr');
+  errEl.textContent = '';
+  try {
+    await api(`/saas/companies/${_currentCompanyId}/import-positions`, 'POST');
+    errEl.style.color = 'var(--green)';
+    errEl.textContent = '✅ Должности успешно восстановлены';
+  } catch(e) { errEl.style.color = ''; errEl.textContent = e.message; }
 }
 
 // ── UTILS ─────────────────────────────────────────────
