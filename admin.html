@@ -1751,8 +1751,8 @@
               </button>
             </div>
             <div id="disc_edit_btns" style="display:none;align-items:center;gap:8px">
-              <button onclick="saveAllDiscounts()" style="padding:7px 18px;background:#163E3B;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer">💾 Сохранить</button>
-              <button onclick="discountsCancel()" style="padding:7px 12px;background:#f3f4f6;color:#555;border:none;border-radius:8px;font-size:13px;cursor:pointer">Отмена</button>
+              <button onclick="saveAllDiscounts()" style="padding:7px 18px;background:#163E3B;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer" data-i18n="btn.save">💾 Сохранить</button>
+              <button onclick="discountsCancel()" style="padding:7px 12px;background:#f3f4f6;color:#555;border:none;border-radius:8px;font-size:13px;cursor:pointer" data-i18n="btn.cancel">Отмена</button>
             </div>
           </div>
 
@@ -2153,8 +2153,8 @@
             <input id="expCatSort" type="number" value="0" inputmode="numeric" style="width:100%;padding:9px 10px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:13px;box-sizing:border-box">
           </div>
           <div style="display:flex;gap:10px">
-            <button onclick="expCatSave()" style="flex:2;padding:11px;background:var(--accent,#163E3B);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer">💾 Сохранить</button>
-            <button onclick="document.getElementById('expCatModal').style.display='none'" style="flex:1;padding:11px;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;font-size:13px;cursor:pointer">Отмена</button>
+            <button onclick="expCatSave()" style="flex:2;padding:11px;background:var(--accent,#163E3B);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer" data-i18n="btn.save">💾 Сохранить</button>
+            <button onclick="document.getElementById('expCatModal').style.display='none'" style="flex:1;padding:11px;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;font-size:13px;cursor:pointer" data-i18n="btn.cancel">Отмена</button>
           </div>
         </div>
       </div>
@@ -2705,8 +2705,8 @@
               </div>
             </div>
             <div style="display:flex;gap:8px;margin-top:4px">
-              <button class="btn btn-save btn-sm" onclick="salLedgerSaveManual()">💾 Сохранить</button>
-              <button class="btn btn-ghost btn-sm" onclick="document.getElementById('salLedgerManualForm').style.display='none'">Отмена</button>
+              <button class="btn btn-save btn-sm" onclick="salLedgerSaveManual()" data-i18n="btn.save">💾 Сохранить</button>
+              <button class="btn btn-ghost btn-sm" onclick="document.getElementById('salLedgerManualForm').style.display='none'" data-i18n="btn.cancel">Отмена</button>
             </div>
           </div>
         </div><!-- /salPane_ledger -->
@@ -3433,8 +3433,8 @@
               </select>
             </div>
             <div style="display:flex;gap:10px">
-              <button onclick="plansCloseModal()" style="flex:1;padding:10px;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--text);cursor:pointer;font-size:13px">Отмена</button>
-              <button onclick="plansSave()" style="flex:2;padding:10px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px">Сохранить</button>
+              <button onclick="plansCloseModal()" style="flex:1;padding:10px;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--text);cursor:pointer;font-size:13px" data-i18n="btn.cancel">Отмена</button>
+              <button onclick="plansSave()" style="flex:2;padding:10px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px" data-i18n="btn.save">Сохранить</button>
             </div>
           </div>
         </div>
@@ -4114,8 +4114,8 @@
           </div>
           <div id="smsTplModalErr" style="display:none;padding:8px 12px;border-radius:8px;font-size:13px;margin-top:12px;background:#fef2f2;color:#dc2626;border:1px solid #fca5a5"></div>
           <div style="display:flex;gap:8px;margin-top:18px">
-            <button onclick="smsTplSave()" class="btn btn-primary" style="flex:1">💾 Сохранить</button>
-            <button onclick="smsTplCloseModal()" class="btn btn-sm" style="background:var(--surface2);color:var(--text)">Отмена</button>
+            <button onclick="smsTplSave()" class="btn btn-primary" style="flex:1" data-i18n="btn.save">💾 Сохранить</button>
+            <button onclick="smsTplCloseModal()" class="btn btn-sm" style="background:var(--surface2);color:var(--text)" data-i18n="btn.cancel">Отмена</button>
           </div>
         </div>
       </div>
@@ -4254,7 +4254,7 @@
               <div style="font-size:11px;color:var(--text2);margin-top:4px">Должно быть зарегистрировано в кабинете Eskiz.uz</div>
             </div>
             <div id="smsSaveResult" style="display:none;padding:8px 12px;border-radius:8px;font-size:13px"></div>
-            <button onclick="smsSaveSettings()" class="btn btn-primary">💾 Сохранить настройки</button>
+            <button onclick="smsSaveSettings()" class="btn btn-primary" data-i18n="btn.save">💾 Сохранить настройки</button>
           </div>
 
           <!-- Памятка API -->
@@ -4849,8 +4849,8 @@
       </div>
 
       <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
-        <button class="btn btn-ghost btn-sm" onclick="closeModal('modalStaff')">Отмена</button>
-        <button class="btn btn-save btn-sm" onclick="saveStaffPersonal()" style="min-width:160px">💾 Сохранить личные данные</button>
+        <button class="btn btn-ghost btn-sm" onclick="closeModal('modalStaff')" data-i18n="btn.cancel">Отмена</button>
+        <button class="btn btn-save btn-sm" onclick="saveStaffPersonal()" style="min-width:160px" data-i18n="btn.save">💾 Сохранить личные данные</button>
       </div>
     </div>
 
@@ -4977,8 +4977,8 @@
 
       <!-- Футер вкладки -->
       <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:8px;padding-top:16px;border-top:1px solid var(--border)">
-        <button class="btn btn-ghost btn-sm" onclick="closeModal('modalStaff')">Отмена</button>
-        <button class="btn btn-save btn-sm" onclick="sfSalarySave()" style="min-width:160px">💾 Сохранить зарплату</button>
+        <button class="btn btn-ghost btn-sm" onclick="closeModal('modalStaff')" data-i18n="btn.cancel">Отмена</button>
+        <button class="btn btn-save btn-sm" onclick="sfSalarySave()" style="min-width:160px" data-i18n="btn.save">💾 Сохранить зарплату</button>
       </div>
     </div>
 
@@ -5343,8 +5343,8 @@
     </div><!-- end bfTabTg -->
 
     <div class="modal-footer">
-      <button class="btn btn-ghost btn-sm" onclick="closeBranchForm()">Отмена</button>
-      <button class="btn btn-save btn-sm" id="bfSaveBtn" onclick="saveBranchForm()">💾 Сохранить</button>
+      <button class="btn btn-ghost btn-sm" onclick="closeBranchForm()" data-i18n="btn.cancel">Отмена</button>
+      <button class="btn btn-save btn-sm" id="bfSaveBtn" onclick="saveBranchForm()" data-i18n="btn.save">💾 Сохранить</button>
     </div>
   </div>
 </div>
@@ -5468,8 +5468,8 @@
       </div>
     </div>
     <div class="modal-actions">
-      <button class="btn btn-cancel" onclick="closePriceModal()">Отмена</button>
-      <button class="btn btn-save" onclick="savePriceModal()">💾 Сохранить</button>
+      <button class="btn btn-cancel" onclick="closePriceModal()" data-i18n="btn.cancel">Отмена</button>
+      <button class="btn btn-save" onclick="savePriceModal()" data-i18n="btn.save">💾 Сохранить</button>
     </div>
   </div>
 </div>
@@ -5884,6 +5884,25 @@ function _applyAdminI18n() {
     const val = _t(el.dataset.i18nPh);
     if (val !== el.dataset.i18nPh) el.placeholder = val;
   });
+  // Class-based translation for siteconfig save/cancel buttons
+  document.querySelectorAll('.s-save-btn').forEach(el => { el.textContent = _t('btn.save'); });
+  document.querySelectorAll('.s-cancel-btn').forEach(el => { el.textContent = _t('btn.cancel'); });
+  // SMS templates inline save/cancel buttons (by ID)
+  ['sys-save-register','sys-save-login','sys-save-reset'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = _t('btn.save');
+  });
+  ['sys-cancel-register','sys-cancel-login','sys-cancel-reset'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = _t('btn.cancel');
+  });
+  // Translate any remaining cancel buttons not yet handled
+  const cancelRu = 'Отмена', cancelUz = _t('btn.cancel');
+  if (cancelRu !== cancelUz) {
+    document.querySelectorAll('button:not([data-i18n]):not(.s-cancel-btn)').forEach(el => {
+      if (el.textContent.trim() === cancelRu) el.textContent = cancelUz;
+    });
+  }
 }
 
 async function doSlugStep() {
@@ -6640,7 +6659,7 @@ function renderRolePermsPage() {
       </table>
     </div>
     <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap">
-      <button class="btn btn-primary" onclick="saveRolePerms()">💾 Сохранить</button>
+      <button class="btn btn-primary" onclick="saveRolePerms()" data-i18n="btn.save">💾 Сохранить</button>
       <button class="btn btn-ghost" onclick="resetRolePerms()">↺ Сбросить к дефолту</button>
     </div>`;
 }
