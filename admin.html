@@ -6400,7 +6400,8 @@ async function loadBranches() {
 
 function branchName(slug) {
   const b = (window._BRANCHES || []).find(b => b.slug === slug);
-  return b ? b.name_ru : (slug || '—');
+  if (!b) return slug || '—';
+  return (_adminLang === 'uz' && b.name_uz) ? b.name_uz : b.name_ru;
 }
 
 function renderBranchOptions(selectEl, addAll = false) {
@@ -6411,7 +6412,7 @@ function renderBranchOptions(selectEl, addAll = false) {
   for (const b of (window._BRANCHES || [])) {
     const opt = document.createElement('option');
     opt.value = b.slug;
-    opt.textContent = b.name_ru;
+    opt.textContent = (_adminLang === 'uz' && b.name_uz) ? b.name_uz : b.name_ru;
     selectEl.appendChild(opt);
   }
   if (cur) selectEl.value = cur;
@@ -6424,7 +6425,7 @@ function initBranchSelects() {
 }
 
 function getSalBranchLabels() {
-  return Object.fromEntries((window._BRANCHES || []).map(b => [b.slug, b.name_ru]));
+  return Object.fromEntries((window._BRANCHES || []).map(b => [b.slug, (_adminLang === 'uz' && b.name_uz) ? b.name_uz : b.name_ru]));
 }
 
 function _getAoeBranchCenter(slug) {
@@ -6443,7 +6444,7 @@ function renderRtBranchPills() {
   const wrap = document.getElementById('rtBranchPills');
   if (!wrap) return;
   wrap.innerHTML = (window._BRANCHES || []).map(b =>
-    `<button data-v="${b.slug}" class="rt-pill" onclick="rtSetBranch('${b.slug}')">🏢 ${b.name_ru}</button>`
+    `<button data-v="${b.slug}" class="rt-pill" onclick="rtSetBranch('${b.slug}')">🏢 ${(_adminLang === 'uz' && b.name_uz) ? b.name_uz : b.name_ru}</button>`
   ).join('');
 }
 
@@ -12317,7 +12318,7 @@ const _ADMIN_LEAD_STATUS_CHIPS = [
   { v:'lost',      label:'❌ Потерян' },
 ];
 function _getAdminLeadBranchChips() {
-  return [{ v:'', label:'Все' }].concat((window._BRANCHES || []).map(b => ({ v: b.slug, label: b.name_ru })));
+  return [{ v:'', label: _t('lbl.all') }].concat((window._BRANCHES || []).map(b => ({ v: b.slug, label: (_adminLang === 'uz' && b.name_uz) ? b.name_uz : b.name_ru })));
 }
 
 function _renderAdminLeadsFilterChips() {
