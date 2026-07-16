@@ -742,7 +742,8 @@
     <input type="hidden" id="sa_dept_edit_id">
     <div class="field"><label>Название (RU) *</label><input class="form-input" id="sa_dept_name" placeholder="Работа с клиентами" autocomplete="off"></div>
     <div class="field"><label>Название (UZ)</label><input class="form-input" id="sa_dept_name_uz" placeholder="Mijozlar bilan ishlash" autocomplete="off"></div>
-    <div class="field"><label>Описание</label><input class="form-input" id="sa_dept_desc" placeholder="Краткое описание" autocomplete="off"></div>
+    <div class="field"><label>Описание (RU)</label><input class="form-input" id="sa_dept_desc" placeholder="Краткое описание" autocomplete="off"></div>
+    <div class="field"><label>Описание (UZ)</label><input class="form-input" id="sa_dept_desc_uz" placeholder="Qisqacha tavsif" autocomplete="off"></div>
     <div class="modal-err" id="saDeptErr"></div>
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="closeModal('modalSaDept')">Отмена</button>
@@ -787,7 +788,8 @@
       </select>
     </div>
     <div class="field"><label>Ставка (сум)</label><input class="form-input" type="number" id="sa_pos_salary_rate" placeholder="0"></div>
-    <div class="field"><label>Описание</label><input class="form-input" id="sa_pos_desc" placeholder="Краткое описание" autocomplete="off"></div>
+    <div class="field"><label>Описание (RU)</label><input class="form-input" id="sa_pos_desc" placeholder="Краткое описание" autocomplete="off"></div>
+    <div class="field"><label>Описание (UZ)</label><input class="form-input" id="sa_pos_desc_uz" placeholder="Qisqacha tavsif" autocomplete="off"></div>
     <div class="modal-err" id="saPosErr"></div>
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="closeModal('modalSaPos')">Отмена</button>
@@ -1872,20 +1874,22 @@ function saOpenDeptModal(id = null) {
   document.getElementById('saDeptErr').textContent = '';
   const d = id ? _saDepts.find(x => x.id === id) : null;
   document.getElementById('sa_dept_name').value = d?.name || '';
-  document.getElementById('sa_dept_name_uz').value = d?.name_uz || '';
-  document.getElementById('sa_dept_desc').value = d?.description || '';
+  document.getElementById('sa_dept_name_uz').value  = d?.name_uz || '';
+  document.getElementById('sa_dept_desc').value     = d?.description || '';
+  document.getElementById('sa_dept_desc_uz').value  = d?.description_uz || '';
   openModal('modalSaDept');
 }
 
 async function saSaveDept() {
   const id = parseInt(document.getElementById('sa_dept_edit_id').value) || null;
   const name = document.getElementById('sa_dept_name').value.trim();
-  const name_uz = document.getElementById('sa_dept_name_uz').value.trim();
-  const description = document.getElementById('sa_dept_desc').value.trim() || null;
+  const name_uz        = document.getElementById('sa_dept_name_uz').value.trim();
+  const description    = document.getElementById('sa_dept_desc').value.trim() || null;
+  const description_uz = document.getElementById('sa_dept_desc_uz').value.trim() || null;
   if (!name) { document.getElementById('saDeptErr').textContent = 'Укажите название'; return; }
   try {
-    if (id) await api(`/saas/template/departments/${id}`, 'PATCH', { name, name_uz, description });
-    else    await api('/saas/template/departments', 'POST', { name, name_uz, description });
+    if (id) await api(`/saas/template/departments/${id}`, 'PATCH', { name, name_uz, description, description_uz });
+    else    await api('/saas/template/departments', 'POST', { name, name_uz, description, description_uz });
     closeModal('modalSaDept');
     await saRenderDepts();
   } catch(e) { document.getElementById('saDeptErr').textContent = e.message; }
@@ -1907,8 +1911,9 @@ async function saOpenPosModal(id = null) {
   _saDepts.forEach(d => dEl.innerHTML += `<option value="${d.id}">${escHtml(d.name)}</option>`);
   const p = id ? _saPositions.find(x => x.id === id) : null;
   document.getElementById('sa_pos_name').value = p?.name || '';
-  document.getElementById('sa_pos_name_uz').value = p?.name_uz || '';
-  document.getElementById('sa_pos_dept').value = p?.dept_id || '';
+  document.getElementById('sa_pos_name_uz').value    = p?.name_uz || '';
+  document.getElementById('sa_pos_desc_uz').value    = p?.description_uz || '';
+  document.getElementById('sa_pos_dept').value       = p?.dept_id || '';
   document.getElementById('sa_pos_role').value = p?.role || '';
   document.getElementById('sa_pos_salary_type').value = p?.salary_type || 'fixed';
   document.getElementById('sa_pos_salary_rate').value = p?.salary_rate || '';
@@ -1925,7 +1930,8 @@ async function saSavePos() {
     role:        document.getElementById('sa_pos_role').value || null,
     salary_type: document.getElementById('sa_pos_salary_type').value || null,
     salary_rate: parseInt(document.getElementById('sa_pos_salary_rate').value) || null,
-    description: document.getElementById('sa_pos_desc').value.trim() || null,
+    description:    document.getElementById('sa_pos_desc').value.trim() || null,
+    description_uz: document.getElementById('sa_pos_desc_uz').value.trim() || null,
   };
   if (!body.name) { document.getElementById('saPosErr').textContent = 'Укажите название'; return; }
   try {
