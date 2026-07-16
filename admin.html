@@ -4834,7 +4834,7 @@
           <div class="form-group">
             <label class="form-label">День рождения</label>
             <div style="display:flex;gap:8px;align-items:center">
-              <div id="sp_spouse_birth_display" style="flex:1;padding:9px 12px;border-radius:10px;border:1.5px solid var(--border);font-size:13px;color:var(--muted);background:var(--surface)">Не указан</div>
+              <div id="sp_spouse_birth_display" style="flex:1;padding:9px 12px;border-radius:10px;border:1.5px solid var(--border);font-size:13px;color:var(--muted);background:var(--surface)" data-i18n="sp.birth.none">Не указан</div>
               <button type="button" onclick="spOpenBirthPicker()" style="padding:9px 12px;border-radius:10px;border:none;background:var(--accent,#163E3B);color:#fff;font-size:16px;cursor:pointer">📅</button>
             </div>
             <input type="hidden" id="sp_spouse_birth_date">
@@ -4891,8 +4891,8 @@
       <!-- Секция: Проценты (percent / fixed_percent) -->
       <div id="sfsal_percent_block" style="display:none;background:var(--surface);border-radius:14px;padding:16px;margin-bottom:16px">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-          <div class="sf-section-label" style="margin-bottom:0">Процентные ставки</div>
-          <button id="sfsal_add_pct_btn" type="button" onclick="sfSalAddPercent()" style="padding:6px 12px;border-radius:8px;border:none;background:var(--accent);color:#fff;font-size:12px;font-weight:700;cursor:pointer">+ Добавить</button>
+          <div class="sf-section-label" style="margin-bottom:0" data-i18n="sf.section.pct.rates">Процентные ставки</div>
+          <button id="sfsal_add_pct_btn" type="button" onclick="sfSalAddPercent()" style="padding:6px 12px;border-radius:8px;border:none;background:var(--accent);color:#fff;font-size:12px;font-weight:700;cursor:pointer" data-i18n="btn.add">+ Добавить</button>
         </div>
         <div id="sfsal_percent_list" style="display:flex;flex-direction:column;gap:8px"></div>
       </div>
@@ -4900,7 +4900,7 @@
       <!-- Секция: За лиды -->
       <div id="sfsal_leads_block" style="display:none;background:var(--surface);border-radius:14px;padding:16px;margin-bottom:16px">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
-          <div class="sf-section-label" style="margin-bottom:0">Комиссия за лид</div>
+          <div class="sf-section-label" style="margin-bottom:0" data-i18n="sf.section.lead.comm">Комиссия за лид</div>
           <div id="sfsal_lead_type_badge" style="font-size:11px;color:var(--text2);background:var(--surface2);padding:3px 10px;border-radius:20px;border:1px solid var(--border)">…</div>
         </div>
         <div class="form-group" style="max-width:240px">
@@ -4910,7 +4910,7 @@
             <span id="sfsal_lead_val_suffix" style="color:var(--text2);font-size:14px;font-weight:700;flex-shrink:0">%</span>
           </div>
         </div>
-        <div style="font-size:11px;color:var(--text2);margin-top:8px">
+        <div style="font-size:11px;color:var(--text2);margin-top:8px" data-i18n="sf.lead.global.hint">
           Если не заполнено — применяется глобальное значение из <b>Система → Настройки сайта → 🤝 Агенты</b>
         </div>
       </div>
@@ -4921,10 +4921,10 @@
         <!-- За единицу измерения -->
         <div style="background:var(--surface);border-radius:14px;padding:16px;margin-bottom:12px">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-            <div class="sf-section-label" style="margin-bottom:0">📐 За ед.изм (по услугам)</div>
-            <button type="button" onclick="sfSalAddUnit()" style="padding:6px 12px;border-radius:8px;border:none;background:var(--accent);color:#fff;font-size:12px;font-weight:700;cursor:pointer">+ Услуга</button>
+            <div class="sf-section-label" style="margin-bottom:0" data-i18n="sf.section.per.unit">📐 За ед.изм (по услугам)</div>
+            <button type="button" onclick="sfSalAddUnit()" style="padding:6px 12px;border-radius:8px;border:none;background:var(--accent);color:#fff;font-size:12px;font-weight:700;cursor:pointer" data-i18n="sf.btn.add.unit">+ Услуга</button>
           </div>
-          <div style="font-size:11px;color:var(--text2);margin-bottom:10px">Ковёр → 3 000 сум/м² · Матрац → 20 000 сум/шт или % от суммы позиции</div>
+          <div style="font-size:11px;color:var(--text2);margin-bottom:10px" data-i18n="sf.per.unit.hint">Ковёр → 3 000 сум/м² · Матрац → 20 000 сум/шт или % от суммы позиции</div>
           <div id="sfsal_unit_list" style="display:flex;flex-direction:column;gap:8px"></div>
         </div>
 
@@ -4935,34 +4935,34 @@
 
         <!-- Забор -->
         <div style="background:var(--surface);border-radius:14px;padding:16px;margin-bottom:12px">
-          <div class="sf-section-label" style="margin-bottom:12px">🚗 За забор (вывоз)</div>
+          <div class="sf-section-label" style="margin-bottom:12px" data-i18n="sf.section.pickup">🚗 За забор (вывоз)</div>
           <div style="display:flex;gap:8px;align-items:center">
             <div style="display:flex;border:1.5px solid var(--border);border-radius:10px;overflow:hidden;flex-shrink:0">
               <button type="button" id="sfsal_pickup_type_sum" onclick="sfSalSetRateType('pickup','sum')"
-                style="padding:8px 14px;border:none;font-size:12px;font-weight:700;cursor:pointer;background:var(--accent);color:#fff">сум</button>
+                style="padding:8px 14px;border:none;font-size:12px;font-weight:700;cursor:pointer;background:var(--accent);color:#fff" data-i18n="lbl.sum">сум</button>
               <button type="button" id="sfsal_pickup_type_pct" onclick="sfSalSetRateType('pickup','percent')"
                 style="padding:8px 14px;border:none;font-size:12px;font-weight:700;cursor:pointer;background:none;color:var(--text2)">%</button>
             </div>
             <input class="form-input" type="number" id="sfsal_pickup_value" placeholder="0" min="0" inputmode="decimal" style="flex:1">
             <span id="sfsal_pickup_suffix" style="color:var(--text2);font-size:14px;font-weight:700;flex-shrink:0">сум</span>
           </div>
-          <div style="font-size:11px;color:var(--text2);margin-top:6px">Начисляется за каждый забранный заказ (одна поездка)</div>
+          <div style="font-size:11px;color:var(--text2);margin-top:6px" data-i18n="sf.pickup.hint">Начисляется за каждый забранный заказ (одна поездка)</div>
         </div>
 
         <!-- Доставка -->
         <div style="background:var(--surface);border-radius:14px;padding:16px">
-          <div class="sf-section-label" style="margin-bottom:12px">🚚 За доставку</div>
+          <div class="sf-section-label" style="margin-bottom:12px" data-i18n="sf.section.delivery">🚚 За доставку</div>
           <div style="display:flex;gap:8px;align-items:center">
             <div style="display:flex;border:1.5px solid var(--border);border-radius:10px;overflow:hidden;flex-shrink:0">
               <button type="button" id="sfsal_delivery_type_sum" onclick="sfSalSetRateType('delivery','sum')"
-                style="padding:8px 14px;border:none;font-size:12px;font-weight:700;cursor:pointer;background:var(--accent);color:#fff">сум</button>
+                style="padding:8px 14px;border:none;font-size:12px;font-weight:700;cursor:pointer;background:var(--accent);color:#fff" data-i18n="lbl.sum">сум</button>
               <button type="button" id="sfsal_delivery_type_pct" onclick="sfSalSetRateType('delivery','percent')"
                 style="padding:8px 14px;border:none;font-size:12px;font-weight:700;cursor:pointer;background:none;color:var(--text2)">%</button>
             </div>
             <input class="form-input" type="number" id="sfsal_delivery_value" placeholder="0" min="0" inputmode="decimal" style="flex:1">
             <span id="sfsal_delivery_suffix" style="color:var(--text2);font-size:14px;font-weight:700;flex-shrink:0">сум</span>
           </div>
-          <div style="font-size:11px;color:var(--text2);margin-top:6px">Начисляется за каждый доставленный заказ</div>
+          <div style="font-size:11px;color:var(--text2);margin-top:6px" data-i18n="sf.delivery.hint">Начисляется за каждый доставленный заказ</div>
         </div>
 
       </div>
@@ -4970,10 +4970,10 @@
       <!-- Секция: KPI -->
       <div id="sfsal_kpi_block" style="display:none;background:var(--surface);border-radius:14px;padding:16px;margin-bottom:16px">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-          <div class="sf-section-label" style="margin-bottom:0">KPI правила</div>
-          <button type="button" onclick="sfSalAddKpi()" style="padding:6px 12px;border-radius:8px;border:none;background:var(--accent);color:#fff;font-size:12px;font-weight:700;cursor:pointer">+ Добавить</button>
+          <div class="sf-section-label" style="margin-bottom:0" data-i18n="sf.section.kpi">KPI правила</div>
+          <button type="button" onclick="sfSalAddKpi()" style="padding:6px 12px;border-radius:8px;border:none;background:var(--accent);color:#fff;font-size:12px;font-weight:700;cursor:pointer" data-i18n="btn.add">+ Добавить</button>
         </div>
-        <div style="font-size:11px;color:var(--text2);margin-bottom:10px">При достижении цели — начисляется бонус</div>
+        <div style="font-size:11px;color:var(--text2);margin-bottom:10px" data-i18n="sf.kpi.hint">При достижении цели — начисляется бонус</div>
         <div id="sfsal_kpi_list" style="display:flex;flex-direction:column;gap:8px"></div>
       </div>
 
@@ -5947,7 +5947,20 @@ const _adminI18n = {
     'sf.section.per.unit':'📐 За ед.изм (по услугам)','sf.btn.add.unit':'+ Услуга',
     'sf.per.unit.hint':'Ковёр → 3 000 сум/м² · Матрац → 20 000 сум/шт или % от суммы позиции',
     'sf.section.pickup':'🚗 За забор (вывоз)','sf.pickup.hint':'Начисляется за каждый забранный заказ (одна поездка)',
-    'sf.section.delivery':'🚚 За доставку',
+    'sf.section.delivery':'🚚 За доставку','sf.delivery.hint':'Начисляется за каждый доставленный заказ',
+    'sf.section.kpi':'KPI правила','sf.kpi.hint':'При достижении цели — начисляется бонус',
+    'bp.pick.year':'Выберите год','bp.pick.month':'Выберите месяц','bp.pick.day':'Выберите день',
+    'bp.btn.back':'← Назад','bp.btn.cancel':'Отмена',
+    'sp.pick.year':'Год рождения супруги/супруга','sp.pick.month':'Месяц','sp.pick.day':'День',
+    'sp.birth.none':'Не указан',
+    'lbl.sum':'сум',
+    'sal.role.lead':'Лид','sal.role.pickup':'Забор','sal.role.washing':'Мойка','sal.role.packing':'Упаковка','sal.role.delivery':'Доставка',
+    'sal.kpi.orders_count':'Кол-во заказов','sal.kpi.pickup_count':'Забор (вывоз)','sal.kpi.deliveries_count':'Кол-во доставок',
+    'sal.kpi.new_leads':'Новых лидов','sal.kpi.lead_conversion':'Конверсия лидов (%)','sal.kpi.units_processed':'Ед.изм. обработано (м²)','sal.kpi.avg_check':'Средний чек (сум)',
+    'kpi.bonus.fixed':'Фикс. сумма (сум)','kpi.bonus.pct.base':'% от оклада',
+    'kpi.lbl.goal':'Цель','kpi.lbl.bonus.type':'Тип бонуса','kpi.lbl.value':'Значение','kpi.lbl.bonus':'Бонус',
+    'sf.lead.fixed.type':'Фиксированная сумма (сум)','sf.lead.pct.type':'% от суммы заказа',
+    'sf.lbl.pct':'Процент (%)','sf.lead.global':'глобально',
     'sm.lbl.staff':'Сотрудник','sm.btn.create':'Создать',
   },
   uz: {
@@ -6281,7 +6294,20 @@ const _adminI18n = {
     'sf.section.per.unit':'📐 Birlik uchun (xizmatlar boʻyicha)','sf.btn.add.unit':'+ Xizmat',
     'sf.per.unit.hint':'Gilam → 3 000 soʻm/m² · Oʻrindiq → 20 000 soʻm/dona yoki pozitsiya summasidan %',
     'sf.section.pickup':'🚗 Olib ketish uchun','sf.pickup.hint':'Har bir olib ketilgan buyurtma uchun (bir sayohat)',
-    'sf.section.delivery':'🚚 Yetkazib berish uchun',
+    'sf.section.delivery':'🚚 Yetkazib berish uchun','sf.delivery.hint':'Har bir yetkazilgan buyurtma uchun',
+    'sf.section.kpi':'KPI qoidalari','sf.kpi.hint':'Maqsadga erishilganda — bonus hisoblanadi',
+    'bp.pick.year':'Yilni tanlang','bp.pick.month':'Oyni tanlang','bp.pick.day':'Kunni tanlang',
+    'bp.btn.back':'← Orqaga','bp.btn.cancel':'Bekor qilish',
+    'sp.pick.year':'Turmush oʻrtogʻining tug\'ilgan yili','sp.pick.month':'Oy','sp.pick.day':'Kun',
+    'sp.birth.none':'Koʻrsatilmagan',
+    'lbl.sum':'soʻm',
+    'sal.role.lead':'Lid','sal.role.pickup':'Olib ketish','sal.role.washing':'Yuvish','sal.role.packing':'Qadoqlash','sal.role.delivery':'Yetkazib berish',
+    'sal.kpi.orders_count':'Buyurtmalar soni','sal.kpi.pickup_count':'Olib ketish (chiqib)','sal.kpi.deliveries_count':'Yetkazishlar soni',
+    'sal.kpi.new_leads':'Yangi lidlar','sal.kpi.lead_conversion':'Lid konversiyasi (%)','sal.kpi.units_processed':'Birlik qayta ishlangan (m²)','sal.kpi.avg_check':'Oʻrtacha chek (soʻm)',
+    'kpi.bonus.fixed':'Belgilangan miqdor (soʻm)','kpi.bonus.pct.base':'% oylik maoshdan',
+    'kpi.lbl.goal':'Maqsad','kpi.lbl.bonus.type':'Bonus turi','kpi.lbl.value':'Qiymat','kpi.lbl.bonus':'Bonus',
+    'sf.lead.fixed.type':'Belgilangan miqdor (soʻm)','sf.lead.pct.type':'Buyurtma summasidan %',
+    'sf.lbl.pct':'Foiz (%)','sf.lead.global':'global',
     'sm.lbl.staff':'Xodim','sm.btn.create':'Yaratish',
   },
 };
@@ -15701,12 +15727,12 @@ async function sfSalaryLoad(staffId) {
   const lbl       = document.getElementById('sfsal_lead_val_label');
   const suf       = document.getElementById('sfsal_lead_val_suffix');
   if (commType === 'fixed') {
-    if (badge) badge.textContent = 'Фиксированная сумма (сум)';
-    if (lbl)   lbl.textContent   = `Сумма (сум) [глобально: ${parseFloat(commFixed).toLocaleString('ru-RU')}]`;
-    if (suf)   suf.textContent   = 'сум';
+    if (badge) badge.textContent = _t('sf.lead.fixed.type');
+    if (lbl)   lbl.textContent   = `${_t('sf.lbl.sal.amount')} [${_t('sf.lead.global')}: ${parseFloat(commFixed).toLocaleString('ru-RU')}]`;
+    if (suf)   suf.textContent   = _t('lbl.sum');
   } else {
-    if (badge) badge.textContent = '% от суммы заказа';
-    if (lbl)   lbl.textContent   = `Процент (%) [глобально: ${commPct}%]`;
+    if (badge) badge.textContent = _t('sf.lead.pct.type');
+    if (lbl)   lbl.textContent   = `${_t('sf.lbl.pct')} [${_t('sf.lead.global')}: ${commPct}%]`;
     if (suf)   suf.textContent   = '%';
   }
 
@@ -15787,7 +15813,7 @@ function _sfSalPercentCard(role, percent) {
   SF_SAL_PERCENT_ROLES.forEach(r => {
     if (r.key !== role && used.has(r.key)) return; // скрыть уже добавленные
     const opt = document.createElement('option');
-    opt.value = r.key; opt.textContent = r.label;
+    opt.value = r.key; opt.textContent = _t('sal.role.' + r.key) || r.label;
     if (r.key === role) opt.selected = true;
     sel.appendChild(opt);
   });
@@ -15845,19 +15871,19 @@ function _sfSalUnitCard(svc, tp, unitRate, rateType, prices) {
   row2.style.cssText = 'display:flex;gap:8px;align-items:center';
   const typeWrap = document.createElement('div');
   typeWrap.style.cssText = 'display:flex;border:1.5px solid var(--border);border-radius:8px;overflow:hidden;flex-shrink:0';
-  const btnSum = document.createElement('button'); btnSum.type='button'; btnSum.textContent='сум';
+  const btnSum = document.createElement('button'); btnSum.type='button'; btnSum.textContent=_t('lbl.sum');
   btnSum.style.cssText = `padding:6px 10px;border:none;font-size:12px;font-weight:700;cursor:pointer;background:${rateType==='sum'?'var(--accent)':'none'};color:${rateType==='sum'?'#fff':'var(--text2)'}`;
   const btnPct = document.createElement('button'); btnPct.type='button'; btnPct.textContent='%';
   btnPct.style.cssText = `padding:6px 10px;border:none;font-size:12px;font-weight:700;cursor:pointer;background:${rateType==='percent'?'var(--accent)':'none'};color:${rateType==='percent'?'#fff':'var(--text2)'}`;
   const sufEl = document.createElement('span');
-  sufEl.textContent = rateType==='sum'?'сум':'%';
+  sufEl.textContent = rateType==='sum'?_t('lbl.sum'):'%';
   sufEl.style.cssText = 'font-size:12px;color:var(--text2);flex-shrink:0';
   let _rt = rateType;
   const toggleType = (t) => {
     _rt = t; btnSum.dataset.active=(t==='sum'); btnPct.dataset.active=(t==='percent');
     btnSum.style.background=t==='sum'?'var(--accent)':'none'; btnSum.style.color=t==='sum'?'#fff':'var(--text2)';
     btnPct.style.background=t==='percent'?'var(--accent)':'none'; btnPct.style.color=t==='percent'?'#fff':'var(--text2)';
-    sufEl.textContent=t==='sum'?'сум':'%';
+    sufEl.textContent=t==='sum'?_t('lbl.sum'):'%';
     inp.setAttribute('inputmode',t==='percent'?'decimal':'numeric');
     wrap.dataset.rateType = t;
   };
@@ -15884,7 +15910,7 @@ function sfSalSetRateType(key, type) {
   btnSum.style.color      = type==='sum'?'#fff':'var(--text2)';
   btnPct.style.background = type==='percent'?'var(--accent)':'none';
   btnPct.style.color      = type==='percent'?'#fff':'var(--text2)';
-  if (suf) suf.textContent = type==='sum'?'сум':'%';
+  if (suf) suf.textContent = type==='sum'?_t('lbl.sum'):'%';
   if (inp) { inp.setAttribute('inputmode',type==='percent'?'decimal':'numeric'); inp.dataset.rateType=type; }
 }
 
@@ -15905,13 +15931,13 @@ function _sfSalKpiCard(metric, targetValue, bonusType, bonusValue) {
   metSel.className='form-input'; metSel.style.cssText='flex:1;font-size:13px;padding:7px 8px';
   SF_SAL_KPI_METRICS.forEach(m => {
     const opt = document.createElement('option');
-    opt.value=m.key; opt.textContent=m.label;
+    opt.value=m.key; opt.textContent=_t('sal.kpi.' + m.key) || m.label;
     if (m.key===metric) opt.selected=true;
     metSel.appendChild(opt);
   });
   const targetInp = document.createElement('input');
   targetInp.type='number'; targetInp.min='0'; targetInp.step='any'; targetInp.value=targetValue||'';
-  targetInp.placeholder='Цель'; targetInp.className='form-input';
+  targetInp.placeholder=_t('kpi.lbl.goal'); targetInp.className='form-input';
   targetInp.style.cssText='width:90px;flex-shrink:0;padding:7px 8px;font-size:13px;text-align:right';
   const del = document.createElement('button');
   del.type='button'; del.textContent='✕';
@@ -15922,19 +15948,19 @@ function _sfSalKpiCard(metric, targetValue, bonusType, bonusValue) {
   row2.style.cssText='display:grid;grid-template-columns:1fr 1fr;gap:8px';
   const bTypeSel = document.createElement('select');
   bTypeSel.className='form-input'; bTypeSel.style.cssText='padding:7px 8px;font-size:13px';
-  [{key:'fixed',label:'Фикс. сумма (сум)'},{key:'percent_of_base',label:'% от оклада'}].forEach(o=>{
+  [{key:'fixed',label:_t('kpi.bonus.fixed')},{key:'percent_of_base',label:_t('kpi.bonus.pct.base')}].forEach(o=>{
     const opt=document.createElement('option'); opt.value=o.key; opt.textContent=o.label;
     if(o.key===bonusType) opt.selected=true; bTypeSel.appendChild(opt);
   });
   const bValInp = document.createElement('input');
   bValInp.type='number'; bValInp.min='0'; bValInp.step='any'; bValInp.value=bonusValue||'';
-  bValInp.placeholder='Бонус'; bValInp.className='form-input';
+  bValInp.placeholder=_t('kpi.lbl.bonus'); bValInp.className='form-input';
   bValInp.style.cssText='padding:7px 8px;font-size:13px';
   const d1=document.createElement('div');
-  const l1=document.createElement('div'); l1.textContent='Тип бонуса'; l1.style.cssText='font-size:11px;color:var(--text2);margin-bottom:3px';
+  const l1=document.createElement('div'); l1.textContent=_t('kpi.lbl.bonus.type'); l1.style.cssText='font-size:11px;color:var(--text2);margin-bottom:3px';
   d1.append(l1,bTypeSel);
   const d2=document.createElement('div');
-  const l2=document.createElement('div'); l2.textContent='Значение'; l2.style.cssText='font-size:11px;color:var(--text2);margin-bottom:3px';
+  const l2=document.createElement('div'); l2.textContent=_t('kpi.lbl.value'); l2.style.cssText='font-size:11px;color:var(--text2);margin-bottom:3px';
   d2.append(l2,bValInp);
   row2.append(d1,d2);
   wrap.append(row1,row2);
@@ -16203,14 +16229,14 @@ function _spRenderBP(step) {
   let inner = '';
   if (step==='year') {
     const yrs = Array.from({length:curY-1939},(_,i)=>curY-i);
-    inner = `<div style="font-size:15px;font-weight:700;margin-bottom:16px;text-align:center">Год рождения супруги/супруга</div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-height:260px;overflow-y:auto">${yrs.map(y=>`<button onclick="_spAbpYear=${y};_spRenderBP('month')" style="padding:10px 4px;border-radius:10px;border:1.5px solid var(--border);font-size:14px;font-weight:600;cursor:pointer;background:var(--surface);color:var(--text)">${y}</button>`).join('')}</div>`;
+    inner = `<div style="font-size:15px;font-weight:700;margin-bottom:16px;text-align:center">${_t('sp.pick.year')}</div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-height:260px;overflow-y:auto">${yrs.map(y=>`<button onclick="_spAbpYear=${y};_spRenderBP('month')" style="padding:10px 4px;border-radius:10px;border:1.5px solid var(--border);font-size:14px;font-weight:600;cursor:pointer;background:var(--surface);color:var(--text)">${y}</button>`).join('')}</div>`;
   } else if (step==='month') {
-    inner = `<div style="font-size:15px;font-weight:700;margin-bottom:4px;text-align:center">Месяц</div><div style="font-size:13px;color:var(--muted);text-align:center;margin-bottom:14px">${_spAbpYear}</div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">${_ADMIN_MONTHS.map((m,i)=>`<button onclick="_spAbpMonth=${i+1};_spRenderBP('day')" style="padding:12px 4px;border-radius:10px;border:1.5px solid var(--border);font-size:13px;font-weight:600;cursor:pointer;background:var(--surface);color:var(--text)">${m}</button>`).join('')}</div>`;
+    inner = `<div style="font-size:15px;font-weight:700;margin-bottom:4px;text-align:center">${_t('sp.pick.month')}</div><div style="font-size:13px;color:var(--muted);text-align:center;margin-bottom:14px">${_spAbpYear}</div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">${_ADMIN_MONTHS.map((m,i)=>`<button onclick="_spAbpMonth=${i+1};_spRenderBP('day')" style="padding:12px 4px;border-radius:10px;border:1.5px solid var(--border);font-size:13px;font-weight:600;cursor:pointer;background:var(--surface);color:var(--text)">${m}</button>`).join('')}</div>`;
   } else {
     const dim=new Date(_spAbpYear,_spAbpMonth,0).getDate(); const maxD=(_spAbpYear===curY&&_spAbpMonth===now.getMonth()+1)?now.getDate():dim;
-    inner = `<div style="font-size:15px;font-weight:700;margin-bottom:4px;text-align:center">День</div><div style="font-size:13px;color:var(--muted);text-align:center;margin-bottom:14px">${_ADMIN_MONTHS[_spAbpMonth-1]} ${_spAbpYear}</div><div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px">${Array.from({length:maxD},(_,i)=>i+1).map(d=>`<button onclick="_spSelectBD(${d})" style="padding:10px 2px;border-radius:10px;border:1.5px solid var(--border);font-size:14px;font-weight:600;cursor:pointer;background:var(--surface);color:var(--text)">${d}</button>`).join('')}</div>`;
+    inner = `<div style="font-size:15px;font-weight:700;margin-bottom:4px;text-align:center">${_t('sp.pick.day')}</div><div style="font-size:13px;color:var(--muted);text-align:center;margin-bottom:14px">${_ADMIN_MONTHS[_spAbpMonth-1]} ${_spAbpYear}</div><div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px">${Array.from({length:maxD},(_,i)=>i+1).map(d=>`<button onclick="_spSelectBD(${d})" style="padding:10px 2px;border-radius:10px;border:1.5px solid var(--border);font-size:14px;font-weight:600;cursor:pointer;background:var(--surface);color:var(--text)">${d}</button>`).join('')}</div>`;
   }
-  ov.innerHTML = `<div style="background:var(--surface);border-radius:22px 22px 0 0;padding:24px 20px 32px;width:100%;max-width:480px">${step!=='year'?`<button onclick="_spRenderBP('${step==='day'?'month':'year'}')" style="background:none;border:none;color:var(--accent,#163E3B);font-size:13px;font-weight:600;cursor:pointer;padding:0;margin-bottom:12px">← Назад</button>`:''}${inner}</div>`;
+  ov.innerHTML = `<div style="background:var(--surface);border-radius:22px 22px 0 0;padding:24px 20px 32px;width:100%;max-width:480px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">${step!=='year'?`<button onclick="_spRenderBP('${step==='day'?'month':'year'}')" style="background:none;border:none;color:var(--accent,#163E3B);font-size:13px;font-weight:600;cursor:pointer;padding:0">${_t('bp.btn.back')}</button>`:'<span></span>'}<button onclick="document.getElementById('spBPOverlay')?.remove()" style="background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;padding:0">${_t('bp.btn.cancel')}</button></div>${inner}</div>`;
 }
 function _spSelectBD(day) {
   const mm=String(_spAbpMonth).padStart(2,'0'),dd=String(day).padStart(2,'0'),val=`${_spAbpYear}-${mm}-${dd}`;
@@ -16263,7 +16289,7 @@ function adminOpenBirthPicker() { _abpYear = null; _abpMonth = null; _adminRende
 function adminClearBirth() {
   document.getElementById('sf_birth_date').value = '';
   const d = document.getElementById('sf_birth_display');
-  if (d) { d.textContent = 'Не указана'; d.style.color = 'var(--muted)'; }
+  if (d) { d.textContent = _t('sf.birth.none'); d.style.color = 'var(--muted)'; }
   const c = document.getElementById('sf_birth_clear'); if (c) c.style.display = 'none';
 }
 
@@ -16281,12 +16307,12 @@ function _adminRenderBP(step) {
 
   if (step === 'year') {
     const yrs = Array.from({length: curY - 1939}, (_, i) => curY - i);
-    inner = `<div style="font-size:15px;font-weight:700;margin-bottom:16px;text-align:center;color:var(--text)">Выберите год</div>
+    inner = `<div style="font-size:15px;font-weight:700;margin-bottom:16px;text-align:center;color:var(--text)">${_t('bp.pick.year')}</div>
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-height:260px;overflow-y:auto">
         ${yrs.map(y=>`<button onclick="_abpYear=${y};_adminRenderBP('month')" style="padding:10px 4px;border-radius:10px;border:1.5px solid var(--border);font-size:14px;font-weight:600;cursor:pointer;background:var(--surface);color:var(--text)">${y}</button>`).join('')}
       </div>`;
   } else if (step === 'month') {
-    inner = `<div style="font-size:15px;font-weight:700;margin-bottom:4px;text-align:center;color:var(--text)">Выберите месяц</div>
+    inner = `<div style="font-size:15px;font-weight:700;margin-bottom:4px;text-align:center;color:var(--text)">${_t('bp.pick.month')}</div>
       <div style="font-size:13px;color:var(--muted);text-align:center;margin-bottom:14px">${_abpYear}</div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
         ${_ADMIN_MONTHS.map((m,i)=>`<button onclick="_abpMonth=${i+1};_adminRenderBP('day')" style="padding:12px 4px;border-radius:10px;border:1.5px solid var(--border);font-size:13px;font-weight:600;cursor:pointer;background:var(--surface);color:var(--text)">${m}</button>`).join('')}
@@ -16294,7 +16320,7 @@ function _adminRenderBP(step) {
   } else {
     const dim = new Date(_abpYear, _abpMonth, 0).getDate();
     const maxD = (_abpYear === curY && _abpMonth === now.getMonth()+1) ? now.getDate() : dim;
-    inner = `<div style="font-size:15px;font-weight:700;margin-bottom:4px;text-align:center;color:var(--text)">Выберите день</div>
+    inner = `<div style="font-size:15px;font-weight:700;margin-bottom:4px;text-align:center;color:var(--text)">${_t('bp.pick.day')}</div>
       <div style="font-size:13px;color:var(--muted);text-align:center;margin-bottom:14px">${_ADMIN_MONTHS[_abpMonth-1]} ${_abpYear}</div>
       <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px">
         ${Array.from({length:maxD},(_,i)=>i+1).map(d=>`<button onclick="_adminSelectBD(${d})" style="padding:10px 2px;border-radius:10px;border:1.5px solid var(--border);font-size:14px;font-weight:600;cursor:pointer;background:var(--surface);color:var(--text)">${d}</button>`).join('')}
@@ -16302,7 +16328,10 @@ function _adminRenderBP(step) {
   }
 
   ov.innerHTML = `<div style="background:var(--surface);border-radius:22px 22px 0 0;padding:24px 20px 32px;width:100%;max-width:480px;box-shadow:0 -4px 30px rgba(0,0,0,.15)">
-    ${step!=='year'?`<button onclick="_adminRenderBP('${step==='day'?'month':'year'}')" style="background:none;border:none;color:var(--accent,#163E3B);font-size:13px;font-weight:600;cursor:pointer;padding:0;margin-bottom:12px">← Назад</button>`:''}
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+      ${step!=='year'?`<button onclick="_adminRenderBP('${step==='day'?'month':'year'}')" style="background:none;border:none;color:var(--accent,#163E3B);font-size:13px;font-weight:600;cursor:pointer;padding:0">${_t('bp.btn.back')}</button>`:'<span></span>'}
+      <button onclick="document.getElementById('adminBPOverlay')?.remove()" style="background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;padding:0">${_t('bp.btn.cancel')}</button>
+    </div>
     ${inner}
   </div>`;
 }
