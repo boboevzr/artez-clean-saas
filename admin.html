@@ -9014,7 +9014,7 @@ async function renderDepts() {
   tbody.innerHTML = departments.map((d,i) => `
     <tr>
       <td>${i+1}</td>
-      <td><strong>${escHtml(d.name)}</strong></td>
+      <td><strong>${escHtml((_adminLang==='uz'&&d.name_uz)||d.name)}</strong></td>
       <td style="color:var(--text2);font-size:13px">${escHtml(d.description||'')}</td>
       <td>—</td>
       <td>
@@ -9064,7 +9064,7 @@ async function deleteDept(id) {
 async function renderPositions() {
   await loadDepartments();
   await loadPositions();
-  const deptMap = Object.fromEntries(departments.map(d=>[d.id, d.name]));
+  const deptMap = Object.fromEntries(departments.map(d=>[d.id, (_adminLang==='uz'&&d.name_uz)||d.name]));
   const tbody = document.getElementById('posTable');
   const empty = document.getElementById('posEmpty');
   if (!positions.length) { tbody.innerHTML=''; empty.style.display='block'; return; }
@@ -9072,7 +9072,7 @@ async function renderPositions() {
   tbody.innerHTML = positions.map((p,i) => `
     <tr>
       <td>${i+1}</td>
-      <td><strong>${escHtml(p.name)}</strong></td>
+      <td><strong>${escHtml((_adminLang==='uz'&&p.name_uz)||p.name)}</strong></td>
       <td style="font-size:13px">${escHtml(deptMap[p.dept_id]||'—')}</td>
       <td style="font-size:12px">${_t('role.' + p.role) || escHtml(p.role||'—')}</td>
       <td style="font-size:13px">${SALARY_LABELS[p.salary_type]||'—'}</td>
@@ -9096,7 +9096,7 @@ async function openPosModal(id=null) {
   await loadDepartments();
   const dEl = document.getElementById('pos_dept');
   dEl.innerHTML = `<option value="">${_t('opt.choose')}</option>`;
-  departments.forEach(d => dEl.innerHTML += `<option value="${d.id}">${escHtml(d.name)}</option>`);
+  departments.forEach(d => dEl.innerHTML += `<option value="${d.id}">${escHtml((_adminLang==='uz'&&d.name_uz)||d.name)}</option>`);
   if (id) {
     const p = positions.find(x=>x.id===id);
     if (p) {
