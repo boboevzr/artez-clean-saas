@@ -5021,8 +5021,11 @@
 <!-- SALARY DAILY BREAKDOWN MODAL -->
 <div id="modalSalDaily" class="modal-overlay hidden" onclick="if(event.target===this)this.classList.add('hidden')">
   <div class="modal-box" style="max-width:860px;max-height:90vh;display:flex;flex-direction:column">
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid var(--border);flex-shrink:0">
-      <div id="salDailyTitle" style="font-size:16px;font-weight:700">📊 Детально</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 24px;border-bottom:1px solid var(--border);flex-shrink:0">
+      <div>
+        <div id="salDailyTitle" style="font-size:16px;font-weight:700">📊 Детально</div>
+        <div id="salDailyRole" style="font-size:12px;color:var(--text2);margin-top:2px"></div>
+      </div>
       <button onclick="document.getElementById('modalSalDaily').classList.add('hidden')" style="width:32px;height:32px;border-radius:50%;border:1px solid var(--border);background:none;color:var(--text2);cursor:pointer">✕</button>
     </div>
     <!-- Остаток на начало месяца в шапке -->
@@ -9479,7 +9482,7 @@ function salCalcRender() {
       <td style="font-size:13px">${calcHtml}</td>
       <td style="text-align:right;font-size:13px;white-space:nowrap">${totalHtml}</td>
       <td style="white-space:nowrap;padding:6px 8px">
-        <button onclick="salShowDaily(${sid},'${(s.name||'').replace(/'/g,"\\'")}',${yr},${mo})"
+        <button onclick="salShowDaily(${sid},'${(s.name||'').replace(/'/g,"\\'")}','${s.role||''}',${yr},${mo})"
           style="padding:4px 10px;border:1.5px solid var(--border);background:none;border-radius:7px;font-size:12px;color:var(--text2);cursor:pointer;white-space:nowrap">
           ${_t('sal.btn.daily')}
         </button>
@@ -9691,13 +9694,15 @@ function slmTypeChange() {
 // ── Детально (посуточный регистр, начисление из табеля) ──────────────────────
 let _salDailyCtx = {};
 
-async function salShowDaily(staffId, staffName, year, month) {
+async function salShowDaily(staffId, staffName, staffRole, year, month) {
   const mo = parseInt(month); const yr = parseInt(year);
   _salDailyCtx = {staffId, staffName, year: yr, month: mo};
   const fmtN = v => Number(Math.round(v||0)).toLocaleString('ru');
   const modal = document.getElementById('modalSalDaily');
   if (!modal) return;
   document.getElementById('salDailyTitle').textContent = `${_t('sal.daily.title.prefix')} ${staffName} — ${_getMonNames()[mo-1]} ${yr}`;
+  const roleEl = document.getElementById('salDailyRole');
+  if (roleEl) roleEl.textContent = staffRole ? _t('role.' + staffRole) || staffRole : '';
   document.getElementById('salDailyBody').innerHTML = `<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text2)">${_t('lbl.loading')}</td></tr>`;
   document.getElementById('salDailyFooter').style.display = 'none';
   salDailyOpeningCancel();
@@ -9717,7 +9722,12 @@ async function salShowDaily(staffId, staffName, year, month) {
   document.getElementById('salDailyOpeningInput').value = Math.round(ob);
 
   const days = data.days || [];
-  const dtFmt = s => { const d = new Date(s+'T00:00:00'); return d.toLocaleDateString('ru',{day:'2-digit',month:'2-digit',weekday:'short'}); };
+  const dtFmt = s => {
+    const d = new Date(s+'T00:00:00');
+    const dd = String(d.getDate()).padStart(2,'0');
+    const mm = String(d.getMonth()+1).padStart(2,'0');
+    return `${dd}.${mm} ${_dayName(d.getDay())}`;
+  };
 
   // running внутри месяца стартует с 0 (opening отображён в шапке)
   let monthRunning = 0;
