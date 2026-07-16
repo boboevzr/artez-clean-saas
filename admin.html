@@ -7703,27 +7703,11 @@ let _svcData   = {};
 async function loadPrices() {
   document.getElementById('pricesLoading').style.display = 'block';
   document.getElementById('pricesTable').style.display   = 'none';
-  const [pricesData, unitsData, discountData, delivDiscData, svcsRes] = await Promise.all([
+  const [pricesData, unitsData, svcsRes] = await Promise.all([
     apiGet('/admin/prices'),
     apiGet('/admin/units'),
-    apiGet('/admin/settings/self-pickup-discount'),
-    apiGet('/admin/settings/delivery-discount'),
-    apiGet('/api/admin/services'),
+    apiGet('/admin/services'),
   ]);
-  if (discountData) {
-    const val = discountData.discount || 0;
-    const inp = document.getElementById('selfPickupDiscountInput');
-    if (inp) inp.value = val;
-    const disp = document.getElementById('spd_display');
-    if (disp) disp.textContent = val + '%';
-  }
-  if (delivDiscData) {
-    const val = delivDiscData.discount || 0;
-    const inp = document.getElementById('deliveryDiscountInput');
-    if (inp) inp.value = val;
-    const disp = document.getElementById('dd_display');
-    if (disp) disp.textContent = val + '%';
-  }
   // Загружаем услуги
   const services = svcsRes?.services || [];
   _svcData = {};
@@ -7828,14 +7812,14 @@ async function saveSvc(key) {
   const emoji    = document.getElementById(`se-em-${key}`)?.value.trim() || '';
   const order_idx = parseInt(document.getElementById(`se-ord-${key}`)?.value) || 0;
   if (!name_ru || !name_uz) { showToast('Заполните оба названия', 'error'); return; }
-  const res = await apiPut('/api/admin/services', { key, name_ru, name_uz, emoji, order_idx });
+  const res = await apiPut('/admin/services', { key, name_ru, name_uz, emoji, order_idx });
   if (res?.ok) { showToast('Сохранено'); loadPrices(); }
   else showToast(res?.detail || 'Ошибка', 'error');
 }
 
 async function deleteSvc(key) {
   if (!confirm(`Удалить услугу «${key}»?`)) return;
-  const res = await apiDelete(`/api/admin/services/${key}`);
+  const res = await apiDelete(`/admin/services/${key}`);
   if (res?.ok) { showToast('Удалено'); loadPrices(); }
   else showToast(res?.detail || 'Ошибка', 'error');
 }
@@ -7847,7 +7831,7 @@ async function addSvc() {
   const emoji    = document.getElementById('se-new-em')?.value.trim() || '';
   const order_idx = parseInt(document.getElementById('se-new-ord')?.value) || 0;
   if (!key || !name_ru || !name_uz) { showToast('Заполните ключ и оба названия', 'error'); return; }
-  const res = await apiPut('/api/admin/services', { key, name_ru, name_uz, emoji, order_idx });
+  const res = await apiPut('/admin/services', { key, name_ru, name_uz, emoji, order_idx });
   if (res?.ok) { showToast(`Услуга «${key}» добавлена`); loadPrices(); }
   else showToast(res?.detail || 'Ошибка', 'error');
 }
