@@ -177,6 +177,12 @@
       <div class="nav-item" data-page="sa-positions" onclick="showPage('sa-positions',this)">
         <span class="icon">🎯</span> Должности
       </div>
+      <div class="nav-item" data-page="sa-services" onclick="showPage('sa-services',this)">
+        <span class="icon">🛠</span> Услуги
+      </div>
+      <div class="nav-item" data-page="sa-prices" onclick="showPage('sa-prices',this)">
+        <span class="icon">💰</span> Прайс-лист
+      </div>
       <div class="nav-item" data-page="settings" onclick="showPage('settings',this)">
         <span class="icon">⚙️</span> Настройки
       </div>
@@ -275,6 +281,32 @@
           </table>
           <div id="saPosEmpty" style="display:none;padding:20px;text-align:center;color:var(--text2)">Нет должностей</div>
         </div>
+      </div>
+
+      <!-- PAGE: Catalog Services -->
+      <div class="page" id="page-sa-services">
+        <div class="section-header">
+          <div class="page-title" style="margin:0">🛠 Услуги (глобальный справочник)</div>
+          <button class="btn btn-primary btn-sm" onclick="saOpenSvcModal()">+ Добавить</button>
+        </div>
+        <p style="font-size:13px;color:var(--text2);margin-bottom:12px">Услуги едины для всех компаний. Цены для каждой компании — в разделе «Прайс-лист».</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>#</th><th>Ключ</th><th>Эмодзи</th><th>Название RU</th><th>Название UZ</th><th>Порядок</th><th></th></tr></thead>
+            <tbody id="saSvcTable"></tbody>
+          </table>
+          <div id="saSvcEmpty" style="display:none;padding:20px;text-align:center;color:var(--text2)">Нет услуг</div>
+        </div>
+      </div>
+
+      <!-- PAGE: Catalog Prices (template) -->
+      <div class="page" id="page-sa-prices">
+        <div class="section-header">
+          <div class="page-title" style="margin:0">💰 Прайс-лист (шаблон)</div>
+          <button class="btn btn-primary btn-sm" onclick="saveAllCatalogPrices()">💾 Сохранить все</button>
+        </div>
+        <p style="font-size:13px;color:var(--text2);margin-bottom:12px">Эти цены используются как шаблон при создании новой компании. Импортировать в конкретную компанию можно во вкладке «Справочники» компании.</p>
+        <div id="saPricesGrid"></div>
       </div>
 
     </div><!-- /content -->
@@ -493,6 +525,13 @@
             <div style="font-size:12px;color:var(--text2);margin-top:2px">Удалить должности компании и загрузить из шаблона</div>
           </div>
           <button class="btn btn-ghost btn-sm" onclick="ecImportPositions()" style="flex-shrink:0">↩️ Импортировать</button>
+        </div>
+        <div style="background:var(--surface2);border-radius:10px;padding:14px;display:flex;align-items:center;justify-content:space-between;gap:12px">
+          <div>
+            <div style="font-weight:600;font-size:14px">💰 Прайс-лист</div>
+            <div style="font-size:12px;color:var(--text2);margin-top:2px">Импортировать цены из шаблона (заменит текущие цены компании)</div>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="ecImportPrices()" style="flex-shrink:0">↩️ Импортировать</button>
         </div>
       </div>
       <div class="modal-err" id="ecRestoreErr" style="margin-top:10px"></div>
@@ -798,6 +837,24 @@
   </div>
 </div>
 
+<!-- MODAL: Catalog Service -->
+<div class="modal-bg" id="modalSaSvc">
+  <div class="modal" style="width:440px">
+    <h3 id="saSvcModalTitle">Добавить услугу</h3>
+    <input type="hidden" id="sa_svc_edit_key">
+    <div class="field"><label>Ключ (латиница) *</label><input class="form-input" id="sa_svc_key" placeholder="carpet" autocomplete="off"></div>
+    <div class="field"><label>Эмодзи</label><input class="form-input" id="sa_svc_emoji" placeholder="🧺" autocomplete="off" maxlength="4"></div>
+    <div class="field"><label>Название RU *</label><input class="form-input" id="sa_svc_name_ru" placeholder="Ковёр" autocomplete="off"></div>
+    <div class="field"><label>Название UZ *</label><input class="form-input" id="sa_svc_name_uz" placeholder="Gilam" autocomplete="off"></div>
+    <div class="field"><label>Порядок</label><input class="form-input" id="sa_svc_order" type="number" value="0"></div>
+    <div class="modal-err" id="saSvcErr"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modalSaSvc')">Отмена</button>
+      <button class="btn btn-primary" onclick="saveCatalogSvc()">Сохранить</button>
+    </div>
+  </div>
+</div>
+
 <script src="config.js"></script>
 <script>
 const API = 'https://web-production-eef2a.up.railway.app/api';
@@ -815,6 +872,8 @@ function showPage(name, navEl) {
   if (name === 'plans') loadPlans();
   if (name === 'sa-departments') saRenderDepts();
   if (name === 'sa-positions') saRenderPositions();
+  if (name === 'sa-services') loadCatalogServices();
+  if (name === 'sa-prices') loadCatalogPrices();
 }
 
 // ── AUTH ──────────────────────────────────────────────
@@ -1981,6 +2040,172 @@ async function ecImportPositions() {
     await api(`/saas/companies/${_currentCompanyId}/import-positions`, 'POST');
     errEl.style.color = 'var(--green)';
     errEl.textContent = '✅ Должности успешно восстановлены';
+  } catch(e) { errEl.style.color = ''; errEl.textContent = e.message; }
+}
+
+// ── CATALOG: SERVICES ─────────────────────────────────
+let _catalogSvcs = [];
+
+async function loadCatalogServices() {
+  try {
+    const d = await api('/saas/catalog/services');
+    _catalogSvcs = d.services || [];
+    renderCatalogServices();
+  } catch(e) { alert(e.message); }
+}
+
+function renderCatalogServices() {
+  const tbody = document.getElementById('saSvcTable');
+  const empty = document.getElementById('saSvcEmpty');
+  if (!_catalogSvcs.length) {
+    tbody.innerHTML = '';
+    empty.style.display = '';
+    return;
+  }
+  empty.style.display = 'none';
+  tbody.innerHTML = _catalogSvcs.map((s, i) => `
+    <tr>
+      <td>${i + 1}</td>
+      <td><code style="font-size:12px">${escHtml(s.key)}</code></td>
+      <td style="font-size:18px">${escHtml(s.emoji || '')}</td>
+      <td>${escHtml(s.name_ru)}</td>
+      <td>${escHtml(s.name_uz || '')}</td>
+      <td>${s.order_idx ?? 0}</td>
+      <td style="display:flex;gap:6px">
+        <button class="btn btn-ghost btn-sm" onclick="saOpenSvcModal(${JSON.stringify(escHtml(s.key))})">✏️</button>
+        <button class="btn btn-ghost btn-sm" style="color:#dc2626" onclick="saDeleteSvc(${JSON.stringify(escHtml(s.key))})">🗑</button>
+      </td>
+    </tr>`).join('');
+}
+
+function saOpenSvcModal(key) {
+  const errEl = document.getElementById('saSvcErr');
+  errEl.textContent = '';
+  if (key) {
+    const s = _catalogSvcs.find(x => x.key === key);
+    if (!s) return;
+    document.getElementById('saSvcModalTitle').textContent = 'Редактировать услугу';
+    document.getElementById('sa_svc_edit_key').value = s.key;
+    document.getElementById('sa_svc_key').value = s.key;
+    document.getElementById('sa_svc_key').disabled = true;
+    document.getElementById('sa_svc_emoji').value = s.emoji || '';
+    document.getElementById('sa_svc_name_ru').value = s.name_ru;
+    document.getElementById('sa_svc_name_uz').value = s.name_uz || '';
+    document.getElementById('sa_svc_order').value = s.order_idx ?? 0;
+  } else {
+    document.getElementById('saSvcModalTitle').textContent = 'Добавить услугу';
+    document.getElementById('sa_svc_edit_key').value = '';
+    document.getElementById('sa_svc_key').value = '';
+    document.getElementById('sa_svc_key').disabled = false;
+    document.getElementById('sa_svc_emoji').value = '';
+    document.getElementById('sa_svc_name_ru').value = '';
+    document.getElementById('sa_svc_name_uz').value = '';
+    document.getElementById('sa_svc_order').value = '0';
+  }
+  openModal('modalSaSvc');
+}
+
+async function saveCatalogSvc() {
+  const errEl = document.getElementById('saSvcErr');
+  errEl.textContent = '';
+  const key      = document.getElementById('sa_svc_key').value.trim();
+  const emoji    = document.getElementById('sa_svc_emoji').value.trim();
+  const name_ru  = document.getElementById('sa_svc_name_ru').value.trim();
+  const name_uz  = document.getElementById('sa_svc_name_uz').value.trim();
+  const order_idx = parseInt(document.getElementById('sa_svc_order').value) || 0;
+  if (!key || !name_ru || !name_uz) { errEl.textContent = 'Заполните обязательные поля'; return; }
+  try {
+    await api('/saas/catalog/services', 'PUT', { key, emoji, name_ru, name_uz, order_idx });
+    closeModal('modalSaSvc');
+    await loadCatalogServices();
+  } catch(e) { errEl.textContent = e.message; }
+}
+
+async function saDeleteSvc(key) {
+  if (!confirm(`Удалить услугу «${key}»? Это также может затронуть цены.`)) return;
+  try {
+    await api(`/saas/catalog/services/${encodeURIComponent(key)}`, 'DELETE');
+    await loadCatalogServices();
+  } catch(e) { alert(e.message); }
+}
+
+// ── CATALOG: PRICES (template) ────────────────────────
+let _catalogPrices = {};
+
+async function loadCatalogPrices() {
+  try {
+    const [pd, sd] = await Promise.all([api('/saas/catalog/prices'), api('/saas/catalog/services')]);
+    _catalogPrices = pd.prices || {};
+    _catalogSvcs   = sd.services || [];
+    renderCatalogPrices();
+  } catch(e) { alert(e.message); }
+}
+
+function renderCatalogPrices() {
+  const grid = document.getElementById('saPricesGrid');
+  if (!_catalogSvcs.length) {
+    grid.innerHTML = '<p style="color:var(--text2);font-size:13px">Нет услуг. Сначала добавьте услуги в разделе «Услуги».</p>';
+    return;
+  }
+  const types = ['standard', 'express'];
+  const typeLabels = { standard: 'Стандарт', express: 'Экспресс' };
+  const rows = _catalogSvcs.map(s => {
+    const svcPrices = _catalogPrices[s.key] || {};
+    const cells = types.map(tp => {
+      const p = svcPrices[tp] || {};
+      return `<td style="padding:6px 10px">
+        <input type="number" min="0" step="100"
+          id="cp_${s.key}_${tp}"
+          value="${p.price || ''}"
+          placeholder="—"
+          style="width:110px;padding:5px 8px;border:1px solid var(--border);border-radius:6px;background:var(--surface2);color:var(--text);font-size:13px">
+      </td>`;
+    }).join('');
+    return `<tr>
+      <td style="padding:6px 10px;font-weight:600">${escHtml(s.emoji || '')} ${escHtml(s.name_ru)}</td>
+      ${cells}
+    </tr>`;
+  }).join('');
+  grid.innerHTML = `
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>Услуга</th>
+          ${types.map(tp => `<th>${typeLabels[tp] || tp}</th>`).join('')}
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+}
+
+async function saveAllCatalogPrices() {
+  const types = ['standard', 'express'];
+  let saved = 0, errors = 0;
+  for (const s of _catalogSvcs) {
+    for (const tp of types) {
+      const el = document.getElementById(`cp_${s.key}_${tp}`);
+      if (!el) continue;
+      const val = parseInt(el.value);
+      if (!val || val <= 0) continue;
+      try {
+        await api('/saas/catalog/prices', 'PUT', { service_key: s.key, type_key: tp, price: val });
+        saved++;
+      } catch { errors++; }
+    }
+  }
+  alert(errors ? `Сохранено: ${saved}, ошибок: ${errors}` : `✅ Сохранено ${saved} цен`);
+}
+
+// ── COMPANY RESTORE: PRICES ───────────────────────────
+async function ecImportPrices() {
+  if (!_currentCompanyId) return;
+  if (!confirm('Заменить цены компании ценами из шаблона? Текущие цены будут удалены.')) return;
+  const errEl = document.getElementById('ecRestoreErr');
+  errEl.textContent = '';
+  try {
+    await api(`/saas/companies/${_currentCompanyId}/import-prices`, 'POST');
+    errEl.style.color = 'var(--green)';
+    errEl.textContent = '✅ Цены успешно восстановлены';
   } catch(e) { errEl.style.color = ''; errEl.textContent = e.message; }
 }
 
