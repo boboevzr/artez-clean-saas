@@ -528,6 +528,13 @@
         </div>
         <div style="background:var(--surface2);border-radius:10px;padding:14px;display:flex;align-items:center;justify-content:space-between;gap:12px">
           <div>
+            <div style="font-weight:600;font-size:14px">🛠 Услуги</div>
+            <div style="font-size:12px;color:var(--text2);margin-top:2px">Импортировать справочник услуг из шаблона</div>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="ecImportServices()" style="flex-shrink:0">↩️ Импортировать</button>
+        </div>
+        <div style="background:var(--surface2);border-radius:10px;padding:14px;display:flex;align-items:center;justify-content:space-between;gap:12px">
+          <div>
             <div style="font-weight:600;font-size:14px">💰 Прайс-лист</div>
             <div style="font-size:12px;color:var(--text2);margin-top:2px">Импортировать цены из шаблона (заменит текущие цены компании)</div>
           </div>
@@ -2194,6 +2201,19 @@ async function saveAllCatalogPrices() {
     }
   }
   alert(errors ? `Сохранено: ${saved}, ошибок: ${errors}` : `✅ Сохранено ${saved} цен`);
+}
+
+// ── COMPANY RESTORE: SERVICES ─────────────────────────
+async function ecImportServices() {
+  if (!_currentCompanyId) return;
+  if (!confirm('Заменить услуги компании услугами из шаблона?')) return;
+  const errEl = document.getElementById('ecRestoreErr');
+  errEl.textContent = '';
+  try {
+    await api(`/saas/companies/${_currentCompanyId}/import-services`, 'POST');
+    errEl.style.color = 'var(--green)';
+    errEl.textContent = '✅ Услуги успешно восстановлены';
+  } catch(e) { errEl.style.color = ''; errEl.textContent = e.message; }
 }
 
 // ── COMPANY RESTORE: PRICES ───────────────────────────
