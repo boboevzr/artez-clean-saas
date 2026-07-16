@@ -6398,6 +6398,12 @@ async function loadBranches() {
   }
 }
 
+function _esc(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
 function branchName(slug) {
   const b = (window._BRANCHES || []).find(b => b.slug === slug);
   if (!b) return slug || '—';
@@ -6444,7 +6450,7 @@ function renderRtBranchPills() {
   const wrap = document.getElementById('rtBranchPills');
   if (!wrap) return;
   wrap.innerHTML = (window._BRANCHES || []).map(b =>
-    `<button data-v="${b.slug}" class="rt-pill" onclick="rtSetBranch('${b.slug}')">🏢 ${(_adminLang === 'uz' && b.name_uz) ? b.name_uz : b.name_ru}</button>`
+    `<button data-v="${_esc(b.slug)}" class="rt-pill" onclick="rtSetBranch('${_esc(b.slug)}')">🏢 ${_esc((_adminLang === 'uz' && b.name_uz) ? b.name_uz : b.name_ru)}</button>`
   ).join('');
 }
 
@@ -6542,7 +6548,7 @@ function renderBranchContactCards() {
     return `
     <div class="card" style="margin-bottom:12px">
       <div class="cfg-title-row">
-        <h3 class="cfg-title">${b.name_ru}${b.name_uz ? ' / ' + b.name_uz : ''} <span style="font-size:12px;font-weight:400;color:var(--text2)">(${b.slug})</span></h3>
+        <h3 class="cfg-title">${_esc(b.name_ru)}${b.name_uz ? ' / ' + _esc(b.name_uz) : ''} <span style="font-size:12px;font-weight:400;color:var(--text2)">(${_esc(b.slug)})</span></h3>
         <button class="btn btn-ghost" onclick="editBranchCard(${b.id})" title="Редактировать">✏️ Редактировать</button>
         ${canDel ? `<button class="btn btn-ghost" onclick="deleteBranch(${b.id})" style="color:var(--danger)" title="Удалить">🗑️</button>` : ''}
       </div>
@@ -8296,7 +8302,7 @@ function renderStaff() {
     const initials = [(s.first_name||'')[0], (s.last_name||'')[0]].filter(Boolean).join('').toUpperCase() || '?';
     const name     = [s.first_name, s.last_name].filter(Boolean).join(' ') || '—';
     const roleLabel = _roleLabel(s.role) || '—';
-    const branch   = branchName(s.branch) !== '—' ? branchName(s.branch) : '';
+    const branch   = _esc(branchName(s.branch) !== '—' ? branchName(s.branch) : '');
     const hasHours = s.salary_type !== 'percent';
     return `
     <div class="staff-card" style="${hasHours ? 'border-left:3px solid #f59e0b;' : ''}">
@@ -8372,7 +8378,7 @@ function renderAgents() {
   if (cards) cards.innerHTML = rows.map(s => {
     const initials = [(s.first_name||'')[0], (s.last_name||'')[0]].filter(Boolean).join('').toUpperCase() || '?';
     const name     = [s.first_name, s.last_name].filter(Boolean).join(' ') || '—';
-    const branch   = branchName(s.branch) !== '—' ? branchName(s.branch) : '';
+    const branch   = _esc(branchName(s.branch) !== '—' ? branchName(s.branch) : '');
     return `
     <div class="staff-card">
       <div class="staff-card-avatar" style="background:linear-gradient(135deg,#7c3aed,#a855f7)">${initials}</div>
@@ -8473,7 +8479,7 @@ function _workonRender() {
   }
   body.innerHTML = _workonData.map((r, i) => {
     const roleLabel = _roleLabel(r.role);
-    const brLabel   = branchName(r.branch);
+    const brLabel   = _esc(branchName(r.branch));
     const sessionsHtml = _workonFmtSessions(r);
     const hours = r.total_hours || 0;
     const hoursHtml = hours > 0 ? `<b>${hours}</b>` : '<span style="color:var(--text2)">—</span>';
@@ -8757,7 +8763,7 @@ function monRenderTable() {
   tbody.innerHTML = rows.map(a => {
     const ps = a.presence_status || 'offline';
     const { color: dotColor, label: statusLabel } = _presMap[ps] || _presMap.offline;
-    const branchLabel = branchName(a.branch);
+    const branchLabel = _esc(branchName(a.branch));
     let checkinBadge = '';
     if (a.checked_in_today && a.checked_in_time) {
       const t = new Date(a.checked_in_time);
@@ -9367,7 +9373,7 @@ function salCalcRender() {
   let grandTotal = 0; let grandKnown = true;
   body.innerHTML = rows.map(s => {
     const typeLabel = SAL_TYPE_LABELS[s.salary_type] || s.salary_type;
-    const brLabel   = branchName(s.branch);
+    const brLabel   = _esc(branchName(s.branch));
     const roleLabel = _t('role.' + s.role) || s.role;
 
     let calcHtml = '';
@@ -11075,7 +11081,7 @@ async function loadCashHistory() {
         ${rows.map((r,i) => `<tr style="border-top:1px solid var(--sep);${i%2?'background:var(--surface2)':''}">
           <td style="padding:8px 12px;white-space:nowrap;color:var(--text2)">${dateLabel(r.pay_date)}</td>
           <td style="padding:8px 12px;font-weight:600">${r.staff_name||'—'}</td>
-          <td style="padding:8px 12px;color:var(--text2)">${branchName(r.branch)}</td>
+          <td style="padding:8px 12px;color:var(--text2)">${_esc(branchName(r.branch))}</td>
           <td style="padding:8px 12px;text-align:right;font-variant-numeric:tabular-nums">${+r.cash ? fmt(r.cash) : '—'}</td>
           <td style="padding:8px 12px;text-align:right;font-variant-numeric:tabular-nums">${+r.card ? fmt(r.card) : '—'}</td>
           <td style="padding:8px 12px;text-align:right;font-variant-numeric:tabular-nums">${+r.transfer ? fmt(r.transfer) : '—'}</td>
@@ -14881,7 +14887,7 @@ async function openRouteDetail(routeId) {
           <div style="display:flex;gap:10px;flex-wrap:wrap;font-size:13px;color:var(--text2)">
             <span>📅 ${_rtFmtDate(route.date)}</span>
             <span>${RT_TYPE_LABEL[route.type]||route.type}</span>
-            ${route.branch?`<span>🏢 ${branchName(route.branch)}</span>`:''}
+            ${route.branch?`<span>🏢 ${_esc(branchName(route.branch))}</span>`:''}
             ${route.driver_name?`<span>👤 ${route.driver_name}</span>`:''}
           </div>
           ${route.note?`<div style="margin-top:8px;font-size:13px;color:var(--text2)">${route.note}</div>`:''}
