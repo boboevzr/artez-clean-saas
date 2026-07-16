@@ -1716,14 +1716,14 @@
 
         <!-- Наименования услуг -->
         <div class="card" style="margin-bottom:16px">
-          <div style="font-size:13px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px">Наименования услуг</div>
+          <div style="font-size:13px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px" data-i18n="prices.svc.title">Наименования услуг</div>
           <div id="svcsLoading" class="loader" style="display:none">Загрузка…</div>
           <div id="svcsCardContent"></div>
         </div>
 
         <div class="card">
           <p style="color:var(--text2); font-size:13px; margin-bottom:16px;">
-            Изменения сохраняются в базе данных и сразу отображаются на сайте и в боте.
+            <span data-i18n="prices.save.info">Изменения сохраняются в базе данных и сразу отображаются на сайте и в боте.</span>
           </p>
           <div id="pricesLoading" class="loader" data-i18n="lbl.loading.prices">Загрузка цен…</div>
           <table class="price-table" id="pricesTable" style="display:none">
@@ -1743,7 +1743,7 @@
         <!-- Автоскидки -->
         <div class="card" style="margin-top:16px">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
-            <div style="font-size:13px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.05em">Автоскидки</div>
+            <div style="font-size:13px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.05em" data-i18n="prices.auto.disc">Автоскидки</div>
             <div id="disc_view_btns" style="display:flex;align-items:center;gap:8px">
               <span id="discSavedStatus" style="font-size:12px;color:#16a34a;display:none">✅ Сохранено</span>
               <button onclick="discountsEdit()" style="display:flex;align-items:center;gap:5px;padding:6px 12px;background:none;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-weight:600;color:var(--text);cursor:pointer">
@@ -1759,7 +1759,7 @@
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
             <!-- Клиент привозит -->
             <div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px 16px">
-              <div style="font-size:12px;color:var(--text2);margin-bottom:8px">🏠 Клиент привозит</div>
+              <div style="font-size:12px;color:var(--text2);margin-bottom:8px" data-i18n="prices.disc.bring">🏠 Клиент привозит</div>
               <!-- Просмотр -->
               <div id="spd_view" style="font-size:26px;font-weight:800;color:var(--accent)">
                 <span id="spd_display">0</span><span style="font-size:16px">%</span>
@@ -1773,7 +1773,7 @@
             </div>
             <!-- Клиент забирает -->
             <div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px 16px">
-              <div style="font-size:12px;color:var(--text2);margin-bottom:8px">🚪 Клиент забирает</div>
+              <div style="font-size:12px;color:var(--text2);margin-bottom:8px" data-i18n="prices.disc.take">🚪 Клиент забирает</div>
               <!-- Просмотр -->
               <div id="dd_view" style="font-size:26px;font-weight:800;color:var(--accent)">
                 <span id="dd_display">0</span><span style="font-size:16px">%</span>
@@ -1794,7 +1794,7 @@
       <div class="page" id="page-units">
         <h2>📏 Единицы измерения</h2>
         <div class="card">
-          <p style="color:var(--text2); font-size:13px; margin-bottom:16px;">
+          <p style="color:var(--text2); font-size:13px; margin-bottom:16px;" data-i18n="units.desc">
             Используются в ценах и калькуляторе. Заполняйте название и символ на русском и узбекском языках.
           </p>
           <div id="unitsLoading" class="loader" data-i18n="lbl.loading">Загрузка…</div>
@@ -1803,10 +1803,10 @@
             <thead>
               <tr>
                 <th data-i18n="th.key">Ключ</th>
-                <th>Название (RU)</th>
-                <th>Название (UZ)</th>
-                <th>Символ (RU)</th>
-                <th>Символ (UZ)</th>
+                <th data-i18n="units.th.name.ru">Название (RU)</th>
+                <th data-i18n="units.th.name.uz">Название (UZ)</th>
+                <th data-i18n="units.th.sym.ru">Символ (RU)</th>
+                <th data-i18n="units.th.sym.uz">Символ (UZ)</th>
                 <th></th>
               </tr>
             </thead>
@@ -1816,7 +1816,7 @@
         </div>
 
         <div class="card">
-          <h3>Добавить единицу измерения</h3>
+          <h3 data-i18n="units.add.title">Добавить единицу измерения</h3>
           <div style="display:grid; grid-template-columns: repeat(5, 1fr) auto; gap:10px; align-items:end;">
             <div>
               <label style="font-size:12px; color:var(--text2); display:block; margin-bottom:4px;">Ключ (англ., без пробелов)</label>
@@ -2589,7 +2589,7 @@
             <button id="salPageTab_ledger" data-i18n="sal.tab.ledger" onclick="salPageTab('ledger')" style="padding:10px 18px;border:none;border-bottom:2.5px solid transparent;background:none;font-size:14px;font-weight:600;color:var(--text2);cursor:pointer">📋 Регистр</button>
           </div>
           <div style="display:flex;align-items:center;gap:8px;padding:6px 0">
-            <label style="font-size:12px;color:var(--text2);white-space:nowrap">Аванс макс. % (глобальный):</label>
+            <label style="font-size:12px;color:var(--text2);white-space:nowrap" data-i18n="sal.advance.lbl">Аванс макс. % (глобальный):</label>
             <input type="number" id="salGlobalAdvancePct" min="0" max="100" step="1"
               style="width:70px;padding:6px 8px;border-radius:8px;border:1.5px solid var(--border);font-size:13px;font-weight:700;text-align:center;background:var(--surface);color:var(--text)"
               placeholder="50" onchange="salSaveGlobalPct()">
@@ -2641,7 +2641,7 @@
           <div class="card" style="margin-bottom:16px">
             <div class="filters-row" style="gap:10px;flex-wrap:wrap;align-items:center">
               <select id="salLedgerStaff" class="filter-input" style="min-width:180px" onchange="salLedgerLoad()">
-                <option value="">— сотрудник —</option>
+                <option value="" data-i18n="reg.ph.staff">— сотрудник —</option>
               </select>
               <select id="salLedgerYear" class="filter-input" style="width:90px" onchange="salLedgerLoad()"></select>
               <select id="salLedgerMonth" class="filter-input" style="width:130px" onchange="salLedgerLoad()">
@@ -2651,8 +2651,8 @@
                 <option value="10">Октябрь</option><option value="11">Ноябрь</option><option value="12">Декабрь</option>
               </select>
               <button class="btn btn-primary btn-sm" onclick="salLedgerLoad()">🔄</button>
-              <button class="btn btn-sm" onclick="salLedgerAddManual()" style="background:var(--surface2);border:1.5px solid var(--sep);color:var(--text2)">+ Запись вручную</button>
-              <button class="btn btn-sm" onclick="salDeleteMonthAccruals()" style="background:rgba(239,68,68,.08);border:1.5px solid rgba(239,68,68,.3);color:#dc2626;font-size:12px">🗑 Сбросить начисления</button>
+              <button class="btn btn-sm" onclick="salLedgerAddManual()" style="background:var(--surface2);border:1.5px solid var(--sep);color:var(--text2)" data-i18n="reg.btn.manual">+ Запись вручную</button>
+              <button class="btn btn-sm" onclick="salDeleteMonthAccruals()" style="background:rgba(239,68,68,.08);border:1.5px solid rgba(239,68,68,.3);color:#dc2626;font-size:12px" data-i18n="reg.btn.reset">🗑 Сбросить начисления</button>
             </div>
           </div>
           <!-- Карточка баланса -->
@@ -2770,9 +2770,9 @@
               <th style="cursor:pointer" data-sort="role" onclick="monSortBy('role')">Роль<span class="mon-sort-icon"></span></th>
               <th style="cursor:pointer" data-sort="branch" onclick="monSortBy('branch')">Филиал<span class="mon-sort-icon"></span></th>
               <th style="cursor:pointer" data-sort="status" onclick="monSortBy('status')">Статус<span class="mon-sort-icon"></span></th>
-              <th style="cursor:pointer" data-sort="orders_in_work" onclick="monSortBy('orders_in_work')">В работе<span class="mon-sort-icon"></span></th>
-              <th style="cursor:pointer" data-sort="actions_today" onclick="monSortBy('actions_today')">Действий сегодня<span class="mon-sort-icon"></span></th>
-              <th style="cursor:pointer" data-sort="last_active" onclick="monSortBy('last_active')">Последняя активность<span class="mon-sort-icon"></span></th>
+              <th style="cursor:pointer" data-sort="orders_in_work" onclick="monSortBy('orders_in_work')" data-i18n="mon.th.in.work">В работе<span class="mon-sort-icon"></span></th>
+              <th style="cursor:pointer" data-sort="actions_today" onclick="monSortBy('actions_today')" data-i18n="mon.th.actions">Действий сегодня<span class="mon-sort-icon"></span></th>
+              <th style="cursor:pointer" data-sort="last_active" onclick="monSortBy('last_active')" data-i18n="mon.th.last.activity">Последняя активность<span class="mon-sort-icon"></span></th>
             </tr></thead>
             <tbody id="monTable"></tbody>
           </table>
@@ -3335,35 +3335,35 @@
       <!-- DB MAINTENANCE -->
       <div class="page" id="page-db-maintenance">
         <div class="section-header"><h2>🗄️ Обслуживание БД</h2></div>
-        <p style="color:var(--muted);font-size:13px;margin-bottom:24px;max-width:600px;">Операции обслуживания базы данных. Каждая кнопка выполняет отдельную задачу — результат появится ниже.</p>
+        <p style="color:var(--muted);font-size:13px;margin-bottom:24px;max-width:600px;" data-i18n="db.desc">Операции обслуживания базы данных. Каждая кнопка выполняет отдельную задачу — результат появится ниже.</p>
         <div style="display:flex;flex-direction:column;gap:12px;max-width:560px;">
 
           <!-- Очистка истории лидов -->
           <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 20px">
-            <div style="font-size:14px;font-weight:700;margin-bottom:4px">🧹 Очистить историю удалённых лидов</div>
-            <div style="font-size:12px;color:var(--muted);margin-bottom:14px">Удаляет записи из <code>lead_calls</code>, <code>lead_reminders</code>, <code>agent_notifications</code> для лидов, которых уже нет в БД.</div>
-            <button onclick="dbOp('purge_deleted_leads_data')" class="btn-dbop" id="dbbtn-purge_deleted_leads_data">Выполнить</button>
+            <div style="font-size:14px;font-weight:700;margin-bottom:4px" data-i18n="db.op.leads.title">🧹 Очистить историю удалённых лидов</div>
+            <div style="font-size:12px;color:var(--muted);margin-bottom:14px" data-i18n="db.op.leads.desc">Удаляет записи из lead_calls, lead_reminders, agent_notifications для лидов, которых уже нет в БД.</div>
+            <button onclick="dbOp('purge_deleted_leads_data')" class="btn-dbop" id="dbbtn-purge_deleted_leads_data" data-i18n="btn.execute">Выполнить</button>
           </div>
 
           <!-- Очистка истории заказов -->
           <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 20px">
-            <div style="font-size:14px;font-weight:700;margin-bottom:4px">🧹 Очистить историю удалённых заказов</div>
-            <div style="font-size:12px;color:var(--muted);margin-bottom:14px">Удаляет записи из <code>order_status_history</code> для заказов, которых уже нет в БД.</div>
-            <button onclick="dbOp('purge_deleted_history')" class="btn-dbop" id="dbbtn-purge_deleted_history">Выполнить</button>
+            <div style="font-size:14px;font-weight:700;margin-bottom:4px" data-i18n="db.op.orders.title">🧹 Очистить историю удалённых заказов</div>
+            <div style="font-size:12px;color:var(--muted);margin-bottom:14px" data-i18n="db.op.orders.desc">Удаляет записи из order_status_history для заказов, которых уже нет в БД.</div>
+            <button onclick="dbOp('purge_deleted_history')" class="btn-dbop" id="dbbtn-purge_deleted_history" data-i18n="btn.execute">Выполнить</button>
           </div>
 
           <!-- VACUUM -->
           <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 20px">
             <div style="font-size:14px;font-weight:700;margin-bottom:4px">⚙️ VACUUM ANALYZE</div>
-            <div style="font-size:12px;color:var(--muted);margin-bottom:14px">Освобождает место от удалённых строк и обновляет статистику планировщика.</div>
-            <button onclick="dbOp('vacuum')" class="btn-dbop" id="dbbtn-vacuum">Выполнить</button>
+            <div style="font-size:12px;color:var(--muted);margin-bottom:14px" data-i18n="db.op.vacuum.desc">Освобождает место от удалённых строк и обновляет статистику планировщика.</div>
+            <button onclick="dbOp('vacuum')" class="btn-dbop" id="dbbtn-vacuum" data-i18n="btn.execute">Выполнить</button>
           </div>
 
           <!-- Удалить старые лиды без заказов -->
           <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 20px">
-            <div style="font-size:14px;font-weight:700;margin-bottom:4px">📭 Удалить закрытые лиды (старше 90 дней)</div>
-            <div style="font-size:12px;color:var(--muted);margin-bottom:14px">Удаляет лиды со статусом <code>closed</code> / <code>cancelled</code>, созданные более 90 дней назад.</div>
-            <button onclick="dbOp('purge_old_leads')" class="btn-dbop" id="dbbtn-purge_old_leads">Выполнить</button>
+            <div style="font-size:14px;font-weight:700;margin-bottom:4px" data-i18n="db.op.old.leads.title">📭 Удалить закрытые лиды (старше 90 дней)</div>
+            <div style="font-size:12px;color:var(--muted);margin-bottom:14px" data-i18n="db.op.old.leads.desc">Удаляет лиды со статусом closed / cancelled, созданные более 90 дней назад.</div>
+            <button onclick="dbOp('purge_old_leads')" class="btn-dbop" id="dbbtn-purge_old_leads" data-i18n="btn.execute">Выполнить</button>
           </div>
 
         </div>
@@ -3444,7 +3444,7 @@
       <div class="page" id="page-chat-templates">
         <div class="section-header"><h2>💬 Шаблоны чата</h2></div>
         <p style="color:var(--muted);font-size:13px;margin-bottom:20px;max-width:640px;">
-          Авто-сообщения (<code>welcome</code>, <code>warn_timeout</code>, <code>bye_m</code>, <code>bye_f</code>) и быстрые ответы (<code>quick</code>) для операторов. Ключи <code>bye_m</code> / <code>bye_f</code> используют пол сотрудника из БД.
+          <span data-i18n="chat.tpl.desc">Авто-сообщения (welcome, warn_timeout, bye_m, bye_f) и быстрые ответы (quick) для операторов. Ключи bye_m / bye_f используют пол сотрудника из БД.</span>
         </p>
 
         <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:18px;">
@@ -3522,7 +3522,7 @@
         <div class="section-header" style="margin-bottom:16px">
           <h2>🔐 Роли и доступы</h2>
         </div>
-        <p style="font-size:13px;color:var(--text2);margin-bottom:16px">
+        <p style="font-size:13px;color:var(--text2);margin-bottom:16px" data-i18n="roles.desc">
           Настройте, какие разделы видит каждая роль. Admin всегда видит всё.
         </p>
         <div id="rolePermsContent"></div>
@@ -3537,18 +3537,18 @@
 
         <!-- Сводка: Без заказа (горизонтально) -->
         <div style="margin-bottom:16px">
-          <div style="font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Без заказа</div>
+          <div style="font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px" data-i18n="temp.no.order">Без заказа</div>
           <div id="tempSummary" style="display:flex;flex-wrap:wrap;gap:8px"></div>
         </div>
 
         <!-- Вкладки -->
         <div style="display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:16px;overflow-x:auto">
-          <button class="temp-tab active" data-tbl="order_payments"   onclick="tempSwitchTab(this)">Оплаты</button>
-          <button class="temp-tab"        data-tbl="order_items"      onclick="tempSwitchTab(this)">Позиции</button>
-          <button class="temp-tab"        data-tbl="order_activity"   onclick="tempSwitchTab(this)">Активность</button>
-          <button class="temp-tab"        data-tbl="order_photos"     onclick="tempSwitchTab(this)">Фото</button>
-          <button class="temp-tab"        data-tbl="order_item_media" onclick="tempSwitchTab(this)">Медиа позиций</button>
-          <button class="temp-tab"        data-tbl="chat_history"     onclick="tempSwitchTab(this)">💬 История чатов</button>
+          <button class="temp-tab active" data-tbl="order_payments"   onclick="tempSwitchTab(this)" data-i18n="temp.tab.payments">Оплаты</button>
+          <button class="temp-tab"        data-tbl="order_items"      onclick="tempSwitchTab(this)" data-i18n="temp.tab.items">Позиции</button>
+          <button class="temp-tab"        data-tbl="order_activity"   onclick="tempSwitchTab(this)" data-i18n="temp.tab.activity">Активность</button>
+          <button class="temp-tab"        data-tbl="order_photos"     onclick="tempSwitchTab(this)" data-i18n="temp.tab.photos">Фото</button>
+          <button class="temp-tab"        data-tbl="order_item_media" onclick="tempSwitchTab(this)" data-i18n="temp.tab.media">Медиа позиций</button>
+          <button class="temp-tab"        data-tbl="chat_history"     onclick="tempSwitchTab(this)" data-i18n="temp.tab.chats">💬 История чатов</button>
         </div>
 
         <!-- Панель: Записи без заказа -->
@@ -3556,12 +3556,12 @@
           <!-- Панель управления -->
           <div style="display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap;align-items:center">
             <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;font-weight:600;color:var(--text)">
-              <input type="checkbox" id="tempOrphansOnly" checked onchange="tempLoadTable()"> Только без заказа
+              <input type="checkbox" id="tempOrphansOnly" checked onchange="tempLoadTable()"> <span data-i18n="temp.only.no.order">Только без заказа</span>
             </label>
             <span id="tempRecordCount" style="font-size:12px;color:var(--text2)"></span>
             <div style="margin-left:auto;display:flex;gap:8px;flex-wrap:wrap">
-              <button onclick="tempSelectAll(true)"  style="padding:5px 12px;border:1px solid var(--border);border-radius:7px;background:var(--surface2);color:var(--text);cursor:pointer;font-size:12px">Выбрать все</button>
-              <button onclick="tempSelectAll(false)" style="padding:5px 12px;border:1px solid var(--border);border-radius:7px;background:var(--surface2);color:var(--text);cursor:pointer;font-size:12px">Снять все</button>
+              <button onclick="tempSelectAll(true)"  style="padding:5px 12px;border:1px solid var(--border);border-radius:7px;background:var(--surface2);color:var(--text);cursor:pointer;font-size:12px" data-i18n="btn.select.all">Выбрать все</button>
+              <button onclick="tempSelectAll(false)" style="padding:5px 12px;border:1px solid var(--border);border-radius:7px;background:var(--surface2);color:var(--text);cursor:pointer;font-size:12px" data-i18n="btn.deselect.all">Снять все</button>
               <button id="tempDelBtn" onclick="tempDeleteSelected()" style="padding:5px 14px;background:#dc2626;color:#fff;border:none;border-radius:7px;cursor:pointer;font-size:12px;font-weight:600;display:none">🗑 Удалить выбранные (<span id="tempDelCount">0</span>)</button>
             </div>
           </div>
@@ -4532,11 +4532,11 @@
 
     <!-- Вкладки -->
     <div style="display:flex;gap:0;border-bottom:1px solid var(--border);flex-shrink:0;overflow-x:auto">
-      <button id="sftab_main"        onclick="switchStaffTab('main')"        style="flex:1;min-width:70px;padding:11px 6px;border:none;border-bottom:2.5px solid var(--accent);background:none;font-size:12px;font-weight:700;color:var(--accent);cursor:pointer">👤 Основное</button>
-      <button id="sftab_personal"    onclick="switchStaffTab('personal')"    style="flex:1;min-width:70px;padding:11px 6px;border:none;border-bottom:2.5px solid transparent;background:none;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer">📋 Личные</button>
-      <button id="sftab_access"      onclick="switchStaffTab('access')"      style="flex:1;min-width:70px;padding:11px 6px;border:none;border-bottom:2.5px solid transparent;background:none;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer">🔐 Доступы</button>
-      <button id="sftab_salary"      onclick="switchStaffTab('salary')"      style="flex:1;min-width:70px;padding:11px 6px;border:none;border-bottom:2.5px solid transparent;background:none;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer">💰 Зарплата</button>
-      <button id="sftab_commissions" onclick="switchStaffTab('commissions')" style="flex:1;min-width:70px;padding:11px 6px;border:none;border-bottom:2.5px solid transparent;background:none;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;display:none">📊 Начисления</button>
+      <button id="sftab_main"        onclick="switchStaffTab('main')"        style="flex:1;min-width:70px;padding:11px 6px;border:none;border-bottom:2.5px solid var(--accent);background:none;font-size:12px;font-weight:700;color:var(--accent);cursor:pointer" data-i18n="tab.main">👤 Основное</button>
+      <button id="sftab_personal"    onclick="switchStaffTab('personal')"    style="flex:1;min-width:70px;padding:11px 6px;border:none;border-bottom:2.5px solid transparent;background:none;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer" data-i18n="tab.personal">📋 Личные</button>
+      <button id="sftab_access"      onclick="switchStaffTab('access')"      style="flex:1;min-width:70px;padding:11px 6px;border:none;border-bottom:2.5px solid transparent;background:none;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer" data-i18n="tab.access">🔐 Доступы</button>
+      <button id="sftab_salary"      onclick="switchStaffTab('salary')"      style="flex:1;min-width:70px;padding:11px 6px;border:none;border-bottom:2.5px solid transparent;background:none;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer" data-i18n="tab.staff.sal">💰 Зарплата</button>
+      <button id="sftab_commissions" onclick="switchStaffTab('commissions')" style="flex:1;min-width:70px;padding:11px 6px;border:none;border-bottom:2.5px solid transparent;background:none;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;display:none" data-i18n="tab.accruals">📊 Начисления</button>
     </div>
 
     <!-- Общий скролл-контейнер для всех вкладок -->
@@ -5763,6 +5763,43 @@ const _adminI18n = {
     'ph.search.tg.clients':'🔍 Поиск по имени, телефону, @username',
     'tg.found':'Найдено:','th.orders.spent':'Потрачено',
     'empty.tg.clients':'Клиентов с Telegram не найдено',
+    'staff.stat.active':'Активных','staff.stat.fired':'Уволенных','staff.stat.roles':'Ролей','staff.stat.total':'Всего',
+    'tab.main':'👤 Основное','tab.personal':'📋 Личные','tab.access':'🔐 Доступы','tab.staff.sal':'💰 Зарплата','tab.accruals':'📊 Начисления',
+    'sal.type.fixed':'Оклад','sal.type.mixed':'Смешанная','sal.type.hourly':'Почасовая','sal.type.pct':'% от заказа',
+    'sal.lbl.fixed':'📌 Оклад','sal.lbl.pct':'📊 Проценты','sal.lbl.fixed.pct':'📌+📊 Оклад+%',
+    'sal.lbl.leads':'🎯 За лиды','sal.lbl.per.unit':'📐 За ед.изм','sal.lbl.per.point':'📍 За точку','sal.lbl.kpi':'🏆 KPI',
+    'sal.no.timesheet':'⚠ Нет данных в табеле за этот месяц','sal.no.timesheet.short':'⚠ Нет данных в табеле',
+    'sal.no.data':'Нет данных','sal.partial.warn':'Часть типов не рассчитана',
+    'sal.grand.total':'Итого (рассчитано):','sal.not.calc':'не рассчитано',
+    'sal.advance.lbl':'Аванс макс. % (глобальный):',
+    'reg.ph.staff':'— сотрудник —','reg.btn.manual':'+ Запись вручную','reg.btn.reset':'🗑 Сбросить начисления',
+    'sched.stat.staff':'👥 Сотрудников:','sched.stat.workdays':'✅ Раб. дней всего:',
+    'sched.stat.hours':'⏱ Часов всего:','sched.stat.sick':'🤒 Больничных:','sched.stat.vacation':'🏖 Отпусков:',
+    'mon.th.in.work':'В работе','mon.th.actions':'Действий сегодня','mon.th.last.activity':'Последняя активность',
+    'prices.svc.title':'Наименования услуг','prices.save.info':'Изменения сохраняются в базе данных и сразу отображаются на сайте и в боте.',
+    'prices.new.svc':'+ Новая услуга','prices.th.name.ru':'Наим. RU',
+    'prices.auto.disc':'Автоскидки','prices.disc.bring':'🏠 Клиент привозит','prices.disc.take':'🚪 Клиент забирает',
+    'units.desc':'Используются в ценах и калькуляторе. Заполняйте название и символ на русском и узбекском языках.',
+    'units.th.name.ru':'Название (RU)','units.th.name.uz':'Название (UZ)','units.th.sym.ru':'Символ (RU)','units.th.sym.uz':'Символ (UZ)',
+    'units.add.title':'Добавить единицу измерения','btn.execute':'Выполнить','btn.deselect.all':'Снять все',
+    'chat.tpl.desc':'Авто-сообщения (welcome, warn_timeout, bye_m, bye_f) и быстрые ответы (quick) для операторов. Ключи bye_m / bye_f используют пол сотрудника из БД.',
+    'roles.desc':'Настройте, какие разделы видит каждая роль. Admin всегда видит всё.',
+    'roles.th.section':'Раздел','roles.btn.reset':'↺ Сбросить к дефолту',
+    'roles.grp.main':'Основное','roles.grp.crm':'CRM','roles.grp.autodial':'Автодозвон',
+    'roles.grp.sms':'SMS','roles.grp.tg':'Telegram','roles.grp.hr':'HR',
+    'roles.grp.refs':'Справочники','roles.grp.system':'Система',
+    'db.desc':'Операции обслуживания базы данных. Каждая кнопка выполняет отдельную задачу — результат появится ниже.',
+    'db.op.leads.title':'🧹 Очистить историю удалённых лидов',
+    'db.op.leads.desc':'Удаляет записи из lead_calls, lead_reminders, agent_notifications для лидов, которых уже нет в БД.',
+    'db.op.orders.title':'🧹 Очистить историю удалённых заказов',
+    'db.op.orders.desc':'Удаляет записи из order_status_history для заказов, которых уже нет в БД.',
+    'db.op.vacuum.desc':'Освобождает место от удалённых строк и обновляет статистику планировщика.',
+    'db.op.old.leads.title':'📭 Удалить закрытые лиды (старше 90 дней)',
+    'db.op.old.leads.desc':'Удаляет лиды со статусом closed / cancelled, созданные более 90 дней назад.',
+    'temp.no.order':'Без заказа','temp.tab.payments':'Оплаты','temp.tab.items':'Позиции',
+    'temp.tab.activity':'Активность','temp.tab.photos':'Фото','temp.tab.media':'Медиа позиций',
+    'temp.tab.chats':'💬 История чатов','temp.only.no.order':'Только без заказа',
+    'temp.records':'Записей:','temp.empty':'Нет записей',
   },
   uz: {
     'btn.add':'+ Qoʻshish','btn.save':'💾 Saqlash','btn.cancel':'Bekor qilish',
@@ -5956,6 +5993,43 @@ const _adminI18n = {
     'ph.search.tg.clients':'🔍 Ism, telefon, @username boʻyicha qidirish',
     'tg.found':'Topildi:','th.orders.spent':'Sarflangan',
     'empty.tg.clients':'Telegram bilan mijozlar topilmadi',
+    'staff.stat.active':'Faol','staff.stat.fired':'Ishdan boʻshatilgan','staff.stat.roles':'Lavozimlar soni','staff.stat.total':'Jami',
+    'tab.main':'👤 Asosiy','tab.personal':'📋 Shaxsiy','tab.access':'🔐 Kirish huquqlari','tab.staff.sal':'💰 Maosh','tab.accruals':'📊 Hisoblashlar',
+    'sal.type.fixed':'Belgilangan maosh','sal.type.mixed':'Aralash','sal.type.hourly':'Soatbay','sal.type.pct':'Buyurtmadan %',
+    'sal.lbl.fixed':'📌 Belgilangan','sal.lbl.pct':'📊 Foizlar','sal.lbl.fixed.pct':'📌+📊 Belgilangan+%',
+    'sal.lbl.leads':'🎯 Lidlar uchun','sal.lbl.per.unit':'📐 Birlik uchun','sal.lbl.per.point':'📍 Nuqta uchun','sal.lbl.kpi':'🏆 KPI',
+    'sal.no.timesheet':'⚠ Bu oy uchun tabel maʼlumoti yoʻq','sal.no.timesheet.short':'⚠ Tabel maʼlumoti yoʻq',
+    'sal.no.data':'Maʼlumot yoʻq','sal.partial.warn':'Bir qismi hisoblanmadi',
+    'sal.grand.total':'Jami (hisoblangan):','sal.not.calc':'hisoblanmadi',
+    'sal.advance.lbl':'Avans maks. % (global):',
+    'reg.ph.staff':'— xodim —','reg.btn.manual':'+ Qoʻlda kiritish','reg.btn.reset':'🗑 Hisoblashlarni tiklash',
+    'sched.stat.staff':'👥 Xodimlar:','sched.stat.workdays':'✅ Ish kunlari jami:',
+    'sched.stat.hours':'⏱ Soatlar jami:','sched.stat.sick':'🤒 Kasal kunlari:','sched.stat.vacation':'🏖 Taʼtil kunlari:',
+    'mon.th.in.work':'Ishda','mon.th.actions':'Bugungi harakatlar','mon.th.last.activity':'Oxirgi faollik',
+    'prices.svc.title':'Xizmat nomlari','prices.save.info':'Oʻzgarishlar bazaga saqlanadi va darhol sayt va botda koʻrinadi.',
+    'prices.new.svc':'+ Yangi xizmat','prices.th.name.ru':'Nom RU',
+    'prices.auto.disc':'Avtochegirmalar','prices.disc.bring':'🏠 Mijoz olib keladi','prices.disc.take':'🚪 Mijoz olib ketadi',
+    'units.desc':'Narxlar va kalkulyatorda ishlatiladi. Nom va belgini rus va oʻzbek tillarida toʻldiring.',
+    'units.th.name.ru':'Nomi (RU)','units.th.name.uz':'Nomi (UZ)','units.th.sym.ru':'Belgi (RU)','units.th.sym.uz':'Belgi (UZ)',
+    'units.add.title':'Oʻlchov birligini qoʻshish','btn.execute':'Bajarish','btn.deselect.all':'Barchasini bekor qilish',
+    'chat.tpl.desc':'Avtoxabarlar (welcome, warn_timeout, bye_m, bye_f) va operatorlar uchun tezkor javoblar (quick). bye_m / bye_f kalitlari bazadagi xodim jinsidan foydalanadi.',
+    'roles.desc':'Har bir rol qanday boʻlimlarni koʻrishini sozlang. Admin har doim hamma narsani koʻradi.',
+    'roles.th.section':'Boʻlim','roles.btn.reset':'↺ Standartga qaytarish',
+    'roles.grp.main':'Asosiy','roles.grp.crm':'CRM','roles.grp.autodial':'Avtouzatish',
+    'roles.grp.sms':'SMS','roles.grp.tg':'Telegram','roles.grp.hr':'HR',
+    'roles.grp.refs':'Maʼlumotnomalar','roles.grp.system':'Tizim',
+    'db.desc':'Maʼlumotlar bazasiga xizmat koʻrsatish operatsiyalari. Har bir tugma alohida vazifani bajaradi — natija quyida koʻrinadi.',
+    'db.op.leads.title':'🧹 Oʻchirilgan lidlar tarixini tozalash',
+    'db.op.leads.desc':'lead_calls, lead_reminders, agent_notifications dan bazada yoʻq lidlarga tegishli yozuvlarni oʻchiradi.',
+    'db.op.orders.title':'🧹 Oʻchirilgan buyurtmalar tarixini tozalash',
+    'db.op.orders.desc':'order_status_history dan bazada yoʻq buyurtmalarga tegishli yozuvlarni oʻchiradi.',
+    'db.op.vacuum.desc':'Oʻchirilgan satrlardan joy boʻshatadi va rejalashtiruvchi statistikasini yangiladi.',
+    'db.op.old.leads.title':'📭 Yopilgan lidlarni oʻchirish (90 kundan eski)',
+    'db.op.old.leads.desc':'90 kun oldin yaratilgan closed / cancelled holatidagi lidlarni oʻchiradi.',
+    'temp.no.order':'Buyurtmasiz','temp.tab.payments':'Toʻlovlar','temp.tab.items':'Elementlar',
+    'temp.tab.activity':'Faollik','temp.tab.photos':'Suratlar','temp.tab.media':'Elementlar mediali',
+    'temp.tab.chats':'💬 Chat tarixi','temp.only.no.order':'Faqat buyurtmasiz',
+    'temp.records':'Yozuvlar:','temp.empty':'Yozuvlar yoʻq',
   },
 };
 function _applyAdminI18n() {
@@ -6788,12 +6862,15 @@ function renderRolePermsPage() {
   if (!el) return;
   const perms = _ROLE_PERMS || _ROLE_PERMS_DEFAULT;
   const roles = ['manager','callcenter'];
+  const _GRP_I18N = { 'Основное':'roles.grp.main','CRM':'roles.grp.crm','Автодозвон':'roles.grp.autodial',
+    'SMS':'roles.grp.sms','Telegram':'roles.grp.tg','HR':'roles.grp.hr','Справочники':'roles.grp.refs','Система':'roles.grp.system' };
   let lastGroup = null;
   let rows = '';
   for (const p of _ALL_NAV_PAGES) {
     const g = p.group || 'Основное';
     if (g !== lastGroup) {
-      rows += `<tr><td colspan="3" style="padding:10px 12px 4px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text2);background:var(--surface2,#f8fafc)">${g}</td></tr>`;
+      const gLabel = _t(_GRP_I18N[g] || '') || g;
+      rows += `<tr><td colspan="3" style="padding:10px 12px 4px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text2);background:var(--surface2,#f8fafc)">${gLabel}</td></tr>`;
       lastGroup = g;
     }
     rows += `<tr style="border-bottom:1px solid var(--border)">
@@ -6809,7 +6886,7 @@ function renderRolePermsPage() {
       <table style="width:100%;border-collapse:collapse">
         <thead>
           <tr style="border-bottom:2px solid var(--border)">
-            <th style="text-align:left;padding:8px 12px;font-size:12px;font-weight:600;color:var(--text2)">Раздел</th>
+            <th style="text-align:left;padding:8px 12px;font-size:12px;font-weight:600;color:var(--text2)">${_t('roles.th.section')}</th>
             ${roles.map(r => `<th style="padding:8px 20px;text-align:center;font-size:12px;font-weight:600">${r}</th>`).join('')}
           </tr>
         </thead>
@@ -6818,7 +6895,7 @@ function renderRolePermsPage() {
     </div>
     <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap">
       <button class="btn btn-primary" onclick="saveRolePerms()" data-i18n="btn.save">💾 Сохранить</button>
-      <button class="btn btn-ghost" onclick="resetRolePerms()">↺ Сбросить к дефолту</button>
+      <button class="btn btn-ghost" onclick="resetRolePerms()" data-i18n="roles.btn.reset">↺ Сбросить к дефолту</button>
     </div>`;
 }
 
@@ -7010,7 +7087,7 @@ async function dbOp(op) {
   } catch (e) {
     log.textContent += `❌ Ошибка сети: ${e.message}\n\n`;
   }
-  if (btn) { btn.disabled = false; btn.textContent = 'Выполнить'; }
+  if (btn) { btn.disabled = false; btn.textContent = _t('btn.execute'); }
   log.scrollTop = log.scrollHeight;
 }
 
@@ -7468,10 +7545,10 @@ function _renderServicesCard(services) {
     <table style="width:100%;border-collapse:collapse;margin-bottom:16px">
       <thead>
         <tr style="border-bottom:1.5px solid var(--border)">
-          <th style="text-align:left;padding:4px 4px 8px;font-size:12px;color:var(--text2)">Ключ</th>
+          <th style="text-align:left;padding:4px 4px 8px;font-size:12px;color:var(--text2)">${_t('th.key')}</th>
           <th style="text-align:left;padding:4px 4px 8px;font-size:12px;color:var(--text2)">Emoji</th>
-          <th style="text-align:left;padding:4px 4px 8px;font-size:12px;color:var(--text2)">Наим. RU</th>
-          <th style="text-align:left;padding:4px 4px 8px;font-size:12px;color:var(--text2)">Наим. UZ</th>
+          <th style="text-align:left;padding:4px 4px 8px;font-size:12px;color:var(--text2)">${_t('prices.th.name.ru')}</th>
+          <th style="text-align:left;padding:4px 4px 8px;font-size:12px;color:var(--text2)">UZ</th>
           <th style="text-align:left;padding:4px 4px 8px;font-size:12px;color:var(--text2)">№</th>
           <th></th>
         </tr>
@@ -7479,7 +7556,7 @@ function _renderServicesCard(services) {
       <tbody>${rows}</tbody>
     </table>
     <div style="border-top:1px solid var(--border);padding-top:14px">
-      <div style="font-size:12px;color:var(--text2);margin-bottom:8px">+ Новая услуга</div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:8px">${_t('prices.new.svc')}</div>
       <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
         <input type="text" id="se-new-key" placeholder="Ключ (латиница)" maxlength="30"
           style="border:1.5px solid var(--border);border-radius:8px;padding:5px 8px;font-size:13px;background:var(--surface);color:var(--text);width:130px">
@@ -7732,7 +7809,7 @@ async function loadUnits() {
       <td>${u.name_uz}</td>
       <td>${u.symbol_ru}</td>
       <td>${u.symbol_uz}</td>
-      <td><button class="btn btn-danger btn-sm" onclick="deleteUnit('${u.key}')">Удалить</button></td>
+      <td><button class="btn btn-danger btn-sm" onclick="deleteUnit('${u.key}')">${_t('btn.delete')}</button></td>
     </tr>
   `).join('');
 }
@@ -7883,7 +7960,12 @@ async function loadPositions() {
 // ══════════════════════════════════════
 //  INIT STAFF SECTIONS
 // ══════════════════════════════════════
-const SALARY_LABELS = { fixed:'Оклад', hourly:'Почасовая', percent:'% от заказа', mixed:'Смешанная' };
+const SALARY_LABELS = {
+  get fixed()   { return _t('sal.type.fixed'); },
+  get hourly()  { return _t('sal.type.hourly'); },
+  get percent() { return _t('sal.type.pct'); },
+  get mixed()   { return _t('sal.type.mixed'); },
+};
 
 
 
@@ -8018,10 +8100,10 @@ function renderStaffStats() {
   const inactive = staffApiData.filter(s=>!s.active).length;
   const roles = [...new Set(staffApiData.map(s=>s.role))].length;
   el.innerHTML = `
-    <div class="stat-card"><div class="stat-label">Активных</div><div class="stat-value">${active}</div></div>
-    <div class="stat-card"><div class="stat-label">Уволенных</div><div class="stat-value">${inactive}</div></div>
-    <div class="stat-card"><div class="stat-label">Ролей</div><div class="stat-value">${roles}</div></div>
-    <div class="stat-card"><div class="stat-label">Всего</div><div class="stat-value">${staffApiData.length}</div></div>
+    <div class="stat-card"><div class="stat-label">${_t('staff.stat.active')}</div><div class="stat-value">${active}</div></div>
+    <div class="stat-card"><div class="stat-label">${_t('staff.stat.fired')}</div><div class="stat-value">${inactive}</div></div>
+    <div class="stat-card"><div class="stat-label">${_t('staff.stat.roles')}</div><div class="stat-value">${roles}</div></div>
+    <div class="stat-card"><div class="stat-label">${_t('staff.stat.total')}</div><div class="stat-value">${staffApiData.length}</div></div>
   `;
 }
 
@@ -9036,13 +9118,13 @@ const MON_NAMES = ['Январь','Февраль','Март','Апрель','М
 
 // ═══ ЗАРПЛАТА ЗА МЕСЯЦ ═══════════════════════════════════════════════════════
 const SAL_TYPE_LABELS = {
-  fixed:         '📌 Оклад',
-  percent:       '📊 Проценты',
-  fixed_percent: '📌+📊 Оклад+%',
-  leads:         '🎯 За лиды',
-  per_unit:      '📐 За ед.изм',
-  per_point:     '📍 За точку',
-  kpi:           '🏆 KPI',
+  get fixed()         { return _t('sal.lbl.fixed'); },
+  get percent()       { return _t('sal.lbl.pct'); },
+  get fixed_percent() { return _t('sal.lbl.fixed.pct'); },
+  get leads()         { return _t('sal.lbl.leads'); },
+  get per_unit()      { return _t('sal.lbl.per.unit'); },
+  get per_point()     { return _t('sal.lbl.per.point'); },
+  get kpi()           { return _t('sal.lbl.kpi'); },
 };
 let _salCalcData = [];
 
@@ -9109,11 +9191,10 @@ function salCalcRender() {
   body.innerHTML = rows.map(s => {
     const typeLabel = SAL_TYPE_LABELS[s.salary_type] || s.salary_type;
     const brLabel   = branchName(s.branch);
-    const roleLabel = { admin:'Администратор', manager:'Менеджер', callcenter:'Колл-центр',
-      driver:'Водитель', logistics:'Логистика', washer:'Мойщик', packer:'Упаковщик' }[s.role] || s.role;
+    const roleLabel = _t('role.' + s.role) || s.role;
 
     let calcHtml = '';
-    let totalHtml = '<span style="color:var(--text2);font-size:12px">не рассчитано</span>';
+    let totalHtml = `<span style="color:var(--text2);font-size:12px">${_t('sal.not.calc')}</span>`;
 
     const _PCT_ROLE_LABEL = {
       washing:'🧹 Мойка', pickup:'🚗 Забор', delivery:'🚚 Доставка',
@@ -9130,7 +9211,7 @@ function salCalcRender() {
     if (s.salary_type === 'fixed') {
       const c = s.calc || {};
       if (c.no_timesheet) {
-        calcHtml  = `<span style="font-size:12px;color:#f59e0b">⚠ Нет данных в табеле за этот месяц</span>`;
+        calcHtml  = `<span style="font-size:12px;color:#f59e0b">${_t('sal.no.timesheet')}</span>`;
         totalHtml = `<span style="color:var(--text2);font-size:12px">—</span>`;
         grandKnown = false;
       } else if (s.total !== null && s.total !== undefined) {
@@ -9155,7 +9236,7 @@ function salCalcRender() {
       const c = s.calc || {};
       const lines = c.lines || {};
       if (c.no_timesheet && !Object.keys(lines).length) {
-        calcHtml  = `<span style="font-size:12px;color:#f59e0b">⚠ Нет данных в табеле</span>`;
+        calcHtml  = `<span style="font-size:12px;color:#f59e0b">${_t('sal.no.timesheet.short')}</span>`;
         totalHtml = `<span style="color:var(--text2);font-size:12px">—</span>`;
         grandKnown = false;
       } else {
@@ -9193,7 +9274,7 @@ function salCalcRender() {
         totalHtml = `<b>${Math.round(s.total||0).toLocaleString('ru-RU')}</b> сум`;
         grandTotal += s.total || 0;
       } else {
-        calcHtml  = `<span style="color:var(--text2);font-size:12px">Нет данных</span>`;
+        calcHtml  = `<span style="color:var(--text2);font-size:12px">${_t('sal.no.data')}</span>`;
         totalHtml = `<span style="color:var(--text2);font-size:12px">—</span>`;
         grandKnown = false;
       }
@@ -9239,10 +9320,10 @@ function salCalcRender() {
 
   if (totalEl) {
     if (grandKnown && rows.length) {
-      totalEl.textContent = `Итого (рассчитано): ${grandTotal.toLocaleString('ru-RU')} сум`;
+      totalEl.textContent = `${_t('sal.grand.total')} ${grandTotal.toLocaleString('ru-RU')} сум`;
       totalEl.style.color = 'var(--text)';
     } else {
-      totalEl.textContent = `Часть типов не рассчитана`;
+      totalEl.textContent = _t('sal.partial.warn');
       totalEl.style.color = 'var(--text2)';
     }
   }
@@ -9727,11 +9808,11 @@ async function renderTimesheet() {
   body.innerHTML = rows;
 
   summary.innerHTML = `
-    <span>👥 Сотрудников: <b>${_tsList.length}</b></span>
-    <span>✅ Раб. дней всего: <b>${totalWorkAll}</b></span>
-    <span>⏱ Часов всего: <b>${totalHAll}</b></span>
-    <span>🤒 Больничных: <b>${totalSickAll}</b></span>
-    <span>🏖 Отпусков: <b>${totalVacAll}</b></span>`;
+    <span>${_t('sched.stat.staff')} <b>${_tsList.length}</b></span>
+    <span>${_t('sched.stat.workdays')} <b>${totalWorkAll}</b></span>
+    <span>${_t('sched.stat.hours')} <b>${totalHAll}</b></span>
+    <span>${_t('sched.stat.sick')} <b>${totalSickAll}</b></span>
+    <span>${_t('sched.stat.vacation')} <b>${totalVacAll}</b></span>`;
 }
 
 // Синхронизировать поле часов с типом дня
@@ -16863,11 +16944,11 @@ async function plansDelete(id) {
 
 // ── TEMP: чистка БД (удалить группу после чистки) ───────────────────────────
 const _TEMP_TABLES = {
-  order_payments:   'Оплаты',
-  order_items:      'Позиции заказов',
-  order_activity:   'Активность / статусы',
-  order_photos:     'Фото заказов',
-  order_item_media: 'Медиа позиций',
+  get order_payments()   { return _t('temp.tab.payments'); },
+  get order_items()      { return _t('temp.tab.items'); },
+  get order_activity()   { return _t('temp.tab.activity'); },
+  get order_photos()     { return _t('temp.tab.photos'); },
+  get order_item_media() { return _t('temp.tab.media'); },
 };
 const _TEMP_COLS = {
   order_payments:   ['id','order_id','amount','method','purpose','confirmed','created_at','created_by'],
@@ -17038,10 +17119,10 @@ async function tempLoadTable() {
 function tempRenderTable() {
   const wrap = document.getElementById('tempTableWrap');
   const cnt  = document.getElementById('tempRecordCount');
-  cnt.textContent = `Записей: ${_tempRows.length}`;
+  cnt.textContent = `${_t('temp.records')} ${_tempRows.length}`;
   tempUpdateDelBtn();
   if (!_tempRows.length) {
-    wrap.innerHTML = '<div style="color:var(--muted);padding:16px;text-align:center">Нет записей</div>';
+    wrap.innerHTML = `<div style="color:var(--muted);padding:16px;text-align:center">${_t('temp.empty')}</div>`;
     return;
   }
   const cols = _TEMP_COLS[_tempCurrentTable] || Object.keys(_tempRows[0] || {}).filter(c => c !== 'is_orphan');
@@ -17109,7 +17190,7 @@ async function tempDeleteSelected() {
       ids.forEach(id => document.getElementById('tmprow-' + id)?.remove());
       _tempRows = _tempRows.filter(r => !ids.includes(r.id));
       showToast(`Удалено: ${d.deleted}`, 'success');
-      document.getElementById('tempRecordCount').textContent = `Записей: ${_tempRows.length}`;
+      document.getElementById('tempRecordCount').textContent = `${_t('temp.records')} ${_tempRows.length}`;
       tempInit(); // обновить сводку
     } else { showToast('Ошибка', 'error'); }
   } catch(e) { showToast('Ошибка: ' + e.message, 'error'); }
