@@ -5189,15 +5189,15 @@
 <!-- DEPT MODAL -->
 <div id="modalDept" class="modal-overlay hidden">
   <div class="modal-box">
-    <div class="modal-title" id="deptModalTitle">Добавить отдел</div>
+    <div class="modal-title" id="deptModalTitle" data-i18n="dept.modal.add">Добавить отдел</div>
     <input type="hidden" id="deptEditId">
     <div class="form-grid">
-      <div class="form-group span-full"><label class="form-label">Название *</label><input class="form-input" id="dept_name" placeholder="Производственный отдел"></div>
-      <div class="form-group span-full"><label class="form-label">Описание</label><textarea class="form-input form-textarea" id="dept_desc" placeholder="Краткое описание..."></textarea></div>
+      <div class="form-group span-full"><label class="form-label" data-i18n="form.lbl.name">Название *</label><input class="form-input" id="dept_name" placeholder="Производственный отдел"></div>
+      <div class="form-group span-full"><label class="form-label" data-i18n="form.lbl.desc">Описание</label><textarea class="form-input form-textarea" id="dept_desc" placeholder="Краткое описание..."></textarea></div>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-ghost btn-sm" onclick="closeModal('modalDept')">Отмена</button>
-      <button class="btn btn-save btn-sm" onclick="saveDept()">Сохранить</button>
+      <button class="btn btn-ghost btn-sm" onclick="closeModal('modalDept')" data-i18n="btn.cancel">Отмена</button>
+      <button class="btn btn-save btn-sm" onclick="saveDept()" data-i18n="btn.save">Сохранить</button>
     </div>
   </div>
 </div>
@@ -5363,44 +5363,44 @@
 <!-- POS MODAL -->
 <div id="modalPos" class="modal-overlay hidden">
   <div class="modal-box">
-    <div class="modal-title" id="posModalTitle">Добавить должность</div>
+    <div class="modal-title" id="posModalTitle" data-i18n="pos.modal.add">Добавить должность</div>
     <input type="hidden" id="posEditId">
     <div class="form-grid">
-      <div class="form-group span-full"><label class="form-label">Название *</label><input class="form-input" id="pos_name" placeholder="Менеджер по клиентам"></div>
-      <div class="form-group"><label class="form-label">Отдел</label>
-        <select class="form-input" id="pos_dept"><option value="">— выберите —</option></select>
+      <div class="form-group span-full"><label class="form-label" data-i18n="form.lbl.name">Название *</label><input class="form-input" id="pos_name" placeholder="Менеджер по клиентам"></div>
+      <div class="form-group"><label class="form-label" data-i18n="form.lbl.dept">Отдел</label>
+        <select class="form-input" id="pos_dept"><option value="" data-i18n="opt.choose">— выберите —</option></select>
       </div>
-      <div class="form-group"><label class="form-label">Роль (права доступа)</label>
+      <div class="form-group"><label class="form-label" data-i18n="form.lbl.role">Роль (права доступа)</label>
         <select class="form-input" id="pos_role">
-          <option value="">— не задана —</option>
-          <option value="admin">Администратор</option>
-          <option value="manager">Менеджер</option>
-          <option value="callcenter">Колл-центр</option>
+          <option value="" data-i18n="opt.unset">— не задана —</option>
+          <option value="admin" data-i18n="role.admin">Администратор</option>
+          <option value="manager" data-i18n="role.manager">Менеджер</option>
+          <option value="callcenter" data-i18n="role.callcenter">Колл-центр</option>
           <option value="receiver">Приёмщик</option>
           <option value="storekeeper">Кладовщик</option>
           <option value="sorter">Сортировщик</option>
           <option value="technician">Техник / Механик</option>
-          <option value="washer">Мойщик</option>
-          <option value="packer">Упаковщик</option>
-          <option value="logistics">Логистика</option>
-          <option value="driver">Водитель-курьер</option>
-          <option value="agent">Агент</option>
+          <option value="washer" data-i18n="role.washer">Мойщик</option>
+          <option value="packer" data-i18n="role.packer">Упаковщик</option>
+          <option value="logistics" data-i18n="role.logistics">Логистика</option>
+          <option value="driver" data-i18n="role.driver">Водитель-курьер</option>
+          <option value="agent" data-i18n="role.agent">Агент</option>
         </select>
       </div>
-      <div class="form-group"><label class="form-label">Тип зарплаты</label>
+      <div class="form-group"><label class="form-label" data-i18n="form.lbl.sal.type">Тип зарплаты</label>
         <select class="form-input" id="pos_salaryType">
-          <option value="fixed">Оклад (фикс.)</option>
-          <option value="hourly">Почасовая</option>
-          <option value="percent">% от заказа</option>
-          <option value="mixed">Смешанная</option>
+          <option value="fixed" data-i18n="opt.sal.fixed">Оклад (фикс.)</option>
+          <option value="hourly" data-i18n="opt.sal.hourly">Почасовая</option>
+          <option value="percent" data-i18n="opt.sal.pct">% от заказа</option>
+          <option value="mixed" data-i18n="opt.sal.mixed">Смешанная</option>
         </select>
       </div>
-      <div class="form-group"><label class="form-label">Ставка (сум)</label><input class="form-input" type="number" id="pos_salaryRate" placeholder="1500000" inputmode="numeric"></div>
-      <div class="form-group span-full"><label class="form-label">Описание</label><textarea class="form-input form-textarea" id="pos_desc" placeholder="Обязанности, требования..."></textarea></div>
+      <div class="form-group"><label class="form-label" data-i18n="form.lbl.rate">Ставка (сум)</label><input class="form-input" type="number" id="pos_salaryRate" placeholder="1500000" inputmode="numeric"></div>
+      <div class="form-group span-full"><label class="form-label" data-i18n="form.lbl.desc">Описание</label><textarea class="form-input form-textarea" id="pos_desc" data-i18n-ph="form.lbl.duties" placeholder="Обязанности, требования..."></textarea></div>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-ghost btn-sm" onclick="closeModal('modalPos')">Отмена</button>
-      <button class="btn btn-save btn-sm" onclick="savePos()">Сохранить</button>
+      <button class="btn btn-ghost btn-sm" onclick="closeModal('modalPos')" data-i18n="btn.cancel">Отмена</button>
+      <button class="btn btn-save btn-sm" onclick="savePos()" data-i18n="btn.save">Сохранить</button>
     </div>
   </div>
 </div>
@@ -5800,6 +5800,16 @@ const _adminI18n = {
     'temp.tab.activity':'Активность','temp.tab.photos':'Фото','temp.tab.media':'Медиа позиций',
     'temp.tab.chats':'💬 История чатов','temp.only.no.order':'Только без заказа',
     'temp.records':'Записей:','temp.empty':'Нет записей',
+    'dept.modal.add':'Добавить отдел','dept.modal.edit':'Редактировать отдел',
+    'pos.modal.add':'Добавить должность','pos.modal.edit':'Редактировать должность',
+    'form.lbl.name':'Название *','form.lbl.desc':'Описание',
+    'form.lbl.dept':'Отдел','form.lbl.role':'Роль (права доступа)',
+    'form.lbl.sal.type':'Тип зарплаты','form.lbl.rate':'Ставка (сум)',
+    'form.lbl.duties':'Обязанности, требования...',
+    'opt.choose':'— выберите —','opt.unset':'— не задана —',
+    'opt.sal.fixed':'Оклад (фикс.)','opt.sal.hourly':'Почасовая',
+    'opt.sal.pct':'% от заказа','opt.sal.mixed':'Смешанная',
+    'confirm.del.dept':'Удалить отдел?','confirm.del.pos':'Удалить должность?',
   },
   uz: {
     'btn.add':'+ Qoʻshish','btn.save':'💾 Saqlash','btn.cancel':'Bekor qilish',
@@ -6030,6 +6040,16 @@ const _adminI18n = {
     'temp.tab.activity':'Faollik','temp.tab.photos':'Suratlar','temp.tab.media':'Elementlar mediali',
     'temp.tab.chats':'💬 Chat tarixi','temp.only.no.order':'Faqat buyurtmasiz',
     'temp.records':'Yozuvlar:','temp.empty':'Yozuvlar yoʻq',
+    'dept.modal.add':'Boʻlim qoʻshish','dept.modal.edit':'Boʻlimni tahrirlash',
+    'pos.modal.add':'Lavozim qoʻshish','pos.modal.edit':'Lavozimni tahrirlash',
+    'form.lbl.name':'Nomi *','form.lbl.desc':'Tavsif',
+    'form.lbl.dept':'Boʻlim','form.lbl.role':'Rol (kirish huquqlari)',
+    'form.lbl.sal.type':'Maosh turi','form.lbl.rate':'Stavka (soʻm)',
+    'form.lbl.duties':'Majburiyatlar, talablar...',
+    'opt.choose':'— tanlang —','opt.unset':'— belgilanmagan —',
+    'opt.sal.fixed':'Belgilangan (fiks.)','opt.sal.hourly':'Soatbay',
+    'opt.sal.pct':'Buyurtmadan %','opt.sal.mixed':'Aralash',
+    'confirm.del.dept':'Boʻlimni oʻchirasizmi?','confirm.del.pos':'Lavozimni oʻchirasizmi?',
   },
 };
 function _applyAdminI18n() {
@@ -8993,7 +9013,7 @@ async function renderDepts() {
 }
 
 function openDeptModal(id=null) {
-  document.getElementById('deptModalTitle').textContent = id ? 'Редактировать отдел' : 'Добавить отдел';
+  document.getElementById('deptModalTitle').textContent = _t(id ? 'dept.modal.edit' : 'dept.modal.add');
   document.getElementById('deptEditId').value = id || '';
   const d = id ? departments.find(x=>x.id===id) : null;
   document.getElementById('dept_name').value = d?.name || '';
@@ -9016,7 +9036,7 @@ async function saveDept() {
 }
 
 async function deleteDept(id) {
-  if (!confirm('Удалить отдел?')) return;
+  if (!confirm(_t('confirm.del.dept'))) return;
   try {
     await apiDelete(`/departments/${id}`);
     await renderDepts();
@@ -9040,7 +9060,7 @@ async function renderPositions() {
       <td>${i+1}</td>
       <td><strong>${escHtml(p.name)}</strong></td>
       <td style="font-size:13px">${escHtml(deptMap[p.dept_id]||'—')}</td>
-      <td style="font-size:12px">${escHtml(p.role||'—')}</td>
+      <td style="font-size:12px">${_t('role.' + p.role) || escHtml(p.role||'—')}</td>
       <td style="font-size:13px">${SALARY_LABELS[p.salary_type]||'—'}</td>
       <td style="font-size:13px">${p.salary_rate ? p.salary_rate.toLocaleString() : '—'}</td>
       <td>
@@ -9051,7 +9071,7 @@ async function renderPositions() {
 }
 
 async function openPosModal(id=null) {
-  document.getElementById('posModalTitle').textContent = id ? 'Редактировать должность' : 'Добавить должность';
+  document.getElementById('posModalTitle').textContent = _t(id ? 'pos.modal.edit' : 'pos.modal.add');
   document.getElementById('posEditId').value = id || '';
   document.getElementById('pos_name').value = '';
   document.getElementById('pos_role').value = '';
@@ -9060,7 +9080,7 @@ async function openPosModal(id=null) {
   document.getElementById('pos_desc').value = '';
   await loadDepartments();
   const dEl = document.getElementById('pos_dept');
-  dEl.innerHTML = '<option value="">— выберите —</option>';
+  dEl.innerHTML = `<option value="">${_t('opt.choose')}</option>`;
   departments.forEach(d => dEl.innerHTML += `<option value="${d.id}">${escHtml(d.name)}</option>`);
   if (id) {
     const p = positions.find(x=>x.id===id);
@@ -9098,7 +9118,7 @@ async function savePos() {
 }
 
 async function deletePos(id) {
-  if (!confirm('Удалить должность?')) return;
+  if (!confirm(_t('confirm.del.pos'))) return;
   try {
     await apiDelete(`/positions/${id}`);
     await renderPositions();
