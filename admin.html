@@ -5522,6 +5522,40 @@ function _toggleAdminLang() {
   _adminLang = _adminLang === 'ru' ? 'uz' : 'ru';
   localStorage.setItem('admin_lang', _adminLang);
   _applyAdminI18n();
+  const page = localStorage.getItem('admin_page') || 'dashboard';
+  const _rerender = {
+    dashboard: () => loadDashboard(),
+    plans: () => plansLoad(),
+    leads: () => adminLoadLeads(),
+    orders: () => loadOrders(''),
+    routes: () => loadRoutes(),
+    cash: () => { loadCashDashboard(); cashTabSwitch('payments'); },
+    promotions: () => promoLoad(),
+    staff: () => loadStaffFromAPI(),
+    agents: () => loadStaffFromAPI(),
+    clients: () => adminLoadClients(),
+    contacts: () => adminLoadContacts(),
+    'site-users': () => adminLoadSiteUsers(),
+    'role-perms': () => renderRolePermsPage(),
+    departments: () => renderDepts(),
+    positions: () => renderPositions(),
+    prices: () => loadPrices(),
+    units: () => loadUnits(),
+    'agent-monitoring': () => loadAgentMonitoring(),
+    workon: () => loadWorkOn(),
+    'expenses-admin': () => expAdminLoad(),
+    'autodial-campaigns': () => adLoad(),
+    'autodial-groups': () => adgLoad(),
+    'tg-clients': () => loadTgClients(),
+    'sms-contacts': () => smsCntLoad(),
+    'sms-groups': () => smsGrpLoad(),
+    'sms-templates': () => smsTplLoad(),
+    'sms-reports': () => smsRepLoad(),
+    'sms-pricing': () => smsPricingLoad(),
+    'salary-calc': () => salCalcLoad(),
+    timesheet: () => loadTimesheet(),
+  };
+  if (_rerender[page]) _rerender[page]();
 }
 const _adminNavTr = {
   ru: {
