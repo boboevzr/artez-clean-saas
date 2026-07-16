@@ -2546,7 +2546,7 @@
         <div class="card" style="margin-bottom:16px">
           <div class="filters-row" style="gap:10px;flex-wrap:wrap;align-items:center">
             <select id="workonYear" class="filter-input" style="width:100px" onchange="loadWorkOn()"></select>
-            <select id="workonMonth" class="filter-input" style="width:140px" onchange="loadWorkOn()">
+            <select id="workonMonth" class="filter-input" style="width:140px" onchange="loadWorkOn()" data-month-select>
               <option value="1">Январь</option><option value="2">Февраль</option><option value="3">Март</option>
               <option value="4">Апрель</option><option value="5">Май</option><option value="6">Июнь</option>
               <option value="7">Июль</option><option value="8">Август</option><option value="9">Сентябрь</option>
@@ -2602,7 +2602,7 @@
         <div class="card" style="margin-bottom:16px">
           <div class="filters-row" style="gap:10px;flex-wrap:wrap;align-items:center">
             <select id="salCalcYear" class="filter-input" style="width:100px" onchange="salCalcLoad()"></select>
-            <select id="salCalcMonth" class="filter-input" style="width:140px" onchange="salCalcLoad()">
+            <select id="salCalcMonth" class="filter-input" style="width:140px" onchange="salCalcLoad()" data-month-select>
               <option value="1">Январь</option><option value="2">Февраль</option><option value="3">Март</option>
               <option value="4">Апрель</option><option value="5">Май</option><option value="6">Июнь</option>
               <option value="7">Июль</option><option value="8">Август</option><option value="9">Сентябрь</option>
@@ -2644,7 +2644,7 @@
                 <option value="" data-i18n="reg.ph.staff">— сотрудник —</option>
               </select>
               <select id="salLedgerYear" class="filter-input" style="width:90px" onchange="salLedgerLoad()"></select>
-              <select id="salLedgerMonth" class="filter-input" style="width:130px" onchange="salLedgerLoad()">
+              <select id="salLedgerMonth" class="filter-input" style="width:130px" onchange="salLedgerLoad()" data-month-select>
                 <option value="1">Январь</option><option value="2">Февраль</option><option value="3">Март</option>
                 <option value="4">Апрель</option><option value="5">Май</option><option value="6">Июнь</option>
                 <option value="7">Июль</option><option value="8">Август</option><option value="9">Сентябрь</option>
@@ -2663,29 +2663,29 @@
           </div>
           <!-- Форма ручной записи -->
           <div id="salLedgerManualForm" style="display:none;margin-top:12px" class="card">
-            <div style="font-weight:700;font-size:14px;margin-bottom:12px">Новая запись</div>
+            <div style="font-weight:700;font-size:14px;margin-bottom:12px" data-i18n="sal.ledger.new.rec">Новая запись</div>
             <div class="form-grid" style="grid-template-columns:repeat(auto-fill,minmax(160px,1fr))">
               <div class="form-group">
-                <label class="form-label">Тип</label>
+                <label class="form-label" data-i18n="sal.lbl.type">Тип</label>
                 <select id="slmType" class="form-input" onchange="slmTypeChange()">
-                  <option value="accrual">Начисление</option>
-                  <option value="advance">Аванс</option>
-                  <option value="salary_payment">Выплата ЗП</option>
-                  <option value="bonus">Бонус</option>
-                  <option value="deduction">Удержание</option>
-                  <option value="fine">Штраф</option>
+                  <option value="accrual" data-i18n="sal.type.accrual">Начисление</option>
+                  <option value="advance" data-i18n="sal.type.advance">Аванс</option>
+                  <option value="salary_payment" data-i18n="sal.type.payment">Выплата ЗП</option>
+                  <option value="bonus" data-i18n="sal.type.bonus">Бонус</option>
+                  <option value="deduction" data-i18n="sal.type.deduction">Удержание</option>
+                  <option value="fine" data-i18n="sal.btn.fine">Штраф</option>
                 </select>
               </div>
               <div class="form-group">
-                <label class="form-label">Сумма (сум)</label>
+                <label class="form-label" data-i18n="sal.lbl.amount">Сумма (сум)</label>
                 <input class="form-input" type="number" id="slmAmount" min="0" placeholder="100000">
               </div>
               <div class="form-group">
-                <label class="form-label">Период (месяц)</label>
+                <label class="form-label" data-i18n="sal.lbl.period.month">Период (месяц)</label>
                 <input class="form-input" type="month" id="slmPeriod">
               </div>
               <div class="form-group" id="slmFineReasonRow" style="display:none">
-                <label class="form-label">Причина штрафа</label>
+                <label class="form-label" data-i18n="sal.lbl.fine.reason">Причина штрафа</label>
                 <select class="form-input" id="slmFineReason">
                   <option value="Опоздание">Опоздание</option>
                   <option value="Ранний уход">Ранний уход</option>
@@ -5027,7 +5027,7 @@
     </div>
     <!-- Остаток на начало месяца в шапке -->
     <div id="salDailyOpeningBanner" style="padding:10px 24px;border-bottom:1px solid var(--border);flex-shrink:0;background:var(--surface2);display:flex;justify-content:space-between;align-items:center;gap:12px">
-      <span style="font-size:12px;color:var(--text2);font-weight:600;text-transform:uppercase;letter-spacing:.4px">Остаток на начало месяца</span>
+      <span style="font-size:12px;color:var(--text2);font-weight:600;text-transform:uppercase;letter-spacing:.4px" data-i18n="sal.daily.opening">Остаток на начало месяца</span>
       <div style="display:flex;align-items:center;gap:8px">
         <span id="salDailyOpeningAmt" style="font-size:15px;font-weight:800;font-variant-numeric:tabular-nums"></span>
         <button id="salDailyOpeningEditBtn" onclick="salDailyEditOpening()" title="Изменить"
@@ -5044,13 +5044,13 @@
       <table style="width:100%;border-collapse:collapse;font-size:13px">
         <thead style="position:sticky;top:0;z-index:2;background:var(--surface)">
           <tr style="background:var(--surface2);color:var(--text2)">
-            <th style="padding:9px 10px;text-align:left;font-weight:600;white-space:nowrap">Дата</th>
-            <th style="padding:9px 10px;text-align:right;font-weight:600;white-space:nowrap">Остаток нач.</th>
-            <th style="padding:9px 10px;text-align:right;font-weight:600;white-space:nowrap">Начислено</th>
-            <th style="padding:9px 10px;text-align:right;font-weight:600;white-space:nowrap">Аванс / Выплата</th>
-            <th style="padding:9px 10px;text-align:right;font-weight:600;white-space:nowrap">Штраф</th>
-            <th style="padding:9px 10px;text-align:right;font-weight:600;white-space:nowrap">Прочее</th>
-            <th style="padding:9px 10px;text-align:right;font-weight:600;white-space:nowrap">Остаток кон.</th>
+            <th style="padding:9px 10px;text-align:left;font-weight:600;white-space:nowrap" data-i18n="sal.daily.th.date">Дата</th>
+            <th style="padding:9px 10px;text-align:right;font-weight:600;white-space:nowrap" data-i18n="sal.daily.th.open">Остаток нач.</th>
+            <th style="padding:9px 10px;text-align:right;font-weight:600;white-space:nowrap" data-i18n="sal.daily.th.accrual">Начислено</th>
+            <th style="padding:9px 10px;text-align:right;font-weight:600;white-space:nowrap" data-i18n="sal.daily.th.debit">Аванс / Выплата</th>
+            <th style="padding:9px 10px;text-align:right;font-weight:600;white-space:nowrap" data-i18n="sal.daily.th.fine">Штраф</th>
+            <th style="padding:9px 10px;text-align:right;font-weight:600;white-space:nowrap" data-i18n="sal.daily.th.other">Прочее</th>
+            <th style="padding:9px 10px;text-align:right;font-weight:600;white-space:nowrap" data-i18n="sal.daily.th.close">Остаток кон.</th>
           </tr>
         </thead>
         <tbody id="salDailyBody"></tbody>
@@ -5059,12 +5059,12 @@
     <!-- Подвал: итоги за месяц -->
     <div id="salDailyFooter" style="display:none;flex-shrink:0;padding:12px 16px;border-top:1.5px solid var(--border);background:var(--surface2);display:flex;flex-wrap:wrap;gap:12px;justify-content:flex-end;align-items:center">
       <div style="display:flex;gap:6px;align-items:center">
-        <span style="font-size:11px;color:var(--text2);font-weight:600;text-transform:uppercase;letter-spacing:.4px">Начислено за месяц:</span>
+        <span style="font-size:11px;color:var(--text2);font-weight:600;text-transform:uppercase;letter-spacing:.4px" data-i18n="sal.daily.footer.accrual">Начислено за месяц:</span>
         <span id="salDailyFooterAccrual" style="font-size:14px;font-weight:700;color:#15803d;font-variant-numeric:tabular-nums"></span>
       </div>
       <div style="width:1px;height:20px;background:var(--border)"></div>
       <div style="display:flex;gap:6px;align-items:center">
-        <span style="font-size:11px;color:var(--text2);font-weight:600;text-transform:uppercase;letter-spacing:.4px">Итого к выплате:</span>
+        <span style="font-size:11px;color:var(--text2);font-weight:600;text-transform:uppercase;letter-spacing:.4px" data-i18n="sal.daily.footer.final">Итого к выплате:</span>
         <span id="salDailyFooterFinal" style="font-size:16px;font-weight:800;font-variant-numeric:tabular-nums"></span>
       </div>
     </div>
@@ -5075,26 +5075,26 @@
 <div id="modalSalFine" class="modal-overlay hidden" onclick="if(event.target===this)this.classList.add('hidden')">
   <div class="modal-box" style="max-width:420px">
     <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid var(--border)">
-      <div id="salFineTitle" style="font-size:15px;font-weight:700">Штраф</div>
+      <div id="salFineTitle" style="font-size:15px;font-weight:700" data-i18n="sal.modal.fine.title">Штраф</div>
       <button onclick="document.getElementById('modalSalFine').classList.add('hidden')" style="width:32px;height:32px;border-radius:50%;border:1px solid var(--border);background:none;color:var(--text2);cursor:pointer">✕</button>
     </div>
     <div style="padding:20px 24px;display:flex;flex-direction:column;gap:14px">
-      <div style="font-size:12px;color:var(--text2)">Период: <b id="salFinePeriod"></b></div>
+      <div style="font-size:12px;color:var(--text2)"><span data-i18n="sal.modal.fine.period">Период:</span> <b id="salFinePeriod"></b></div>
       <div class="form-group">
-        <label class="form-label">Причина штрафа *</label>
+        <label class="form-label" data-i18n="sal.fine.reason.lbl">Причина штрафа *</label>
         <select class="form-input" id="salFineReason"></select>
       </div>
       <div class="form-group">
-        <label class="form-label">Сумма штрафа (сум) *</label>
+        <label class="form-label" data-i18n="sal.fine.amount.lbl">Сумма штрафа (сум) *</label>
         <input class="form-input" type="number" id="salFineAmount" min="1" placeholder="50000" inputmode="numeric">
       </div>
       <div class="form-group">
-        <label class="form-label">Дополнительное примечание</label>
-        <input class="form-input" type="text" id="salFineNote" placeholder="Необязательно">
+        <label class="form-label" data-i18n="sal.fine.note.lbl">Дополнительное примечание</label>
+        <input class="form-input" type="text" id="salFineNote" placeholder="Необязательно" data-i18n-ph="ph.optional">
       </div>
       <div style="display:flex;gap:8px;margin-top:4px">
-        <button class="btn btn-ghost btn-sm" onclick="document.getElementById('modalSalFine').classList.add('hidden')">Отмена</button>
-        <button class="btn btn-sm" onclick="salFineSubmit()" style="flex:1;background:#dc2626;color:#fff;border:none;font-weight:700">⛔ Применить штраф</button>
+        <button class="btn btn-ghost btn-sm" data-i18n="btn.cancel" onclick="document.getElementById('modalSalFine').classList.add('hidden')">Отмена</button>
+        <button class="btn btn-sm" onclick="salFineSubmit()" data-i18n="sal.fine.submit" style="flex:1;background:#dc2626;color:#fff;border:none;font-weight:700">⛔ Применить штраф</button>
       </div>
     </div>
   </div>
@@ -5415,26 +5415,26 @@
     <div class="modal-title" id="tsModalTitle">Добавить запись табеля</div>
     <input type="hidden" id="tsEditId">
     <div class="form-grid">
-      <div class="form-group span-full" id="tsStaffRow"><label class="form-label">Сотрудник *</label>
-        <select class="form-input" id="ts_staff"><option value="">— выберите —</option></select>
+      <div class="form-group span-full" id="tsStaffRow"><label class="form-label" data-i18n="ts.lbl.staff.req">Сотрудник *</label>
+        <select class="form-input" id="ts_staff"><option value="" data-i18n="opt.choose">— выберите —</option></select>
       </div>
-      <div class="form-group"><label class="form-label">Дата *</label><input class="form-input" type="date" id="ts_date"></div>
-      <div class="form-group"><label class="form-label">Часов</label><input class="form-input" type="number" id="ts_hours" value="8" step="0.5" min="0" max="24" inputmode="decimal"></div>
-      <div class="form-group"><label class="form-label">Тип дня</label>
+      <div class="form-group"><label class="form-label" data-i18n="ts.lbl.date">Дата *</label><input class="form-input" type="date" id="ts_date"></div>
+      <div class="form-group"><label class="form-label" data-i18n="ts.lbl.hours">Часов</label><input class="form-input" type="number" id="ts_hours" value="8" step="0.5" min="0" max="24" inputmode="decimal"></div>
+      <div class="form-group"><label class="form-label" data-i18n="ts.lbl.type">Тип дня</label>
         <select class="form-input" id="ts_type" onchange="tsSyncHoursToType(this.value)">
-          <option value="work">Рабочий</option>
-          <option value="overtime">Сверхурочный</option>
-          <option value="sick">Больничный</option>
-          <option value="vacation">Отпуск</option>
-          <option value="dayoff">Выходной</option>
+          <option value="work" data-i18n="ts.type.work">Рабочий</option>
+          <option value="overtime" data-i18n="ts.type.overtime">Сверхурочный</option>
+          <option value="sick" data-i18n="ts.type.sick">Больничный</option>
+          <option value="vacation" data-i18n="ts.type.vacation">Отпуск</option>
+          <option value="dayoff" data-i18n="ts.type.dayoff">Выходной</option>
         </select>
       </div>
-      <div class="form-group span-full"><label class="form-label">Заметка</label><input class="form-input" id="ts_note" placeholder="Необязательно"></div>
+      <div class="form-group span-full"><label class="form-label" data-i18n="ts.lbl.note">Заметка</label><input class="form-input" id="ts_note" placeholder="Необязательно" data-i18n-ph="ph.optional"></div>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-ghost btn-sm" onclick="closeModal('modalTs')">Отмена</button>
-      <button id="tsBtnDelete" class="btn btn-sm" style="background:rgba(239,68,68,.18);color:#fca5a5;display:none" onclick="deleteTsEntry(document.getElementById('tsEditId').value)">🗑 Удалить</button>
-      <button class="btn btn-save btn-sm" onclick="saveTsEntry()">Сохранить</button>
+      <button class="btn btn-ghost btn-sm" data-i18n="btn.cancel" onclick="closeModal('modalTs')">Отмена</button>
+      <button id="tsBtnDelete" class="btn btn-sm" style="background:rgba(239,68,68,.18);color:#fca5a5;display:none" data-i18n="btn.delete" onclick="deleteTsEntry(document.getElementById('tsEditId').value)">🗑 Удалить</button>
+      <button class="btn btn-save btn-sm" data-i18n="btn.save" onclick="saveTsEntry()">Сохранить</button>
     </div>
   </div>
 </div>
@@ -5522,6 +5522,8 @@ function _toggleAdminLang() {
   _adminLang = _adminLang === 'ru' ? 'uz' : 'ru';
   localStorage.setItem('admin_lang', _adminLang);
   _applyAdminI18n();
+  initBranchSelects();
+  _fillMonthSelects();
   const page = localStorage.getItem('admin_page') || 'dashboard';
   const _rerender = {
     dashboard: () => loadDashboard(),
@@ -5854,6 +5856,35 @@ const _adminI18n = {
     'opt.sal.fixed':'Оклад (фикс.)','opt.sal.hourly':'Почасовая',
     'opt.sal.pct':'% от заказа','opt.sal.mixed':'Смешанная',
     'confirm.del.dept':'Удалить отдел?','confirm.del.pos':'Удалить должность?',
+    'ts.th.days':'Дн','ts.th.hours.col':'Ч',
+    'ts.lbl.hours':'Часов','ts.lbl.type':'Тип дня','ts.lbl.note':'Заметка',
+    'ts.lbl.date':'Дата *','ts.lbl.staff.req':'Сотрудник *',
+    'ph.optional':'Необязательно',
+    'ts.type.work':'Рабочий','ts.type.overtime':'Сверхурочный',
+    'ts.type.sick':'Больничный','ts.type.vacation':'Отпуск','ts.type.dayoff':'Выходной',
+    'ts.readonly':'👁 Режим просмотра',
+    'ts.role.admin':'Администрация','ts.role.manager':'Менеджеры',
+    'ts.role.callcenter':'Колл-центр','ts.role.washer':'Мойщики','ts.role.driver':'Водители',
+    'ts.status.fired':'(уволен)','ts.status.paused':'(пауза)',
+    'ts.modal.add':'Добавить','ts.lbl.error':'Ошибка загрузки',
+    'ts.no.edit':'Редактирование прошлых и будущих дней — только для администратора',
+    'sal.btn.daily':'📊 Детально','sal.btn.fine':'⛔ Штраф',
+    'sal.modal.fine.title':'Штраф','sal.modal.fine.period':'Период:',
+    'sal.fine.reason.lbl':'Причина штрафа *','sal.fine.amount.lbl':'Сумма штрафа (сум) *',
+    'sal.fine.note.lbl':'Дополнительное примечание','sal.fine.submit':'⛔ Применить штраф',
+    'sal.daily.opening':'Остаток на начало месяца',
+    'sal.daily.th.date':'Дата','sal.daily.th.open':'Остаток нач.',
+    'sal.daily.th.accrual':'Начислено','sal.daily.th.debit':'Аванс / Выплата',
+    'sal.daily.th.fine':'Штраф','sal.daily.th.other':'Прочее','sal.daily.th.close':'Остаток кон.',
+    'sal.daily.footer.accrual':'Начислено за месяц:','sal.daily.footer.final':'Итого к выплате:',
+    'sal.inactive':'неактивен',
+    'sal.ledger.new.rec':'Новая запись','sal.lbl.type':'Тип',
+    'sal.lbl.amount':'Сумма (сум)','sal.lbl.period.month':'Период (месяц)',
+    'sal.lbl.fine.reason':'Причина штрафа',
+    'sal.type.accrual':'Начисление','sal.type.advance':'Аванс','sal.type.payment':'Выплата ЗП',
+    'sal.type.bonus':'Бонус','sal.type.deduction':'Удержание',
+    'sal.no.amount':'Укажите сумму штрафа','sal.fine.added':'Штраф добавлен',
+    'sal.daily.title.prefix':'📊 Детально:','sal.fine.title.prefix':'Штраф —',
   },
   uz: {
     'btn.add':'+ Qoʻshish','btn.save':'💾 Saqlash','btn.cancel':'Bekor qilish',
@@ -6100,6 +6131,35 @@ const _adminI18n = {
     'opt.sal.fixed':'Belgilangan (fiks.)','opt.sal.hourly':'Soatbay',
     'opt.sal.pct':'Buyurtmadan %','opt.sal.mixed':'Aralash',
     'confirm.del.dept':'Boʻlimni oʻchirasizmi?','confirm.del.pos':'Lavozimni oʻchirasizmi?',
+    'ts.th.days':'Kun','ts.th.hours.col':'S',
+    'ts.lbl.hours':'Soatlar','ts.lbl.type':'Kun turi','ts.lbl.note':'Izoh',
+    'ts.lbl.date':'Sana *','ts.lbl.staff.req':'Xodim *',
+    'ph.optional':'Majburiy emas',
+    'ts.type.work':'Ish kuni','ts.type.overtime':'Qoʻshimcha ish',
+    'ts.type.sick':'Kasal','ts.type.vacation':'Taʼtil','ts.type.dayoff':'Dam olish',
+    'ts.readonly':'👁 Koʻrish rejimi',
+    'ts.role.admin':'Boshqaruv','ts.role.manager':'Menejerlar',
+    'ts.role.callcenter':'Qoʻngʻiroq markazi','ts.role.washer':'Tozalovchilar','ts.role.driver':'Haydovchilar',
+    'ts.status.fired':'(ishdan boʻshatilgan)','ts.status.paused':'(tanaffus)',
+    'ts.modal.add':'Qoʻshish','ts.lbl.error':'Yuklab olishda xato',
+    'ts.no.edit':'Oʻtgan va kelajak kunlarni tahrirlash faqat administrator uchun',
+    'sal.btn.daily':'📊 Tafsilot','sal.btn.fine':'⛔ Jarima',
+    'sal.modal.fine.title':'Jarima','sal.modal.fine.period':'Davr:',
+    'sal.fine.reason.lbl':'Jarima sababi *','sal.fine.amount.lbl':'Jarima miqdori (soʻm) *',
+    'sal.fine.note.lbl':'Qoʻshimcha izoh','sal.fine.submit':'⛔ Jarimani qoʻllash',
+    'sal.daily.opening':'Oy boshi qoldigʻi',
+    'sal.daily.th.date':'Sana','sal.daily.th.open':'Qoldiq boshi',
+    'sal.daily.th.accrual':'Hisoblangan','sal.daily.th.debit':'Avans / Toʻlov',
+    'sal.daily.th.fine':'Jarima','sal.daily.th.other':'Boshqalar','sal.daily.th.close':'Qoldiq oxiri',
+    'sal.daily.footer.accrual':'Oy uchun hisoblangan:','sal.daily.footer.final':'Toʻlash kerak jami:',
+    'sal.inactive':'faol emas',
+    'sal.ledger.new.rec':'Yangi yozuv','sal.lbl.type':'Turi',
+    'sal.lbl.amount':'Miqdor (soʻm)','sal.lbl.period.month':'Davr (oy)',
+    'sal.lbl.fine.reason':'Jarima sababi',
+    'sal.type.accrual':'Hisoblash','sal.type.advance':'Avans','sal.type.payment':'Maosh toʻlovi',
+    'sal.type.bonus':'Bonus','sal.type.deduction':'Ushlab qolish',
+    'sal.no.amount':'Jarima summasini kiriting','sal.fine.added':'Jarima qoʻshildi',
+    'sal.daily.title.prefix':'📊 Tafsilot:','sal.fine.title.prefix':'Jarima —',
   },
 };
 function _applyAdminI18n() {
@@ -6344,7 +6404,7 @@ function renderBranchOptions(selectEl, addAll = false) {
   if (!selectEl) return;
   const cur = selectEl.value;
   selectEl.innerHTML = '';
-  if (addAll) selectEl.innerHTML = '<option value="">Все</option>';
+  if (addAll) selectEl.innerHTML = `<option value="">${_t('lbl.all')}</option>`;
   for (const b of (window._BRANCHES || [])) {
     const opt = document.createElement('option');
     opt.value = b.slug;
@@ -7068,6 +7128,7 @@ function showAdmin() {
     }
   }).catch(() => {});
   loadBranches().then(() => { initBranchSelects(); renderRtBranchPills(); renderBranchContactCards(); });
+  _fillMonthSelects();
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('adminScreen').style.display = 'block';
   if (_routesOnlyMode) {
@@ -9193,7 +9254,39 @@ async function deletePos(id) {
 const TS_CODES  = { work:'Я', overtime:'С', sick:'Б', vacation:'ОТ', dayoff:'В' };
 const TS_LABELS = { work:'Рабочий', overtime:'Сверхурочный', sick:'Больничный', vacation:'Отпуск', dayoff:'Выходной' };
 const TS_CHIPS  = { work:'chip-green', overtime:'chip-red', sick:'chip-amber', vacation:'chip-blue', dayoff:'chip-gray' };
-const DAY_NAMES = ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];
+const _DAY_NAMES_RU = ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];
+const _DAY_NAMES_UZ = ['Ya','Du','Se','Ch','Pe','Ju','Sh'];
+function _dayName(dow) { return (_adminLang === 'uz' ? _DAY_NAMES_UZ : _DAY_NAMES_RU)[dow]; }
+const _MON_RU = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+const _MON_UZ = ['Yanvar','Fevral','Mart','Aprel','May','Iyun','Iyul','Avgust','Sentabr','Oktabr','Noyabr','Dekabr'];
+function _getMonNames() { return _adminLang === 'uz' ? _MON_UZ : _MON_RU; }
+function _fillMonthSelects() {
+  const mn = _getMonNames();
+  document.querySelectorAll('[data-month-select]').forEach(sel => {
+    const cur = sel.value;
+    Array.from(sel.options).forEach(opt => {
+      const v = parseInt(opt.value);
+      if (v >= 1 && v <= 12) opt.textContent = mn[v - 1];
+    });
+    if (cur) sel.value = cur;
+  });
+}
+function _getFineReasons() {
+  if (_adminLang === 'uz') return [
+    'Kechikish','Erta ketish','Ogohlantirishsiz yoʻqlik',
+    'Sifatsiz ish','Ishdagi xato',
+    'Intizom buzilishi','Mijoz shikoyati',
+    'Kompaniya mulkini buzish','Maxfiy maʼlumotni oshkor qilish',
+    'Boshqa'
+  ];
+  return [
+    'Опоздание','Ранний уход','Прогул без предупреждения',
+    'Некачественная работа','Ошибка в работе',
+    'Нарушение дисциплины','Жалоба клиента',
+    'Порча имущества компании','Разглашение конфиденциальной информации',
+    'Другое'
+  ];
+}
 const MON_NAMES = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
 
 // ═══ ЗАРПЛАТА ЗА МЕСЯЦ ═══════════════════════════════════════════════════════
@@ -9374,7 +9467,7 @@ function salCalcRender() {
     }
 
     const inactiveBadge = s.active === false
-      ? `<span style="font-size:10px;background:#fee2e2;color:#dc2626;border-radius:10px;padding:1px 6px;margin-left:6px;vertical-align:middle">неактивен</span>`
+      ? `<span style="font-size:10px;background:#fee2e2;color:#dc2626;border-radius:10px;padding:1px 6px;margin-left:6px;vertical-align:middle">${_t('sal.inactive')}</span>`
       : '';
     const yr = document.getElementById('salCalcYear')?.value;
     const mo = document.getElementById('salCalcMonth')?.value;
@@ -9388,11 +9481,11 @@ function salCalcRender() {
       <td style="white-space:nowrap;padding:6px 8px">
         <button onclick="salShowDaily(${sid},'${(s.name||'').replace(/'/g,"\\'")}',${yr},${mo})"
           style="padding:4px 10px;border:1.5px solid var(--border);background:none;border-radius:7px;font-size:12px;color:var(--text2);cursor:pointer;white-space:nowrap">
-          📊 Детально
+          ${_t('sal.btn.daily')}
         </button>
         <button onclick="salOpenFine(${sid},'${(s.name||'').replace(/'/g,"\\'")}',${yr},${mo})"
           style="padding:4px 10px;border:1.5px solid rgba(239,68,68,.3);background:none;border-radius:7px;font-size:12px;color:#dc2626;cursor:pointer;white-space:nowrap;margin-top:4px">
-          ⛔ Штраф
+          ${_t('sal.btn.fine')}
         </button>
       </td>
     </tr>`;
@@ -9601,11 +9694,10 @@ let _salDailyCtx = {};
 async function salShowDaily(staffId, staffName, year, month) {
   const mo = parseInt(month); const yr = parseInt(year);
   _salDailyCtx = {staffId, staffName, year: yr, month: mo};
-  const months = ['','Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
   const fmtN = v => Number(Math.round(v||0)).toLocaleString('ru');
   const modal = document.getElementById('modalSalDaily');
   if (!modal) return;
-  document.getElementById('salDailyTitle').textContent = `📊 Детально: ${staffName} — ${months[mo]} ${yr}`;
+  document.getElementById('salDailyTitle').textContent = `${_t('sal.daily.title.prefix')} ${staffName} — ${_getMonNames()[mo-1]} ${yr}`;
   document.getElementById('salDailyBody').innerHTML = `<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text2)">${_t('lbl.loading')}</td></tr>`;
   document.getElementById('salDailyFooter').style.display = 'none';
   salDailyOpeningCancel();
@@ -9712,13 +9804,12 @@ let _fineCtx = {};
 function salOpenFine(staffId, staffName, year, month) {
   _fineCtx = {staffId, year, month};
   const mo = parseInt(month); const yr = parseInt(year);
-  const months = ['','Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
-  document.getElementById('salFineTitle').textContent = `Штраф — ${staffName}`;
-  document.getElementById('salFinePeriod').textContent = `${months[mo]} ${yr}`;
+  document.getElementById('salFineTitle').textContent = `${_t('sal.fine.title.prefix')} ${staffName}`;
+  document.getElementById('salFinePeriod').textContent = `${_getMonNames()[mo-1]} ${yr}`;
   document.getElementById('salFineAmount').value = '';
   document.getElementById('salFineNote').value = '';
   const sel = document.getElementById('salFineReason');
-  sel.innerHTML = _FINE_REASONS.map(r=>`<option>${r}</option>`).join('');
+  sel.innerHTML = _getFineReasons().map(r=>`<option>${r}</option>`).join('');
   document.getElementById('modalSalFine').classList.remove('hidden');
 }
 
@@ -9727,14 +9818,14 @@ async function salFineSubmit() {
   const reason  = document.getElementById('salFineReason')?.value;
   const rawAmt  = parseFloat(document.getElementById('salFineAmount')?.value||'');
   const note    = document.getElementById('salFineNote')?.value||'';
-  if (!rawAmt || rawAmt <= 0) { showToast('Укажите сумму штрафа', 'error'); return; }
+  if (!rawAmt || rawAmt <= 0) { showToast(_t('sal.no.amount'), 'error'); return; }
   const period  = `${year}-${String(month).padStart(2,'0')}-01`;
   const r = await apiPost('/admin/salary/ledger', {
     staff_id: staffId, period, type:'fine', amount:-Math.abs(rawAmt),
     note: note || reason, fine_reason: reason
   }).catch(()=>null);
   if (!r?.ok) { showToast('Ошибка', 'error'); return; }
-  showToast('Штраф добавлен');
+  showToast(_t('sal.fine.added'));
   document.getElementById('modalSalFine').classList.add('hidden');
   salCalcLoad();
 }
@@ -9774,7 +9865,7 @@ async function renderTimesheet() {
   if (btnInit)  btnInit.style.display  = isReadOnly ? 'none' : '';
   if (btnReset) btnReset.style.display = isReadOnly ? 'none' : '';
 
-  head.innerHTML = `<tr><td colspan="40" style="text-align:center;padding:14px;color:var(--text2)">Загрузка…</td></tr>`;
+  head.innerHTML = `<tr><td colspan="40" style="text-align:center;padding:14px;color:var(--text2)">${_t('lbl.loading')}</td></tr>`;
   empty.style.display = 'none';
 
   const [yr, mn] = month.split('-');
@@ -9782,7 +9873,7 @@ async function renderTimesheet() {
 
   const data = await apiGet(`/admin/timesheet?year=${year}&month=${mon}`);
   if (!data?.ok) {
-    head.innerHTML=''; body.innerHTML=`<tr><td colspan="40" style="text-align:center;color:red;padding:16px">Ошибка загрузки</td></tr>`;
+    head.innerHTML=''; body.innerHTML=`<tr><td colspan="40" style="text-align:center;color:red;padding:16px">${_t('ts.lbl.error')}</td></tr>`;
     return;
   }
 
@@ -9794,7 +9885,7 @@ async function renderTimesheet() {
   }
 
   // Список сотрудников: активные всегда + уволенные/на паузе если есть записи за месяц
-  const ROLE_GROUP = { admin:'Администрация', manager:'Менеджеры', callcenter:'Колл-центр', washer:'Мойщики', driver:'Водители' };
+  const ROLE_GROUP = { admin:_t('ts.role.admin'), manager:_t('ts.role.manager'), callcenter:_t('ts.role.callcenter'), washer:_t('ts.role.washer'), driver:_t('ts.role.driver') };
   const ROLE_ORDER = ['admin','manager','callcenter','washer','driver'];
   _tsList = staffApiData.filter(s => {
     if (s.role === 'agent') return false;
@@ -9819,18 +9910,18 @@ async function renderTimesheet() {
 
   // Индикатор режима просмотра
   const roLabel = isReadOnly
-    ? `<span style="font-size:12px;color:var(--text2);margin-left:8px">👁 Режим просмотра</span>`
+    ? `<span style="font-size:12px;color:var(--text2);margin-left:8px">${_t('ts.readonly')}</span>`
     : '';
 
   // ─── Шапка ───
   const colSpan = lastDay + 3;
-  let thRow = `<tr><th class="ts-name-th">Сотрудник${roLabel}</th>`;
+  let thRow = `<tr><th class="ts-name-th">${_t('th.staff')}${roLabel}</th>`;
   for (let d = 1; d <= lastDay; d++) {
     const dow = new Date(year, mon-1, d).getDay();
     const cls = dow===0 ? 'ts-sun' : dow===6 ? 'ts-sat' : '';
-    thRow += `<th class="ts-day-th ${cls}">${d}<br><span style="font-weight:400;font-size:10px">${DAY_NAMES[dow]}</span></th>`;
+    thRow += `<th class="ts-day-th ${cls}">${d}<br><span style="font-weight:400;font-size:10px">${_dayName(dow)}</span></th>`;
   }
-  thRow += `<th class="ts-total-th">Дн</th><th class="ts-total-th">Ч</th></tr>`;
+  thRow += `<th class="ts-total-th">${_t('ts.th.days')}</th><th class="ts-total-th">${_t('ts.th.hours.col')}</th></tr>`;
   head.innerHTML = thRow;
 
   // ─── Строки, сгруппированные по роли ───
@@ -9876,8 +9967,8 @@ async function renderTimesheet() {
     }
     totalWorkAll += workDays; totalHAll += hours;
     const statusTag = s.fired
-      ? ' <span style="font-size:10px;color:#f87171;opacity:.7">(уволен)</span>'
-      : (!s.active ? ' <span style="font-size:10px;color:#9ca3af;opacity:.7">(пауза)</span>' : '');
+      ? ` <span style="font-size:10px;color:#f87171;opacity:.7">${_t('ts.status.fired')}</span>`
+      : (!s.active ? ` <span style="font-size:10px;color:#9ca3af;opacity:.7">${_t('ts.status.paused')}</span>` : '');
     rows += `<tr>
       <td class="ts-name-td">${sName}${statusTag}</td>
       ${cells}
@@ -9908,11 +9999,11 @@ function tsSyncHoursToType(type) {
 function tsOpenCell(staffId, staffName, date) {
   const today = new Date().toISOString().split('T')[0];
   if (date !== today && _adminMe?.role !== 'admin') {
-    showToast('Редактирование прошлых и будущих дней — только для администратора', true);
+    showToast(_t('ts.no.edit'), true);
     return;
   }
   const rec = (_tsMap[staffId] || {})[date];
-  document.getElementById('tsModalTitle').textContent = rec ? `${staffName} — ${date}` : `Добавить: ${staffName} — ${date}`;
+  document.getElementById('tsModalTitle').textContent = rec ? `${staffName} — ${date}` : `${_t('ts.modal.add')}: ${staffName} — ${date}`;
   document.getElementById('tsEditId').value  = rec?.id || '';
   document.getElementById('ts_date').value   = date;
   document.getElementById('ts_note').value   = rec?.note  || '';
