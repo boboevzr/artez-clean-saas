@@ -2555,7 +2555,7 @@
             <select id="workonStaff" class="filter-input" style="min-width:180px" onchange="loadWorkOn()">
               <option value="">Все сотрудники</option>
             </select>
-            <button class="btn btn-primary btn-sm" onclick="loadWorkOn()">🔄 Обновить</button>
+            <button class="btn btn-primary btn-sm" onclick="loadWorkOn()" data-i18n="btn.refresh">🔄 Обновить</button>
           </div>
         </div>
 
@@ -2610,7 +2610,7 @@
             </select>
             <select id="salCalcBranch" class="filter-input" data-branch-select data-add-all="true" style="width:130px" onchange="salCalcRender()">
             </select>
-            <button class="btn btn-primary btn-sm" onclick="salCalcLoad()">🔄 Обновить</button>
+            <button class="btn btn-primary btn-sm" onclick="salCalcLoad()" data-i18n="btn.refresh">🔄 Обновить</button>
             <div id="salCalcTotal" style="margin-left:auto;font-size:14px;font-weight:700;color:var(--text2)"></div>
           </div>
         </div>
@@ -4547,105 +4547,107 @@
 
       <!-- ЛЕВЫЙ: данные -->
       <div class="staff-modal-left">
-        <div class="sf-section-label">Личные данные</div>
+        <div class="sf-section-label" data-i18n="sf.section.personal">Личные данные</div>
         <div class="form-grid">
           <div class="form-group">
-            <label class="form-label">Имя *</label>
-            <input class="form-input" id="sf_firstName" placeholder="Улугбек" oninput="sfUpdateAvatar()">
+            <label class="form-label" data-i18n="sf.lbl.fname">Имя *</label>
+            <input class="form-input" id="sf_firstName" data-i18n-ph="ph.sf.fname" placeholder="Улугбек" oninput="sfUpdateAvatar()">
           </div>
           <div class="form-group">
-            <label class="form-label">Фамилия</label>
-            <input class="form-input" id="sf_lastName" placeholder="Иванов">
+            <label class="form-label" data-i18n="sf.lbl.lname">Фамилия</label>
+            <input class="form-input" id="sf_lastName" data-i18n-ph="ph.sf.lname" placeholder="Иванов">
           </div>
           <div class="form-group">
-            <label class="form-label">Телефон</label>
+            <label class="form-label" data-i18n="sf.lbl.phone">Телефон</label>
             <input class="form-input" id="sf_phone" placeholder="+998901234567" inputmode="tel">
           </div>
           <div class="form-group">
-            <label class="form-label">Логин *</label>
-            <input class="form-input" id="sf_login" placeholder="ulugbek" autocapitalize="none">
+            <label class="form-label" data-i18n="sf.lbl.login">Логин *</label>
+            <input class="form-input" id="sf_login" data-i18n-ph="ph.sf.login" placeholder="ulugbek" autocapitalize="none">
           </div>
           <div class="form-group">
-            <label class="form-label">Отдел</label>
+            <label class="form-label" data-i18n="sf.lbl.dept">Отдел</label>
             <select class="form-input" id="sf_dept" onchange="sfDeptChanged()">
-              <option value="">— все отделы —</option>
+              <option value="" data-i18n="sf.opt.all.depts">— все отделы —</option>
             </select>
           </div>
           <div class="form-group">
-            <label class="form-label">Должность</label>
+            <label class="form-label" data-i18n="sf.lbl.position">Должность</label>
             <select class="form-input" id="sf_position_name" onchange="sfPosChanged()">
-              <option value="">— не указана —</option>
+              <option value="" data-i18n="sf.opt.no.pos">— не указана —</option>
             </select>
           </div>
           <div class="form-group">
-            <label class="form-label">Роль (права доступа)</label>
+            <label class="form-label" data-i18n="sf.lbl.role">Роль (права доступа)</label>
             <div id="sf_role_display" style="padding:10px 14px;border-radius:10px;border:1.5px solid var(--border);font-size:14px;color:var(--text2);background:var(--surface);min-height:42px">— определяется должностью —</div>
             <select class="form-input" id="sf_role" onchange="sfUpdateRoleBadge()" style="display:none">
-              <option value="admin">Администратор</option>
-              <option value="manager">Менеджер</option>
-              <option value="callcenter">Колл-центр</option>
-              <option value="receiver">Приёмщик</option>
-              <option value="storekeeper">Кладовщик</option>
-              <option value="sorter">Сортировщик</option>
-              <option value="technician">Техник / Механик</option>
-              <option value="washer">Мойщик</option>
-              <option value="packer">Упаковщик</option>
-              <option value="logistics">Логистика</option>
-              <option value="driver">Водитель-курьер</option>
-              <option value="agent">Агент</option>
+              <option value="admin" data-i18n="role.admin">Администратор</option>
+              <option value="manager" data-i18n="role.manager">Менеджер</option>
+              <option value="callcenter" data-i18n="role.callcenter">Колл-центр</option>
+              <option value="receiver" data-i18n="role.receiver">Приёмщик</option>
+              <option value="storekeeper" data-i18n="role.storekeeper">Кладовщик</option>
+              <option value="sorter" data-i18n="role.sorter">Сортировщик</option>
+              <option value="technician" data-i18n="role.technician">Техник / Механик</option>
+              <option value="washer" data-i18n="role.washer">Мойщик</option>
+              <option value="packer" data-i18n="role.packer">Упаковщик</option>
+              <option value="logistics" data-i18n="role.logistics">Логистика</option>
+              <option value="driver" data-i18n="role.driver">Водитель-курьер</option>
+              <option value="agent" data-i18n="role.agent">Агент</option>
             </select>
           </div>
           <div class="form-group">
-            <label class="form-label">Пол</label>
+            <label class="form-label" data-i18n="sf.lbl.gender">Пол</label>
             <div style="display:flex;gap:8px">
               <button type="button" id="sf_gender_m" onclick="sfSetGender('M')"
-                style="flex:1;padding:9px;border-radius:10px;border:1.5px solid var(--sep);font-size:14px;font-weight:600;cursor:pointer;background:none;color:var(--text2)">
+                style="flex:1;padding:9px;border-radius:10px;border:1.5px solid var(--sep);font-size:14px;font-weight:600;cursor:pointer;background:none;color:var(--text2)"
+                data-i18n="sf.gender.m">
                 👨 Мужской
               </button>
               <button type="button" id="sf_gender_f" onclick="sfSetGender('F')"
-                style="flex:1;padding:9px;border-radius:10px;border:1.5px solid var(--sep);font-size:14px;font-weight:600;cursor:pointer;background:none;color:var(--text2)">
+                style="flex:1;padding:9px;border-radius:10px;border:1.5px solid var(--sep);font-size:14px;font-weight:600;cursor:pointer;background:none;color:var(--text2)"
+                data-i18n="sf.gender.f">
                 👩 Женский
               </button>
             </div>
           </div>
           <div class="form-group">
-            <label class="form-label">Филиал</label>
+            <label class="form-label" data-i18n="sf.lbl.branch">Филиал</label>
             <select class="form-input" id="sf_branch" data-branch-select>
-              <option value="">— Уровень компании (без филиала) —</option>
+              <option value="" data-i18n="sf.opt.company.level">— Уровень компании (без филиала) —</option>
             </select>
           </div>
           <div class="form-group">
-            <label class="form-label">Аванс макс. % от оклада <span style="font-size:11px;color:var(--text2);font-weight:400">(0 = глобальный)</span></label>
+            <label class="form-label" data-i18n="sf.lbl.advance.pct">Аванс макс. % от оклада <span style="font-size:11px;color:var(--text2);font-weight:400" data-i18n="sf.advance.hint">(0 = глобальный)</span></label>
             <div style="display:flex;align-items:center;gap:8px">
               <input class="form-input" type="number" id="sfsal_advance_pct" min="0" max="100" step="1" placeholder="0" inputmode="numeric" style="flex:1">
               <span style="color:var(--text2);font-size:14px;font-weight:700">%</span>
             </div>
           </div>
           <div class="form-group">
-            <label class="form-label">Дата рождения <span style="font-size:11px;color:var(--text2);font-weight:400">(необязательно)</span></label>
+            <label class="form-label" data-i18n="sf.lbl.birth">Дата рождения <span style="font-size:11px;color:var(--text2);font-weight:400" data-i18n="sf.birth.opt">(необязательно)</span></label>
             <div style="display:flex;gap:8px;align-items:center">
-              <div id="sf_birth_display" style="flex:1;padding:10px 14px;border-radius:10px;border:1.5px solid var(--border);font-size:14px;color:var(--muted);background:var(--surface)">Не указана</div>
+              <div id="sf_birth_display" data-i18n="sf.birth.none" style="flex:1;padding:10px 14px;border-radius:10px;border:1.5px solid var(--border);font-size:14px;color:var(--muted);background:var(--surface)">Не указана</div>
               <button type="button" onclick="adminOpenBirthPicker()" style="padding:10px 14px;border-radius:10px;border:none;background:var(--accent,#163E3B);color:#fff;font-size:18px;cursor:pointer;flex-shrink:0">📅</button>
               <button type="button" id="sf_birth_clear" onclick="adminClearBirth()" style="display:none;padding:10px;border-radius:10px;border:1.5px solid var(--border);background:none;color:var(--muted);font-size:16px;cursor:pointer;flex-shrink:0">✕</button>
             </div>
             <input type="hidden" id="sf_birth_date">
           </div>
           <div class="form-group" style="grid-column:1/-1">
-            <label class="form-label">Telegram ID <span style="font-size:11px;color:var(--text2);font-weight:400">(для уведомлений)</span></label>
+            <label class="form-label" data-i18n="sf.lbl.tgid">Telegram ID <span style="font-size:11px;color:var(--text2);font-weight:400" data-i18n="sf.tgid.hint">(для уведомлений)</span></label>
             <input class="form-input" id="sf_tg_id" placeholder="123456789" inputmode="numeric">
-            <div style="font-size:11px;color:var(--text2);margin-top:4px">Узнать ID: написать боту <a href="https://t.me/userinfobot" target="_blank" style="color:var(--accent)">@userinfobot</a> в Telegram</div>
+            <div style="font-size:11px;color:var(--text2);margin-top:4px" data-i18n="sf.tgid.help">Узнать ID: написать боту <a href="https://t.me/userinfobot" target="_blank" style="color:var(--accent)">@userinfobot</a> в Telegram</div>
           </div>
         </div>
 
         <div style="margin-top:20px;padding-top:18px;border-top:1px solid var(--border)">
-          <div class="sf-section-label">Безопасность</div>
+          <div class="sf-section-label" data-i18n="sf.section.security">Безопасность</div>
           <div class="form-group">
-            <label class="form-label">Пароль <span id="sf_passHint" style="font-size:11px;color:var(--text2)">(обязателен)</span></label>
-            <input class="form-input" type="password" id="sf_password" placeholder="Мин. 6 символов">
+            <label class="form-label" data-i18n="sf.lbl.password">Пароль <span id="sf_passHint" style="font-size:11px;color:var(--text2)" data-i18n="sf.pass.required">(обязателен)</span></label>
+            <input class="form-input" type="password" id="sf_password" data-i18n-ph="ph.sf.pass" placeholder="Мин. 6 символов">
           </div>
           <div id="sf_changePwdRow" style="display:none">
-            <label class="form-label">Новый пароль</label>
-            <input class="form-input" type="password" id="sf_newPassword" placeholder="Оставьте пустым чтобы не менять">
+            <label class="form-label" data-i18n="sf.lbl.new.pass">Новый пароль</label>
+            <input class="form-input" type="password" id="sf_newPassword" data-i18n-ph="ph.sf.new.pass" placeholder="Оставьте пустым чтобы не менять">
           </div>
         </div>
       </div>
@@ -4657,12 +4659,12 @@
 
       <div id="sfacc_perms_content" class="sfacc-scroll">
       <div style="background:var(--card);border-radius:14px;overflow:hidden;border:1px solid var(--border)">
-        <div style="padding:12px 16px;background:var(--surface);border-bottom:1px solid var(--border);font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px">🔑 Права доступа</div>
+        <div style="padding:12px 16px;background:var(--surface);border-bottom:1px solid var(--border);font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px" data-i18n="sf.perm.header">🔑 Права доступа</div>
         <div class="sf-perm-row" style="border-bottom:1px solid var(--border)">
           <label style="display:contents;cursor:pointer">
             <input type="checkbox" id="sf_can_create_order" style="opacity:0;width:0;height:0;position:absolute" onchange="sfToggleStyle('sf_can_create_order')">
             <div style="font-size:20px;flex-shrink:0;width:28px;text-align:center">📝</div>
-            <div style="flex:1"><div class="sf-perm-title">Создание заказов</div><div class="sf-perm-desc">Может создавать новые заказы</div></div>
+            <div style="flex:1"><div class="sf-perm-title" data-i18n="sf.perm.create.order">Создание заказов</div><div class="sf-perm-desc" data-i18n="sf.perm.create.order.d">Может создавать новые заказы</div></div>
             <div class="sf-track" id="sf_can_create_order_track" onclick="event.stopPropagation();document.getElementById('sf_can_create_order').click()"><div class="sf-thumb" id="sf_can_create_order_thumb"></div></div>
           </label>
         </div>
@@ -4670,7 +4672,7 @@
           <label style="display:contents;cursor:pointer">
             <input type="checkbox" id="sf_can_confirm_order" style="opacity:0;width:0;height:0;position:absolute" onchange="sfToggleStyle('sf_can_confirm_order')">
             <div style="font-size:20px;flex-shrink:0;width:28px;text-align:center">✅</div>
-            <div style="flex:1"><div class="sf-perm-title">Подтверждение заказов</div><div class="sf-perm-desc">Может подтверждать заказ после звонка</div></div>
+            <div style="flex:1"><div class="sf-perm-title" data-i18n="sf.perm.confirm.order">Подтверждение заказов</div><div class="sf-perm-desc" data-i18n="sf.perm.confirm.order.d">Может подтверждать заказ после звонка</div></div>
             <div class="sf-track" id="sf_can_confirm_order_track" onclick="event.stopPropagation();document.getElementById('sf_can_confirm_order').click()"><div class="sf-thumb" id="sf_can_confirm_order_thumb"></div></div>
           </label>
         </div>
@@ -4678,7 +4680,7 @@
           <label style="display:contents;cursor:pointer">
             <input type="checkbox" id="sf_can_edit_items" style="opacity:0;width:0;height:0;position:absolute" onchange="sfToggleStyle('sf_can_edit_items')">
             <div style="font-size:20px;flex-shrink:0;width:28px;text-align:center">✏️</div>
-            <div style="flex:1"><div class="sf-perm-title">Изменение позиций</div><div class="sf-perm-desc">Добавлять и редактировать позиции заказа</div></div>
+            <div style="flex:1"><div class="sf-perm-title" data-i18n="sf.perm.edit.items">Изменение позиций</div><div class="sf-perm-desc" data-i18n="sf.perm.edit.items.d">Добавлять и редактировать позиции заказа</div></div>
             <div class="sf-track" id="sf_can_edit_items_track" onclick="event.stopPropagation();document.getElementById('sf_can_edit_items').click()"><div class="sf-thumb" id="sf_can_edit_items_thumb"></div></div>
           </label>
         </div>
@@ -4686,7 +4688,7 @@
           <label style="display:contents;cursor:pointer">
             <input type="checkbox" id="sf_can_measure" style="opacity:0;width:0;height:0;position:absolute" onchange="sfToggleStyle('sf_can_measure')">
             <div style="font-size:20px;flex-shrink:0;width:28px;text-align:center">📐</div>
-            <div style="flex:1"><div class="sf-perm-title">Проведение замеров</div><div class="sf-perm-desc">Вводить размеры и сдавать на проверку</div></div>
+            <div style="flex:1"><div class="sf-perm-title" data-i18n="sf.perm.measure">Проведение замеров</div><div class="sf-perm-desc" data-i18n="sf.perm.measure.d">Вводить размеры и сдавать на проверку</div></div>
             <div class="sf-track" id="sf_can_measure_track" onclick="event.stopPropagation();document.getElementById('sf_can_measure').click()"><div class="sf-thumb" id="sf_can_measure_thumb"></div></div>
           </label>
         </div>
@@ -4694,7 +4696,7 @@
           <label style="display:contents;cursor:pointer">
             <input type="checkbox" id="sf_can_approve_measure" style="opacity:0;width:0;height:0;position:absolute" onchange="sfToggleStyle('sf_can_approve_measure')">
             <div style="font-size:20px;flex-shrink:0;width:28px;text-align:center">✔️</div>
-            <div style="flex:1"><div class="sf-perm-title">Утверждение замеров</div><div class="sf-perm-desc">Утверждать и отклонять замеры сотрудников</div></div>
+            <div style="flex:1"><div class="sf-perm-title" data-i18n="sf.perm.approve.measure">Утверждение замеров</div><div class="sf-perm-desc" data-i18n="sf.perm.approve.measure.d">Утверждать и отклонять замеры сотрудников</div></div>
             <div class="sf-track" id="sf_can_approve_measure_track" onclick="event.stopPropagation();document.getElementById('sf_can_approve_measure').click()"><div class="sf-thumb" id="sf_can_approve_measure_thumb"></div></div>
           </label>
         </div>
@@ -4702,7 +4704,7 @@
           <label style="display:contents;cursor:pointer">
             <input type="checkbox" id="sf_can_override_measure" style="opacity:0;width:0;height:0;position:absolute" onchange="sfToggleStyle('sf_can_override_measure')">
             <div style="font-size:20px;flex-shrink:0;width:28px;text-align:center">🔓</div>
-            <div style="flex:1"><div class="sf-perm-title">Изменение замеров</div><div class="sf-perm-desc">Редактировать размеры в обход утверждённого замера</div></div>
+            <div style="flex:1"><div class="sf-perm-title" data-i18n="sf.perm.override.measure">Изменение замеров</div><div class="sf-perm-desc" data-i18n="sf.perm.override.measure.d">Редактировать размеры в обход утверждённого замера</div></div>
             <div class="sf-track" id="sf_can_override_measure_track" onclick="event.stopPropagation();document.getElementById('sf_can_override_measure').click()"><div class="sf-thumb" id="sf_can_override_measure_thumb"></div></div>
           </label>
         </div>
@@ -4710,7 +4712,7 @@
           <label style="display:contents;cursor:pointer">
             <input type="checkbox" id="sf_can_edit_confirmed" style="opacity:0;width:0;height:0;position:absolute" onchange="sfToggleStyle('sf_can_edit_confirmed')">
             <div style="font-size:20px;flex-shrink:0;width:28px;text-align:center">🔄</div>
-            <div style="flex:1"><div class="sf-perm-title">Ред. подтверждённых</div><div class="sf-perm-desc">Изменять данные заказа после подтверждения</div></div>
+            <div style="flex:1"><div class="sf-perm-title" data-i18n="sf.perm.edit.confirmed">Ред. подтверждённых</div><div class="sf-perm-desc" data-i18n="sf.perm.edit.confirmed.d">Изменять данные заказа после подтверждения</div></div>
             <div class="sf-track" id="sf_can_edit_confirmed_track" onclick="event.stopPropagation();document.getElementById('sf_can_edit_confirmed').click()"><div class="sf-thumb" id="sf_can_edit_confirmed_thumb"></div></div>
           </label>
         </div>
@@ -4718,7 +4720,7 @@
           <label style="display:contents;cursor:pointer">
             <input type="checkbox" id="sf_can_send_pickup" style="opacity:0;width:0;height:0;position:absolute" onchange="sfToggleStyle('sf_can_send_pickup')">
             <div style="font-size:20px;flex-shrink:0;width:28px;text-align:center">🚗</div>
-            <div style="flex:1"><div class="sf-perm-title">Передача на вывоз</div><div class="sf-perm-desc">Переводить заказ в статус «Вывоз»</div></div>
+            <div style="flex:1"><div class="sf-perm-title" data-i18n="sf.perm.send.pickup">Передача на вывоз</div><div class="sf-perm-desc" data-i18n="sf.perm.send.pickup.d">Переводить заказ в статус «Вывоз»</div></div>
             <div class="sf-track" id="sf_can_send_pickup_track" onclick="event.stopPropagation();document.getElementById('sf_can_send_pickup').click()"><div class="sf-thumb" id="sf_can_send_pickup_thumb"></div></div>
           </label>
         </div>
@@ -4726,7 +4728,7 @@
           <label style="display:contents;cursor:pointer">
             <input type="checkbox" id="sf_can_edit_delivery" style="opacity:0;width:0;height:0;position:absolute" onchange="sfToggleStyle('sf_can_edit_delivery')">
             <div style="font-size:20px;flex-shrink:0;width:28px;text-align:center">🚚</div>
-            <div style="flex:1"><div class="sf-perm-title">Ред. доставки</div><div class="sf-perm-desc">Редактировать заказы в статусе «Доставка»</div></div>
+            <div style="flex:1"><div class="sf-perm-title" data-i18n="sf.perm.edit.delivery">Ред. доставки</div><div class="sf-perm-desc" data-i18n="sf.perm.edit.delivery.d">Редактировать заказы в статусе «Доставка»</div></div>
             <div class="sf-track" id="sf_can_edit_delivery_track" onclick="event.stopPropagation();document.getElementById('sf_can_edit_delivery').click()"><div class="sf-thumb" id="sf_can_edit_delivery_thumb"></div></div>
           </label>
         </div>
@@ -4734,7 +4736,7 @@
           <label style="display:contents;cursor:pointer">
             <input type="checkbox" id="sf_can_manage_cash" style="opacity:0;width:0;height:0;position:absolute" onchange="sfToggleStyle('sf_can_manage_cash')">
             <div style="font-size:20px;flex-shrink:0;width:28px;text-align:center">💰</div>
-            <div style="flex:1"><div class="sf-perm-title">Ответственный за кассу</div><div class="sf-perm-desc">Принимает наличные, сдаёт руководителю</div></div>
+            <div style="flex:1"><div class="sf-perm-title" data-i18n="sf.perm.manage.cash">Ответственный за кассу</div><div class="sf-perm-desc" data-i18n="sf.perm.manage.cash.d">Принимает наличные, сдаёт руководителю</div></div>
             <div class="sf-track" id="sf_can_manage_cash_track" onclick="event.stopPropagation();document.getElementById('sf_can_manage_cash').click()"><div class="sf-thumb" id="sf_can_manage_cash_thumb"></div></div>
           </label>
         </div>
@@ -4742,7 +4744,7 @@
           <label style="display:contents;cursor:pointer">
             <input type="checkbox" id="sf_can_approve_debt" style="opacity:0;width:0;height:0;position:absolute" onchange="sfToggleStyle('sf_can_approve_debt')">
             <div style="font-size:20px;flex-shrink:0;width:28px;text-align:center">📋</div>
-            <div style="flex:1"><div class="sf-perm-title">Ответственный за долги</div><div class="sf-perm-desc">Разрешает/отклоняет закрытие заказов в долг</div></div>
+            <div style="flex:1"><div class="sf-perm-title" data-i18n="sf.perm.approve.debt">Ответственный за долги</div><div class="sf-perm-desc" data-i18n="sf.perm.approve.debt.d">Разрешает/отклоняет закрытие заказов в долг</div></div>
             <div class="sf-track" id="sf_can_approve_debt_track" onclick="event.stopPropagation();document.getElementById('sf_can_approve_debt').click()"><div class="sf-thumb" id="sf_can_approve_debt_thumb"></div></div>
           </label>
         </div>
@@ -4750,7 +4752,7 @@
           <label style="display:contents;cursor:pointer">
             <input type="checkbox" id="sf_can_drive" style="opacity:0;width:0;height:0;position:absolute" onchange="sfToggleStyle('sf_can_drive')">
             <div style="font-size:20px;flex-shrink:0;width:28px;text-align:center">🚛</div>
-            <div style="flex:1"><div class="sf-perm-title">Водитель</div><div class="sf-perm-desc">Вкладка «Доставка» в staff — маршруты и стопы</div></div>
+            <div style="flex:1"><div class="sf-perm-title" data-i18n="sf.perm.drive">Водитель</div><div class="sf-perm-desc" data-i18n="sf.perm.drive.d">Вкладка «Доставка» в staff — маршруты и стопы</div></div>
             <div class="sf-track" id="sf_can_drive_track" onclick="event.stopPropagation();document.getElementById('sf_can_drive').click()"><div class="sf-thumb" id="sf_can_drive_thumb"></div></div>
           </label>
         </div>
@@ -4758,7 +4760,7 @@
           <label style="display:contents;cursor:pointer">
             <input type="checkbox" id="sf_can_view_timesheet" style="opacity:0;width:0;height:0;position:absolute" onchange="sfToggleStyle('sf_can_view_timesheet')">
             <div style="font-size:20px;flex-shrink:0;width:28px;text-align:center">📅</div>
-            <div style="flex:1"><div class="sf-perm-title">Табель (менеджер)</div><div class="sf-perm-desc">Вводить часы всех сотрудников в staff.html</div></div>
+            <div style="flex:1"><div class="sf-perm-title" data-i18n="sf.perm.timesheet">Табель (менеджер)</div><div class="sf-perm-desc" data-i18n="sf.perm.timesheet.d">Вводить часы всех сотрудников в staff.html</div></div>
             <div class="sf-track" id="sf_can_view_timesheet_track" onclick="event.stopPropagation();document.getElementById('sf_can_view_timesheet').click()"><div class="sf-thumb" id="sf_can_view_timesheet_thumb"></div></div>
           </label>
         </div>
@@ -4766,7 +4768,7 @@
           <label style="display:contents;cursor:pointer">
             <input type="checkbox" id="sf_notify_new_users" style="opacity:0;width:0;height:0;position:absolute" onchange="sfToggleStyle('sf_notify_new_users')">
             <div style="font-size:20px;flex-shrink:0;width:28px;text-align:center">🔔</div>
-            <div style="flex:1"><div class="sf-perm-title">Уведомления о новых клиентах</div><div class="sf-perm-desc">DM в Telegram при каждой новой регистрации</div></div>
+            <div style="flex:1"><div class="sf-perm-title" data-i18n="sf.perm.notify.users">Уведомления о новых клиентах</div><div class="sf-perm-desc" data-i18n="sf.perm.notify.users.d">DM в Telegram при каждой новой регистрации</div></div>
             <div class="sf-track" id="sf_notify_new_users_track" onclick="event.stopPropagation();document.getElementById('sf_notify_new_users').click()"><div class="sf-thumb" id="sf_notify_new_users_thumb"></div></div>
           </label>
         </div>
@@ -4777,56 +4779,56 @@
 
     <!-- Вкладка: ЛИЧНЫЕ ДАННЫЕ -->
     <div id="sftab_personal_content" style="display:none;overflow-y:auto;padding:20px 24px;flex:1;min-height:0">
-      <div class="sf-section-label" style="margin-bottom:16px">🪪 Документы</div>
+      <div class="sf-section-label" data-i18n="sf.section.docs" style="margin-bottom:16px">🪪 Документы</div>
       <div class="form-grid" style="margin-bottom:20px">
         <div class="form-group">
-          <label class="form-label">Серия паспорта</label>
+          <label class="form-label" data-i18n="sf.lbl.pass.series">Серия паспорта</label>
           <input class="form-input" id="sp_passport_series" placeholder="AA" maxlength="10">
         </div>
         <div class="form-group">
-          <label class="form-label">Номер паспорта</label>
+          <label class="form-label" data-i18n="sf.lbl.pass.num">Номер паспорта</label>
           <input class="form-input" id="sp_passport_number" placeholder="1234567" maxlength="20" inputmode="numeric">
         </div>
         <div class="form-group" style="grid-column:1/-1">
-          <label class="form-label">ПИНФЛ</label>
+          <label class="form-label" data-i18n="sf.lbl.pinfl">ПИНФЛ</label>
           <input class="form-input" id="sp_pinfl" placeholder="14 цифр" maxlength="20" inputmode="numeric">
         </div>
       </div>
 
-      <div class="sf-section-label" style="margin-bottom:16px">🏠 Контакты</div>
+      <div class="sf-section-label" data-i18n="sf.section.contacts" style="margin-bottom:16px">🏠 Контакты</div>
       <div class="form-grid" style="margin-bottom:20px">
         <div class="form-group" style="grid-column:1/-1">
-          <label class="form-label">Адрес проживания</label>
+          <label class="form-label" data-i18n="sf.lbl.home.addr">Адрес проживания</label>
           <input class="form-input" id="sp_home_address" placeholder="г. Навои, ул. Навои 12, кв. 5">
         </div>
         <div class="form-group">
-          <label class="form-label">Доп. телефон</label>
+          <label class="form-label" data-i18n="sf.lbl.extra.phone">Доп. телефон</label>
           <input class="form-input" id="sp_extra_phone" placeholder="+998901234567" inputmode="tel">
         </div>
         <div class="form-group">
-          <label class="form-label">Кол-во детей</label>
+          <label class="form-label" data-i18n="sf.lbl.children">Кол-во детей</label>
           <input class="form-input" id="sp_children_count" type="number" min="0" max="20" placeholder="0" inputmode="numeric">
         </div>
       </div>
 
-      <div class="sf-section-label" style="margin-bottom:16px">💍 Семейное положение</div>
+      <div class="sf-section-label" data-i18n="sf.section.marital" style="margin-bottom:16px">💍 Семейное положение</div>
       <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
-        <button type="button" data-ms="single"   onclick="spSetMarital('single')"   class="sp-ms-btn" style="padding:8px 16px;border-radius:10px;border:1.5px solid var(--sep);font-size:13px;font-weight:600;cursor:pointer;background:none;color:var(--text2)">Не женат/не замужем</button>
-        <button type="button" data-ms="married"  onclick="spSetMarital('married')"  class="sp-ms-btn" style="padding:8px 16px;border-radius:10px;border:1.5px solid var(--sep);font-size:13px;font-weight:600;cursor:pointer;background:none;color:var(--text2)">Женат/Замужем</button>
-        <button type="button" data-ms="divorced" onclick="spSetMarital('divorced')" class="sp-ms-btn" style="padding:8px 16px;border-radius:10px;border:1.5px solid var(--sep);font-size:13px;font-weight:600;cursor:pointer;background:none;color:var(--text2)">В разводе</button>
-        <button type="button" data-ms="widowed"  onclick="spSetMarital('widowed')"  class="sp-ms-btn" style="padding:8px 16px;border-radius:10px;border:1.5px solid var(--sep);font-size:13px;font-weight:600;cursor:pointer;background:none;color:var(--text2)">Вдовец/Вдова</button>
+        <button type="button" data-ms="single"   onclick="spSetMarital('single')"   class="sp-ms-btn" data-i18n="sf.ms.single"   style="padding:8px 16px;border-radius:10px;border:1.5px solid var(--sep);font-size:13px;font-weight:600;cursor:pointer;background:none;color:var(--text2)">Не женат/не замужем</button>
+        <button type="button" data-ms="married"  onclick="spSetMarital('married')"  class="sp-ms-btn" data-i18n="sf.ms.married"  style="padding:8px 16px;border-radius:10px;border:1.5px solid var(--sep);font-size:13px;font-weight:600;cursor:pointer;background:none;color:var(--text2)">Женат/Замужем</button>
+        <button type="button" data-ms="divorced" onclick="spSetMarital('divorced')" class="sp-ms-btn" data-i18n="sf.ms.divorced" style="padding:8px 16px;border-radius:10px;border:1.5px solid var(--sep);font-size:13px;font-weight:600;cursor:pointer;background:none;color:var(--text2)">В разводе</button>
+        <button type="button" data-ms="widowed"  onclick="spSetMarital('widowed')"  class="sp-ms-btn" data-i18n="sf.ms.widowed"  style="padding:8px 16px;border-radius:10px;border:1.5px solid var(--sep);font-size:13px;font-weight:600;cursor:pointer;background:none;color:var(--text2)">Вдовец/Вдова</button>
       </div>
 
       <input type="hidden" id="sp_marital_status_val" value="single">
       <div id="sp_spouse_block" style="display:none;background:var(--surface,#f7f7f7);border-radius:14px;padding:16px;margin-bottom:8px">
-        <div style="font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:14px">Данные супруги / супруга</div>
+        <div style="font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:14px" data-i18n="sf.section.spouse">Данные супруги / супруга</div>
         <div class="form-grid">
           <div class="form-group" style="grid-column:1/-1">
-            <label class="form-label">ФИО супруги/супруга</label>
+            <label class="form-label" data-i18n="sf.lbl.spouse.name">ФИО супруги/супруга</label>
             <input class="form-input" id="sp_spouse_name" placeholder="Иванова Мария Ивановна">
           </div>
           <div class="form-group">
-            <label class="form-label">Телефон</label>
+            <label class="form-label" data-i18n="sf.lbl.phone">Телефон</label>
             <input class="form-input" id="sp_spouse_phone" placeholder="+998901234567" inputmode="tel">
           </div>
           <div class="form-group">
@@ -4850,7 +4852,7 @@
 
       <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
         <button class="btn btn-ghost btn-sm" onclick="closeModal('modalStaff')" data-i18n="btn.cancel">Отмена</button>
-        <button class="btn btn-save btn-sm" onclick="saveStaffPersonal()" style="min-width:160px" data-i18n="btn.save">💾 Сохранить личные данные</button>
+        <button class="btn btn-save btn-sm" onclick="saveStaffPersonal()" style="min-width:160px" data-i18n="btn.save.personal">💾 Сохранить личные данные</button>
       </div>
     </div>
 
@@ -4859,28 +4861,28 @@
 
       <!-- Тип зарплаты (скрывается для агентов) -->
       <div id="sf_sal_type_row" style="margin-bottom:20px">
-        <div class="sf-section-label" style="margin-bottom:12px">Тип начисления</div>
+        <div class="sf-section-label" data-i18n="sf.section.sal.type" style="margin-bottom:12px">Тип начисления</div>
         <div style="display:flex;flex-wrap:wrap;gap:8px" id="sf_sal_type_btns">
-          <button type="button" data-stype="fixed"         onclick="sfSalSetType('fixed')"         class="sf-sal-type-btn" style="padding:8px 14px;border-radius:20px;border:1.5px solid var(--accent);background:var(--accent);color:#fff;font-size:13px;font-weight:600;cursor:pointer">📌 Сумма</button>
-          <button type="button" data-stype="percent"       onclick="sfSalSetType('percent')"       class="sf-sal-type-btn" style="padding:8px 14px;border-radius:20px;border:1.5px solid var(--border);background:none;color:var(--text2);font-size:13px;font-weight:600;cursor:pointer">📊 Проценты</button>
-          <button type="button" data-stype="fixed_percent" onclick="sfSalSetType('fixed_percent')" class="sf-sal-type-btn" style="padding:8px 14px;border-radius:20px;border:1.5px solid var(--border);background:none;color:var(--text2);font-size:13px;font-weight:600;cursor:pointer">📌+📊 Сумма+%</button>
-          <button type="button" data-stype="leads"         onclick="sfSalSetType('leads')"         class="sf-sal-type-btn" style="padding:8px 14px;border-radius:20px;border:1.5px solid var(--border);background:none;color:var(--text2);font-size:13px;font-weight:600;cursor:pointer">🎯 За лиды</button>
-          <button type="button" data-stype="per_unit"      onclick="sfSalSetType('per_unit')"      class="sf-sal-type-btn" style="padding:8px 14px;border-radius:20px;border:1.5px solid var(--border);background:none;color:var(--text2);font-size:13px;font-weight:600;cursor:pointer">📐 За ед.изм</button>
-          <button type="button" data-stype="per_point"     onclick="sfSalSetType('per_point')"     class="sf-sal-type-btn" style="padding:8px 14px;border-radius:20px;border:1.5px solid var(--border);background:none;color:var(--text2);font-size:13px;font-weight:600;cursor:pointer">📍 За точку</button>
-          <button type="button" data-stype="kpi"           onclick="sfSalSetType('kpi')"           class="sf-sal-type-btn" style="padding:8px 14px;border-radius:20px;border:1.5px solid var(--border);background:none;color:var(--text2);font-size:13px;font-weight:600;cursor:pointer">🏆 KPI</button>
+          <button type="button" data-stype="fixed"         onclick="sfSalSetType('fixed')"         class="sf-sal-type-btn" data-i18n="sf.sal.fixed"     style="padding:8px 14px;border-radius:20px;border:1.5px solid var(--accent);background:var(--accent);color:#fff;font-size:13px;font-weight:600;cursor:pointer">📌 Сумма</button>
+          <button type="button" data-stype="percent"       onclick="sfSalSetType('percent')"       class="sf-sal-type-btn" data-i18n="sf.sal.percent"   style="padding:8px 14px;border-radius:20px;border:1.5px solid var(--border);background:none;color:var(--text2);font-size:13px;font-weight:600;cursor:pointer">📊 Проценты</button>
+          <button type="button" data-stype="fixed_percent" onclick="sfSalSetType('fixed_percent')" class="sf-sal-type-btn" data-i18n="sf.sal.fixed.pct" style="padding:8px 14px;border-radius:20px;border:1.5px solid var(--border);background:none;color:var(--text2);font-size:13px;font-weight:600;cursor:pointer">📌+📊 Сумма+%</button>
+          <button type="button" data-stype="leads"         onclick="sfSalSetType('leads')"         class="sf-sal-type-btn" data-i18n="sf.sal.leads"     style="padding:8px 14px;border-radius:20px;border:1.5px solid var(--border);background:none;color:var(--text2);font-size:13px;font-weight:600;cursor:pointer">🎯 За лиды</button>
+          <button type="button" data-stype="per_unit"      onclick="sfSalSetType('per_unit')"      class="sf-sal-type-btn" data-i18n="sf.sal.per.unit"  style="padding:8px 14px;border-radius:20px;border:1.5px solid var(--border);background:none;color:var(--text2);font-size:13px;font-weight:600;cursor:pointer">📐 За ед.изм</button>
+          <button type="button" data-stype="per_point"     onclick="sfSalSetType('per_point')"     class="sf-sal-type-btn" data-i18n="sf.sal.per.point" style="padding:8px 14px;border-radius:20px;border:1.5px solid var(--border);background:none;color:var(--text2);font-size:13px;font-weight:600;cursor:pointer">📍 За точку</button>
+          <button type="button" data-stype="kpi"           onclick="sfSalSetType('kpi')"           class="sf-sal-type-btn" data-i18n="sf.sal.kpi"       style="padding:8px 14px;border-radius:20px;border:1.5px solid var(--border);background:none;color:var(--text2);font-size:13px;font-weight:600;cursor:pointer">🏆 KPI</button>
         </div>
       </div>
 
       <!-- Секция: Оклад (fixed / fixed_percent) -->
       <div id="sfsal_fixed_block" style="background:var(--surface);border-radius:14px;padding:16px;margin-bottom:16px">
-        <div class="sf-section-label" style="margin-bottom:12px">Основной оклад</div>
+        <div class="sf-section-label" data-i18n="sf.section.base.sal" style="margin-bottom:12px">Основной оклад</div>
         <div class="form-grid">
           <div class="form-group">
-            <label class="form-label">Сумма (сум)</label>
+            <label class="form-label" data-i18n="sf.lbl.sal.amount">Сумма (сум)</label>
             <input class="form-input" type="number" id="sfsal_base_amount" placeholder="1500000" inputmode="numeric" min="0">
           </div>
           <div class="form-group">
-            <label class="form-label">Рабочих дней</label>
+            <label class="form-label" data-i18n="sf.lbl.work.days">Рабочих дней</label>
             <input class="form-input" type="number" id="sfsal_work_days" placeholder="26" inputmode="numeric" min="1" max="31" value="26">
           </div>
         </div>
@@ -5214,33 +5216,33 @@
     <div style="display:flex;flex-direction:column;gap:10px;margin-top:12px">
       <!-- Режим выбора деактивированного сотрудника -->
       <div id="sm_pick_row" style="display:none">
-        <label class="form-label">Сотрудник</label>
+        <label class="form-label" data-i18n="sm.lbl.staff">Сотрудник</label>
         <select class="form-input" id="sm_pick_staff" autocomplete="off">
-          <option value="">— выберите —</option>
+          <option value="" data-i18n="opt.choose">— выберите —</option>
         </select>
       </div>
       <!-- Режим создания нового / редактирования -->
       <div id="sm_form_row">
         <div style="display:flex;flex-direction:column;gap:10px">
-          <input class="form-input" id="sm_fname" placeholder="Имя *" autocomplete="off">
-          <input class="form-input" id="sm_lname" placeholder="Фамилия" autocomplete="off">
-          <input class="form-input" id="sm_login" placeholder="Логин *" autocomplete="off">
+          <input class="form-input" id="sm_fname" data-i18n-ph="sf.lbl.fname" placeholder="Имя *" autocomplete="off">
+          <input class="form-input" id="sm_lname" data-i18n-ph="sf.lbl.lname" placeholder="Фамилия" autocomplete="off">
+          <input class="form-input" id="sm_login" data-i18n-ph="sf.lbl.login" placeholder="Логин *" autocomplete="off">
           <div style="position:relative">
-            <input class="form-input" id="sm_pass" type="password" placeholder="Пароль *" autocomplete="new-password" style="width:100%;padding-right:36px;box-sizing:border-box">
+            <input class="form-input" id="sm_pass" type="password" data-i18n-ph="sf.lbl.password" placeholder="Пароль *" autocomplete="new-password" style="width:100%;padding-right:36px;box-sizing:border-box">
             <button onclick="toggleSmPass()" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;color:var(--text-secondary)">👁</button>
           </div>
         </div>
       </div>
       <select class="form-input" id="sm_role">
-        <option value="admin">admin (полный доступ)</option>
-        <option value="manager">manager</option>
-        <option value="callcenter">callcenter</option>
+        <option value="admin" data-i18n="role.admin">admin (полный доступ)</option>
+        <option value="manager" data-i18n="role.manager">manager</option>
+        <option value="callcenter" data-i18n="role.callcenter">callcenter</option>
       </select>
     </div>
     <div id="staffMgmtErr" style="color:var(--danger,#e53e3e);font-size:13px;margin-top:8px"></div>
     <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px">
-      <button class="btn btn-ghost" onclick="closeModal('modalStaffMgmt')">Отмена</button>
-      <button class="btn btn-primary" id="staffMgmtSaveBtn" onclick="staffMgmtSave()">Создать</button>
+      <button class="btn btn-ghost" onclick="closeModal('modalStaffMgmt')" data-i18n="btn.cancel">Отмена</button>
+      <button class="btn btn-primary" id="staffMgmtSaveBtn" onclick="staffMgmtSave()" data-i18n="sm.btn.create">Создать</button>
     </div>
   </div>
 </div>
@@ -5888,6 +5890,65 @@ const _adminI18n = {
     'sal.type.bonus':'Бонус','sal.type.deduction':'Удержание',
     'sal.no.amount':'Укажите сумму штрафа','sal.fine.added':'Штраф добавлен',
     'sal.daily.title.prefix':'📊 Детально:','sal.fine.title.prefix':'Штраф —',
+    'sf.modal.add':'Добавить сотрудника','sf.modal.edit':'Редактировать сотрудника',
+    'sf.section.personal':'Личные данные',
+    'sf.lbl.fname':'Имя *','sf.lbl.lname':'Фамилия','sf.lbl.phone':'Телефон','sf.lbl.login':'Логин *',
+    'sf.lbl.dept':'Отдел','sf.opt.all.depts':'— все отделы —',
+    'sf.lbl.position':'Должность','sf.opt.no.pos':'— не указана —',
+    'sf.lbl.role':'Роль (права доступа)',
+    'sf.role.auto':'— определяется должностью —',
+    'sf.role.warn':'⚠️ Укажите роль в таблице Должности',
+    'sf.lbl.gender':'Пол','sf.gender.m':'👨 Мужской','sf.gender.f':'👩 Женский',
+    'sf.lbl.branch':'Филиал','sf.opt.company.level':'— Уровень компании (без филиала) —',
+    'sf.lbl.advance.pct':'Аванс макс. % от оклада','sf.advance.hint':'(0 = глобальный)',
+    'sf.lbl.birth':'Дата рождения','sf.birth.opt':'(необязательно)','sf.birth.none':'Не указана',
+    'sf.lbl.tgid':'Telegram ID','sf.tgid.hint':'(для уведомлений)',
+    'sf.tgid.help':'Узнать ID: написать боту @userinfobot в Telegram',
+    'sf.section.security':'Безопасность',
+    'sf.lbl.password':'Пароль','sf.pass.required':'(обязателен)',
+    'sf.pass.opt':'(оставьте пустым чтобы не менять)',
+    'sf.lbl.new.pass':'Новый пароль',
+    'ph.sf.fname':'Улугбек','ph.sf.lname':'Иванов','ph.sf.login':'ulugbek',
+    'ph.sf.pass':'Мин. 6 символов','ph.sf.new.pass':'Оставьте пустым чтобы не менять',
+    'sf.perm.header':'🔑 Права доступа',
+    'sf.perm.create.order':'Создание заказов','sf.perm.create.order.d':'Может создавать новые заказы',
+    'sf.perm.confirm.order':'Подтверждение заказов','sf.perm.confirm.order.d':'Может подтверждать заказ после звонка',
+    'sf.perm.edit.items':'Изменение позиций','sf.perm.edit.items.d':'Добавлять и редактировать позиции заказа',
+    'sf.perm.measure':'Проведение замеров','sf.perm.measure.d':'Вводить размеры и сдавать на проверку',
+    'sf.perm.approve.measure':'Утверждение замеров','sf.perm.approve.measure.d':'Утверждать и отклонять замеры сотрудников',
+    'sf.perm.override.measure':'Изменение замеров','sf.perm.override.measure.d':'Редактировать размеры в обход утверждённого замера',
+    'sf.perm.edit.confirmed':'Ред. подтверждённых','sf.perm.edit.confirmed.d':'Изменять данные заказа после подтверждения',
+    'sf.perm.send.pickup':'Передача на вывоз','sf.perm.send.pickup.d':'Переводить заказ в статус «Вывоз»',
+    'sf.perm.edit.delivery':'Ред. доставки','sf.perm.edit.delivery.d':'Редактировать заказы в статусе «Доставка»',
+    'sf.perm.manage.cash':'Ответственный за кассу','sf.perm.manage.cash.d':'Принимает наличные, сдаёт руководителю',
+    'sf.perm.approve.debt':'Ответственный за долги','sf.perm.approve.debt.d':'Разрешает/отклоняет закрытие заказов в долг',
+    'sf.perm.drive':'Водитель','sf.perm.drive.d':'Вкладка «Доставка» в staff — маршруты и стопы',
+    'sf.perm.timesheet':'Табель (менеджер)','sf.perm.timesheet.d':'Вводить часы всех сотрудников в staff.html',
+    'sf.perm.notify.users':'Уведомления о новых клиентах','sf.perm.notify.users.d':'DM в Telegram при каждой новой регистрации',
+    'sf.section.docs':'🪪 Документы',
+    'sf.lbl.pass.series':'Серия паспорта','sf.lbl.pass.num':'Номер паспорта','sf.lbl.pinfl':'ПИНФЛ',
+    'sf.section.contacts':'🏠 Контакты',
+    'sf.lbl.home.addr':'Адрес проживания','sf.lbl.extra.phone':'Доп. телефон','sf.lbl.children':'Кол-во детей',
+    'sf.section.marital':'💍 Семейное положение',
+    'sf.ms.single':'Не женат/не замужем','sf.ms.married':'Женат/Замужем',
+    'sf.ms.divorced':'В разводе','sf.ms.widowed':'Вдовец/Вдова',
+    'sf.section.spouse':'Данные супруги / супруга',
+    'sf.lbl.spouse.name':'ФИО супруги/супруга','sf.lbl.spouse.birth':'День рождения',
+    'sf.spouse.birth.none':'Не указан','sf.lbl.spouse.work':'Место работы','sf.lbl.spouse.pos':'Должность',
+    'btn.save.personal':'💾 Сохранить личные данные',
+    'btn.save.access':'💾 Сохранить доступы','btn.save.changes':'💾 Сохранить изменения',
+    'sf.section.sal.type':'Тип начисления',
+    'sf.sal.fixed':'📌 Сумма','sf.sal.percent':'📊 Проценты','sf.sal.fixed.pct':'📌+📊 Сумма+%',
+    'sf.sal.leads':'🎯 За лиды','sf.sal.per.unit':'📐 За ед.изм','sf.sal.per.point':'📍 За точку','sf.sal.kpi':'🏆 KPI',
+    'sf.section.base.sal':'Основной оклад','sf.lbl.sal.amount':'Сумма (сум)','sf.lbl.work.days':'Рабочих дней',
+    'sf.section.pct.rates':'Процентные ставки',
+    'sf.section.lead.comm':'Комиссия за лид','sf.lbl.lead.value':'Значение',
+    'sf.lead.global.hint':'Если не заполнено — применяется глобальное значение из Система → Настройки сайта → 🤝 Агенты',
+    'sf.section.per.unit':'📐 За ед.изм (по услугам)','sf.btn.add.unit':'+ Услуга',
+    'sf.per.unit.hint':'Ковёр → 3 000 сум/м² · Матрац → 20 000 сум/шт или % от суммы позиции',
+    'sf.section.pickup':'🚗 За забор (вывоз)','sf.pickup.hint':'Начисляется за каждый забранный заказ (одна поездка)',
+    'sf.section.delivery':'🚚 За доставку',
+    'sm.lbl.staff':'Сотрудник','sm.btn.create':'Создать',
   },
   uz: {
     'btn.add':'+ Qoʻshish','btn.save':'💾 Saqlash','btn.cancel':'Bekor qilish',
@@ -6163,6 +6224,65 @@ const _adminI18n = {
     'sal.type.bonus':'Bonus','sal.type.deduction':'Ushlab qolish',
     'sal.no.amount':'Jarima summasini kiriting','sal.fine.added':'Jarima qoʻshildi',
     'sal.daily.title.prefix':'📊 Tafsilot:','sal.fine.title.prefix':'Jarima —',
+    'sf.modal.add':'Xodim qoʻshish','sf.modal.edit':'Xodimni tahrirlash',
+    'sf.section.personal':'Shaxsiy maʼlumotlar',
+    'sf.lbl.fname':'Ism *','sf.lbl.lname':'Familiya','sf.lbl.phone':'Telefon','sf.lbl.login':'Login *',
+    'sf.lbl.dept':'Boʻlim','sf.opt.all.depts':'— barcha boʻlimlar —',
+    'sf.lbl.position':'Lavozim','sf.opt.no.pos':'— koʻrsatilmagan —',
+    'sf.lbl.role':'Rol (kirish huquqlari)',
+    'sf.role.auto':'— lavozim bilan belgilanadi —',
+    'sf.role.warn':'⚠️ Lavozimlar jadvalida rolni belgilang',
+    'sf.lbl.gender':'Jins','sf.gender.m':'👨 Erkak','sf.gender.f':'👩 Ayol',
+    'sf.lbl.branch':'Filial','sf.opt.company.level':'— Kompaniya darajasi (filialsiz) —',
+    'sf.lbl.advance.pct':'Avans maks. % ish haqidan','sf.advance.hint':'(0 = global)',
+    'sf.lbl.birth':'Tugʻilgan sana','sf.birth.opt':'(ixtiyoriy)','sf.birth.none':'Koʻrsatilmagan',
+    'sf.lbl.tgid':'Telegram ID','sf.tgid.hint':'(bildirishnomalar uchun)',
+    'sf.tgid.help':'ID bilish: @userinfobot botiga yozing',
+    'sf.section.security':'Xavfsizlik',
+    'sf.lbl.password':'Parol','sf.pass.required':'(majburiy)',
+    'sf.pass.opt':'(oʻzgartirmaslik uchun boʻsh qoldiring)',
+    'sf.lbl.new.pass':'Yangi parol',
+    'ph.sf.fname':'Ulugbek','ph.sf.lname':'Ivanov','ph.sf.login':'ulugbek',
+    'ph.sf.pass':'Kamida 6 belgi','ph.sf.new.pass':'Oʻzgartirmaslik uchun boʻsh qoldiring',
+    'sf.perm.header':'🔑 Kirish huquqlari',
+    'sf.perm.create.order':'Buyurtma yaratish','sf.perm.create.order.d':'Yangi buyurtmalar yaratishi mumkin',
+    'sf.perm.confirm.order':'Buyurtmani tasdiqlash','sf.perm.confirm.order.d':'Qoʻngʻiroqdan keyin buyurtmani tasdiqlashi mumkin',
+    'sf.perm.edit.items':'Pozitsiyalarni tahrirlash','sf.perm.edit.items.d':'Buyurtma pozitsiyalarini qoʻshish va tahrirlash',
+    'sf.perm.measure':'Oʻlchov oʻtkazish','sf.perm.measure.d':'Oʻlchamlarni kiritish va tekshirishga topshirish',
+    'sf.perm.approve.measure':'Oʻlchovlarni tasdiqlash','sf.perm.approve.measure.d':'Xodimlar oʻlchovlarini tasdiqlash va rad etish',
+    'sf.perm.override.measure':'Oʻlchovlarni oʻzgartirish','sf.perm.override.measure.d':'Tasdiqlangan oʻlchovni chetlab oʻtib tahrirlash',
+    'sf.perm.edit.confirmed':'Tasdiqlanganlarni tahrirl.','sf.perm.edit.confirmed.d':'Tasdiqlangandan keyin buyurtma maʼlumotlarini oʻzgartirish',
+    'sf.perm.send.pickup':'Olib ketishga topshirish','sf.perm.send.pickup.d':'Buyurtmani «Olib ketish» holatiga oʻtkazish',
+    'sf.perm.edit.delivery':'Yetkazib berishni tahrirl.','sf.perm.edit.delivery.d':'«Yetkazib berish» holatidagi buyurtmalarni tahrirlash',
+    'sf.perm.manage.cash':'Kassa uchun masʼul','sf.perm.manage.cash.d':'Naqd pul qabul qiladi, rahbarga topshiradi',
+    'sf.perm.approve.debt':'Qarzlar uchun masʼul','sf.perm.approve.debt.d':'Qarz bilan buyurtmalarni yopishga ruxsat beradi/rad etadi',
+    'sf.perm.drive':'Haydovchi','sf.perm.drive.d':'staff.html da «Yetkazib berish» vkladkasi — marshrutlar',
+    'sf.perm.timesheet':'Tabel (menejer)','sf.perm.timesheet.d':'staff.html da barcha xodimlar soatlarini kiritish',
+    'sf.perm.notify.users':'Yangi mijozlar haqida bildirishnoma','sf.perm.notify.users.d':'Har yangi roʻyxatdan oʻtishda Telegram DM',
+    'sf.section.docs':'🪪 Hujjatlar',
+    'sf.lbl.pass.series':'Pasport seriyasi','sf.lbl.pass.num':'Pasport raqami','sf.lbl.pinfl':'JSHSHIR',
+    'sf.section.contacts':'🏠 Kontaktlar',
+    'sf.lbl.home.addr':'Yashash manzili','sf.lbl.extra.phone':'Qoʻshimcha telefon','sf.lbl.children':'Bolalar soni',
+    'sf.section.marital':'💍 Oilaviy holat',
+    'sf.ms.single':'Uylanmagan/Turmush qurmagan','sf.ms.married':'Uylanilgan',
+    'sf.ms.divorced':'Ajrashgan','sf.ms.widowed':'Beva',
+    'sf.section.spouse':'Turmush oʻrtogʻi maʼlumotlari',
+    'sf.lbl.spouse.name':'Turmush oʻrtogʻi F.I.Sh','sf.lbl.spouse.birth':'Tugʻilgan kun',
+    'sf.spouse.birth.none':'Koʻrsatilmagan','sf.lbl.spouse.work':'Ish joyi','sf.lbl.spouse.pos':'Lavozim',
+    'btn.save.personal':'💾 Shaxsiy maʼlumotlarni saqlash',
+    'btn.save.access':'💾 Kirish huquqlarini saqlash','btn.save.changes':'💾 Oʻzgarishlarni saqlash',
+    'sf.section.sal.type':'Hisoblash turi',
+    'sf.sal.fixed':'📌 Miqdor','sf.sal.percent':'📊 Foizlar','sf.sal.fixed.pct':'📌+📊 Miqdor+%',
+    'sf.sal.leads':'🎯 Lid uchun','sf.sal.per.unit':'📐 Birlik uchun','sf.sal.per.point':'📍 Nuqta uchun','sf.sal.kpi':'🏆 KPI',
+    'sf.section.base.sal':'Asosiy maosh','sf.lbl.sal.amount':'Miqdor (soʻm)','sf.lbl.work.days':'Ish kunlari',
+    'sf.section.pct.rates':'Foiz stavkalari',
+    'sf.section.lead.comm':'Lid uchun komissiya','sf.lbl.lead.value':'Qiymat',
+    'sf.lead.global.hint':'Toʻldirilmasa — Tizim → Sayt sozlamalari → 🤝 Agentlar dan global qiymat qoʻllaniladi',
+    'sf.section.per.unit':'📐 Birlik uchun (xizmatlar boʻyicha)','sf.btn.add.unit':'+ Xizmat',
+    'sf.per.unit.hint':'Gilam → 3 000 soʻm/m² · Oʻrindiq → 20 000 soʻm/dona yoki pozitsiya summasidan %',
+    'sf.section.pickup':'🚗 Olib ketish uchun','sf.pickup.hint':'Har bir olib ketilgan buyurtma uchun (bir sayohat)',
+    'sf.section.delivery':'🚚 Yetkazib berish uchun',
+    'sm.lbl.staff':'Xodim','sm.btn.create':'Yaratish',
   },
 };
 function _applyAdminI18n() {
@@ -6793,7 +6913,7 @@ async function staffMgmtLoad() {
 async function staffMgmtOpenCreate() {
   _smEditId = null;
   document.getElementById('staffMgmtErr').textContent = '';
-  document.getElementById('staffMgmtModalTitle').textContent = 'Добавить сотрудника';
+  document.getElementById('staffMgmtModalTitle').textContent = _t('sf.modal.add');
   const role = document.getElementById('sm_role'); if(role) role.value = 'manager';
   // Проверяем деактивированных company-level staff
   try {
@@ -6835,11 +6955,11 @@ function staffMgmtOpenEdit(s) {
   document.getElementById('sm_login').value = s.login || '';
   const passEl = document.getElementById('sm_pass');
   passEl.value = ''; passEl.required = false;
-  passEl.placeholder = 'Новый пароль (оставьте пустым, чтобы не менять)';
+  passEl.placeholder = _t('sf.lbl.new.pass') + ' (' + _t('sf.pass.opt').replace(/[()]/g,'').trim() + ')';
   const role = document.getElementById('sm_role'); if(role) role.value = s.role || 'admin';
   document.getElementById('staffMgmtErr').textContent = '';
-  document.getElementById('staffMgmtModalTitle').textContent = 'Редактировать сотрудника';
-  document.getElementById('staffMgmtSaveBtn').textContent = '💾 Сохранить';
+  document.getElementById('staffMgmtModalTitle').textContent = _t('sf.modal.edit');
+  document.getElementById('staffMgmtSaveBtn').textContent = _t('btn.save');
   openModal('modalStaffMgmt');
 }
 
@@ -8186,10 +8306,10 @@ function sfPosChanged() {
   const disp = document.getElementById('sf_role_display');
   if (pos?.role) {
     if (roleEl) roleEl.value = pos.role;
-    if (disp) disp.textContent = _SF_ROLE_LABELS[pos.role] || pos.role;
+    if (disp) disp.textContent = _sfRoleLabel(pos.role);
     sfUpdateRoleBadge();
   } else {
-    if (disp) disp.textContent = posName ? '⚠️ Укажите роль в таблице Должности' : '— определяется должностью —';
+    if (disp) disp.textContent = posName ? _t('sf.role.warn') : _t('sf.role.auto');
   }
 }
 
@@ -8800,7 +8920,7 @@ function openAgentModal() {
     const roleEl = document.getElementById('sf_role');
     if (roleEl) roleEl.value = 'agent';
     const disp = document.getElementById('sf_role_display');
-    if (disp) disp.textContent = 'Агент';
+    if (disp) disp.textContent = _t('role.agent');
     sfUpdateRoleBadge();
   }, 50);
 }
@@ -8816,8 +8936,9 @@ function sfToggleStyle(name) {
 const _SF_ROLE_LABELS = {
   admin:'Администратор', manager:'Менеджер', callcenter:'Колл-центр',
   receiver:'Приёмщик', storekeeper:'Кладовщик', sorter:'Сортировщик', technician:'Техник / Механик',
-  washer:'Мойщик', packer:'Упаковщик', logistics:'Логистика', driver:'Водитель-курьер', agent:'Агент'
+  washer:'Мойщик', packer:'Упаковщик', logistics:'Логистика', driver:'Водитель-курьер', agent:'Агент',
 };
+function _sfRoleLabel(role) { return _t('role.' + role) || _SF_ROLE_LABELS[role] || role; }
 function sfUpdateAvatar() {
   const first = (document.getElementById('sf_firstName')?.value || '').trim();
   const last  = (document.getElementById('sf_lastName')?.value  || '').trim();
@@ -8842,7 +8963,7 @@ function sfGetGender() {
 function sfUpdateRoleBadge() {
   const role = document.getElementById('sf_role')?.value || '';
   const el   = document.getElementById('sf_role_badge');
-  if (el) el.textContent = _SF_ROLE_LABELS[role] || role;
+  if (el) el.textContent = _sfRoleLabel(role);
   // Для агентов скрываем права доступа и этапы работы
   const isAgent = role === 'agent';
   const rightPanel = document.querySelector('.staff-modal-right');
@@ -8871,7 +8992,7 @@ function sfSetCanEditItems(val) { sfSetToggle('sf_can_edit_items', val); }
 
 async function openStaffModal(id=null) {
   const isEdit = !!id;
-  document.getElementById('staffModalTitle').textContent = isEdit ? 'Редактировать сотрудника' : 'Добавить сотрудника';
+  document.getElementById('staffModalTitle').textContent = _t(isEdit ? 'sf.modal.edit' : 'sf.modal.add');
   document.getElementById('staffEditId').value = id||'';
   const delBtn = document.getElementById('sf_delete_btn');
   if (delBtn) delBtn.style.display = isEdit ? '' : 'none';
@@ -8883,7 +9004,7 @@ async function openStaffModal(id=null) {
     const el = document.getElementById(k); if(el) el.value='';
   });
   const bDisp = document.getElementById('sf_birth_display');
-  if (bDisp) { bDisp.textContent = 'Не указана'; bDisp.style.color = 'var(--muted)'; }
+  if (bDisp) { bDisp.textContent = _t('sf.birth.none'); bDisp.style.color = 'var(--muted)'; }
   const bClr = document.getElementById('sf_birth_clear'); if (bClr) bClr.style.display = 'none';
   // сброс вкладок + зарплата
   _sfSalCurrentType = 'fixed';
@@ -8895,11 +9016,11 @@ async function openStaffModal(id=null) {
   await loadPositions();
   const deptEl = document.getElementById('sf_dept');
   if (deptEl) {
-    deptEl.innerHTML = '<option value="">— все отделы —</option>';
-    departments.forEach(d => deptEl.innerHTML += `<option value="${d.id}">${d.name}</option>`);
+    deptEl.innerHTML = `<option value="">${_t('sf.opt.all.depts')}</option>`;
+    departments.forEach(d => deptEl.innerHTML += `<option value="${d.id}">${_esc(d.name)}</option>`);
   }
   const rdEl = document.getElementById('sf_role_display');
-  if (rdEl) rdEl.textContent = '— определяется должностью —';
+  if (rdEl) rdEl.textContent = _t('sf.role.auto');
   populateStaffPositionSelect('');
   sfSetToggle('sf_can_edit_items', true);
   sfSetToggle('sf_can_measure', false);
@@ -8928,7 +9049,7 @@ async function openStaffModal(id=null) {
     const sRole = sPos?.role || s.role || 'callcenter';
     document.getElementById('sf_role').value = sRole;
     const sRdEl = document.getElementById('sf_role_display');
-    if (sRdEl) sRdEl.textContent = s.position ? (_SF_ROLE_LABELS[sRole] || sRole) : '— определяется должностью —';
+    if (sRdEl) sRdEl.textContent = s.position ? _sfRoleLabel(sRole) : _t('sf.role.auto');
     document.getElementById('sf_tg_id').value       = s.tg_id||'';
     const bdVal = s.birth_date ? s.birth_date.slice(0,10) : '';
     document.getElementById('sf_birth_date').value = bdVal;
@@ -8952,10 +9073,10 @@ async function openStaffModal(id=null) {
     sfSetToggle('sf_can_confirm_order',   s.can_confirm_order !== false);
     sfSetGender(s.gender || 'M');
     sfUpdateAvatar(); sfUpdateRoleBadge(); // также скроет правую панель для агентов
-    if (passHint) passHint.textContent = '(оставьте пустым чтобы не менять)';
+    if (passHint) passHint.textContent = _t('sf.pass.opt');
     if (changePwdRow) changePwdRow.style.display = 'none';
   } else {
-    if (passHint) passHint.textContent = '(обязателен)';
+    if (passHint) passHint.textContent = _t('sf.pass.required');
     if (changePwdRow) changePwdRow.style.display = 'none';
   }
   openModal('modalStaff');
