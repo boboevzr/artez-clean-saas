@@ -740,7 +740,8 @@
   <div class="modal" style="width:420px">
     <h3 id="saDeptModalTitle">Добавить отдел</h3>
     <input type="hidden" id="sa_dept_edit_id">
-    <div class="field"><label>Название *</label><input class="form-input" id="sa_dept_name" placeholder="Название отдела" autocomplete="off"></div>
+    <div class="field"><label>Название (RU) *</label><input class="form-input" id="sa_dept_name" placeholder="Работа с клиентами" autocomplete="off"></div>
+    <div class="field"><label>Название (UZ)</label><input class="form-input" id="sa_dept_name_uz" placeholder="Mijozlar bilan ishlash" autocomplete="off"></div>
     <div class="field"><label>Описание</label><input class="form-input" id="sa_dept_desc" placeholder="Краткое описание" autocomplete="off"></div>
     <div class="modal-err" id="saDeptErr"></div>
     <div class="modal-actions">
@@ -755,7 +756,8 @@
   <div class="modal" style="width:480px">
     <h3 id="saPosModalTitle">Добавить должность</h3>
     <input type="hidden" id="sa_pos_edit_id">
-    <div class="field"><label>Название *</label><input class="form-input" id="sa_pos_name" placeholder="Название должности" autocomplete="off"></div>
+    <div class="field"><label>Название (RU) *</label><input class="form-input" id="sa_pos_name" placeholder="Менеджер по продажам" autocomplete="off"></div>
+    <div class="field"><label>Название (UZ)</label><input class="form-input" id="sa_pos_name_uz" placeholder="Savdo bo'yicha menejer" autocomplete="off"></div>
     <div class="field"><label>Отдел</label>
       <select class="form-input" id="sa_pos_dept"><option value="">— выберите —</option></select>
     </div>
@@ -1870,6 +1872,7 @@ function saOpenDeptModal(id = null) {
   document.getElementById('saDeptErr').textContent = '';
   const d = id ? _saDepts.find(x => x.id === id) : null;
   document.getElementById('sa_dept_name').value = d?.name || '';
+  document.getElementById('sa_dept_name_uz').value = d?.name_uz || '';
   document.getElementById('sa_dept_desc').value = d?.description || '';
   openModal('modalSaDept');
 }
@@ -1877,11 +1880,12 @@ function saOpenDeptModal(id = null) {
 async function saSaveDept() {
   const id = parseInt(document.getElementById('sa_dept_edit_id').value) || null;
   const name = document.getElementById('sa_dept_name').value.trim();
+  const name_uz = document.getElementById('sa_dept_name_uz').value.trim();
   const description = document.getElementById('sa_dept_desc').value.trim() || null;
   if (!name) { document.getElementById('saDeptErr').textContent = 'Укажите название'; return; }
   try {
-    if (id) await api(`/saas/template/departments/${id}`, 'PATCH', { name, description });
-    else    await api('/saas/template/departments', 'POST', { name, description });
+    if (id) await api(`/saas/template/departments/${id}`, 'PATCH', { name, name_uz, description });
+    else    await api('/saas/template/departments', 'POST', { name, name_uz, description });
     closeModal('modalSaDept');
     await saRenderDepts();
   } catch(e) { document.getElementById('saDeptErr').textContent = e.message; }
@@ -1903,6 +1907,7 @@ async function saOpenPosModal(id = null) {
   _saDepts.forEach(d => dEl.innerHTML += `<option value="${d.id}">${escHtml(d.name)}</option>`);
   const p = id ? _saPositions.find(x => x.id === id) : null;
   document.getElementById('sa_pos_name').value = p?.name || '';
+  document.getElementById('sa_pos_name_uz').value = p?.name_uz || '';
   document.getElementById('sa_pos_dept').value = p?.dept_id || '';
   document.getElementById('sa_pos_role').value = p?.role || '';
   document.getElementById('sa_pos_salary_type').value = p?.salary_type || 'fixed';
@@ -1915,6 +1920,7 @@ async function saSavePos() {
   const id = parseInt(document.getElementById('sa_pos_edit_id').value) || null;
   const body = {
     name:        document.getElementById('sa_pos_name').value.trim(),
+    name_uz:     document.getElementById('sa_pos_name_uz').value.trim(),
     dept_id:     parseInt(document.getElementById('sa_pos_dept').value) || null,
     role:        document.getElementById('sa_pos_role').value || null,
     salary_type: document.getElementById('sa_pos_salary_type').value || null,

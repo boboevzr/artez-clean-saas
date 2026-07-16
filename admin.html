@@ -5192,7 +5192,8 @@
     <div class="modal-title" id="deptModalTitle" data-i18n="dept.modal.add">Добавить отдел</div>
     <input type="hidden" id="deptEditId">
     <div class="form-grid">
-      <div class="form-group span-full"><label class="form-label" data-i18n="form.lbl.name">Название *</label><input class="form-input" id="dept_name" placeholder="Производственный отдел"></div>
+      <div class="form-group"><label class="form-label" data-i18n="form.lbl.name">Название *</label><input class="form-input" id="dept_name" placeholder="Производственный отдел"></div>
+      <div class="form-group"><label class="form-label">Название (UZ)</label><input class="form-input" id="dept_name_uz" placeholder="Ishlab chiqarish bo'limi"></div>
       <div class="form-group span-full"><label class="form-label" data-i18n="form.lbl.desc">Описание</label><textarea class="form-input form-textarea" id="dept_desc" placeholder="Краткое описание..."></textarea></div>
     </div>
     <div class="modal-footer">
@@ -5366,7 +5367,8 @@
     <div class="modal-title" id="posModalTitle" data-i18n="pos.modal.add">Добавить должность</div>
     <input type="hidden" id="posEditId">
     <div class="form-grid">
-      <div class="form-group span-full"><label class="form-label" data-i18n="form.lbl.name">Название *</label><input class="form-input" id="pos_name" placeholder="Менеджер по клиентам"></div>
+      <div class="form-group"><label class="form-label" data-i18n="form.lbl.name">Название *</label><input class="form-input" id="pos_name" placeholder="Менеджер по клиентам"></div>
+      <div class="form-group"><label class="form-label">Название (UZ)</label><input class="form-input" id="pos_name_uz" placeholder="Mijozlar bo'yicha menejer"></div>
       <div class="form-group"><label class="form-label" data-i18n="form.lbl.dept">Отдел</label>
         <select class="form-input" id="pos_dept"><option value="" data-i18n="opt.choose">— выберите —</option></select>
       </div>
@@ -9021,6 +9023,7 @@ function openDeptModal(id=null) {
   document.getElementById('deptEditId').value = id || '';
   const d = id ? departments.find(x=>x.id===id) : null;
   document.getElementById('dept_name').value = d?.name || '';
+  document.getElementById('dept_name_uz').value = d?.name_uz || '';
   document.getElementById('dept_desc').value = d?.description || '';
   openModal('modalDept');
 }
@@ -9028,11 +9031,12 @@ function openDeptModal(id=null) {
 async function saveDept() {
   const id = parseInt(document.getElementById('deptEditId').value) || null;
   const name = document.getElementById('dept_name').value.trim();
+  const name_uz = document.getElementById('dept_name_uz').value.trim();
   const description = document.getElementById('dept_desc').value.trim();
   if (!name) return;
   try {
-    if (id) await apiPatch(`/departments/${id}`, { name, description });
-    else    await apiPost('/departments', { name, description });
+    if (id) await apiPatch(`/departments/${id}`, { name, name_uz, description });
+    else    await apiPost('/departments', { name, name_uz, description });
     closeModal('modalDept');
     await renderDepts();
     populateSelects();
@@ -9078,6 +9082,7 @@ async function openPosModal(id=null) {
   document.getElementById('posModalTitle').textContent = _t(id ? 'pos.modal.edit' : 'pos.modal.add');
   document.getElementById('posEditId').value = id || '';
   document.getElementById('pos_name').value = '';
+  document.getElementById('pos_name_uz').value = '';
   document.getElementById('pos_role').value = '';
   document.getElementById('pos_salaryType').value = 'fixed';
   document.getElementById('pos_salaryRate').value = '';
@@ -9090,6 +9095,7 @@ async function openPosModal(id=null) {
     const p = positions.find(x=>x.id===id);
     if (p) {
       document.getElementById('pos_name').value       = p.name||'';
+      document.getElementById('pos_name_uz').value    = p.name_uz||'';
       document.getElementById('pos_dept').value       = p.dept_id||'';
       document.getElementById('pos_role').value       = p.role||'';
       document.getElementById('pos_salaryType').value = p.salary_type||'fixed';
@@ -9104,6 +9110,7 @@ async function savePos() {
   const id = parseInt(document.getElementById('posEditId').value) || null;
   const body = {
     name:        document.getElementById('pos_name').value.trim(),
+    name_uz:     document.getElementById('pos_name_uz').value.trim(),
     dept_id:     parseInt(document.getElementById('pos_dept').value) || null,
     role:        document.getElementById('pos_role').value || null,
     salary_type: document.getElementById('pos_salaryType').value || null,
