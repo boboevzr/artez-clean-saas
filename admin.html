@@ -5192,9 +5192,9 @@
     <div class="modal-title" id="deptModalTitle" data-i18n="dept.modal.add">Добавить отдел</div>
     <input type="hidden" id="deptEditId">
     <div class="form-grid">
-      <div class="form-group"><label class="form-label" data-i18n="form.lbl.name">Название *</label><input class="form-input" id="dept_name" placeholder="Производственный отдел"></div>
-      <div class="form-group"><label class="form-label">Название (UZ)</label><input class="form-input" id="dept_name_uz" placeholder="Ishlab chiqarish bo'limi"></div>
-      <div class="form-group span-full"><label class="form-label" data-i18n="form.lbl.desc">Описание</label><textarea class="form-input form-textarea" id="dept_desc" placeholder="Краткое описание..."></textarea></div>
+      <div class="form-group"><label class="form-label" data-i18n="form.lbl.name.ru">Название (RU) *</label><input class="form-input" id="dept_name" data-i18n-ph="ph.dept.name" placeholder="Производственный отдел"></div>
+      <div class="form-group"><label class="form-label" data-i18n="form.lbl.name.uz">Название (UZ)</label><input class="form-input" id="dept_name_uz" placeholder="Ishlab chiqarish boʻlimi"></div>
+      <div class="form-group span-full"><label class="form-label" data-i18n="form.lbl.desc">Описание</label><textarea class="form-input form-textarea" id="dept_desc" data-i18n-ph="ph.dept.desc" placeholder="Краткое описание..."></textarea></div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-ghost btn-sm" onclick="closeModal('modalDept')" data-i18n="btn.cancel">Отмена</button>
@@ -5367,8 +5367,8 @@
     <div class="modal-title" id="posModalTitle" data-i18n="pos.modal.add">Добавить должность</div>
     <input type="hidden" id="posEditId">
     <div class="form-grid">
-      <div class="form-group"><label class="form-label" data-i18n="form.lbl.name">Название *</label><input class="form-input" id="pos_name" placeholder="Менеджер по клиентам"></div>
-      <div class="form-group"><label class="form-label">Название (UZ)</label><input class="form-input" id="pos_name_uz" placeholder="Mijozlar bo'yicha menejer"></div>
+      <div class="form-group"><label class="form-label" data-i18n="form.lbl.name.ru">Название (RU) *</label><input class="form-input" id="pos_name" data-i18n-ph="ph.pos.name" placeholder="Менеджер по клиентам"></div>
+      <div class="form-group"><label class="form-label" data-i18n="form.lbl.name.uz">Название (UZ)</label><input class="form-input" id="pos_name_uz" placeholder="Savdo boʻyicha menejer"></div>
       <div class="form-group"><label class="form-label" data-i18n="form.lbl.dept">Отдел</label>
         <select class="form-input" id="pos_dept"><option value="" data-i18n="opt.choose">— выберите —</option></select>
       </div>
@@ -5807,6 +5807,9 @@ const _adminI18n = {
     'dept.modal.add':'Добавить отдел','dept.modal.edit':'Редактировать отдел',
     'pos.modal.add':'Добавить должность','pos.modal.edit':'Редактировать должность',
     'form.lbl.name':'Название *','form.lbl.desc':'Описание',
+    'form.lbl.name.ru':'Название (RU) *','form.lbl.name.uz':'Название (UZ)',
+    'ph.dept.name':'Производственный отдел','ph.dept.desc':'Краткое описание...',
+    'ph.pos.name':'Менеджер по клиентам',
     'form.lbl.dept':'Отдел','form.lbl.role':'Роль (права доступа)',
     'form.lbl.sal.type':'Тип зарплаты','form.lbl.rate':'Ставка (сум)',
     'form.lbl.duties':'Обязанности, требования...',
@@ -6049,6 +6052,9 @@ const _adminI18n = {
     'dept.modal.add':'Boʻlim qoʻshish','dept.modal.edit':'Boʻlimni tahrirlash',
     'pos.modal.add':'Lavozim qoʻshish','pos.modal.edit':'Lavozimni tahrirlash',
     'form.lbl.name':'Nomi *','form.lbl.desc':'Tavsif',
+    'form.lbl.name.ru':'Nomi (RU) *','form.lbl.name.uz':'Nomi (UZ)',
+    'ph.dept.name':'Ishlab chiqarish boʻlimi','ph.dept.desc':'Qisqacha tavsif...',
+    'ph.pos.name':'Savdo boʻyicha menejer',
     'form.lbl.dept':'Boʻlim','form.lbl.role':'Rol (kirish huquqlari)',
     'form.lbl.sal.type':'Maosh turi','form.lbl.rate':'Stavka (soʻm)',
     'form.lbl.duties':'Majburiyatlar, talablar...',
