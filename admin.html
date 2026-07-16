@@ -5009,12 +5009,11 @@
     <!-- Футер -->
     <div id="sftab_main_foot" style="display:flex;justify-content:space-between;gap:10px;padding:14px 24px;border-top:1px solid var(--border);flex-shrink:0">
       <button id="sf_delete_btn" class="btn btn-sm" onclick="deleteStaff()"
-        style="display:none;background:rgba(239,68,68,.12);color:#dc2626;border:1.5px solid rgba(239,68,68,.3);border-radius:10px;padding:7px 14px;font-weight:600;cursor:pointer">
-        🗑 Удалить
-      </button>
+        style="display:none;background:rgba(239,68,68,.12);color:#dc2626;border:1.5px solid rgba(239,68,68,.3);border-radius:10px;padding:7px 14px;font-weight:600;cursor:pointer"
+        data-i18n="sf.btn.delete">🗑 Удалить</button>
       <div style="display:flex;gap:10px;margin-left:auto">
-        <button class="btn btn-ghost btn-sm" onclick="closeModal('modalStaff')">Отмена</button>
-        <button class="btn btn-save btn-sm" onclick="saveStaff()" style="min-width:160px">Сохранить изменения</button>
+        <button class="btn btn-ghost btn-sm" onclick="closeModal('modalStaff')" data-i18n="btn.cancel">Отмена</button>
+        <button class="btn btn-save btn-sm" onclick="saveStaff()" style="min-width:160px" data-i18n="btn.save.changes">💾 Сохранить изменения</button>
       </div>
     </div>
   </div>
@@ -5504,7 +5503,15 @@ const SVC_NAMES = {
   mattress:    '🛏 Матрас, одеяло',
   curtains:    '🪟 Шторы',
 };
+const SVC_NAMES_UZ = {
+  carpet:      '🧺 Gilam tozalash',
+  carpet_home: '🏠 Uyda gilam tozalash',
+  sofa:        '🛋 Divan, kreslo',
+  mattress:    '🛏 Matras, yostiq',
+  curtains:    '🪟 Pardalar',
+};
 const TYPE_NAMES  = { standard: 'Стандартный', express: 'Быстрый' };
+const TYPE_NAMES_UZ = { standard: 'Standart', express: 'Tezkor' };
 const STATUS_NAMES = {
   new: 'Новый', confirmed: 'Подтверждён', pickup: 'Вывоз',
   received: 'В мастерской', washing: 'Мойка', drying: 'Сушка',
@@ -5935,6 +5942,7 @@ const _adminI18n = {
     'sf.section.spouse':'Данные супруги / супруга',
     'sf.lbl.spouse.name':'ФИО супруги/супруга','sf.lbl.spouse.birth':'День рождения',
     'sf.spouse.birth.none':'Не указан','sf.lbl.spouse.work':'Место работы','sf.lbl.spouse.pos':'Должность',
+    'sf.btn.delete':'🗑 Удалить',
     'btn.save.personal':'💾 Сохранить личные данные',
     'btn.save.access':'💾 Сохранить доступы','btn.save.changes':'💾 Сохранить изменения',
     'sf.section.sal.type':'Тип начисления',
@@ -5953,7 +5961,7 @@ const _adminI18n = {
     'bp.btn.back':'← Назад','bp.btn.cancel':'Отмена',
     'sp.pick.year':'Год рождения супруги/супруга','sp.pick.month':'Месяц','sp.pick.day':'День',
     'sp.birth.none':'Не указан',
-    'lbl.sum':'сум',
+    'lbl.sum':'сум','lbl.other':'Прочее',
     'sal.role.lead':'Лид','sal.role.pickup':'Забор','sal.role.washing':'Мойка','sal.role.packing':'Упаковка','sal.role.delivery':'Доставка',
     'sal.kpi.orders_count':'Кол-во заказов','sal.kpi.pickup_count':'Забор (вывоз)','sal.kpi.deliveries_count':'Кол-во доставок',
     'sal.kpi.new_leads':'Новых лидов','sal.kpi.lead_conversion':'Конверсия лидов (%)','sal.kpi.units_processed':'Ед.изм. обработано (м²)','sal.kpi.avg_check':'Средний чек (сум)',
@@ -6282,6 +6290,7 @@ const _adminI18n = {
     'sf.section.spouse':'Turmush oʻrtogʻi maʼlumotlari',
     'sf.lbl.spouse.name':'Turmush oʻrtogʻi F.I.Sh','sf.lbl.spouse.birth':'Tugʻilgan kun',
     'sf.spouse.birth.none':'Koʻrsatilmagan','sf.lbl.spouse.work':'Ish joyi','sf.lbl.spouse.pos':'Lavozim',
+    'sf.btn.delete':'🗑 Oʻchirish',
     'btn.save.personal':'💾 Shaxsiy maʼlumotlarni saqlash',
     'btn.save.access':'💾 Kirish huquqlarini saqlash','btn.save.changes':'💾 Oʻzgarishlarni saqlash',
     'sf.section.sal.type':'Hisoblash turi',
@@ -6300,7 +6309,7 @@ const _adminI18n = {
     'bp.btn.back':'← Orqaga','bp.btn.cancel':'Bekor qilish',
     'sp.pick.year':'Turmush oʻrtogʻining tug\'ilgan yili','sp.pick.month':'Oy','sp.pick.day':'Kun',
     'sp.birth.none':'Koʻrsatilmagan',
-    'lbl.sum':'soʻm',
+    'lbl.sum':'soʻm','lbl.other':'Boshqalar',
     'sal.role.lead':'Lid','sal.role.pickup':'Olib ketish','sal.role.washing':'Yuvish','sal.role.packing':'Qadoqlash','sal.role.delivery':'Yetkazib berish',
     'sal.kpi.orders_count':'Buyurtmalar soni','sal.kpi.pickup_count':'Olib ketish (chiqib)','sal.kpi.deliveries_count':'Yetkazishlar soni',
     'sal.kpi.new_leads':'Yangi lidlar','sal.kpi.lead_conversion':'Lid konversiyasi (%)','sal.kpi.units_processed':'Birlik qayta ishlangan (m²)','sal.kpi.avg_check':'Oʻrtacha chek (soʻm)',
@@ -8296,12 +8305,12 @@ function populateSelects() {
 
 function populateStaffPositionSelect(selectedName, filterDeptId=null) {
   const el = document.getElementById('sf_position_name'); if (!el) return;
-  const deptMap = Object.fromEntries(departments.map(d => [d.id, d.name]));
-  el.innerHTML = '<option value="">— не указана —</option>';
+  const deptMap = Object.fromEntries(departments.map(d => [d.id, (_adminLang==='uz'&&d.name_uz)?d.name_uz:d.name]));
+  el.innerHTML = `<option value="">${_t('sf.opt.no.pos')}</option>`;
   const filtered = filterDeptId ? positions.filter(p => p.dept_id == filterDeptId) : positions;
   const byDept = {};
   filtered.forEach(p => {
-    const dn = deptMap[p.dept_id] || 'Прочее';
+    const dn = deptMap[p.dept_id] || _t('lbl.other');
     (byDept[dn] = byDept[dn] || []).push(p);
   });
   Object.entries(byDept).forEach(([dept, list]) => {
@@ -8310,7 +8319,7 @@ function populateStaffPositionSelect(selectedName, filterDeptId=null) {
     list.forEach(p => {
       const opt = document.createElement('option');
       opt.value = p.name;
-      opt.textContent = p.name;
+      opt.textContent = (_adminLang==='uz'&&p.name_uz) ? p.name_uz : p.name;
       if (p.name === selectedName) opt.selected = true;
       grp.appendChild(opt);
     });
@@ -9043,7 +9052,7 @@ async function openStaffModal(id=null) {
   const deptEl = document.getElementById('sf_dept');
   if (deptEl) {
     deptEl.innerHTML = `<option value="">${_t('sf.opt.all.depts')}</option>`;
-    departments.forEach(d => deptEl.innerHTML += `<option value="${d.id}">${_esc(d.name)}</option>`);
+    departments.forEach(d => deptEl.innerHTML += `<option value="${d.id}">${_esc((_adminLang==='uz'&&d.name_uz)?d.name_uz:d.name)}</option>`);
   }
   const rdEl = document.getElementById('sf_role_display');
   if (rdEl) rdEl.textContent = _t('sf.role.auto');
@@ -15669,13 +15678,20 @@ async function _sfSalLoadPrices() {
   if (_sfSalPrices) return _sfSalPrices;
   try {
     const data = await apiGet('/admin/prices');
-    _sfSalPrices = data?.prices || {};
+    _sfSalPrices = { ...(data?.prices || {}) };
   } catch { _sfSalPrices = {}; }
+  // Добавить все известные услуги чтобы дропдаун был полный
+  Object.keys(SVC_NAMES).forEach(k => { if (!_sfSalPrices[k]) _sfSalPrices[k] = { standard: null }; });
   return _sfSalPrices;
 }
 
 function _sfSalPriceLabel(svc, tp) {
-  return `${SVC_NAMES[svc] || svc} — ${TYPE_NAMES[tp] || tp}`;
+  const sd = _svcData[svc];
+  const svcN = sd
+    ? `${sd.emoji||''} ${(_adminLang==='uz'&&sd.name_uz)?sd.name_uz:sd.name_ru}`.trim()
+    : ((_adminLang==='uz'?SVC_NAMES_UZ[svc]:null) || SVC_NAMES[svc] || svc);
+  const tpN = (_adminLang==='uz'?TYPE_NAMES_UZ[tp]:null) || TYPE_NAMES[tp] || tp;
+  return `${svcN} — ${tpN}`;
 }
 
 function sfSalSetType(type) {
@@ -16231,10 +16247,10 @@ function _spRenderBP(step) {
     const yrs = Array.from({length:curY-1939},(_,i)=>curY-i);
     inner = `<div style="font-size:15px;font-weight:700;margin-bottom:16px;text-align:center">${_t('sp.pick.year')}</div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-height:260px;overflow-y:auto">${yrs.map(y=>`<button onclick="_spAbpYear=${y};_spRenderBP('month')" style="padding:10px 4px;border-radius:10px;border:1.5px solid var(--border);font-size:14px;font-weight:600;cursor:pointer;background:var(--surface);color:var(--text)">${y}</button>`).join('')}</div>`;
   } else if (step==='month') {
-    inner = `<div style="font-size:15px;font-weight:700;margin-bottom:4px;text-align:center">${_t('sp.pick.month')}</div><div style="font-size:13px;color:var(--muted);text-align:center;margin-bottom:14px">${_spAbpYear}</div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">${_ADMIN_MONTHS.map((m,i)=>`<button onclick="_spAbpMonth=${i+1};_spRenderBP('day')" style="padding:12px 4px;border-radius:10px;border:1.5px solid var(--border);font-size:13px;font-weight:600;cursor:pointer;background:var(--surface);color:var(--text)">${m}</button>`).join('')}</div>`;
+    inner = `<div style="font-size:15px;font-weight:700;margin-bottom:4px;text-align:center">${_t('sp.pick.month')}</div><div style="font-size:13px;color:var(--muted);text-align:center;margin-bottom:14px">${_spAbpYear}</div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">${(_adminLang==='uz'?_ADMIN_MONTHS_UZ:_ADMIN_MONTHS_RU).map((m,i)=>`<button onclick="_spAbpMonth=${i+1};_spRenderBP('day')" style="padding:12px 4px;border-radius:10px;border:1.5px solid var(--border);font-size:13px;font-weight:600;cursor:pointer;background:var(--surface);color:var(--text)">${m}</button>`).join('')}</div>`;
   } else {
     const dim=new Date(_spAbpYear,_spAbpMonth,0).getDate(); const maxD=(_spAbpYear===curY&&_spAbpMonth===now.getMonth()+1)?now.getDate():dim;
-    inner = `<div style="font-size:15px;font-weight:700;margin-bottom:4px;text-align:center">${_t('sp.pick.day')}</div><div style="font-size:13px;color:var(--muted);text-align:center;margin-bottom:14px">${_ADMIN_MONTHS[_spAbpMonth-1]} ${_spAbpYear}</div><div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px">${Array.from({length:maxD},(_,i)=>i+1).map(d=>`<button onclick="_spSelectBD(${d})" style="padding:10px 2px;border-radius:10px;border:1.5px solid var(--border);font-size:14px;font-weight:600;cursor:pointer;background:var(--surface);color:var(--text)">${d}</button>`).join('')}</div>`;
+    inner = `<div style="font-size:15px;font-weight:700;margin-bottom:4px;text-align:center">${_t('sp.pick.day')}</div><div style="font-size:13px;color:var(--muted);text-align:center;margin-bottom:14px">${(_adminLang==='uz'?_ADMIN_MONTHS_UZ:_ADMIN_MONTHS_RU)[_spAbpMonth-1]} ${_spAbpYear}</div><div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px">${Array.from({length:maxD},(_,i)=>i+1).map(d=>`<button onclick="_spSelectBD(${d})" style="padding:10px 2px;border-radius:10px;border:1.5px solid var(--border);font-size:14px;font-weight:600;cursor:pointer;background:var(--surface);color:var(--text)">${d}</button>`).join('')}</div>`;
   }
   ov.innerHTML = `<div style="background:var(--surface);border-radius:22px 22px 0 0;padding:24px 20px 32px;width:100%;max-width:480px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">${step!=='year'?`<button onclick="_spRenderBP('${step==='day'?'month':'year'}')" style="background:none;border:none;color:var(--accent,#163E3B);font-size:13px;font-weight:600;cursor:pointer;padding:0">${_t('bp.btn.back')}</button>`:'<span></span>'}<button onclick="document.getElementById('spBPOverlay')?.remove()" style="background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;padding:0">${_t('bp.btn.cancel')}</button></div>${inner}</div>`;
 }
@@ -16275,7 +16291,8 @@ function showMsg(id, text, type='ok') {
 }
 
 // ─── Кастомный пикер дат для admin ──────────────────────
-const _ADMIN_MONTHS = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+const _ADMIN_MONTHS_RU = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+const _ADMIN_MONTHS_UZ = ['Yanvar','Fevral','Mart','Aprel','May','Iyun','Iyul','Avgust','Sentabr','Oktabr','Noyabr','Dekabr'];
 let _abpYear = null, _abpMonth = null;
 
 function adminFmtBirth(iso) {
@@ -16315,13 +16332,13 @@ function _adminRenderBP(step) {
     inner = `<div style="font-size:15px;font-weight:700;margin-bottom:4px;text-align:center;color:var(--text)">${_t('bp.pick.month')}</div>
       <div style="font-size:13px;color:var(--muted);text-align:center;margin-bottom:14px">${_abpYear}</div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
-        ${_ADMIN_MONTHS.map((m,i)=>`<button onclick="_abpMonth=${i+1};_adminRenderBP('day')" style="padding:12px 4px;border-radius:10px;border:1.5px solid var(--border);font-size:13px;font-weight:600;cursor:pointer;background:var(--surface);color:var(--text)">${m}</button>`).join('')}
+        ${(_adminLang==='uz'?_ADMIN_MONTHS_UZ:_ADMIN_MONTHS_RU).map((m,i)=>`<button onclick="_abpMonth=${i+1};_adminRenderBP('day')" style="padding:12px 4px;border-radius:10px;border:1.5px solid var(--border);font-size:13px;font-weight:600;cursor:pointer;background:var(--surface);color:var(--text)">${m}</button>`).join('')}
       </div>`;
   } else {
     const dim = new Date(_abpYear, _abpMonth, 0).getDate();
     const maxD = (_abpYear === curY && _abpMonth === now.getMonth()+1) ? now.getDate() : dim;
     inner = `<div style="font-size:15px;font-weight:700;margin-bottom:4px;text-align:center;color:var(--text)">${_t('bp.pick.day')}</div>
-      <div style="font-size:13px;color:var(--muted);text-align:center;margin-bottom:14px">${_ADMIN_MONTHS[_abpMonth-1]} ${_abpYear}</div>
+      <div style="font-size:13px;color:var(--muted);text-align:center;margin-bottom:14px">${(_adminLang==='uz'?_ADMIN_MONTHS_UZ:_ADMIN_MONTHS_RU)[_abpMonth-1]} ${_abpYear}</div>
       <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px">
         ${Array.from({length:maxD},(_,i)=>i+1).map(d=>`<button onclick="_adminSelectBD(${d})" style="padding:10px 2px;border-radius:10px;border:1.5px solid var(--border);font-size:14px;font-weight:600;cursor:pointer;background:var(--surface);color:var(--text)">${d}</button>`).join('')}
       </div>`;
