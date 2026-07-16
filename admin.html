@@ -1873,24 +1873,24 @@
           <!-- 2. Фильтр дат -->
           <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:16px;padding:12px 14px;background:var(--surface2);border-radius:12px;border:1px solid var(--border)">
             <div style="display:flex;align-items:center;gap:6px;background:var(--card,var(--surface));border:1.5px solid var(--sep,var(--border));border-radius:10px;padding:5px 12px;flex:1;min-width:130px">
-              <span style="font-size:11px;color:var(--text2);font-weight:700;white-space:nowrap">С</span>
+              <span data-i18n="lbl.from" style="font-size:11px;color:var(--text2);font-weight:700;white-space:nowrap">С</span>
               <input type="date" id="cashDateFrom" style="border:none;background:transparent;font-size:14px;color:var(--text);outline:none;width:100%" onchange="cashSaveDates()">
             </div>
             <span style="color:var(--text2);font-size:16px">—</span>
             <div style="display:flex;align-items:center;gap:6px;background:var(--card,var(--surface));border:1.5px solid var(--sep,var(--border));border-radius:10px;padding:5px 12px;flex:1;min-width:130px">
-              <span style="font-size:11px;color:var(--text2);font-weight:700;white-space:nowrap">По</span>
+              <span data-i18n="lbl.to" style="font-size:11px;color:var(--text2);font-weight:700;white-space:nowrap">По</span>
               <input type="date" id="cashDateTo" style="border:none;background:transparent;font-size:14px;color:var(--text);outline:none;width:100%" onchange="cashSaveDates()">
             </div>
-            <button onclick="loadCashPage()" style="padding:8px 18px;background:var(--accent,#6366f1);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap">🔍 Показать</button>
-            <button onclick="setCashToday()" style="padding:8px 14px;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-weight:600;color:var(--text2);cursor:pointer;white-space:nowrap">📅 Сегодня</button>
+            <button onclick="loadCashPage()" data-i18n="sms.btn.show" style="padding:8px 18px;background:var(--accent,#6366f1);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap">🔍 Показать</button>
+            <button onclick="setCashToday()" data-i18n="lbl.today" style="padding:8px 14px;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-weight:600;color:var(--text2);cursor:pointer;white-space:nowrap">📅 Сегодня</button>
           </div>
 
           <!-- 3. Под-вкладки -->
           <div style="display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:16px">
             <button id="cashPayTab_orders" onclick="cashPaySubTab('orders')"
-              style="padding:8px 20px;border:none;background:none;font-size:13px;font-weight:700;cursor:pointer;border-bottom:2px solid var(--accent,#6366f1);margin-bottom:-2px;color:var(--text)">📋 По заказам</button>
+              style="padding:8px 20px;border:none;background:none;font-size:13px;font-weight:700;cursor:pointer;border-bottom:2px solid var(--accent,#6366f1);margin-bottom:-2px;color:var(--text)" data-i18n="cash.btn.by.orders">📋 По заказам</button>
             <button id="cashPayTab_log" onclick="cashPaySubTab('log')"
-              style="padding:8px 20px;border:none;background:none;font-size:13px;font-weight:700;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;color:var(--text2)">📋 Все оплаты <span id="paymentsLogCount" style="font-size:11px;background:var(--surface2);border-radius:20px;padding:1px 7px;margin-left:4px"></span></button>
+              style="padding:8px 20px;border:none;background:none;font-size:13px;font-weight:700;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;color:var(--text2)"><span data-i18n="cash.btn.all.payments">📋 Все оплаты</span> <span id="paymentsLogCount" style="font-size:11px;background:var(--surface2);border-radius:20px;padding:1px 7px;margin-left:4px"></span></button>
           </div>
 
           <!-- 3a. Под-панель: По заказам -->
@@ -2320,7 +2320,7 @@
               <input type="file" accept=".xlsx,.xls" style="display:none" onchange="adminImportContactsExcel(this)">
             </label>
             <button data-i18n="contacts.btn.dups" class="btn btn-sm" style="background:#8b5cf6;color:#fff" onclick="adminOpenContactsDups()">🔍 Дубликаты</button>
-            <button class="btn btn-sm" style="background:#ff3b30;color:#fff" onclick="openDeleteAllContactsModal()">🗑 Удалить все</button>
+            <button class="btn btn-sm" style="background:#ff3b30;color:#fff" onclick="openDeleteAllContactsModal()" data-i18n="contacts.btn.del.all">🗑 Удалить все</button>
           </div>
         </div>
         <div id="adminContactsStats" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px"></div>
@@ -3302,7 +3302,7 @@
       <div class="page" id="page-tg-clients">
         <div class="section-header"><h2>📱 Telegram · Клиенты</h2></div>
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;">
-          <input id="tgClientsSearch" class="form-input" style="max-width:260px;padding:7px 12px;font-size:13px;" placeholder="🔍 Поиск по имени, телефону, @username" oninput="tgClientsDoSearch()">
+          <input id="tgClientsSearch" class="form-input" style="max-width:260px;padding:7px 12px;font-size:13px;" data-i18n-ph="ph.search.tg.clients" placeholder="🔍 Поиск по имени, телефону, @username" oninput="tgClientsDoSearch()">
           <span id="tgClientsCount" style="font-size:13px;color:var(--muted);"></span>
         </div>
         <div style="overflow-x:auto;">
@@ -3314,7 +3314,7 @@
                 <th style="padding:8px 10px;border:1px solid var(--border);white-space:nowrap;">Telegram</th>
                 <th style="padding:8px 10px;border:1px solid var(--border);white-space:nowrap;text-align:center;">Заказов</th>
                 <th style="padding:8px 10px;border:1px solid var(--border);white-space:nowrap;text-align:center;width:60px;"></th>
-                <th style="padding:8px 10px;border:1px solid var(--border);white-space:nowrap;text-align:right;">Потрачено</th>
+                <th style="padding:8px 10px;border:1px solid var(--border);white-space:nowrap;text-align:right;" data-i18n="th.orders.spent">Потрачено</th>
                 <th style="padding:8px 10px;border:1px solid var(--border);white-space:nowrap;">Последний заказ</th>
               </tr>
             </thead>
@@ -3379,12 +3379,12 @@
           <button class="btn btn-primary btn-sm" onclick="promoOpenModal()" data-i18n="promo.btn.add">+ Новая акция</button>
         </div>
         <div style="background:var(--surface2);border-radius:10px;padding:12px;font-size:13px;color:var(--text2);margin-bottom:14px">
-          ℹ️ Одновременно активной (реально показывается клиентам) может быть только <b>одна</b> акция. Включение акции автоматически выключает остальные.
+          ℹ️ <span data-i18n="promo.info">Одновременно активной может быть только одна акция. Включение акции автоматически выключает остальные.</span>
         </div>
         <div class="card" style="overflow-x:auto">
           <table class="staff-table" id="promoTable">
             <thead><tr>
-              <th data-i18n="th.code">Код</th><th>Название (RU)</th><th data-i18n="th.discount">Скидка</th><th data-i18n="th.period">Период</th>
+              <th data-i18n="th.code">Код</th><th data-i18n="th.name.ru">Название (RU)</th><th data-i18n="th.discount">Скидка</th><th data-i18n="th.period">Период</th>
               <th data-i18n="th.toggle">Вкл/Выкл</th><th data-i18n="th.status">Статус</th><th data-i18n="th.shows">Показов / Использ.</th><th data-i18n="th.actions">Действия</th>
             </tr></thead>
             <tbody id="promoTbody"></tbody>
@@ -3615,7 +3615,7 @@
           <div style="text-align:center;padding:48px 0;color:var(--text2);grid-column:1/-1">
             <div style="font-size:36px;margin-bottom:10px">📂</div>
             <div style="font-size:15px;font-weight:600" data-i18n="empty.groups">Нет групп</div>
-            <div style="font-size:13px;margin-top:4px">Создайте первую группу контактов</div>
+            <div style="font-size:13px;margin-top:4px" data-i18n="empty.groups.hint">Создайте первую группу контактов</div>
           </div>
         </div>
       </div>
@@ -3673,11 +3673,11 @@
           <table style="width:100%;border-collapse:collapse;font-size:13px" id="smsCntTable">
             <thead>
               <tr style="border-bottom:2px solid var(--border)">
-                <th style="padding:8px 10px;text-align:left;color:var(--text2);font-weight:600">Ф.И.О</th>
-                <th style="padding:8px 10px;text-align:left;color:var(--text2);font-weight:600">Телефон</th>
-                <th style="padding:8px 10px;text-align:left;color:var(--text2);font-weight:600">Группа</th>
-                <th style="padding:8px 10px;text-align:left;color:var(--text2);font-weight:600">Статус</th>
-                <th style="padding:8px 10px;text-align:left;color:var(--text2);font-weight:600">Последнее SMS</th>
+                <th style="padding:8px 10px;text-align:left;color:var(--text2);font-weight:600" data-i18n="th.fio">Ф.И.О</th>
+                <th style="padding:8px 10px;text-align:left;color:var(--text2);font-weight:600" data-i18n="th.phone">Телефон</th>
+                <th style="padding:8px 10px;text-align:left;color:var(--text2);font-weight:600" data-i18n="th.group">Группа</th>
+                <th style="padding:8px 10px;text-align:left;color:var(--text2);font-weight:600" data-i18n="th.status">Статус</th>
+                <th style="padding:8px 10px;text-align:left;color:var(--text2);font-weight:600" data-i18n="th.last.sms">Последнее SMS</th>
                 <th style="padding:8px 10px"></th>
               </tr>
             </thead>
@@ -3850,11 +3850,11 @@
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;max-width:560px">
           <button id="smsModeBtn-single" onclick="smsSwitchMode('single')"
             style="padding:18px 10px;border-radius:14px;border:2px solid #6366f1;background:#6366f1;color:#fff;font-size:15px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;transition:.15s">
-            <span style="font-size:28px">✉️</span>По номеру
+            <span style="font-size:28px">✉️</span><span data-i18n="sms.tab.single">По номеру</span>
           </button>
           <button id="smsModeBtn-group" onclick="smsSwitchMode('group')"
             style="padding:18px 10px;border-radius:14px;border:2px solid var(--border);background:var(--surface);color:var(--text2);font-size:15px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;transition:.15s">
-            <span style="font-size:28px">📢</span>По группам
+            <span style="font-size:28px">📢</span><span data-i18n="sms.tab.grp">По группам</span>
           </button>
         </div>
 
@@ -3862,14 +3862,14 @@
         <div id="smsPane-single" style="max-width:520px;display:flex;flex-direction:column;gap:14px">
 
           <div>
-            <label class="cfg-label">Ник (альфа имя)</label>
+            <label class="cfg-label" data-i18n="sms.nick.lbl">Ник (альфа имя)</label>
             <select id="smsSingleNick" class="price-input" style="width:100%;font-size:14px">
               <option value="">⏳ Загрузка...</option>
             </select>
           </div>
 
           <div>
-            <label class="cfg-label">Телефон</label>
+            <label class="cfg-label" data-i18n="th.phone">Телефон</label>
             <div style="display:flex;align-items:center;border:1.5px solid var(--border);border-radius:10px;overflow:hidden;background:var(--surface)">
               <span style="padding:9px 12px;background:var(--surface2);color:var(--text2);font-size:13px;border-right:1px solid var(--border);white-space:nowrap;font-weight:500">+998</span>
               <input id="smsSinglePhone" style="flex:1;border:none;background:transparent;padding:9px 12px;color:var(--text);font-size:14px;outline:none" placeholder="90 123 45 67" maxlength="9" oninput="this.value=this.value.replace(/\D/g,'').slice(0,9)">
@@ -3877,33 +3877,33 @@
           </div>
 
           <div>
-            <label class="cfg-label">Шаблон</label>
+            <label class="cfg-label" data-i18n="sms.template.lbl">Шаблон</label>
             <div style="display:flex;gap:6px;margin-bottom:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex-wrap:nowrap;padding-bottom:4px">
-              <button onclick="document.getElementById('smsSingleCat').value='';smsFilterTpl('smsSingleCat','smsSingleTpl');smsSingleCatHighlight(this)" style="font-size:12px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--accent);color:#fff;cursor:pointer;flex-shrink:0">Все</button>
-              <button onclick="document.getElementById('smsSingleCat').value='cleaning';smsFilterTpl('smsSingleCat','smsSingleTpl');smsSingleCatHighlight(this)" style="font-size:12px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer;flex-shrink:0">🧺 Химчистка</button>
-              <button onclick="document.getElementById('smsSingleCat').value='greeting';smsFilterTpl('smsSingleCat','smsSingleTpl');smsSingleCatHighlight(this)" style="font-size:12px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer;flex-shrink:0">🎉 Поздравления</button>
-              <button onclick="document.getElementById('smsSingleCat').value='osago';smsFilterTpl('smsSingleCat','smsSingleTpl');smsSingleCatHighlight(this)" style="font-size:12px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer;flex-shrink:0">🚗 ОСАГО</button>
-              <button onclick="document.getElementById('smsSingleCat').value='other';smsFilterTpl('smsSingleCat','smsSingleTpl');smsSingleCatHighlight(this)" style="font-size:12px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer;flex-shrink:0">📁 Другие</button>
+              <button onclick="document.getElementById('smsSingleCat').value='';smsFilterTpl('smsSingleCat','smsSingleTpl');smsSingleCatHighlight(this)" style="font-size:12px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--accent);color:#fff;cursor:pointer;flex-shrink:0" data-i18n="sms.cat.all">Все</button>
+              <button onclick="document.getElementById('smsSingleCat').value='cleaning';smsFilterTpl('smsSingleCat','smsSingleTpl');smsSingleCatHighlight(this)" style="font-size:12px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer;flex-shrink:0" data-i18n="sms.cat.cleaning">🧺 Химчистка</button>
+              <button onclick="document.getElementById('smsSingleCat').value='greeting';smsFilterTpl('smsSingleCat','smsSingleTpl');smsSingleCatHighlight(this)" style="font-size:12px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer;flex-shrink:0" data-i18n="sms.cat.greetings">🎉 Поздравления</button>
+              <button onclick="document.getElementById('smsSingleCat').value='osago';smsFilterTpl('smsSingleCat','smsSingleTpl');smsSingleCatHighlight(this)" style="font-size:12px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer;flex-shrink:0" data-i18n="sms.cat.osago">🚗 ОСАГО</button>
+              <button onclick="document.getElementById('smsSingleCat').value='other';smsFilterTpl('smsSingleCat','smsSingleTpl');smsSingleCatHighlight(this)" style="font-size:12px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer;flex-shrink:0" data-i18n="sms.cat.other">📁 Другие</button>
             </div>
             <input type="hidden" id="smsSingleCat" value="">
             <select id="smsSingleTpl" class="price-input" style="width:100%;font-size:13px" onchange="smsApplyTpl(this,'smsSingleText','smsSingleCount')">
-              <option value="">— Без шаблона —</option>
+              <option value="" data-i18n="sms.no.template">— Без шаблона —</option>
             </select>
           </div>
 
           <div>
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
-              <label class="cfg-label" style="margin:0">Текст сообщения</label>
+              <label class="cfg-label" style="margin:0" data-i18n="sms.text.lbl">Текст сообщения</label>
               <span id="smsSingleCount" style="font-size:12px;color:var(--text2)">0/160</span>
             </div>
-            <textarea id="smsSingleText" rows="5" style="width:100%;border:1.5px solid var(--border);border-radius:10px;padding:9px 12px;font-size:14px;color:var(--text);background:var(--surface);resize:vertical;outline:none;box-sizing:border-box" placeholder="Введите текст сообщения..." oninput="smsSingleCount.textContent=this.value.length+'/160'"></textarea>
+            <textarea id="smsSingleText" rows="5" style="width:100%;border:1.5px solid var(--border);border-radius:10px;padding:9px 12px;font-size:14px;color:var(--text);background:var(--surface);resize:vertical;outline:none;box-sizing:border-box" data-i18n-ph="sms.text.ph" placeholder="Введите текст сообщения..." oninput="smsSingleCount.textContent=this.value.length+'/160'"></textarea>
           </div>
 
           <div id="smsSingleResult" style="display:none;padding:10px 12px;border-radius:8px;font-size:13px"></div>
 
           <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
-            <button onclick="smsShowSymbolsGuide()" style="font-size:12px;color:var(--accent);background:none;border:none;cursor:pointer;padding:0;text-decoration:underline">📌 Инструкция по символам</button>
-            <button onclick="smsSendSingle()" class="btn btn-primary" style="min-width:140px;padding:11px 20px;font-size:15px">📤 Отправить</button>
+            <button onclick="smsShowSymbolsGuide()" style="font-size:12px;color:var(--accent);background:none;border:none;cursor:pointer;padding:0;text-decoration:underline" data-i18n="sms.chars.help">📌 Инструкция по символам</button>
+            <button onclick="smsSendSingle()" class="btn btn-primary" style="min-width:140px;padding:11px 20px;font-size:15px" data-i18n="sms.btn.send">📤 Отправить</button>
           </div>
         </div>
 
@@ -3946,26 +3946,26 @@
           </div>
 
           <div>
-            <label class="cfg-label">Шаблон</label>
+            <label class="cfg-label" data-i18n="sms.template.lbl">Шаблон</label>
             <div style="display:flex;gap:6px;margin-bottom:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex-wrap:nowrap;padding-bottom:4px">
-              <button onclick="document.getElementById('smsGroupCat').value='';smsFilterTpl('smsGroupCat','smsGroupTpl');smsGroupCatHighlight(this)" style="font-size:12px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--accent);color:#fff;cursor:pointer;flex-shrink:0">Все</button>
-              <button onclick="document.getElementById('smsGroupCat').value='cleaning';smsFilterTpl('smsGroupCat','smsGroupTpl');smsGroupCatHighlight(this)" style="font-size:12px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer;flex-shrink:0">🧺 Химчистка</button>
-              <button onclick="document.getElementById('smsGroupCat').value='greeting';smsFilterTpl('smsGroupCat','smsGroupTpl');smsGroupCatHighlight(this)" style="font-size:12px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer;flex-shrink:0">🎉 Поздравления</button>
-              <button onclick="document.getElementById('smsGroupCat').value='osago';smsFilterTpl('smsGroupCat','smsGroupTpl');smsGroupCatHighlight(this)" style="font-size:12px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer;flex-shrink:0">🚗 ОСАГО</button>
-              <button onclick="document.getElementById('smsGroupCat').value='other';smsFilterTpl('smsGroupCat','smsGroupTpl');smsGroupCatHighlight(this)" style="font-size:12px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer;flex-shrink:0">📁 Другие</button>
+              <button onclick="document.getElementById('smsGroupCat').value='';smsFilterTpl('smsGroupCat','smsGroupTpl');smsGroupCatHighlight(this)" style="font-size:12px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--accent);color:#fff;cursor:pointer;flex-shrink:0" data-i18n="sms.cat.all">Все</button>
+              <button onclick="document.getElementById('smsGroupCat').value='cleaning';smsFilterTpl('smsGroupCat','smsGroupTpl');smsGroupCatHighlight(this)" style="font-size:12px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer;flex-shrink:0" data-i18n="sms.cat.cleaning">🧺 Химчистка</button>
+              <button onclick="document.getElementById('smsGroupCat').value='greeting';smsFilterTpl('smsGroupCat','smsGroupTpl');smsGroupCatHighlight(this)" style="font-size:12px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer;flex-shrink:0" data-i18n="sms.cat.greetings">🎉 Поздравления</button>
+              <button onclick="document.getElementById('smsGroupCat').value='osago';smsFilterTpl('smsGroupCat','smsGroupTpl');smsGroupCatHighlight(this)" style="font-size:12px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer;flex-shrink:0" data-i18n="sms.cat.osago">🚗 ОСАГО</button>
+              <button onclick="document.getElementById('smsGroupCat').value='other';smsFilterTpl('smsGroupCat','smsGroupTpl');smsGroupCatHighlight(this)" style="font-size:12px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer;flex-shrink:0" data-i18n="sms.cat.other">📁 Другие</button>
             </div>
             <input type="hidden" id="smsGroupCat" value="">
             <select id="smsGroupTpl" class="price-input" style="width:100%;font-size:13px" onchange="smsApplyTpl(this,'smsGroupText','smsGroupCount2')">
-              <option value="">— Без шаблона —</option>
+              <option value="" data-i18n="sms.no.template">— Без шаблона —</option>
             </select>
           </div>
 
           <div>
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
-              <label class="cfg-label" style="margin:0">Текст сообщения</label>
+              <label class="cfg-label" style="margin:0" data-i18n="sms.text.lbl">Текст сообщения</label>
               <span id="smsGroupCount2" style="font-size:12px;color:var(--text2)">0/160</span>
             </div>
-            <textarea id="smsGroupText" rows="5" style="width:100%;border:1.5px solid var(--border);border-radius:10px;padding:9px 12px;font-size:14px;color:var(--text);background:var(--surface);resize:vertical;outline:none;box-sizing:border-box" placeholder="Введите текст сообщения..." oninput="smsGroupCount2.textContent=this.value.length+'/160'"></textarea>
+            <textarea id="smsGroupText" rows="5" style="width:100%;border:1.5px solid var(--border);border-radius:10px;padding:9px 12px;font-size:14px;color:var(--text);background:var(--surface);resize:vertical;outline:none;box-sizing:border-box" data-i18n-ph="sms.text.ph" placeholder="Введите текст сообщения..." oninput="smsGroupCount2.textContent=this.value.length+'/160'"></textarea>
           </div>
 
           <!-- Расчёт стоимости -->
@@ -3992,8 +3992,8 @@
           <div id="smsGroupResult" style="display:none;padding:10px 12px;border-radius:8px;font-size:13px"></div>
 
           <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
-            <button onclick="smsShowSymbolsGuide()" style="font-size:12px;color:var(--accent);background:none;border:none;cursor:pointer;padding:0;text-decoration:underline">📌 Инструкция по символам</button>
-            <button onclick="smsSendGroup()" class="btn btn-primary" style="min-width:140px;padding:11px 20px;font-size:15px">📢 Отправить</button>
+            <button onclick="smsShowSymbolsGuide()" style="font-size:12px;color:var(--accent);background:none;border:none;cursor:pointer;padding:0;text-decoration:underline" data-i18n="sms.chars.help">📌 Инструкция по символам</button>
+            <button onclick="smsSendGroup()" class="btn btn-primary" style="min-width:140px;padding:11px 20px;font-size:15px" data-i18n="sms.btn.send">📤 Отправить</button>
           </div>
         </div>
 
@@ -4020,13 +4020,13 @@
               <button class="btn btn-sm" id="smsTplTab-other"    onclick="smsTplSetCat('other')"    style="background:var(--surface2);color:var(--text)">📁 Другие</button>
               <button class="btn btn-sm" id="smsTplTab-all"      onclick="smsTplSetCat('all')"      style="background:var(--surface2);color:var(--text)">🔍 Все</button>
             </div>
-            <button class="btn btn-primary btn-sm" onclick="smsTplOpenCreate()">+ Добавить шаблон</button>
+            <button class="btn btn-primary btn-sm" onclick="smsTplOpenCreate()" data-i18n="sms.btn.add.template">+ Добавить шаблон</button>
           </div>
           <div id="smsTplList" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px">
             <div style="text-align:center;padding:48px 0;color:var(--text2);grid-column:1/-1">
               <div style="font-size:36px;margin-bottom:10px">📝</div>
-              <div style="font-size:15px;font-weight:600">Нет шаблонов</div>
-              <div style="font-size:13px;margin-top:4px">Добавьте первый шаблон SMS</div>
+              <div style="font-size:15px;font-weight:600" data-i18n="sms.empty.templates">Нет шаблонов</div>
+              <div style="font-size:13px;margin-top:4px" data-i18n="sms.empty.templates.hint">Нажмите «+ Добавить шаблон»</div>
             </div>
           </div>
         </div>
@@ -4129,16 +4129,16 @@
           </div>
         </div>
         <div style="font-size:13px;color:var(--text2);margin-bottom:16px;background:var(--surface2);padding:10px 14px;border-radius:10px">
-          ℹ️ Тарифы Eskiz (сум за 1 SMS, 160 символов Latin / 70 символов Unicode). Обновите вручную при изменении тарифов оператора.
+          ℹ️ <span data-i18n="sms.pricing.info">Тарифы Eskiz (сум за 1 SMS, 160 символов Latin / 70 символов Unicode). Обновите вручную при изменении тарифов оператора.</span>
         </div>
         <div style="overflow-x:auto">
           <table style="width:100%;border-collapse:collapse;font-size:13px;max-width:760px" id="smsPricingTable">
             <thead>
               <tr style="border-bottom:2px solid var(--border)">
-                <th style="padding:10px 12px;text-align:left;color:var(--text2);font-weight:600">Оператор</th>
-                <th style="padding:10px 12px;text-align:left;color:var(--text2);font-weight:600">Префиксы (+998)</th>
-                <th style="padding:10px 12px;text-align:right;color:var(--text2);font-weight:600">Сервисный (сум)</th>
-                <th style="padding:10px 12px;text-align:right;color:var(--text2);font-weight:600">Рекламный (сум)</th>
+                <th style="padding:10px 12px;text-align:left;color:var(--text2);font-weight:600" data-i18n="th.operator">Оператор</th>
+                <th style="padding:10px 12px;text-align:left;color:var(--text2);font-weight:600" data-i18n="th.prefixes">Префиксы (+998)</th>
+                <th style="padding:10px 12px;text-align:right;color:var(--text2);font-weight:600" data-i18n="th.svc.price">Сервисный (сум)</th>
+                <th style="padding:10px 12px;text-align:right;color:var(--text2);font-weight:600" data-i18n="th.adv.price">Рекламный (сум)</th>
                 <th style="padding:10px 12px;text-align:center;color:var(--text2);font-weight:600"></th>
               </tr>
             </thead>
@@ -4165,9 +4165,9 @@
         <!-- ПАНЕЛЬ: Отправленные -->
         <div id="smsRepPane-messages">
           <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-bottom:14px">
-            <div><label class="cfg-label">С даты</label><input type="date" id="smsRepMsgFrom" class="price-input" style="width:150px"></div>
-            <div><label class="cfg-label">По дату</label><input type="date" id="smsRepMsgTo"   class="price-input" style="width:150px"></div>
-            <div><label class="cfg-label">Статус</label>
+            <div><label class="cfg-label" data-i18n="lbl.from.date">С даты</label><input type="date" id="smsRepMsgFrom" class="price-input" style="width:150px"></div>
+            <div><label class="cfg-label" data-i18n="lbl.to.date">По дату</label><input type="date" id="smsRepMsgTo"   class="price-input" style="width:150px"></div>
+            <div><label class="cfg-label" data-i18n="th.status">Статус</label>
               <select id="smsRepMsgStatus" class="price-input" style="width:130px">
                 <option value="" data-i18n="sms.all.statuses">Все</option>
                 <option value="waiting">waiting</option>
@@ -4176,7 +4176,7 @@
                 <option value="failed">failed</option>
               </select>
             </div>
-            <div><label class="cfg-label">Лимит</label><input type="number" id="smsRepMsgLimit" class="price-input" value="100" style="width:80px" min="1" max="1000"></div>
+            <div><label class="cfg-label" data-i18n="lbl.limit">Лимит</label><input type="number" id="smsRepMsgLimit" class="price-input" value="100" style="width:80px" min="1" max="1000"></div>
             <button onclick="smsRepMessages()" class="btn btn-primary btn-sm" data-i18n="sms.btn.show">🔍 Показать</button>
             <button onclick="smsRepExport()" class="btn btn-sm" style="background:var(--surface2);color:var(--text)">⬇️ CSV</button>
           </div>
@@ -4186,8 +4186,8 @@
         <!-- ПАНЕЛЬ: По месяцам -->
         <div id="smsRepPane-by-month" style="display:none">
           <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-bottom:14px">
-            <div><label class="cfg-label">С даты</label><input type="date" id="smsRepMoFrom" class="price-input" style="width:150px"></div>
-            <div><label class="cfg-label">По дату</label><input type="date" id="smsRepMoTo"   class="price-input" style="width:150px"></div>
+            <div><label class="cfg-label" data-i18n="lbl.from.date">С даты</label><input type="date" id="smsRepMoFrom" class="price-input" style="width:150px"></div>
+            <div><label class="cfg-label" data-i18n="lbl.to.date">По дату</label><input type="date" id="smsRepMoTo"   class="price-input" style="width:150px"></div>
             <button onclick="smsRepByMonth()" class="btn btn-primary btn-sm" data-i18n="sms.btn.load">🔍 Загрузить</button>
           </div>
           <div id="smsRepMonthResult"></div>
@@ -4196,8 +4196,8 @@
         <!-- ПАНЕЛЬ: По датам -->
         <div id="smsRepPane-by-date" style="display:none">
           <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-bottom:14px">
-            <div><label class="cfg-label">С даты</label><input type="date" id="smsRepDtFrom" class="price-input" style="width:150px"></div>
-            <div><label class="cfg-label">По дату</label><input type="date" id="smsRepDtTo"   class="price-input" style="width:150px"></div>
+            <div><label class="cfg-label" data-i18n="lbl.from.date">С даты</label><input type="date" id="smsRepDtFrom" class="price-input" style="width:150px"></div>
+            <div><label class="cfg-label" data-i18n="lbl.to.date">По дату</label><input type="date" id="smsRepDtTo"   class="price-input" style="width:150px"></div>
             <button onclick="smsRepByDate()" class="btn btn-primary btn-sm" data-i18n="sms.btn.show">🔍 Показать</button>
           </div>
           <div id="smsRepDtResult"></div>
@@ -4206,8 +4206,8 @@
         <!-- ПАНЕЛЬ: По рассылкам -->
         <div id="smsRepPane-by-dispatch" style="display:none">
           <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-bottom:14px">
-            <div><label class="cfg-label">С даты</label><input type="date" id="smsRepDpFrom" class="price-input" style="width:150px"></div>
-            <div><label class="cfg-label">По дату</label><input type="date" id="smsRepDpTo"   class="price-input" style="width:150px"></div>
+            <div><label class="cfg-label" data-i18n="lbl.from.date">С даты</label><input type="date" id="smsRepDpFrom" class="price-input" style="width:150px"></div>
+            <div><label class="cfg-label" data-i18n="lbl.to.date">По дату</label><input type="date" id="smsRepDpTo"   class="price-input" style="width:150px"></div>
             <button onclick="smsRepByDispatch()" class="btn btn-primary btn-sm" data-i18n="sms.btn.show">🔍 Показать</button>
           </div>
           <div id="smsRepDpResult"></div>
@@ -4245,13 +4245,13 @@
               <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:18px">📡</div>
               <div><div style="font-weight:600;font-size:15px">Eskiz.uz</div><div style="font-size:12px;color:var(--text2)">Провайдер SMS-рассылок</div></div>
             </div>
-            <div style="padding:10px 12px;border-radius:10px;background:var(--surface2);font-size:13px;color:var(--text2)">
+            <div style="padding:10px 12px;border-radius:10px;background:var(--surface2);font-size:13px;color:var(--text2)" data-i18n="sms.cfg.status.ok">
               ✅ Email и пароль настроены. Токен обновляется автоматически.
             </div>
             <div>
-              <label class="cfg-label">Имя отправителя (alpha-name)</label>
+              <label class="cfg-label" data-i18n="sms.cfg.sender.lbl">Имя отправителя (alpha-name)</label>
               <input id="smsFromName" class="price-input" style="width:100%" placeholder="ARTEZ" maxlength="11">
-              <div style="font-size:11px;color:var(--text2);margin-top:4px">Должно быть зарегистрировано в кабинете Eskiz.uz</div>
+              <div style="font-size:11px;color:var(--text2);margin-top:4px" data-i18n="sms.cfg.sender.hint">Должно быть зарегистрировано в кабинете Eskiz.uz</div>
             </div>
             <div id="smsSaveResult" style="display:none;padding:8px 12px;border-radius:8px;font-size:13px"></div>
             <button onclick="smsSaveSettings()" class="btn btn-primary" data-i18n="btn.save">💾 Сохранить настройки</button>
@@ -4260,8 +4260,8 @@
           <!-- Памятка API -->
           <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden">
             <button onclick="this.parentElement.querySelector('.sms-ref-body').style.display=this.parentElement.querySelector('.sms-ref-body').style.display==='none'?'block':'none'" style="width:100%;background:none;border:none;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;font-size:14px;font-weight:600;color:var(--text);text-align:left">
-              <span>📚 Справочник Eskiz API</span>
-              <span style="font-size:12px;color:var(--text2)">развернуть ▾</span>
+              <span data-i18n="sms.cfg.api.docs">📚 Справочник Eskiz API</span>
+              <span style="font-size:12px;color:var(--text2)" data-i18n="lbl.expand">развернуть ▾</span>
             </button>
             <div class="sms-ref-body" style="display:none;padding:0 20px 20px;display:none">
               <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:var(--text2);margin-bottom:10px">Базовый URL</div>
@@ -4350,7 +4350,7 @@
           <div style="text-align:center;padding:48px 0;color:var(--text2);grid-column:1/-1">
             <div style="font-size:36px;margin-bottom:10px">👥</div>
             <div style="font-size:15px;font-weight:600" data-i18n="empty.groups">Нет групп</div>
-            <div style="font-size:13px;margin-top:4px">Создайте первую группу контактов</div>
+            <div style="font-size:13px;margin-top:4px" data-i18n="empty.groups.hint">Создайте первую группу контактов</div>
           </div>
         </div>
       </div>
@@ -4376,7 +4376,7 @@
           <div style="text-align:center;padding:48px 0;color:var(--text2)">
             <div style="font-size:36px;margin-bottom:10px">📋</div>
             <div style="font-size:15px;font-weight:600" data-i18n="empty.campaigns">Нет кампаний</div>
-            <div style="font-size:13px;margin-top:4px">Создайте первую кампанию автодозвона</div>
+            <div style="font-size:13px;margin-top:4px" data-i18n="empty.campaigns.hint">Создайте первую кампанию автодозвона</div>
           </div>
         </div>
       </div>
@@ -4388,14 +4388,14 @@
 
           <!-- IVR список с вкладками -->
           <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px">
-            <h4 style="margin:0 0 4px">🎙 IVR / Голосовые меню</h4>
-            <div style="font-size:12px;color:var(--text2);margin-bottom:14px">Голосовые записи для каждого сценария. Номер задаётся в UCM → Call Features → IVR.</div>
+            <h4 style="margin:0 0 4px" data-i18n="ad.ivr.title">🎙 IVR / Голосовые меню</h4>
+            <div style="font-size:12px;color:var(--text2);margin-bottom:14px" data-i18n="ad.ivr.desc">Голосовые записи для каждого сценария. Номер задаётся в UCM → Call Features → IVR.</div>
             <!-- Вкладки -->
             <div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap">
-              <button id="adsIvrTab-promo"     class="btn btn-sm" onclick="adsIvrSetTab('promo')"     style="background:var(--accent);color:#fff">📢 Рекламные</button>
-              <button id="adsIvrTab-greetings" class="btn btn-sm" onclick="adsIvrSetTab('greetings')" style="background:var(--surface2);color:var(--text)">🎉 Поздравления</button>
-              <button id="adsIvrTab-reminders" class="btn btn-sm" onclick="adsIvrSetTab('reminders')" style="background:var(--surface2);color:var(--text)">🔔 Напоминания</button>
-              <button id="adsIvrTab-prank"     class="btn btn-sm" onclick="adsIvrSetTab('prank')"     style="background:var(--surface2);color:var(--text)">😄 Прикол</button>
+              <button id="adsIvrTab-promo"     class="btn btn-sm" onclick="adsIvrSetTab('promo')"     style="background:var(--accent);color:#fff"          data-i18n="ad.ivr.ads">📢 Рекламные</button>
+              <button id="adsIvrTab-greetings" class="btn btn-sm" onclick="adsIvrSetTab('greetings')" style="background:var(--surface2);color:var(--text)"  data-i18n="ad.ivr.greetings">🎉 Поздравления</button>
+              <button id="adsIvrTab-reminders" class="btn btn-sm" onclick="adsIvrSetTab('reminders')" style="background:var(--surface2);color:var(--text)"  data-i18n="ad.ivr.reminders">🔔 Напоминания</button>
+              <button id="adsIvrTab-prank"     class="btn btn-sm" onclick="adsIvrSetTab('prank')"     style="background:var(--surface2);color:var(--text)"  data-i18n="ad.ivr.prank">😄 Прикол</button>
             </div>
             <!-- Панели -->
             <div id="adsIvrPane-promo">
@@ -4418,14 +4418,14 @@
 
           <!-- Агент -->
           <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px">
-            <h4 style="margin:0 0 14px">Агент автодозвона</h4>
+            <h4 style="margin:0 0 14px" data-i18n="ad.agent.title">Агент автодозвона</h4>
             <div style="font-size:13px;color:var(--text2);line-height:1.7">
-              Файл <b>autodial_agent.py</b> запускается на офисном ПК в сети АТС.<br>
-              Агент читает кампании из базы и звонит через AMI (192.168.1.6:7777).<br><br>
-              <b>Автозапуск:</b> добавить <code>start_autodial.bat</code> в папку автозагрузки Windows.<br>
-              <b>Статус:</b> <span id="adsAgentStatus" onclick="adCheckAgentSettings()" style="cursor:pointer">проверяется...</span>
+              <span data-i18n="ad.agent.desc1">Файл <b>autodial_agent.py</b> запускается на офисном ПК в сети АТС.</span><br>
+              <span data-i18n="ad.agent.desc2">Агент читает кампании из базы и звонит через AMI (192.168.1.6:7777).</span><br><br>
+              <span data-i18n="ad.agent.desc3"><b>Автозапуск:</b> добавить <code>start_autodial.bat</code> в папку автозагрузки Windows.</span><br>
+              <span data-i18n="ad.agent.status.lbl"><b>Статус:</b></span> <span id="adsAgentStatus" onclick="adCheckAgentSettings()" style="cursor:pointer">проверяется...</span>
             </div>
-            <button class="btn btn-sm" style="margin-top:12px;background:var(--surface2);color:var(--text)" onclick="adCheckAgentSettings()">🔄 Проверить агента</button>
+            <button class="btn btn-sm" style="margin-top:12px;background:var(--surface2);color:var(--text)" onclick="adCheckAgentSettings()" data-i18n="ad.btn.check">🔄 Проверить агента</button>
           </div>
         </div>
       </div>
@@ -4443,11 +4443,11 @@
             <div style="display:flex;align-items:flex-start;gap:14px">
               <div style="font-size:32px;line-height:1">🎂</div>
               <div style="flex:1">
-                <div style="font-weight:700;font-size:15px;margin-bottom:6px">День рождения / Юбилей</div>
-                <div style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:14px">Автоматически поздравляет клиентов у которых сегодня день рождения. Берёт список из CRM — нужна дата ДР в карточке клиента.</div>
+                <div style="font-weight:700;font-size:15px;margin-bottom:6px" data-i18n="gr.birthday.title">День рождения / Юбилей</div>
+                <div style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:14px" data-i18n="gr.birthday.desc">Автоматически поздравляет клиентов у которых сегодня день рождения. Берёт список из CRM — нужна дата ДР в карточке клиента.</div>
                 <div style="display:flex;gap:8px;flex-wrap:wrap">
-                  <button class="btn btn-primary btn-sm" onclick="showToast('Скоро появится — нужна дата ДР в CRM','info')">▶ Запустить сегодня</button>
-                  <span style="font-size:12px;color:var(--text2);align-self:center">Ближайших: <b id="grBirthdayCount">—</b></span>
+                  <button class="btn btn-primary btn-sm" onclick="showToast('Скоро появится — нужна дата ДР в CRM','info')" data-i18n="gr.birthday.btn">▶ Запустить сегодня</button>
+                  <span style="font-size:12px;color:var(--text2);align-self:center"><span data-i18n="gr.birthday.next">Ближайших:</span> <b id="grBirthdayCount">—</b></span>
                 </div>
               </div>
             </div>
@@ -4459,11 +4459,11 @@
             <div style="display:flex;align-items:flex-start;gap:14px">
               <div style="font-size:32px;line-height:1">🎊</div>
               <div style="flex:1">
-                <div style="font-weight:700;font-size:15px;margin-bottom:6px">Праздничная рассылка</div>
-                <div style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:14px">Звонок всем клиентам с праздничным голосовым поздравлением: Новый год, Навруз, 8 марта. Выберите IVR-запись и нажмите запустить — создаётся кампания автоматически.</div>
+                <div style="font-weight:700;font-size:15px;margin-bottom:6px" data-i18n="gr.holiday.title">Праздничная рассылка</div>
+                <div style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:14px" data-i18n="gr.holiday.desc">Звонок всем клиентам с праздничным голосовым поздравлением: Новый год, Навруз, 8 марта. Выберите IVR-запись и нажмите запустить — создаётся кампания автоматически.</div>
                 <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
                   <select id="grHolidayIvr" class="price-input" style="width:200px"></select>
-                  <button class="btn btn-primary btn-sm" onclick="grStartHoliday()">▶ Запустить для всех клиентов</button>
+                  <button class="btn btn-primary btn-sm" onclick="grStartHoliday()" data-i18n="gr.holiday.btn">▶ Запустить для всех клиентов</button>
                 </div>
               </div>
             </div>
@@ -4475,9 +4475,9 @@
             <div style="display:flex;align-items:flex-start;gap:14px">
               <div style="font-size:32px;line-height:1">📦</div>
               <div style="flex:1">
-                <div style="font-weight:700;font-size:15px;margin-bottom:6px">Напоминание: заказ готов</div>
-                <div style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:14px">Автоматически звонит клиентам у которых заказ перешёл в статус «Готов к выдаче» более 24 ч назад. Напоминает забрать вещи.</div>
-                <button class="btn btn-primary btn-sm" onclick="showToast('Скоро: интеграция со статусами заказов','info')">▶ Позвонить ожидающим</button>
+                <div style="font-weight:700;font-size:15px;margin-bottom:6px" data-i18n="gr.ready.title">Напоминание: заказ готов</div>
+                <div style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:14px" data-i18n="gr.ready.desc">Автоматически звонит клиентам у которых заказ перешёл в статус «Готов к выдаче» более 24 ч назад. Напоминает забрать вещи.</div>
+                <button class="btn btn-primary btn-sm" onclick="showToast('Скоро: интеграция со статусами заказов','info')" data-i18n="gr.ready.btn">▶ Позвонить ожидающим</button>
               </div>
             </div>
           </div>
@@ -4488,18 +4488,18 @@
             <div style="display:flex;align-items:flex-start;gap:14px">
               <div style="font-size:32px;line-height:1">😄</div>
               <div style="flex:1">
-                <div style="font-weight:700;font-size:15px;margin-bottom:6px">Прикол для друга</div>
-                <div style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:14px">Один звонок на любой номер с выбранной IVR-записью. Звонит мгновенно.</div>
+                <div style="font-weight:700;font-size:15px;margin-bottom:6px" data-i18n="gr.prank.title">Прикол для друга</div>
+                <div style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:14px" data-i18n="gr.prank.desc">Один звонок на любой номер с выбранной IVR-записью. Звонит мгновенно.</div>
                 <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end">
                   <div>
-                    <div style="font-size:11px;color:var(--text2);margin-bottom:4px">Номер</div>
+                    <div style="font-size:11px;color:var(--text2);margin-bottom:4px" data-i18n="lbl.phone.num">Номер</div>
                     <input id="grPrankPhone" class="price-input" style="width:140px" placeholder="+998 90 000-00-00">
                   </div>
                   <div>
-                    <div style="font-size:11px;color:var(--text2);margin-bottom:4px">Сценарий (IVR)</div>
+                    <div style="font-size:11px;color:var(--text2);margin-bottom:4px" data-i18n="lbl.ivr">Сценарий (IVR)</div>
                     <select id="grPrankIvr" class="price-input" style="width:200px"></select>
                   </div>
-                  <button class="btn btn-primary btn-sm" style="margin-bottom:1px" onclick="grStartPrank()">📞 Позвонить!</button>
+                  <button class="btn btn-primary btn-sm" style="margin-bottom:1px" onclick="grStartPrank()" data-i18n="gr.prank.btn">📞 Позвонить!</button>
                 </div>
               </div>
             </div>
@@ -5688,6 +5688,81 @@ const _adminI18n = {
     'orders.btn.select':'☑️ Выбрать','orders.btn.add':'+ Заявка',
     'orders.select.all':'Выбрать все','orders.change.status':'— Сменить статус —',
     'leads.select.all':'Выбрать все','leads.change.status':'— Сменить статус —',
+    'src.agent':'🤝 Агент',
+    'orders.all.staff':'👤 Все сотрудники','orders.ph.staff':'Выбрать сотрудника',
+    'empty.orders':'Нет заказов',
+    'ph.date':'дд.мм.гггг',
+    'empty.routes':'Маршрутов нет',
+    'empty.routes.msg':'Маршрутов пока нет.','empty.routes.hint':'Нажмите «+ Новый маршрут» чтобы создать.',
+    'cash.card.drivers':'Сотрудники','cash.on.hand':'на руках',
+    'cash.card.managers':'Менеджеры','cash.card.admin':'Администрация',
+    'cash.card.deposited':'Инкассировано','cash.today.lbl':'сегодня',
+    'cash.card.topay':'К оплате','cash.awaiting':'ожидают сдачи',
+    'cash.card.debts':'Долги клиентов','cash.orders.lbl':'заказов',
+    'cash.card.expenses':'Расходы ожид.','cash.items.lbl':'шт.',
+    'cash.overdue':'⚠️ просрочено:',
+    'pay.cash':'💵 Наличные','pay.card':'💳 Карта','pay.transfer':'📲 Перевод',
+    'pay.cash.short':'💵 Нал','pay.total':'💰 Итого','pay.currency':'сум',
+    'lbl.from':'С','lbl.to':'По',
+    'cash.btn.by.orders':'📋 По заказам','cash.btn.all.payments':'📋 Все оплаты',
+    'cash.empty.payments':'Нет оплаченных заказов за период',
+    'promo.info':'Одновременно активной может быть только одна акция. Включение акции автоматически выключает остальные.',
+    'th.name.ru':'Название (RU)',
+    'promo.on':'✅ Вкл','promo.off':'❌ Выкл',
+    'promo.status.active':'🟢 Идёт сейчас','promo.status.soon':'⏳ Скоро','promo.status.ended':'⌛ Завершена',
+    'contacts.btn.del.all':'🗑 Удалить все',
+    'empty.groups.hint':'Создайте первую группу контактов',
+    'empty.campaigns.hint':'Создайте первую кампанию автодозвона',
+    'empty.tests':'Нет тестовых звонков','empty.tests.hint':'Нажмите «Тест звонка» чтобы проверить АТС',
+    'ad.agent.offline':'🔴 Агент не активен','ad.agent.online':'🟢 Агент активен',
+    'gr.birthday.title':'День рождения / Юбилей',
+    'gr.birthday.desc':'Автоматически поздравляет клиентов у которых сегодня день рождения. Берёт список из CRM — нужна дата ДР в карточке клиента.',
+    'gr.birthday.btn':'▶ Запустить сегодня','gr.birthday.next':'Ближайших:',
+    'gr.holiday.title':'Праздничная рассылка',
+    'gr.holiday.desc':'Звонок всем клиентам с праздничным голосовым поздравлением: Новый год, Навруз, 8 марта. Выберите IVR-запись и нажмите запустить — создаётся кампания автоматически.',
+    'gr.holiday.btn':'▶ Запустить для всех клиентов',
+    'gr.ready.title':'Напоминание: заказ готов',
+    'gr.ready.desc':'Автоматически звонит клиентам у которых заказ перешёл в статус «Готов к выдаче» более 24 ч назад. Напоминает забрать вещи.',
+    'gr.ready.btn':'▶ Позвонить ожидающим',
+    'gr.prank.title':'Прикол для друга',
+    'gr.prank.desc':'Один звонок на любой номер с выбранной IVR-записью. Звонит мгновенно.',
+    'lbl.phone.num':'Номер','lbl.ivr':'Сценарий (IVR)','gr.prank.btn':'📞 Позвонить!',
+    'ad.ivr.title':'🎙 IVR / Голосовые меню',
+    'ad.ivr.desc':'Голосовые записи для каждого сценария. Номер задаётся в UCM → Call Features → IVR.',
+    'ad.ivr.ads':'📢 Рекламные','ad.ivr.greetings':'🎉 Поздравления',
+    'ad.ivr.reminders':'🔔 Напоминания','ad.ivr.prank':'😄 Прикол',
+    'ad.agent.title':'Агент автодозвона',
+    'ad.agent.desc1':'Файл autodial_agent.py запускается на офисном ПК в сети АТС.',
+    'ad.agent.desc2':'Агент читает кампании из базы и звонит через AMI (192.168.1.6:7777).',
+    'ad.agent.desc3':'Автозапуск: добавить start_autodial.bat в папку автозагрузки Windows.',
+    'ad.agent.status.lbl':'Статус:','ad.btn.check':'🔄 Проверить агента',
+    'sms.tab.single':'По номеру','sms.tab.grp':'По группам',
+    'sms.nick.lbl':'Ник (альфа имя)','sms.short.ph':'4546 (короткий номер)',
+    'sms.template.lbl':'Шаблон',
+    'sms.cat.all':'Все','sms.cat.cleaning':'🧺 Химчистка',
+    'sms.cat.greetings':'🎉 Поздравления','sms.cat.osago':'🚗 ОСАГО',
+    'sms.cat.other':'📁 Другие','sms.no.template':'— Без шаблона —',
+    'sms.text.lbl':'Текст сообщения','sms.text.ph':'Введите текст сообщения...',
+    'sms.chars.help':'📌 Инструкция по символам','sms.btn.send':'📤 Отправить',
+    'sms.stat.total':'ВСЕГО','sms.stat.active':'АКТИВНЫЙ',
+    'sms.stat.inactive':'НЕАКТИВНЫЙ','sms.stat.blacklist':'ЧЁРНЫЙ СПИСОК',
+    'th.group':'Группа','th.last.sms':'Последнее SMS',
+    'sms.empty.contacts':'Нет контактов',
+    'sms.empty.groups.hint':'Создайте первую группу контактов SMS',
+    'sms.btn.add.template':'+ Добавить шаблон',
+    'sms.empty.templates':'Нет шаблонов',
+    'sms.empty.templates.hint':'Нажмите «+ Добавить шаблон»',
+    'lbl.from.date':'С даты','lbl.to.date':'По дату','lbl.limit':'Лимит',
+    'sms.pricing.info':'Тарифы Eskiz (сум за 1 SMS, 160 символов Latin / 70 символов Unicode). Обновите вручную при изменении тарифов оператора.',
+    'th.operator':'Оператор','th.prefixes':'Префиксы (+998)',
+    'th.svc.price':'Сервисный (сум)','th.adv.price':'Рекламный (сум)',
+    'sms.cfg.status.ok':'✅ Email и пароль настроены. Токен обновляется автоматически.',
+    'sms.cfg.sender.lbl':'Имя отправителя (alpha-name)',
+    'sms.cfg.sender.hint':'Должно быть зарегистрировано в кабинете Eskiz.uz',
+    'sms.cfg.api.docs':'📚 Справочник Eskiz API','lbl.expand':'развернуть ▾',
+    'ph.search.tg.clients':'🔍 Поиск по имени, телефону, @username',
+    'tg.found':'Найдено:','th.orders.spent':'Потрачено',
+    'empty.tg.clients':'Клиентов с Telegram не найдено',
   },
   uz: {
     'btn.add':'+ Qoʻshish','btn.save':'💾 Saqlash','btn.cancel':'Bekor qilish',
@@ -5806,6 +5881,81 @@ const _adminI18n = {
     'orders.btn.select':'☑️ Tanlash','orders.btn.add':'+ Buyurtma',
     'orders.select.all':'Barchasini tanlash','orders.change.status':'— Holat oʻzgartirish —',
     'leads.select.all':'Barchasini tanlash','leads.change.status':'— Holat oʻzgartirish —',
+    'src.agent':'🤝 Agent',
+    'orders.all.staff':'👤 Barcha xodimlar','orders.ph.staff':'Xodimni tanlash',
+    'empty.orders':'Buyurtmalar yoʻq',
+    'ph.date':'kk.oo.yyyy',
+    'empty.routes':'Marshrutlar yoʻq',
+    'empty.routes.msg':'Marshrutlar hali yoʻq.','empty.routes.hint':'«+ Yangi marshrut» tugmasini bosing.',
+    'cash.card.drivers':'Xodimlar','cash.on.hand':'qoʻlda',
+    'cash.card.managers':'Menejerlar','cash.card.admin':'Boshqaruv',
+    'cash.card.deposited':'Inkassatsiya','cash.today.lbl':'bugun',
+    'cash.card.topay':'Toʻlov kutmoqda','cash.awaiting':'topshirishni kutmoqda',
+    'cash.card.debts':'Mijozlar qarzi','cash.orders.lbl':'buyurtma',
+    'cash.card.expenses':'Xarajatlar kut.','cash.items.lbl':'dona',
+    'cash.overdue':'⚠️ muddati oʻtgan:',
+    'pay.cash':'💵 Naqd pul','pay.card':'💳 Karta','pay.transfer':'📲 Oʻtkazma',
+    'pay.cash.short':'💵 Naqd','pay.total':'💰 Jami','pay.currency':'soʻm',
+    'lbl.from':'Dan','lbl.to':'Gacha',
+    'cash.btn.by.orders':'📋 Buyurtmalar boʻyicha','cash.btn.all.payments':'📋 Barcha toʻlovlar',
+    'cash.empty.payments':'Davr uchun toʻlangan buyurtmalar yoʻq',
+    'promo.info':'Bir vaqtning oʻzida faqat bitta aksiya faol boʻlishi mumkin. Aksiyani yoqish boshqalarni avtomatik oʻchiradi.',
+    'th.name.ru':'Nomi (RU)',
+    'promo.on':'✅ Yoq','promo.off':'❌ Oʻchiq',
+    'promo.status.active':'🟢 Hozir davom etmoqda','promo.status.soon':'⏳ Tez kunda','promo.status.ended':'⌛ Tugagan',
+    'contacts.btn.del.all':'🗑 Barchasini oʻchirish',
+    'empty.groups.hint':'Birinchi kontakt guruhini yarating',
+    'empty.campaigns.hint':'Birinchi avtouzatish kampaniyasini yarating',
+    'empty.tests':'Sinov chaqiruvlari yoʻq','empty.tests.hint':'ATSni tekshirish uchun «Sinov chaqiruvi» ni bosing',
+    'ad.agent.offline':'🔴 Agent faol emas','ad.agent.online':'🟢 Agent faol',
+    'gr.birthday.title':'Tugʻilgan kun / Yubiley',
+    'gr.birthday.desc':'CRM roʻyxatidan bugun tugʻilgan kun boʻlgan mijozlarni avtomatik tabriklayd. Mijoz kartasida tugʻilgan kun sanasi kerak.',
+    'gr.birthday.btn':'▶ Bugun ishga tushirish','gr.birthday.next':'Yaqinlashayotganlar:',
+    'gr.holiday.title':'Bayram tarqatmasi',
+    'gr.holiday.desc':'Yangi yil, Navroʻz, 8-mart uchun barcha mijozlarga bayram tabrigi bilan qoʻngʻiroq. IVR yozuvini tanlang va ishga tushiring — kampaniya avtomatik yaratiladi.',
+    'gr.holiday.btn':'▶ Barcha mijozlar uchun ishga tushirish',
+    'gr.ready.title':'Eslatma: buyurtma tayyor',
+    'gr.ready.desc':'Buyurtma «Tayyor» holatiga oʻtganidan 24 soat oʻtgan mijozlarga avtomatik qoʻngʻiroq qiladi. Narsalarini olishini eslatadi.',
+    'gr.ready.btn':'▶ Kutayotganlarga qoʻngʻiroq',
+    'gr.prank.title':'Doʻst uchun hazil',
+    'gr.prank.desc':'Tanlangan IVR yozuvi bilan istalgan raqamga bir qoʻngʻiroq. Darhol qoʻngʻiroq qiladi.',
+    'lbl.phone.num':'Raqam','lbl.ivr':'Ssenariy (IVR)','gr.prank.btn':'📞 Qoʻngʻiroq!',
+    'ad.ivr.title':'🎙 IVR / Ovozli menyular',
+    'ad.ivr.desc':'Har bir ssenariy uchun ovozli yozuvlar. Raqam UCM → Call Features → IVR da belgilanadi.',
+    'ad.ivr.ads':'📢 Reklama','ad.ivr.greetings':'🎉 Tabriklar',
+    'ad.ivr.reminders':'🔔 Eslatmalar','ad.ivr.prank':'😄 Hazil',
+    'ad.agent.title':'Avtouzatish agenti',
+    'ad.agent.desc1':'autodial_agent.py fayli ATS tarmogʻidagi ofis kompyuterida ishga tushiriladi.',
+    'ad.agent.desc2':'Agent bazadan kampaniyalarni oʻqiydi va AMI (192.168.1.6:7777) orqali qoʻngʻiroq qiladi.',
+    'ad.agent.desc3':'Autostart: start_autodial.bat ni Windows autoload papkasiga qoʻshish.',
+    'ad.agent.status.lbl':'Holat:','ad.btn.check':'🔄 Agentni tekshirish',
+    'sms.tab.single':'Raqam boʻyicha','sms.tab.grp':'Guruhlar boʻyicha',
+    'sms.nick.lbl':'Nik (alfa nomi)','sms.short.ph':'4546 (qisqa raqam)',
+    'sms.template.lbl':'Shablon',
+    'sms.cat.all':'Barchasi','sms.cat.cleaning':'🧺 Kimyoviy tozalash',
+    'sms.cat.greetings':'🎉 Tabriklar','sms.cat.osago':'🚗 OSAGO',
+    'sms.cat.other':'📁 Boshqalar','sms.no.template':'— Shablonsiz —',
+    'sms.text.lbl':'Xabar matni','sms.text.ph':'Xabar matnini kiriting...',
+    'sms.chars.help':'📌 Belgilar boʻyicha koʻrsatma','sms.btn.send':'📤 Yuborish',
+    'sms.stat.total':'JAMI','sms.stat.active':'FAOL',
+    'sms.stat.inactive':'FAOL EMAS','sms.stat.blacklist':'QORA ROʻYXAT',
+    'th.group':'Guruh','th.last.sms':'Oxirgi SMS',
+    'sms.empty.contacts':'Kontaktlar yoʻq',
+    'sms.empty.groups.hint':'Birinchi SMS kontakt guruhini yarating',
+    'sms.btn.add.template':'+ Shablon qoʻshish',
+    'sms.empty.templates':'Shablonlar yoʻq',
+    'sms.empty.templates.hint':'«+ Shablon qoʻshish» tugmasini bosing',
+    'lbl.from.date':'Sanadan','lbl.to.date':'Sanagacha','lbl.limit':'Limit',
+    'sms.pricing.info':'Eskiz tariflari (1 SMS uchun soʻm, 160 belgi Latin / 70 belgi Unicode). Operator tariflari oʻzgarganda qoʻlda yangilang.',
+    'th.operator':'Operator','th.prefixes':'Prefikslar (+998)',
+    'th.svc.price':'Xizmat (soʻm)','th.adv.price':'Reklama (soʻm)',
+    'sms.cfg.status.ok':'✅ Email va parol sozlangan. Token avtomatik yangilanadi.',
+    'sms.cfg.sender.lbl':'Yuboruvchi nomi (alpha-name)',
+    'sms.cfg.sender.hint':'Eskiz.uz kabinetida roʻyxatdan oʻtgan boʻlishi kerak',
+    'sms.cfg.api.docs':'📚 Eskiz API maʼlumotnomasi','lbl.expand':'ochish ▾',
+    'ph.search.tg.clients':'🔍 Ism, telefon, @username boʻyicha qidirish',
+    'tg.found':'Topildi:','th.orders.spent':'Sarflangan',
+    'empty.tg.clients':'Telegram bilan mijozlar topilmadi',
   },
 };
 function _applyAdminI18n() {
@@ -7667,7 +7817,7 @@ function _payRow(o) {
 function renderOrderCards(orders, containerId) {
   const el = document.getElementById(containerId);
   if (!orders.length) {
-    el.innerHTML = '<div class="loader">Нет заказов</div>';
+    el.innerHTML = `<div class="loader">${_t('empty.orders')}</div>`;
     return;
   }
   if (containerId === 'ordersList') _adminOrdersCache = orders;
@@ -10585,15 +10735,15 @@ async function loadCashDashboard() {
     else debtBadge.style.display = 'none';
   }
   const cards = [
-    { icon:'🚗', label:'Сотрудники',    value:fmt(d.staff_on_hand),        color:'var(--text)',  sub:'на руках' },
-    { icon:'💰', label:'Менеджеры',     value:fmt(d.manager_on_hand),       color:'var(--text)',  sub:'на руках' },
-    { icon:'👑', label:'Администрация', value:fmt(d.admin_on_hand),         color:'var(--text)',  sub:'на руках' },
-    { icon:'🏦', label:'Инкассировано', value:fmt(d.banked_today),          color:'#15803d',      sub:'сегодня' },
-    { icon:'⏳', label:'К оплате',      value:fmt(d.pending_client_cash),   color:'#d97706',      sub:'ожидают сдачи' },
-    { icon:'🔴', label:'Долги клиентов',value:fmt(d.debt_total ?? 0),       color:'#dc2626',
-      sub: d.debt_overdue_count > 0 ? `⚠️ просрочено: ${d.debt_overdue_count}` : `${d.debt_count ?? 0} заказов` },
-    { icon:'🧾', label:'Расходы ожид.', value:fmt(d.expenses_pending_sum), color:'#b91c1c',
-      sub: d.expenses_pending_count ? `${d.expenses_pending_count} шт.` : '0 шт.' },
+    { icon:'🚗', label:_t('cash.card.drivers'),   value:fmt(d.staff_on_hand),        color:'var(--text)',  sub:_t('cash.on.hand') },
+    { icon:'💰', label:_t('cash.card.managers'),  value:fmt(d.manager_on_hand),       color:'var(--text)',  sub:_t('cash.on.hand') },
+    { icon:'👑', label:_t('cash.card.admin'),     value:fmt(d.admin_on_hand),         color:'var(--text)',  sub:_t('cash.on.hand') },
+    { icon:'🏦', label:_t('cash.card.deposited'), value:fmt(d.banked_today),          color:'#15803d',      sub:_t('cash.today.lbl') },
+    { icon:'⏳', label:_t('cash.card.topay'),     value:fmt(d.pending_client_cash),   color:'#d97706',      sub:_t('cash.awaiting') },
+    { icon:'🔴', label:_t('cash.card.debts'),     value:fmt(d.debt_total ?? 0),       color:'#dc2626',
+      sub: d.debt_overdue_count > 0 ? `${_t('cash.overdue')} ${d.debt_overdue_count}` : `${d.debt_count ?? 0} ${_t('cash.orders.lbl')}` },
+    { icon:'🧾', label:_t('cash.card.expenses'),  value:fmt(d.expenses_pending_sum), color:'#b91c1c',
+      sub: d.expenses_pending_count ? `${d.expenses_pending_count} ${_t('cash.items.lbl')}` : `0 ${_t('cash.items.lbl')}` },
   ];
   const el = document.getElementById('cashDashboardCards');
   if (el) el.innerHTML = cards.map(c => `
@@ -10686,7 +10836,7 @@ async function loadDebtOrders() {
   const d = await apiGet('/admin/orders/debts').catch(() => null);
   const rows = d?.debts || [];
   if (!rows.length) {
-    el.innerHTML = '<div style="text-align:center;color:var(--text2);padding:30px;font-size:13px">Нет заказов в долг</div>';
+    el.innerHTML = `<div style="text-align:center;color:var(--text2);padding:30px;font-size:13px">${_t('empty.orders')}</div>`;
     return;
   }
   const today = new Date(); today.setHours(0,0,0,0);
@@ -10828,7 +10978,7 @@ async function loadCashPage() {
   const data = await res.json();
 
   // Итоги
-  const methods = { cash:'💵 Наличные', card:'💳 Карта', transfer:'📲 Перевод' };
+  const methods = { cash:_t('pay.cash'), card:_t('pay.card'), transfer:_t('pay.transfer') };
   const totals  = { cash:0, card:0, transfer:0 };
   (data.summary||[]).forEach(r => { if (totals[r.payment_method] !== undefined) totals[r.payment_method] += parseFloat(r.amount||0); });
   const grand = totals.cash + totals.card + totals.transfer;
@@ -10870,7 +11020,7 @@ async function loadCashPage() {
           </tr>`;
         }).join('')}</tbody>
       </table>
-    </div>` : `<div style="text-align:center;color:var(--text2);padding:24px">Нет оплаченных заказов за период</div>`;
+    </div>` : `<div style="text-align:center;color:var(--text2);padding:24px">${_t('cash.empty.payments')}</div>`;
 
   // Все записи оплат — только если та под-вкладка активна
   const logPane = document.getElementById('cashPayPane_log');
@@ -10890,7 +11040,7 @@ async function loadPaymentsLog() {
   const cntEl = document.getElementById('paymentsLogCount');
   const rows  = data.payments || [];
   cntEl.textContent = rows.length ? `${rows.length} записей` : '';
-  const mLabel = { cash:'💵 Нал', card:'💳 Карта', transfer:'📲 Перевод' };
+  const mLabel = { cash:_t('pay.cash.short'), card:_t('pay.card'), transfer:_t('pay.transfer') };
   const statusBadge = p => {
     if (p.confirmed === true)  return '<span style="color:var(--green,#16a34a);font-weight:600">✅ Подтверждён</span>';
     if (p.confirmed === false && p.confirmed_at) return '<span style="color:#dc2626;font-weight:600">❌ Отклонён</span>';
@@ -10946,7 +11096,7 @@ let _pmOrderNet = 0;
 let _pmCachedPaid = 0;
 let _pmCachedPending = 0;
 
-const _PM_M_LABEL = { cash:'💵 Нал', card:'💳 Карта', transfer:'📲 Перевод' };
+const _PM_M_LABEL = { get cash(){ return _t('pay.cash.short'); }, get card(){ return _t('pay.card'); }, get transfer(){ return _t('pay.transfer'); } };
 const _PM_P_LABEL = { prepayment:'Предоплата', partial:'Частичная оплата', final:'Окончательный расчёт', payment:'Оплата' };
 
 async function loadOrderPayment(o) {
@@ -11928,7 +12078,7 @@ function _renderAdminLeadsFilterChips() {
       background:${active?'var(--accent)':'var(--surface2)'};
       color:${active?'#fff':'var(--text)'};transition:all .15s">${c.label}</button>`;
   }).join('');
-  if (xc) xc.innerHTML = [['all','Все'],['site','🌐 Сайт'],['agent','🤝 Агент'],['staff','👤 Сотрудник']].map(([k,lbl]) => {
+  if (xc) xc.innerHTML = [['all',_t('lbl.all')],['site',_t('src.site')],['agent',_t('src.agent')],['staff',_t('src.staff')]].map(([k,lbl]) => {
     const active = k === _adminLeadsSourceFilter;
     return `<button onclick="setAdminLeadsSourceFilter('${k}')" style="
       padding:5px 14px;border-radius:20px;font-size:13px;font-weight:600;white-space:nowrap;cursor:pointer;flex-shrink:0;
@@ -12070,8 +12220,8 @@ function _renderAdminOrdersStaffRow() {
   const s = (a) => `padding:6px 14px;border-radius:20px;font-size:13px;font-weight:600;white-space:nowrap;cursor:pointer;flex-shrink:0;border:1.5px solid ${a?'var(--accent)':'var(--border)'};background:${a?'var(--accent)':'var(--surface2)'};color:${a?'#fff':'var(--text)'};transition:all .15s`;
   const label = _adminOrdersStaffFilter || null;
   row.innerHTML =
-    `<button onclick="setAdminOrdersStaffFilter(null)" style="${s(!_adminOrdersStaffFilter)}">👤 Все сотрудники</button>` +
-    `<button onclick="openAdminOrdersStaffModal()" style="${s(!!_adminOrdersStaffFilter)}">${label ? '✓ ' + label : 'Выбрать сотрудника'}</button>`;
+    `<button onclick="setAdminOrdersStaffFilter(null)" style="${s(!_adminOrdersStaffFilter)}">${_t('orders.all.staff')}</button>` +
+    `<button onclick="openAdminOrdersStaffModal()" style="${s(!!_adminOrdersStaffFilter)}">${label ? '✓ ' + label : _t('orders.ph.staff')}</button>`;
 }
 function setAdminOrdersStaffFilter(name) {
   _adminOrdersStaffFilter = name;
@@ -12098,7 +12248,7 @@ function openAdminOrdersStaffModal() {
   modal.innerHTML = `
     <div style="background:var(--surface);border-radius:20px 20px 0 0;width:100%;max-width:480px;padding:20px 16px 36px;max-height:75vh;display:flex;flex-direction:column">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
-        <div style="font-size:17px;font-weight:700;color:var(--text)">Выбрать сотрудника</div>
+        <div style="font-size:17px;font-weight:700;color:var(--text)">${_t('orders.ph.staff')}</div>
         <button onclick="document.getElementById('adminOrdersStaffModal').style.display='none'" style="background:none;border:none;font-size:22px;color:var(--text2);cursor:pointer;line-height:1">×</button>
       </div>
       <div style="display:flex;align-items:center;gap:8px;background:var(--bg);border-radius:12px;padding:8px 12px;margin-bottom:12px">
@@ -14117,9 +14267,9 @@ async function loadTgClients(search = '') {
     });
     const data = await res.json();
     const clients = data.clients || [];
-    if (countEl) countEl.textContent = `Найдено: ${clients.length}`;
+    if (countEl) countEl.textContent = `${_t('tg.found')} ${clients.length}`;
     if (!clients.length) {
-      tbody.innerHTML = `<tr><td colspan="6" style="padding:20px;text-align:center;color:var(--muted);">Клиентов с Telegram не найдено</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="6" style="padding:20px;text-align:center;color:var(--muted);">${_t('empty.tg.clients')}</td></tr>`;
       return;
     }
     tbody.innerHTML = clients.map(c => {
@@ -14405,7 +14555,7 @@ async function loadRoutes() {
     if (det) {
       det.innerHTML = `
         <div style="padding:48px;text-align:center;color:var(--text2);font-size:15px">
-          Маршрутов пока нет.<br>Нажмите «+ Новый маршрут» чтобы создать.
+          ${_t('empty.routes.msg')}<br>${_t('empty.routes.hint')}
         </div>
       `;
     }
@@ -14421,7 +14571,7 @@ function _rtFmtDate(d) {
 function renderRoutesList() {
   const el = document.getElementById('routesList');
   if (!_routesData.length) {
-    el.innerHTML = '<div style="padding:32px;text-align:center;color:var(--text2)">Маршрутов нет</div>';
+    el.innerHTML = `<div style="padding:32px;text-align:center;color:var(--text2)">${_t('empty.routes')}</div>`;
     return;
   }
   el.innerHTML = _routesData.map(r => `
@@ -14972,7 +15122,7 @@ function filterRouteOrdersPicker() {
 
 function renderRouteOrdersPicker() {
   const el = document.getElementById('roPickerList');
-  if (!_roFiltered.length) { el.innerHTML='<div style="padding:24px;text-align:center;color:var(--text2)">Нет заказов</div>'; return; }
+  if (!_roFiltered.length) { el.innerHTML=`<div style="padding:24px;text-align:center;color:var(--text2)">${_t('empty.orders')}</div>`; return; }
   // Сортировка: с локацией — сверху, без локации — снизу
   const sorted = [..._roFiltered].sort((a, b) => (!!b.location) - (!!a.location));
   const noLocCount = sorted.filter(o => !o.location).length;
@@ -16154,17 +16304,17 @@ function promoRenderTable() {
     const period = `${promoFmtDt(p.starts_at)} — ${promoFmtDt(p.ends_at)}`;
     let stateBadge;
     if (p.is_currently_active) {
-      stateBadge = '<span style="font-size:11px;padding:3px 10px;border-radius:20px;background:#e8f8ed;color:#34c759;font-weight:700">🟢 Идёт сейчас</span>';
+      stateBadge = `<span style="font-size:11px;padding:3px 10px;border-radius:20px;background:#e8f8ed;color:#34c759;font-weight:700">${_t('promo.status.active')}</span>`;
     } else if (p.ends_at && new Date(p.ends_at) < new Date()) {
-      stateBadge = '<span style="font-size:11px;padding:3px 10px;border-radius:20px;background:#f2f2f7;color:#8e8e93;font-weight:700">⏹ Завершена</span>';
+      stateBadge = `<span style="font-size:11px;padding:3px 10px;border-radius:20px;background:#f2f2f7;color:#8e8e93;font-weight:700">${_t('promo.status.ended')}</span>`;
     } else if (p.is_active) {
-      stateBadge = '<span style="font-size:11px;padding:3px 10px;border-radius:20px;background:#fff8e6;color:#b45309;font-weight:700">⏳ Ещё не началась</span>';
+      stateBadge = `<span style="font-size:11px;padding:3px 10px;border-radius:20px;background:#fff8e6;color:#b45309;font-weight:700">${_t('promo.status.soon')}</span>`;
     } else {
-      stateBadge = '<span style="font-size:11px;padding:3px 10px;border-radius:20px;background:#f2f2f7;color:#8e8e93;font-weight:700">⏹ Выключена</span>';
+      stateBadge = `<span style="font-size:11px;padding:3px 10px;border-radius:20px;background:#f2f2f7;color:#8e8e93;font-weight:700">${_t('promo.off')}</span>`;
     }
     const toggleBtn = p.is_active
-      ? `<button class="btn btn-sm" style="background:#e8f8ed;color:#34c759;border:1px solid rgba(52,199,89,.3)" onclick="promoToggleActive(${p.id}, false)">✅ Вкл</button>`
-      : `<button class="btn btn-sm" style="background:var(--surface2);color:var(--text2)" onclick="promoToggleActive(${p.id}, true)">⏸ Выкл</button>`;
+      ? `<button class="btn btn-sm" style="background:#e8f8ed;color:#34c759;border:1px solid rgba(52,199,89,.3)" onclick="promoToggleActive(${p.id}, false)">${_t('promo.on')}</button>`
+      : `<button class="btn btn-sm" style="background:var(--surface2);color:var(--text2)" onclick="promoToggleActive(${p.id}, true)">${_t('promo.off')}</button>`;
     return `<tr>
       <td data-label="Код"><b>${p.code}</b></td>
       <td data-label="Название">${p.title_ru || '—'}</td>
@@ -16746,7 +16896,7 @@ async function ctLoad() {
   const filtered = _ctTemplates.filter(t =>
     (!langF || t.lang === langF) && (!keyF || t.key === keyF)
   );
-  if (!filtered.length) { list.innerHTML = '<div style="color:var(--muted);font-size:13px;padding:16px 0;">Нет шаблонов</div>'; return; }
+  if (!filtered.length) { list.innerHTML = `<div style="color:var(--muted);font-size:13px;padding:16px 0;">${_t('sms.empty.templates')}</div>`; return; }
   list.innerHTML = filtered.map(t => `
     <div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px;display:flex;gap:12px;align-items:flex-start;">
       <div style="flex:1;min-width:0;">
@@ -18913,8 +19063,8 @@ async function adgLoad() {
   if (!list.length) {
     wrap.innerHTML = `<div style="text-align:center;padding:48px 0;color:var(--text2);grid-column:1/-1">
       <div style="font-size:36px;margin-bottom:10px">👥</div>
-      <div style="font-size:15px;font-weight:600">Нет групп</div>
-      <div style="font-size:13px;margin-top:4px">Создайте первую группу контактов</div></div>`;
+      <div style="font-size:15px;font-weight:600">${_t('empty.groups')}</div>
+      <div style="font-size:13px;margin-top:4px">${_t('empty.groups.hint')}</div></div>`;
     return;
   }
   wrap.innerHTML = list.map(g => `
@@ -18990,7 +19140,7 @@ async function adgReloadMembers() {
       <td style="padding:7px 6px;color:var(--text2)">${_esc(m.name||'')}</td>
       <td style="padding:7px 6px;color:var(--text2)">${src[m.source_type]||m.source_type}</td>
       <td style="padding:7px 6px;text-align:right"><button onclick="adgDelMember(${m.id})" style="border:none;background:none;color:#dc2626;cursor:pointer;font-size:16px">×</button></td>
-    </tr>`).join('') : '<tr><td colspan="4" style="padding:24px;text-align:center;color:var(--text2)">Нет контактов</td></tr>';
+    </tr>`).join('') : `<tr><td colspan="4" style="padding:24px;text-align:center;color:var(--text2)">${_t('sms.empty.contacts')}</td></tr>`;
 }
 
 async function adgAddManual() {
@@ -19231,8 +19381,8 @@ async function adCheckAgentSettings() {
   el.textContent = '⏳ Проверяется...';
   try {
     const r = await fetch('http://localhost:7778/status', { signal: AbortSignal.timeout(2000) });
-    el.textContent = r.ok ? '🟢 Агент активен' : '🔴 Агент не активен';
-  } catch { el.textContent = '🔴 Агент не активен'; }
+    el.textContent = r.ok ? _t('ad.agent.online') : _t('ad.agent.offline');
+  } catch { el.textContent = _t('ad.agent.offline'); }
 }
 
 // ── Настройки: CallerID ─────────────────────────────────────────────────
@@ -19408,7 +19558,7 @@ async function adCheckAgent() {
       el.style.background = '#dcfce7'; el.style.color = '#16a34a'; el.style.borderColor = '#86efac';
     } else { throw new Error(); }
   } catch {
-    el.textContent = '🔴 Агент не активен';
+    el.textContent = _t('ad.agent.offline');
     el.style.background = '#fee2e2'; el.style.color = '#dc2626'; el.style.borderColor = '#fca5a5';
   }
 }
@@ -19434,8 +19584,8 @@ function _adRenderCampaigns() {
   const list = _adAllCampaigns.filter(c => isTest ? c.source_type === 'manual' : c.source_type !== 'manual');
   if (!list.length) {
     const icon = isTest ? '🔧' : '📋';
-    const label = isTest ? 'Нет тестовых звонков' : 'Нет кампаний';
-    const sub = isTest ? 'Нажмите «Тест звонка» чтобы проверить АТС' : 'Создайте первую кампанию автодозвона';
+    const label = isTest ? _t('empty.tests') : _t('empty.campaigns');
+    const sub = isTest ? _t('empty.tests.hint') : _t('empty.campaigns.hint');
     wrap.innerHTML = `<div style="text-align:center;padding:48px 0;color:var(--text2)">
       <div style="font-size:36px;margin-bottom:10px">${icon}</div>
       <div style="font-size:15px;font-weight:600">${label}</div>
@@ -19838,8 +19988,8 @@ async function smsGrpLoad() {
   if (!_smsGrpData.length) {
     el.innerHTML = `<div style="text-align:center;padding:48px 0;color:var(--text2);grid-column:1/-1">
       <div style="font-size:36px;margin-bottom:10px">📂</div>
-      <div style="font-size:15px;font-weight:600">Нет групп</div>
-      <div style="font-size:13px;margin-top:4px">Создайте первую группу контактов SMS</div>
+      <div style="font-size:15px;font-weight:600">${_t('empty.groups')}</div>
+      <div style="font-size:13px;margin-top:4px">${_t('sms.empty.groups.hint')}</div>
     </div>`;
     return;
   }
@@ -19969,8 +20119,8 @@ async function smsCntLoad() {
   const inactive = contacts.filter(c => c.status === 'inactive').length;
   const black    = contacts.filter(c => c.status === 'blacklist').length;
   document.getElementById('smsCntStats').innerHTML = [
-    ['ВСЕГО', total, '#6366f1'], ['АКТИВНЫЙ', active, '#16a34a'],
-    ['НЕАКТИВНЫЙ', inactive, '#d97706'], ['ЧЁРНЫЙ СПИСОК', black, '#dc2626']
+    [_t('sms.stat.total'), total, '#6366f1'], [_t('sms.stat.active'), active, '#16a34a'],
+    [_t('sms.stat.inactive'), inactive, '#d97706'], [_t('sms.stat.blacklist'), black, '#dc2626']
   ].map(([label, val, color]) => `
     <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 20px;text-align:center;min-width:100px">
       <div style="font-size:11px;color:var(--text2);font-weight:600;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:4px">${label}</div>
@@ -19980,7 +20130,7 @@ async function smsCntLoad() {
   // Таблица
   const tbody = document.getElementById('smsCntBody');
   if (!contacts.length) {
-    tbody.innerHTML = '<tr><td colspan="6" style="padding:40px;text-align:center;color:var(--text2)">Нет контактов</td></tr>';
+    tbody.innerHTML = `<tr><td colspan="6" style="padding:40px;text-align:center;color:var(--text2)">${_t('sms.empty.contacts')}</td></tr>`;
     return;
   }
   const grpMap = Object.fromEntries(_smsCntGroups.map(g => [g.id, g.name]));
@@ -20731,8 +20881,8 @@ function smsTplRender() {
   if (!list.length) {
     el.innerHTML = `<div style="text-align:center;padding:48px 0;color:var(--text2);grid-column:1/-1">
       <div style="font-size:36px;margin-bottom:10px">📝</div>
-      <div style="font-size:15px;font-weight:600">Нет шаблонов</div>
-      <div style="font-size:13px;margin-top:4px">Нажмите «+ Добавить шаблон»</div>
+      <div style="font-size:15px;font-weight:600">${_t('sms.empty.templates')}</div>
+      <div style="font-size:13px;margin-top:4px">${_t('sms.empty.templates.hint')}</div>
     </div>`;
     return;
   }
