@@ -7703,18 +7703,27 @@ let _svcData   = {};
 async function loadPrices() {
   document.getElementById('pricesLoading').style.display = 'block';
   document.getElementById('pricesTable').style.display   = 'none';
-  const [pricesData, unitsData, svcsRes] = await Promise.all([
-    apiGet('/admin/prices'),
-    apiGet('/admin/units'),
-    apiGet('/admin/services'),
-  ]);
+  let pricesData, unitsData, svcsRes;
+  try {
+    [pricesData, unitsData, svcsRes] = await Promise.all([
+      apiGet('/admin/prices'),
+      apiGet('/admin/units'),
+      apiGet('/admin/services'),
+    ]);
+  } catch(e) {
+    document.getElementById('pricesLoading').textContent = '⚠ ' + (e.message || 'Ошибка загрузки');
+    return;
+  }
   // Загружаем услуги
   const services = svcsRes?.services || [];
   _svcData = {};
   services.forEach(s => { _svcData[s.key] = s; });
-  _renderServicesCard(services);
+  try { _renderServicesCard(services); } catch(e) { console.error('_renderServicesCard:', e); }
 
-  if (!pricesData) return;
+  if (!pricesData?.prices) {
+    document.getElementById('pricesLoading').textContent = pricesData?.detail || '⚠ Ошибка загрузки цен';
+    return;
+  }
   unitsCache = unitsData?.units || [];
   document.getElementById('pricesLoading').style.display = 'none';
   document.getElementById('pricesTable').style.display   = '';

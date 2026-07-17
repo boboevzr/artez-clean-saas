@@ -287,7 +287,10 @@
       <div class="page" id="page-sa-services">
         <div class="section-header">
           <div class="page-title" style="margin:0">🛠 Услуги (глобальный справочник)</div>
-          <button class="btn btn-primary btn-sm" onclick="saOpenSvcModal()">+ Добавить</button>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-sm" style="background:var(--green,#16a34a);color:#fff" onclick="seedCatalogFromCompany()">↓ Заполнить из компании</button>
+            <button class="btn btn-primary btn-sm" onclick="saOpenSvcModal()">+ Добавить</button>
+          </div>
         </div>
         <p style="font-size:13px;color:var(--text2);margin-bottom:12px">Услуги едины для всех компаний. Цены для каждой компании — в разделе «Прайс-лист».</p>
         <div class="table-wrap">
@@ -303,7 +306,10 @@
       <div class="page" id="page-sa-prices">
         <div class="section-header">
           <div class="page-title" style="margin:0">💰 Прайс-лист (шаблон)</div>
-          <button class="btn btn-primary btn-sm" onclick="saveAllCatalogPrices()">💾 Сохранить все</button>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-sm" style="background:var(--green,#16a34a);color:#fff" onclick="seedCatalogFromCompany()">↓ Заполнить из компании</button>
+            <button class="btn btn-primary btn-sm" onclick="saveAllCatalogPrices()">💾 Сохранить все</button>
+          </div>
         </div>
         <p style="font-size:13px;color:var(--text2);margin-bottom:12px">Эти цены используются как шаблон при создании новой компании. Импортировать в конкретную компанию можно во вкладке «Справочники» компании.</p>
         <div id="saPricesGrid"></div>
@@ -2227,6 +2233,17 @@ async function ecImportPrices() {
     errEl.style.color = 'var(--green)';
     errEl.textContent = '✅ Цены успешно восстановлены';
   } catch(e) { errEl.style.color = ''; errEl.textContent = e.message; }
+}
+
+async function seedCatalogFromCompany() {
+  if (!confirm('Заполнить шаблон услуг и цен из компании #1 (artez)? Текущий шаблон будет перезаписан.')) return;
+  try {
+    await api('/saas/catalog/seed-from-company', 'POST');
+    alert('✅ Шаблон обновлён из компании #1');
+    const cur = document.querySelector('.nav-item.active')?.dataset?.page;
+    if (cur === 'sa-services') loadCatalogServices();
+    else if (cur === 'sa-prices') loadCatalogPrices();
+  } catch(e) { alert('Ошибка: ' + e.message); }
 }
 
 // ── UTILS ─────────────────────────────────────────────
