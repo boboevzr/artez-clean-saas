@@ -177,6 +177,9 @@
       <div class="nav-item" data-page="sa-positions" onclick="showPage('sa-positions',this)">
         <span class="icon">🎯</span> Должности
       </div>
+      <div class="nav-item" data-page="sa-units" onclick="showPage('sa-units',this)">
+        <span class="icon">📏</span> Ед. измерения
+      </div>
       <div class="nav-item" data-page="sa-services" onclick="showPage('sa-services',this)">
         <span class="icon">🛠</span> Услуги
       </div>
@@ -283,6 +286,28 @@
         </div>
       </div>
 
+      <!-- PAGE: Catalog Units -->
+      <div class="page" id="page-sa-units">
+        <div class="section-header">
+          <div class="page-title" style="margin:0">📏 Единицы измерения</div>
+          <button class="btn btn-primary btn-sm" onclick="saOpenUnitModal()">+ Добавить</button>
+        </div>
+        <p style="font-size:13px;color:var(--text2);margin-bottom:12px">Глобальный справочник единиц — используются в ценах и калькуляторе.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th>Ключ</th>
+              <th>Название RU</th>
+              <th>Название UZ</th>
+              <th>Символ RU</th>
+              <th>Символ UZ</th>
+              <th></th>
+            </tr></thead>
+            <tbody id="saUnitRows"><tr><td colspan="6" style="color:var(--text2);font-size:13px">Загрузка…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
       <!-- PAGE: Catalog Services -->
       <div class="page" id="page-sa-services">
         <div class="section-header">
@@ -308,16 +333,70 @@
           <div class="page-title" style="margin:0">💰 Прайс-лист (шаблон)</div>
           <div style="display:flex;gap:8px">
             <button class="btn btn-sm" style="background:var(--green,#16a34a);color:#fff" onclick="seedCatalogFromCompany()">↓ Заполнить из компании</button>
-            <button class="btn btn-primary btn-sm" onclick="saveAllCatalogPrices()">💾 Сохранить все</button>
+            <button class="btn btn-primary btn-sm" onclick="saOpenPriceModalNew()">+ Добавить</button>
           </div>
         </div>
-        <p style="font-size:13px;color:var(--text2);margin-bottom:12px">Эти цены используются как шаблон при создании новой компании. Импортировать в конкретную компанию можно во вкладке «Справочники» компании.</p>
-        <div id="saPricesGrid"></div>
+        <p style="font-size:13px;color:var(--text2);margin-bottom:12px">Эти цены используются как шаблон при создании новой компании.</p>
+        <div id="saPricesLoading" style="color:var(--text2);font-size:13px">Загрузка…</div>
+        <div class="table-wrap" id="saPricesWrap" style="display:none">
+          <table class="price-table">
+            <thead><tr>
+              <th>Услуга</th>
+              <th>Цена</th>
+              <th>Ед. изм.</th>
+              <th>Мин. заказ</th>
+              <th></th>
+            </tr></thead>
+            <tbody id="saPriceRows"></tbody>
+          </table>
+        </div>
       </div>
 
     </div><!-- /content -->
   </div><!-- /main-body -->
 </div><!-- /mainScreen -->
+
+<!-- MODAL: Unit (add/edit) -->
+<div class="modal-bg" id="saUnitModal">
+  <div class="modal" style="max-width:480px">
+    <h3 id="saUnitModalTitle">📏 Единица измерения</h3>
+    <div class="field"><label>Ключ (латиница)</label><input id="sau_key" placeholder="m2"></div>
+    <div class="field"><label>Название RU</label><input id="sau_name_ru" placeholder="Квадратный метр"></div>
+    <div class="field"><label>Название UZ</label><input id="sau_name_uz" placeholder="Kvadrat metr"></div>
+    <div class="field"><label>Символ RU</label><input id="sau_sym_ru" placeholder="м²"></div>
+    <div class="field"><label>Символ UZ</label><input id="sau_sym_uz" placeholder="m²"></div>
+    <div class="modal-err" id="saUnitErr"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('saUnitModal')">Отмена</button>
+      <button class="btn btn-primary" onclick="saveSaUnit()">💾 Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Price (add/edit) -->
+<div class="modal-bg" id="saPriceModal">
+  <div class="modal" style="max-width:420px">
+    <h3 id="saPriceModalTitle">💰 Цена</h3>
+    <div id="saPriceNewFields" style="display:none">
+      <div class="field"><label>Услуга</label><select id="sap_svc"></select></div>
+      <div class="field"><label>Тип</label>
+        <select id="sap_tp">
+          <option value="standard">Стандартный</option>
+          <option value="express">Экспресс</option>
+        </select>
+      </div>
+    </div>
+    <div id="saPriceLbl" style="font-size:13px;color:var(--text2);margin-bottom:12px"></div>
+    <div class="field"><label>Цена (сум)</label><input id="sap_price" type="number" min="1" step="1000" placeholder="50000"></div>
+    <div class="field"><label>Ед. измерения</label><select id="sap_unit"></select></div>
+    <div class="field"><label>Мин. заказ</label><input id="sap_min" type="number" min="0" step="0.5" placeholder="не задан"></div>
+    <div class="modal-err" id="saPriceErr"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('saPriceModal')">Отмена</button>
+      <button class="btn btn-primary" onclick="saveSaPriceModal()">💾 Сохранить</button>
+    </div>
+  </div>
+</div>
 
 <!-- MODAL: Create company -->
 <div class="modal-bg" id="modalCompany">
@@ -885,6 +964,7 @@ function showPage(name, navEl) {
   if (name === 'plans') loadPlans();
   if (name === 'sa-departments') saRenderDepts();
   if (name === 'sa-positions') saRenderPositions();
+  if (name === 'sa-units') loadCatalogUnits();
   if (name === 'sa-services') loadCatalogServices();
   if (name === 'sa-prices') loadCatalogPrices();
 }
@@ -2142,71 +2222,178 @@ async function saDeleteSvc(key) {
   } catch(e) { alert(e.message); }
 }
 
-// ── CATALOG: PRICES (template) ────────────────────────
-let _catalogPrices = {};
+// ── CATALOG: UNITS ─────────────────────────────────────
+let _catalogUnits = [];
 
-async function loadCatalogPrices() {
+async function loadCatalogUnits() {
   try {
-    const [pd, sd] = await Promise.all([api('/saas/catalog/prices'), api('/saas/catalog/services')]);
-    _catalogPrices = pd.prices || {};
-    _catalogSvcs   = sd.services || [];
-    renderCatalogPrices();
+    const d = await api('/saas/catalog/units');
+    _catalogUnits = d.units || [];
+    renderSaUnitsTable();
   } catch(e) { alert(e.message); }
 }
 
-function renderCatalogPrices() {
-  const grid = document.getElementById('saPricesGrid');
-  if (!_catalogSvcs.length) {
-    grid.innerHTML = '<p style="color:var(--text2);font-size:13px">Нет услуг. Сначала добавьте услуги в разделе «Услуги».</p>';
+function renderSaUnitsTable() {
+  const tbody = document.getElementById('saUnitRows');
+  if (!_catalogUnits.length) {
+    tbody.innerHTML = '<tr><td colspan="6" style="color:var(--text2);font-size:13px">Нет единиц</td></tr>';
     return;
   }
-  const types = ['standard', 'express'];
-  const typeLabels = { standard: 'Стандарт', express: 'Экспресс' };
-  const rows = _catalogSvcs.map(s => {
-    const svcPrices = _catalogPrices[s.key] || {};
-    const cells = types.map(tp => {
-      const p = svcPrices[tp] || {};
-      return `<td style="padding:6px 10px">
-        <input type="number" min="0" step="100"
-          id="cp_${s.key}_${tp}"
-          value="${p.price || ''}"
-          placeholder="—"
-          style="width:110px;padding:5px 8px;border:1px solid var(--border);border-radius:6px;background:var(--surface2);color:var(--text);font-size:13px">
-      </td>`;
-    }).join('');
-    return `<tr>
-      <td style="padding:6px 10px;font-weight:600">${escHtml(s.emoji || '')} ${escHtml(s.name_ru)}</td>
-      ${cells}
-    </tr>`;
-  }).join('');
-  grid.innerHTML = `
-    <div class="table-wrap">
-      <table>
-        <thead><tr>
-          <th>Услуга</th>
-          ${types.map(tp => `<th>${typeLabels[tp] || tp}</th>`).join('')}
-        </tr></thead>
-        <tbody>${rows}</tbody>
-      </table>
-    </div>`;
+  tbody.innerHTML = _catalogUnits.map(u => `
+    <tr>
+      <td style="font-family:monospace;font-size:12px;color:var(--text2)">${escHtml(u.key)}</td>
+      <td>${escHtml(u.name_ru)}</td>
+      <td>${escHtml(u.name_uz)}</td>
+      <td style="font-weight:600">${escHtml(u.symbol_ru)}</td>
+      <td style="font-weight:600">${escHtml(u.symbol_uz)}</td>
+      <td><button class="btn btn-sm" style="background:#ef4444;color:#fff" onclick="saDeleteUnit('${escHtml(u.key)}')">🗑</button></td>
+    </tr>`).join('');
 }
 
-async function saveAllCatalogPrices() {
-  const types = ['standard', 'express'];
-  let saved = 0, errors = 0;
+function saOpenUnitModal(unit) {
+  document.getElementById('saUnitModalTitle').textContent = unit ? '✏️ Ед. измерения' : '📏 Добавить единицу';
+  document.getElementById('sau_key').value      = unit?.key        || '';
+  document.getElementById('sau_key').disabled   = !!unit;
+  document.getElementById('sau_name_ru').value  = unit?.name_ru    || '';
+  document.getElementById('sau_name_uz').value  = unit?.name_uz    || '';
+  document.getElementById('sau_sym_ru').value   = unit?.symbol_ru  || '';
+  document.getElementById('sau_sym_uz').value   = unit?.symbol_uz  || '';
+  document.getElementById('saUnitErr').textContent = '';
+  openModal('saUnitModal');
+}
+
+async function saveSaUnit() {
+  const errEl = document.getElementById('saUnitErr');
+  const body = {
+    key:       document.getElementById('sau_key').value.trim(),
+    name_ru:   document.getElementById('sau_name_ru').value.trim(),
+    name_uz:   document.getElementById('sau_name_uz').value.trim(),
+    symbol_ru: document.getElementById('sau_sym_ru').value.trim(),
+    symbol_uz: document.getElementById('sau_sym_uz').value.trim(),
+  };
+  if (!body.key || !body.name_ru || !body.symbol_ru) { errEl.textContent = 'Заполните ключ, название RU и символ RU'; return; }
+  try {
+    await api('/saas/catalog/units', 'PUT', body);
+    closeModal('saUnitModal');
+    await loadCatalogUnits();
+  } catch(e) { errEl.textContent = e.message; }
+}
+
+async function saDeleteUnit(key) {
+  if (!confirm(`Удалить единицу «${key}»?`)) return;
+  try {
+    await api(`/saas/catalog/units/${encodeURIComponent(key)}`, 'DELETE');
+    await loadCatalogUnits();
+  } catch(e) { alert(e.message); }
+}
+
+// ── CATALOG: PRICES (template) ────────────────────────
+let _catalogPrices = {};
+let _saPriceEditSvc = null, _saPriceEditTp = null;
+
+const SA_TYPE_LABELS = { standard: 'Стандарт', express: 'Экспресс' };
+
+async function loadCatalogPrices() {
+  document.getElementById('saPricesLoading').style.display = '';
+  document.getElementById('saPricesWrap').style.display = 'none';
+  try {
+    const [pd, sd, ud] = await Promise.all([
+      api('/saas/catalog/prices'),
+      api('/saas/catalog/services'),
+      api('/saas/catalog/units'),
+    ]);
+    _catalogPrices = pd.prices || {};
+    _catalogSvcs   = sd.services || [];
+    _catalogUnits  = ud.units || [];
+    renderCatalogPrices();
+  } catch(e) {
+    document.getElementById('saPricesLoading').textContent = '⚠ ' + e.message;
+  }
+}
+
+function renderCatalogPrices() {
+  document.getElementById('saPricesLoading').style.display = 'none';
+  document.getElementById('saPricesWrap').style.display = '';
+  const tbody = document.getElementById('saPriceRows');
+  if (!_catalogSvcs.length) {
+    tbody.innerHTML = '<tr><td colspan="5" style="color:var(--text2);font-size:13px">Нет услуг. Добавьте услуги в разделе «Услуги».</td></tr>';
+    return;
+  }
+  const rows = [];
   for (const s of _catalogSvcs) {
-    for (const tp of types) {
-      const el = document.getElementById(`cp_${s.key}_${tp}`);
-      if (!el) continue;
-      const val = parseInt(el.value);
-      if (!val || val <= 0) continue;
-      try {
-        await api('/saas/catalog/prices', 'PUT', { service_key: s.key, type_key: tp, price: val });
-        saved++;
-      } catch { errors++; }
+    const svcPrices = _catalogPrices[s.key] || {};
+    for (const tp of ['standard', 'express']) {
+      const p        = svcPrices[tp] || {};
+      const price    = p.price    || 0;
+      const unitKey  = p.unit_key || 'm2';
+      const minOrder = p.min_order ?? null;
+      const unitObj  = _catalogUnits.find(u => u.key === unitKey);
+      const unitSym  = unitObj?.symbol_ru || unitKey;
+      const minLbl   = minOrder != null ? `${minOrder} ${unitSym}` : '—';
+      rows.push(`<tr>
+        <td><span style="font-weight:600">${escHtml(s.emoji||'')} ${escHtml(s.name_ru)}</span>
+            <span style="margin-left:6px;font-size:11px;padding:2px 6px;border-radius:10px;background:${tp==='express'?'#f59e0b22':'#3b82f622'};color:${tp==='express'?'#d97706':'#2563eb'}">${SA_TYPE_LABELS[tp]||tp}</span></td>
+        <td style="font-weight:600">${price ? price.toLocaleString('ru-RU') + ' сум' : '—'}</td>
+        <td style="color:var(--text2);font-size:13px">${escHtml(unitSym)}</td>
+        <td style="color:var(--text2);font-size:13px">${minLbl}</td>
+        <td><button class="btn btn-sm" style="background:none;border:1.5px solid var(--border);color:var(--text)"
+          onclick="saOpenPriceModal('${escHtml(s.key)}','${tp}',${price},'${unitKey}',${minOrder??'null'})">✏️</button></td>
+      </tr>`);
     }
   }
-  alert(errors ? `Сохранено: ${saved}, ошибок: ${errors}` : `✅ Сохранено ${saved} цен`);
+  tbody.innerHTML = rows.join('');
+}
+
+function saOpenPriceModal(svc, tp, price, unitKey, minOrder) {
+  _saPriceEditSvc = svc; _saPriceEditTp = tp;
+  const s = _catalogSvcs.find(x => x.key === svc);
+  document.getElementById('saPriceModalTitle').textContent = '✏️ Редактировать цену';
+  document.getElementById('saPriceLbl').textContent = `${s?.emoji||''} ${s?.name_ru||svc} / ${SA_TYPE_LABELS[tp]||tp}`;
+  document.getElementById('saPriceNewFields').style.display = 'none';
+  document.getElementById('sap_price').value = price || '';
+  document.getElementById('sap_min').value   = minOrder != null ? minOrder : '';
+  _fillSaUnitSelect('sap_unit', unitKey);
+  document.getElementById('saPriceErr').textContent = '';
+  openModal('saPriceModal');
+}
+
+function saOpenPriceModalNew() {
+  _saPriceEditSvc = null; _saPriceEditTp = null;
+  document.getElementById('saPriceModalTitle').textContent = '+ Добавить цену';
+  document.getElementById('saPriceLbl').textContent = '';
+  document.getElementById('saPriceNewFields').style.display = '';
+  const svcSel = document.getElementById('sap_svc');
+  svcSel.innerHTML = _catalogSvcs.map(s => `<option value="${escHtml(s.key)}">${escHtml(s.emoji||'')} ${escHtml(s.name_ru)}</option>`).join('');
+  document.getElementById('sap_price').value = '';
+  document.getElementById('sap_min').value   = '';
+  _fillSaUnitSelect('sap_unit', 'm2');
+  document.getElementById('saPriceErr').textContent = '';
+  openModal('saPriceModal');
+}
+
+function _fillSaUnitSelect(selId, selected) {
+  const sel = document.getElementById(selId);
+  sel.innerHTML = _catalogUnits.map(u =>
+    `<option value="${escHtml(u.key)}">${escHtml(u.symbol_ru)} (${escHtml(u.name_ru)})</option>`
+  ).join('');
+  if (selected) sel.value = selected;
+}
+
+async function saveSaPriceModal() {
+  const errEl = document.getElementById('saPriceErr');
+  const svc   = _saPriceEditSvc || document.getElementById('sap_svc')?.value;
+  const tp    = _saPriceEditTp  || document.getElementById('sap_tp')?.value;
+  const price = parseInt(document.getElementById('sap_price').value);
+  const unit  = document.getElementById('sap_unit').value;
+  const minRaw = document.getElementById('sap_min').value;
+  const min_order = minRaw !== '' ? parseFloat(minRaw) : null;
+  if (!svc || !tp)   { errEl.textContent = 'Укажите услугу и тип'; return; }
+  if (!price || price <= 0) { errEl.textContent = 'Укажите цену > 0'; return; }
+  try {
+    await api('/saas/catalog/prices', 'PUT', { service_key: svc, type_key: tp, price, unit_key: unit, min_order });
+    closeModal('saPriceModal');
+    await loadCatalogPrices();
+  } catch(e) { errEl.textContent = e.message; }
 }
 
 // ── COMPANY RESTORE: SERVICES ─────────────────────────
