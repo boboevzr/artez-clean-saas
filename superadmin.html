@@ -189,6 +189,9 @@
       <div class="nav-item" data-page="settings" onclick="showPage('settings',this)">
         <span class="icon">⚙️</span> Настройки
       </div>
+      <div class="nav-item" data-page="maintenance" onclick="showPage('maintenance',this)">
+        <span class="icon">🧹</span> Чистка БД
+      </div>
     </nav>
 
     <!-- CONTENT -->
@@ -349,6 +352,22 @@
             </tr></thead>
             <tbody id="saPriceRows"></tbody>
           </table>
+        </div>
+      </div>
+
+      <!-- PAGE: Maintenance -->
+      <div class="page" id="page-maintenance">
+        <div class="page-title">🧹 Чистка базы данных</div>
+        <div class="card" style="max-width:680px">
+          <p style="font-size:13px;color:var(--text2);margin-bottom:16px">
+            Строки-сироты — записи в таблицах, у которых <code>company_id</code> указывает на несуществующую компанию.
+            Появляются при тестировании (создание/удаление компаний). Безопасно удалять.
+          </p>
+          <div style="display:flex;gap:10px;margin-bottom:20px">
+            <button class="btn btn-ghost" onclick="maintenancePreview()">🔍 Проверить мусор</button>
+            <button class="btn btn-sm" id="btnCleanup" style="background:#ef4444;color:#fff;display:none" onclick="maintenanceCleanup()">🗑 Удалить всё</button>
+          </div>
+          <div id="maintenanceResult"></div>
         </div>
       </div>
 
@@ -962,6 +981,7 @@ function showPage(name, navEl) {
   if (navEl) navEl.classList.add('active');
   if (name === 'settings') loadGlobalSettings();
   if (name === 'plans') loadPlans();
+  if (name === 'maintenance') maintenancePreview();
   if (name === 'sa-departments') saRenderDepts();
   if (name === 'sa-positions') saRenderPositions();
   if (name === 'sa-units') loadCatalogUnits();
@@ -2431,6 +2451,61 @@ async function seedCatalogFromCompany() {
     if (cur === 'sa-services') loadCatalogServices();
     else if (cur === 'sa-prices') loadCatalogPrices();
   } catch(e) { alert('Ошибка: ' + e.message); }
+}
+
+// ── MAINTENANCE ────────────────────────────────────────
+async function maintenancePreview() {
+  const el = document.getElementById('maintenanceResult');
+  el.innerHTML = '<span style="color:var(--text2);font-size:13px">Сканирование…</span>';
+  document.getElementById('btnCleanup').style.display = 'none';
+  try {
+    const d = await api('/saas/maintenance/orphans');
+    const orphans = d.orphans || {};
+    const total = d.total || 0;
+    if (!total) {
+      el.innerHTML = '<div style="color:var(--green);font-size:14px;font-weight:600">✅ Мусора нет — база чистая</div>';
+      return;
+    }
+    const rows = Object.entries(orphans).map(([t, n]) =>
+      `<tr><td style="font-family:monospace;font-size:12px">${escHtml(t)}</td><td style="text-align:right;font-weight:600;color:#ef4444">${n}</td></tr>`
+    ).join('');
+    el.innerHTML = `
+      <div style="font-size:13px;color:var(--text2);margin-bottom:10px">Найдено строк-сирот: <b style="color:#ef4444">${total}</b></div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Таблица</th><th style="text-align:right">Строк</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table></div>`;
+    document.getElementById('btnCleanup').style.display = '';
+  } catch(e) {
+    el.innerHTML = '<span style="color:#ef4444">Ошибка: ' + escHtml(e.message) + '</span>';
+  }
+}
+
+async function maintenanceCleanup() {
+  if (!confirm('Удалить все строки-сироты? Это действие необратимо.')) return;
+  const el = document.getElementById('maintenanceResult');
+  el.innerHTML = '<span style="color:var(--text2);font-size:13px">Очистка…</span>';
+  document.getElementById('btnCleanup').style.display = 'none';
+  try {
+    const d = await api('/saas/maintenance/cleanup', 'POST');
+    const deleted = d.deleted || {};
+    const total = d.total || 0;
+    if (!total) {
+      el.innerHTML = '<div style="color:var(--green);font-size:14px;font-weight:600">✅ Уже чисто — нечего удалять</div>';
+      return;
+    }
+    const rows = Object.entries(deleted).map(([t, n]) =>
+      `<tr><td style="font-family:monospace;font-size:12px">${escHtml(t)}</td><td style="text-align:right;font-weight:600">${n}</td></tr>`
+    ).join('');
+    el.innerHTML = `
+      <div style="color:var(--green);font-size:14px;font-weight:600;margin-bottom:10px">✅ Удалено ${total} строк</div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Таблица</th><th style="text-align:right">Удалено</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table></div>`;
+  } catch(e) {
+    el.innerHTML = '<span style="color:#ef4444">Ошибка: ' + escHtml(e.message) + '</span>';
+  }
 }
 
 // ── UTILS ─────────────────────────────────────────────
