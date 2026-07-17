@@ -189,6 +189,12 @@
       <div class="nav-item" data-page="sa-tg-messages" onclick="showPage('sa-tg-messages',this)">
         <span class="icon">📱</span> Уведомления TG
       </div>
+      <div class="nav-item" data-page="sa-expense-cats" onclick="showPage('sa-expense-cats',this)">
+        <span class="icon">🧾</span> Расходы
+      </div>
+      <div class="nav-item" data-page="sa-chat-templates" onclick="showPage('sa-chat-templates',this)">
+        <span class="icon">💬</span> Шаблоны чата
+      </div>
       <div class="nav-item" data-page="settings" onclick="showPage('settings',this)">
         <span class="icon">⚙️</span> Настройки
       </div>
@@ -368,6 +374,59 @@
         <div id="saTgMsgList" style="display:flex;flex-direction:column;gap:12px;max-width:720px"></div>
       </div>
 
+      <!-- PAGE: Expense Categories (template) -->
+      <div class="page" id="page-sa-expense-cats">
+        <div class="section-header">
+          <div class="page-title" style="margin:0">🧾 Расходы (шаблон)</div>
+          <button class="btn btn-primary btn-sm" onclick="saExpCatOpenModal()">+ Добавить</button>
+        </div>
+        <p style="font-size:13px;color:var(--text2);margin-bottom:12px">Категории расходов — шаблон для новых компаний.</p>
+        <div id="saExpCatLoading" style="color:var(--text2);font-size:13px">Загрузка…</div>
+        <div class="table-wrap" id="saExpCatWrap" style="display:none">
+          <table>
+            <thead><tr>
+              <th style="width:40px"></th>
+              <th>Название RU</th>
+              <th>Название UZ</th>
+              <th>Родитель</th>
+              <th>Кто утверждает</th>
+              <th style="width:80px"></th>
+            </tr></thead>
+            <tbody id="saExpCatRows"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- PAGE: Chat Templates (template) -->
+      <div class="page" id="page-sa-chat-templates">
+        <div class="section-header">
+          <div class="page-title" style="margin:0">💬 Шаблоны чата (шаблон)</div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-ghost btn-sm" onclick="saChatTplSeed()">🔄 Загрузить стандартные</button>
+            <button class="btn btn-primary btn-sm" onclick="saChatTplOpenModal()">+ Добавить</button>
+          </div>
+        </div>
+        <p style="font-size:13px;color:var(--text2);margin-bottom:12px">Авто-сообщения и быстрые ответы — шаблон для новых компаний.</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+          <select id="saChatTplLangFilter" onchange="renderSaChatTpls()" style="padding:6px 10px;border:1px solid var(--border);border-radius:8px;font-size:13px;background:var(--card)">
+            <option value="">Все языки</option>
+            <option value="ru">RU</option>
+            <option value="uz">UZ</option>
+          </select>
+          <select id="saChatTplKeyFilter" onchange="renderSaChatTpls()" style="padding:6px 10px;border:1px solid var(--border);border-radius:8px;font-size:13px;background:var(--card)">
+            <option value="">Все типы</option>
+            <option value="quick">Быстрые ответы</option>
+            <option value="welcome">Приветствие</option>
+            <option value="auto_reply">Авто-ответ</option>
+            <option value="warn_timeout">Таймаут</option>
+            <option value="bye_m">Прощание (М)</option>
+            <option value="bye_f">Прощание (Ж)</option>
+          </select>
+        </div>
+        <div id="saChatTplLoading" style="color:var(--text2);font-size:13px">Загрузка…</div>
+        <div id="saChatTplList" style="display:flex;flex-direction:column;gap:8px;max-width:760px"></div>
+      </div>
+
       <!-- PAGE: Maintenance -->
       <div class="page" id="page-maintenance">
         <div class="page-title">🧹 Чистка базы данных</div>
@@ -426,6 +485,79 @@
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="closeModal('saPriceModal')">Отмена</button>
       <button class="btn btn-primary" onclick="saveSaPriceModal()">💾 Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Expense Category (add/edit) -->
+<div class="modal-bg" id="saExpCatModal">
+  <div class="modal" style="max-width:480px">
+    <h3 id="saExpCatModalTitle">🧾 Категория расходов</h3>
+    <input type="hidden" id="saec_id">
+    <div style="display:grid;grid-template-columns:60px 1fr;gap:10px;margin-bottom:10px">
+      <div class="field" style="margin:0"><label>Иконка</label><input id="saec_icon" maxlength="4" placeholder="🧾" style="font-size:20px;text-align:center"></div>
+      <div class="field" style="margin:0"><label>Родитель</label><select id="saec_parent"><option value="">— корневая —</option></select></div>
+    </div>
+    <div class="field"><label>Название (RU)</label><input id="saec_name_ru" placeholder="Топливо"></div>
+    <div class="field"><label>Название (UZ)</label><input id="saec_name_uz" placeholder="Yoqilg'i"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="field"><label>Кто утверждает</label>
+        <select id="saec_approve">
+          <option value="manager">Менеджер</option>
+          <option value="admin">Администратор</option>
+          <option value="none">Без утверждения</option>
+        </select>
+      </div>
+      <div class="field"><label>Порядок</label><input id="saec_sort" type="number" value="0"></div>
+    </div>
+    <div style="display:flex;gap:16px;align-items:center;margin-bottom:10px">
+      <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" id="saec_receipt"> Нужен чек</label>
+      <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" id="saec_for_staff"> Для сотрудника</label>
+      <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" id="saec_active" checked> Активна</label>
+    </div>
+    <div class="modal-err" id="saExpCatErr"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('saExpCatModal')">Отмена</button>
+      <button class="btn btn-primary" onclick="saveSaExpCat()">💾 Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Chat Template (add/edit) -->
+<div class="modal-bg" id="saChatTplModal">
+  <div class="modal" style="max-width:520px">
+    <h3 id="saChatTplModalTitle">💬 Шаблон чата</h3>
+    <input type="hidden" id="sact_id">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="field"><label>Тип (key)</label>
+        <select id="sact_key">
+          <option value="quick">quick — Быстрый ответ</option>
+          <option value="welcome">welcome — Приветствие</option>
+          <option value="auto_reply">auto_reply — Авто-ответ</option>
+          <option value="warn_timeout">warn_timeout — Таймаут</option>
+          <option value="bye_m">bye_m — Прощание (М)</option>
+          <option value="bye_f">bye_f — Прощание (Ж)</option>
+        </select>
+      </div>
+      <div class="field"><label>Язык</label>
+        <select id="sact_lang">
+          <option value="ru">RU — Русский</option>
+          <option value="uz">UZ — O'zbek</option>
+        </select>
+      </div>
+    </div>
+    <div class="field"><label>Текст</label><textarea id="sact_text" rows="4" style="resize:vertical;font-family:monospace;font-size:13px" placeholder="Текст сообщения..."></textarea></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="field"><label>Порядок</label><input id="sact_sort" type="number" value="0"></div>
+      <div class="field" style="display:flex;align-items:flex-end;padding-bottom:4px">
+        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" id="sact_active" checked> Активен</label>
+      </div>
+    </div>
+    <div style="font-size:11px;color:var(--text2);margin-bottom:10px">Переменная: <code>{name}</code> — имя клиента</div>
+    <div class="modal-err" id="saChatTplErr"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('saChatTplModal')">Отмена</button>
+      <button class="btn btn-primary" onclick="saveSaChatTpl()">💾 Сохранить</button>
     </div>
   </div>
 </div>
@@ -685,6 +817,20 @@
             <div style="font-size:12px;color:var(--text2);margin-top:2px">Импортировать шаблоны TG-уведомлений (добавит недостающие)</div>
           </div>
           <button class="btn btn-ghost btn-sm" onclick="ecImportTgMessages()" style="flex-shrink:0">↩️ Импортировать</button>
+        </div>
+        <div style="background:var(--surface2);border-radius:10px;padding:14px;display:flex;align-items:center;justify-content:space-between;gap:12px">
+          <div>
+            <div style="font-weight:600;font-size:14px">🧾 Расходы</div>
+            <div style="font-size:12px;color:var(--text2);margin-top:2px">Импортировать категории расходов из шаблона</div>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="ecImportExpCats()" style="flex-shrink:0">↩️ Импортировать</button>
+        </div>
+        <div style="background:var(--surface2);border-radius:10px;padding:14px;display:flex;align-items:center;justify-content:space-between;gap:12px">
+          <div>
+            <div style="font-weight:600;font-size:14px">💬 Шаблоны чата</div>
+            <div style="font-size:12px;color:var(--text2);margin-top:2px">Импортировать шаблоны чата из шаблона</div>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="ecImportChatTpls()" style="flex-shrink:0">↩️ Импортировать</button>
         </div>
       </div>
       <div class="modal-err" id="ecRestoreErr" style="margin-top:10px"></div>
@@ -1030,6 +1176,8 @@ function showPage(name, navEl) {
   if (name === 'sa-services') loadCatalogServices();
   if (name === 'sa-prices') loadCatalogPrices();
   if (name === 'sa-tg-messages') loadSaTgMessages();
+  if (name === 'sa-expense-cats') loadSaExpCats();
+  if (name === 'sa-chat-templates') loadSaChatTpls();
 }
 
 // ── AUTH ──────────────────────────────────────────────
@@ -2560,6 +2708,219 @@ async function maintenanceCleanup() {
   } catch(e) {
     el.innerHTML = '<span style="color:#ef4444">Ошибка: ' + escHtml(e.message) + '</span>';
   }
+}
+
+// ── EXPENSE CATEGORIES TEMPLATE ───────────────────────
+let _saExpCats = [];
+
+async function loadSaExpCats() {
+  document.getElementById('saExpCatLoading').style.display = '';
+  document.getElementById('saExpCatWrap').style.display = 'none';
+  try {
+    const r = await api('/saas/catalog/expense-categories');
+    _saExpCats = r.categories || [];
+    renderSaExpCats();
+  } catch(e) {
+    document.getElementById('saExpCatLoading').textContent = 'Ошибка: ' + e.message;
+  }
+}
+
+function renderSaExpCats() {
+  document.getElementById('saExpCatLoading').style.display = 'none';
+  const wrap = document.getElementById('saExpCatWrap');
+  const tbody = document.getElementById('saExpCatRows');
+  if (!_saExpCats.length) {
+    wrap.style.display = 'none';
+    document.getElementById('saExpCatLoading').style.display = '';
+    document.getElementById('saExpCatLoading').textContent = 'Нет категорий. Нажмите + Добавить.';
+    return;
+  }
+  wrap.style.display = '';
+  const catMap = Object.fromEntries(_saExpCats.map(c => [c.id, c]));
+  tbody.innerHTML = _saExpCats.map(c => {
+    const parentName = c.parent_id && catMap[c.parent_id] ? escHtml(catMap[c.parent_id].name_ru) : '—';
+    const approveLabel = {manager:'Менеджер', admin:'Admin', none:'Без утверждения'}[c.approve_level] || c.approve_level;
+    const activeBadge = c.active ? '' : '<span style="color:#dc2626;font-size:11px"> ВЫКЛ</span>';
+    return `<tr>
+      <td style="font-size:20px;text-align:center">${escHtml(c.icon||'')}</td>
+      <td>${escHtml(c.name_ru)}${activeBadge}</td>
+      <td style="color:var(--text2)">${escHtml(c.name_uz||'')}</td>
+      <td style="color:var(--text2)">${parentName}</td>
+      <td style="color:var(--text2)">${approveLabel}</td>
+      <td style="text-align:right;white-space:nowrap">
+        <button class="btn btn-ghost btn-sm" onclick="saExpCatOpenModal(${escHtml(JSON.stringify(c.id))})">✏️</button>
+        <button class="btn btn-ghost btn-sm" style="color:#ef4444" onclick="saExpCatDelete(${escHtml(JSON.stringify(c.id))})">🗑</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function saExpCatOpenModal(id) {
+  const c = id != null ? _saExpCats.find(x => x.id === id) : null;
+  document.getElementById('saExpCatModalTitle').textContent = c ? '✏️ Редактировать категорию' : '🧾 Новая категория';
+  document.getElementById('saec_id').value = c?.id ?? '';
+  document.getElementById('saec_icon').value = c?.icon || '🧾';
+  document.getElementById('saec_name_ru').value = c?.name_ru || '';
+  document.getElementById('saec_name_uz').value = c?.name_uz || '';
+  document.getElementById('saec_approve').value = c?.approve_level || 'manager';
+  document.getElementById('saec_sort').value = c?.sort_order ?? 0;
+  document.getElementById('saec_receipt').checked = !!c?.receipt_required;
+  document.getElementById('saec_for_staff').checked = !!c?.for_staff;
+  document.getElementById('saec_active').checked = c?.active !== false;
+  const sel = document.getElementById('saec_parent');
+  sel.innerHTML = '<option value="">— корневая —</option>' +
+    _saExpCats.filter(x => !x.parent_id && x.id !== id).map(x =>
+      `<option value="${x.id}"${c?.parent_id===x.id?' selected':''}>${escHtml(x.icon||'')} ${escHtml(x.name_ru)}</option>`
+    ).join('');
+  document.getElementById('saExpCatErr').textContent = '';
+  openModal('saExpCatModal');
+}
+
+async function saveSaExpCat() {
+  const id = document.getElementById('saec_id').value;
+  const body = {
+    name_ru: document.getElementById('saec_name_ru').value.trim(),
+    name_uz: document.getElementById('saec_name_uz').value.trim(),
+    icon: document.getElementById('saec_icon').value.trim() || '🧾',
+    parent_id: document.getElementById('saec_parent').value ? +document.getElementById('saec_parent').value : null,
+    approve_level: document.getElementById('saec_approve').value,
+    receipt_required: document.getElementById('saec_receipt').checked,
+    amount_threshold: null,
+    sort_order: +document.getElementById('saec_sort').value || 0,
+    for_staff: document.getElementById('saec_for_staff').checked,
+    active: document.getElementById('saec_active').checked,
+  };
+  if (!body.name_ru) { document.getElementById('saExpCatErr').textContent = 'Введите название RU'; return; }
+  try {
+    if (id) await api(`/saas/catalog/expense-categories/${id}`, 'PUT', body);
+    else     await api('/saas/catalog/expense-categories', 'POST', body);
+    closeModal('saExpCatModal');
+    await loadSaExpCats();
+  } catch(e) { document.getElementById('saExpCatErr').textContent = e.message; }
+}
+
+async function saExpCatDelete(id) {
+  if (!confirm('Удалить категорию?')) return;
+  try {
+    await api(`/saas/catalog/expense-categories/${id}`, 'DELETE');
+    await loadSaExpCats();
+  } catch(e) { alert('Ошибка: ' + e.message); }
+}
+
+async function ecImportExpCats() {
+  if (!confirm('Импортировать категории расходов из шаблона в эту компанию?')) return;
+  const errEl = document.getElementById('ecRestoreErr');
+  errEl.textContent = '';
+  try {
+    await api(`/saas/companies/${_currentCompanyId}/import-expense-categories`, 'POST');
+    errEl.style.color = 'var(--green)';
+    errEl.textContent = '✅ Категории расходов импортированы';
+  } catch(e) { errEl.style.color = ''; errEl.textContent = e.message; }
+}
+
+// ── CHAT TEMPLATES TEMPLATE ────────────────────────────
+let _saChatTpls = [];
+
+async function loadSaChatTpls() {
+  document.getElementById('saChatTplLoading').style.display = '';
+  document.getElementById('saChatTplList').innerHTML = '';
+  try {
+    const r = await api('/saas/catalog/chat-templates');
+    _saChatTpls = r.templates || [];
+    renderSaChatTpls();
+  } catch(e) {
+    document.getElementById('saChatTplLoading').textContent = 'Ошибка: ' + e.message;
+  }
+}
+
+function renderSaChatTpls() {
+  document.getElementById('saChatTplLoading').style.display = 'none';
+  const list = document.getElementById('saChatTplList');
+  const langF = document.getElementById('saChatTplLangFilter').value;
+  const keyF  = document.getElementById('saChatTplKeyFilter').value;
+  const KEY_LABELS = {quick:'Быстрый ответ', welcome:'Приветствие', auto_reply:'Авто-ответ',
+    warn_timeout:'Таймаут', bye_m:'Прощание (М)', bye_f:'Прощание (Ж)'};
+  const items = _saChatTpls.filter(t => (!langF || t.lang===langF) && (!keyF || t.key===keyF));
+  if (!items.length) {
+    list.innerHTML = '<div style="color:var(--text2);font-size:13px">Нет шаблонов. Нажмите «🔄 Загрузить стандартные» или «+ Добавить».</div>';
+    return;
+  }
+  list.innerHTML = items.map(t => {
+    const keyLabel = KEY_LABELS[t.key] || t.key;
+    const preview = escHtml((t.text||'').substring(0, 80)) + ((t.text||'').length > 80 ? '…' : '');
+    const activeBadge = t.active
+      ? '<span style="background:#dcfce7;color:#15803d;padding:2px 6px;border-radius:10px;font-size:11px;font-weight:600">ВКЛ</span>'
+      : '<span style="background:#fee2e2;color:#dc2626;padding:2px 6px;border-radius:10px;font-size:11px;font-weight:600">ВЫКЛ</span>';
+    return `<div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+        <span style="font-size:12px;font-weight:700;color:var(--accent)">${escHtml(t.lang.toUpperCase())}</span>
+        <span style="font-size:12px;font-weight:600">${escHtml(keyLabel)}</span>
+        ${activeBadge}
+        <div style="flex:1"></div>
+        <button class="btn btn-ghost btn-sm" onclick="saChatTplOpenModal(${escHtml(JSON.stringify(t.id))})">✏️</button>
+        <button class="btn btn-ghost btn-sm" style="color:#ef4444" onclick="saChatTplDelete(${escHtml(JSON.stringify(t.id))})">🗑</button>
+      </div>
+      <div style="font-size:12px;color:var(--text2);font-family:monospace;white-space:pre-wrap;line-height:1.4">${preview}</div>
+    </div>`;
+  }).join('');
+}
+
+function saChatTplOpenModal(id) {
+  const t = id != null ? _saChatTpls.find(x => x.id === id) : null;
+  document.getElementById('saChatTplModalTitle').textContent = t ? '✏️ Редактировать шаблон' : '💬 Новый шаблон';
+  document.getElementById('sact_id').value = t?.id ?? '';
+  document.getElementById('sact_key').value = t?.key || 'quick';
+  document.getElementById('sact_lang').value = t?.lang || 'ru';
+  document.getElementById('sact_text').value = t?.text || '';
+  document.getElementById('sact_sort').value = t?.sort_order ?? 0;
+  document.getElementById('sact_active').checked = t?.active !== false;
+  document.getElementById('saChatTplErr').textContent = '';
+  openModal('saChatTplModal');
+}
+
+async function saveSaChatTpl() {
+  const id = document.getElementById('sact_id').value;
+  const body = {
+    id: id ? +id : null,
+    key: document.getElementById('sact_key').value,
+    lang: document.getElementById('sact_lang').value,
+    text: document.getElementById('sact_text').value.trim(),
+    sort_order: +document.getElementById('sact_sort').value || 0,
+    active: document.getElementById('sact_active').checked,
+  };
+  if (!body.text) { document.getElementById('saChatTplErr').textContent = 'Введите текст'; return; }
+  try {
+    await api('/saas/catalog/chat-templates', 'POST', body);
+    closeModal('saChatTplModal');
+    await loadSaChatTpls();
+  } catch(e) { document.getElementById('saChatTplErr').textContent = e.message; }
+}
+
+async function saChatTplDelete(id) {
+  if (!confirm('Удалить шаблон?')) return;
+  try {
+    await api(`/saas/catalog/chat-templates/${id}`, 'DELETE');
+    await loadSaChatTpls();
+  } catch(e) { alert('Ошибка: ' + e.message); }
+}
+
+async function saChatTplSeed() {
+  if (!confirm('Сбросить шаблоны чата к стандартным? Автошаблоны (welcome/auto_reply/warn/bye) перезапишутся, быстрые ответы — дополнятся.')) return;
+  try {
+    await api('/saas/catalog/chat-templates/seed', 'POST');
+    await loadSaChatTpls();
+  } catch(e) { alert('Ошибка: ' + e.message); }
+}
+
+async function ecImportChatTpls() {
+  if (!confirm('Импортировать шаблоны чата из шаблона в эту компанию?')) return;
+  const errEl = document.getElementById('ecRestoreErr');
+  errEl.textContent = '';
+  try {
+    await api(`/saas/companies/${_currentCompanyId}/import-chat-templates`, 'POST');
+    errEl.style.color = 'var(--green)';
+    errEl.textContent = '✅ Шаблоны чата импортированы';
+  } catch(e) { errEl.style.color = ''; errEl.textContent = e.message; }
 }
 
 // ── TG NOTIFICATIONS TEMPLATE ─────────────────────────
