@@ -2246,7 +2246,7 @@ function renderSaUnitsTable() {
       <td>${escHtml(u.name_uz)}</td>
       <td style="font-weight:600">${escHtml(u.symbol_ru)}</td>
       <td style="font-weight:600">${escHtml(u.symbol_uz)}</td>
-      <td><button class="btn btn-sm" style="background:#ef4444;color:#fff" onclick="saDeleteUnit('${escHtml(u.key)}')">🗑</button></td>
+      <td><button class="btn btn-sm" style="background:#ef4444;color:#fff" onclick="saDeleteUnit(${escHtml(JSON.stringify(u.key))})">🗑</button></td>
     </tr>`).join('');
 }
 
@@ -2337,7 +2337,7 @@ function renderCatalogPrices() {
         <td style="color:var(--text2);font-size:13px">${escHtml(unitSym)}</td>
         <td style="color:var(--text2);font-size:13px">${minLbl}</td>
         <td><button class="btn btn-sm" style="background:none;border:1.5px solid var(--border);color:var(--text)"
-          onclick="saOpenPriceModal('${escHtml(s.key)}','${tp}',${price},'${unitKey}',${minOrder??'null'})">✏️</button></td>
+          onclick="saOpenPriceModal(${escHtml(JSON.stringify(s.key))},${escHtml(JSON.stringify(tp))},${price},${escHtml(JSON.stringify(unitKey))},${minOrder??'null'})">✏️</button></td>
       </tr>`);
     }
   }
