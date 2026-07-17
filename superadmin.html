@@ -186,6 +186,9 @@
       <div class="nav-item" data-page="sa-prices" onclick="showPage('sa-prices',this)">
         <span class="icon">💰</span> Прайс-лист
       </div>
+      <div class="nav-item" data-page="sa-tg-messages" onclick="showPage('sa-tg-messages',this)">
+        <span class="icon">📱</span> Уведомления TG
+      </div>
       <div class="nav-item" data-page="settings" onclick="showPage('settings',this)">
         <span class="icon">⚙️</span> Настройки
       </div>
@@ -355,6 +358,16 @@
         </div>
       </div>
 
+      <!-- PAGE: TG Notifications Template -->
+      <div class="page" id="page-sa-tg-messages">
+        <div class="section-header">
+          <div class="page-title" style="margin:0">📱 Telegram · Уведомления (шаблон)</div>
+        </div>
+        <p style="font-size:13px;color:var(--text2);margin-bottom:16px">Шаблоны сообщений клиентам при смене статуса заказа. Копируются в новые компании при создании. Нажмите ✏️ чтобы редактировать.</p>
+        <div id="saTgMsgLoading" style="color:var(--text2);font-size:13px">Загрузка…</div>
+        <div id="saTgMsgList" style="display:flex;flex-direction:column;gap:12px;max-width:720px"></div>
+      </div>
+
       <!-- PAGE: Maintenance -->
       <div class="page" id="page-maintenance">
         <div class="page-title">🧹 Чистка базы данных</div>
@@ -413,6 +426,28 @@
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="closeModal('saPriceModal')">Отмена</button>
       <button class="btn btn-primary" onclick="saveSaPriceModal()">💾 Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: TG Template message (edit) -->
+<div class="modal-bg" id="saTgMsgModal">
+  <div class="modal" style="max-width:560px">
+    <h3>📱 Редактировать шаблон</h3>
+    <div id="saTgMsgStatusLbl" style="font-size:13px;color:var(--text2);margin-bottom:12px"></div>
+    <div class="field" style="display:flex;align-items:center;gap:10px">
+      <label style="margin:0">Включено</label>
+      <input type="checkbox" id="satg_enabled" style="width:18px;height:18px;cursor:pointer">
+    </div>
+    <div class="field"><label>Текст (RU)</label><textarea id="satg_msg_ru" rows="5" style="font-family:monospace;font-size:13px;resize:vertical"></textarea></div>
+    <div class="field"><label>Текст (UZ)</label><textarea id="satg_msg_uz" rows="5" style="font-family:monospace;font-size:13px;resize:vertical"></textarea></div>
+    <div style="font-size:11px;color:var(--text2);margin-bottom:12px">
+      Переменные: <code>{order_num}</code> <code>{service}</code> <code>{pickup_date}</code> <code>{address}</code>
+    </div>
+    <div class="modal-err" id="saTgMsgErr"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('saTgMsgModal')">Отмена</button>
+      <button class="btn btn-primary" onclick="saveSaTgMsg()">💾 Сохранить</button>
     </div>
   </div>
 </div>
@@ -643,6 +678,13 @@
             <div style="font-size:12px;color:var(--text2);margin-top:2px">Импортировать цены из шаблона (заменит текущие цены компании)</div>
           </div>
           <button class="btn btn-ghost btn-sm" onclick="ecImportPrices()" style="flex-shrink:0">↩️ Импортировать</button>
+        </div>
+        <div style="background:var(--surface2);border-radius:10px;padding:14px;display:flex;align-items:center;justify-content:space-between;gap:12px">
+          <div>
+            <div style="font-weight:600;font-size:14px">📱 Telegram · Уведомления</div>
+            <div style="font-size:12px;color:var(--text2);margin-top:2px">Импортировать шаблоны TG-уведомлений (добавит недостающие)</div>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="ecImportTgMessages()" style="flex-shrink:0">↩️ Импортировать</button>
         </div>
       </div>
       <div class="modal-err" id="ecRestoreErr" style="margin-top:10px"></div>
@@ -987,6 +1029,7 @@ function showPage(name, navEl) {
   if (name === 'sa-units') loadCatalogUnits();
   if (name === 'sa-services') loadCatalogServices();
   if (name === 'sa-prices') loadCatalogPrices();
+  if (name === 'sa-tg-messages') loadSaTgMessages();
 }
 
 // ── AUTH ──────────────────────────────────────────────
@@ -2442,6 +2485,17 @@ async function ecImportPrices() {
   } catch(e) { errEl.style.color = ''; errEl.textContent = e.message; }
 }
 
+async function ecImportTgMessages() {
+  if (!confirm('Добавить недостающие TG-шаблоны из глобального шаблона?')) return;
+  const errEl = document.getElementById('ecRestoreErr');
+  errEl.textContent = '';
+  try {
+    await api(`/saas/companies/${_currentCompanyId}/import-tg-messages`, 'POST');
+    errEl.style.color = 'var(--green)';
+    errEl.textContent = '✅ TG-уведомления успешно импортированы';
+  } catch(e) { errEl.style.color = ''; errEl.textContent = e.message; }
+}
+
 async function seedCatalogFromCompany() {
   if (!confirm('Заполнить шаблон услуг и цен из компании #1 (artez)? Текущий шаблон будет перезаписан.')) return;
   try {
@@ -2505,6 +2559,85 @@ async function maintenanceCleanup() {
       </table></div>`;
   } catch(e) {
     el.innerHTML = '<span style="color:#ef4444">Ошибка: ' + escHtml(e.message) + '</span>';
+  }
+}
+
+// ── TG NOTIFICATIONS TEMPLATE ─────────────────────────
+const _TG_STATUS_LABELS = {
+  new:'🆕 Новая заявка', confirmed:'✅ Подтверждён', pickup:'🚗 Выехал водитель',
+  received:'📥 В мастерской', washing:'🧼 Мойка', drying:'💨 Сушка',
+  packing:'📦 Упаковка', ready:'✅ Готов', delivery:'🚚 Доставка',
+  delivered:'🎉 Доставлен', cancelled:'❌ Отменён'
+};
+
+let _saTgMessages = [];
+
+async function loadSaTgMessages() {
+  document.getElementById('saTgMsgLoading').style.display = '';
+  document.getElementById('saTgMsgList').innerHTML = '';
+  try {
+    const r = await api('GET', '/api/saas/catalog/tg-messages');
+    _saTgMessages = r.messages || [];
+    renderSaTgMessages();
+  } catch(e) {
+    document.getElementById('saTgMsgLoading').textContent = 'Ошибка: ' + e.message;
+  }
+}
+
+function renderSaTgMessages() {
+  document.getElementById('saTgMsgLoading').style.display = 'none';
+  const list = document.getElementById('saTgMsgList');
+  if (!_saTgMessages.length) {
+    list.innerHTML = '<div style="color:var(--text2);font-size:13px">Шаблоны не найдены.</div>';
+    return;
+  }
+  list.innerHTML = _saTgMessages.map(m => {
+    const label = _TG_STATUS_LABELS[m.status] || m.status;
+    const onOff = m.enabled
+      ? '<span style="background:#dcfce7;color:#15803d;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600">ВКЛ</span>'
+      : '<span style="background:#fee2e2;color:#dc2626;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600">ВЫКЛ</span>';
+    const preview = escHtml((m.message_ru || '').substring(0, 80)) + ((m.message_ru || '').length > 80 ? '…' : '');
+    return `<div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px 16px">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:14px;font-weight:600">${escHtml(label)}</span>
+          ${onOff}
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="saOpenTgMsgModal(${escHtml(JSON.stringify(m.status))})">✏️</button>
+      </div>
+      <div style="font-size:12px;color:var(--text2);font-family:monospace;white-space:pre-wrap;line-height:1.4">${preview}</div>
+    </div>`;
+  }).join('');
+}
+
+let _saTgEditStatus = null;
+
+function saOpenTgMsgModal(status) {
+  const m = _saTgMessages.find(x => x.status === status);
+  if (!m) return;
+  _saTgEditStatus = status;
+  document.getElementById('saTgMsgStatusLbl').textContent = _TG_STATUS_LABELS[status] || status;
+  document.getElementById('satg_enabled').checked = !!m.enabled;
+  document.getElementById('satg_msg_ru').value = m.message_ru || '';
+  document.getElementById('satg_msg_uz').value = m.message_uz || '';
+  document.getElementById('saTgMsgErr').textContent = '';
+  openModal('saTgMsgModal');
+}
+
+async function saveSaTgMsg() {
+  if (!_saTgEditStatus) return;
+  const body = {
+    status:     _saTgEditStatus,
+    enabled:    document.getElementById('satg_enabled').checked,
+    message_ru: document.getElementById('satg_msg_ru').value,
+    message_uz: document.getElementById('satg_msg_uz').value,
+  };
+  try {
+    await api('PUT', `/api/saas/catalog/tg-messages/${_saTgEditStatus}`, body);
+    closeModal('saTgMsgModal');
+    await loadSaTgMessages();
+  } catch(e) {
+    document.getElementById('saTgMsgErr').textContent = e.message;
   }
 }
 
