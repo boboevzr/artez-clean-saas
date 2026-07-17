@@ -7730,13 +7730,19 @@ async function loadPrices() {
       const unitKey  = info.unit_key || 'm2';
       const minOrder = info.min_order ?? null;
       const sd       = _svcData[svc];
-      const svcLabel = sd ? `${sd.emoji} ${sd.name_ru}`.trim() : (SVC_NAMES[svc] || svc);
-      const unitSym  = unitsCache.find(u => u.key === unitKey)?.symbol_ru || unitKey;
+      const isUz    = _adminLang === 'uz';
+      const svcName = sd ? ((isUz && sd.name_uz) ? sd.name_uz : sd.name_ru)
+                        : ((isUz ? SVC_NAMES_UZ[svc] : null) || SVC_NAMES[svc] || svc);
+      const svcLabel = sd ? `${sd.emoji} ${svcName}`.trim() : svcName;
+      const unitObj  = unitsCache.find(u => u.key === unitKey);
+      const unitSym  = (isUz ? unitObj?.symbol_uz : unitObj?.symbol_ru) || unitKey;
+      const currency = _t('lbl.sum');
+      const typeName = (isUz ? TYPE_NAMES_UZ[tp] : TYPE_NAMES[tp]) || tp;
       const minLabel = minOrder != null ? `${minOrder} ${unitSym}` : '—';
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td><span class="svc-badge">${svcLabel}</span> <span class="type-tag type-${tp}" style="margin-left:6px">${TYPE_NAMES[tp]}</span></td>
-        <td style="font-weight:600">${price ? price.toLocaleString('ru-RU') + ' сум' : '—'}</td>
+        <td><span class="svc-badge">${svcLabel}</span> <span class="type-tag type-${tp}" style="margin-left:6px">${typeName}</span></td>
+        <td style="font-weight:600">${price ? price.toLocaleString('ru-RU') + ' ' + currency : '—'}</td>
         <td style="color:var(--text2);font-size:13px">${unitSym}</td>
         <td style="color:var(--text2);font-size:13px">${minLabel}</td>
         <td>
