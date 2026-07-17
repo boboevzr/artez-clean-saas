@@ -7756,7 +7756,7 @@ async function loadPrices() {
   // Кнопка добавить новую пару сервис+тип
   const addRow = document.createElement('tr');
   addRow.innerHTML = `<td colspan="5" style="padding-top:10px">
-    <button class="btn btn-save btn-sm" onclick="openPriceModalNew()">+ Добавить цену</button>
+    <button class="btn btn-save btn-sm" onclick="openPriceModalNew()">${_t('btn.add')}</button>
   </td>`;
   tbody.appendChild(addRow);
 }
@@ -7807,7 +7807,7 @@ function _renderServicesCard(services) {
           style="border:1.5px solid var(--border);border-radius:8px;padding:5px 8px;font-size:13px;background:var(--surface);color:var(--text);width:170px">
         <input type="number" id="se-new-ord" placeholder="0" min="0"
           style="border:1.5px solid var(--border);border-radius:8px;padding:5px 6px;font-size:13px;background:var(--surface);color:var(--text);width:52px">
-        <button onclick="addSvc()" class="btn btn-save">+ Добавить</button>
+        <button onclick="addSvc()" class="btn btn-save">${_t('btn.add')}</button>
       </div>
     </div>`;
 }
