@@ -138,6 +138,13 @@
   .staff-row { display: flex; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
   .staff-row:last-child { border-bottom: none; }
   .staff-edit-form { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 8px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  /* TG vars panel */
+  .tg-vars-panel { width:200px;flex-shrink:0;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px 12px;position:sticky;top:20px; }
+  .tg-var-chip { display:block;width:100%;font-family:'Courier New',monospace;font-size:12px;color:var(--accent);background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:5px 8px;margin-bottom:5px;cursor:pointer;text-align:left;transition:background .15s,border-color .15s;word-break:break-all; }
+  .tg-var-chip:hover { background:rgba(245,166,35,.1);border-color:var(--accent); }
+  .tg-var-chip.copied { background:rgba(52,199,89,.15);border-color:#34c759;color:#34c759; }
+  .tg-var-desc { font-size:10px;color:var(--text2);margin-bottom:8px;margin-top:-3px;padding-left:2px; }
+  @media (max-width:900px) { .tg-vars-panel { display:none; } }
   /* TG messages cards */
   .tg-msg-card { background:var(--surface2);border:1px solid var(--border);border-radius:12px;overflow:hidden; }
   .tg-msg-header { display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--surface3,rgba(255,255,255,.04));border-bottom:1px solid var(--border); }
@@ -384,7 +391,14 @@
         </div>
         <p style="font-size:13px;color:var(--text2);margin-bottom:16px">Шаблоны сообщений клиентам при смене статуса заказа. Копируются в новые компании при создании. Нажмите ✏️ чтобы редактировать.</p>
         <div id="saTgMsgLoading" style="color:var(--text2);font-size:13px">Загрузка…</div>
-        <div id="saTgMsgList" style="display:flex;flex-direction:column;gap:12px;max-width:720px"></div>
+        <div style="display:flex;gap:20px;align-items:flex-start">
+          <div id="saTgMsgList" style="display:flex;flex-direction:column;gap:12px;flex:1;min-width:0"></div>
+          <div class="tg-vars-panel" id="saTgVarsPanel">
+            <div style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">⚙️ Переменные</div>
+            <div style="font-size:11px;color:var(--text2);margin-bottom:10px">Нажми — скопируется</div>
+            <div id="saTgVarsPanelList"></div>
+          </div>
+        </div>
       </div>
 
       <!-- PAGE: Expense Categories (template) -->
@@ -2990,6 +3004,31 @@ async function seedTgMessages() {
   }
 }
 
+function renderSaTgVarsPanel() {
+  const el = document.getElementById('saTgVarsPanelList');
+  if (!el) return;
+  el.innerHTML = SA_TG_VARS.map(([v, desc]) =>
+    `<button class="tg-var-chip" onclick="saTgCopyVar('${v}',this)" title="${desc}">${v}</button>
+     <div class="tg-var-desc">${desc}</div>`
+  ).join('');
+}
+
+function saTgCopyVar(varName, btn) {
+  navigator.clipboard.writeText(varName).then(() => {
+    btn.classList.add('copied');
+    const orig = btn.textContent;
+    btn.textContent = '✓ скопировано';
+    setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 1200);
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = varName; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy');
+    document.body.removeChild(ta);
+    btn.classList.add('copied');
+    setTimeout(() => btn.classList.remove('copied'), 1200);
+  });
+}
+
 async function loadSaTgMessages() {
   document.getElementById('saTgMsgLoading').style.display = '';
   document.getElementById('saTgMsgList').innerHTML = '';
@@ -2997,6 +3036,7 @@ async function loadSaTgMessages() {
     const r = await api('/saas/catalog/tg-messages');
     _saTgMessages = r.messages || [];
     renderSaTgMessages();
+    renderSaTgVarsPanel();
   } catch(e) {
     document.getElementById('saTgMsgLoading').textContent = 'Ошибка: ' + e.message;
   }
