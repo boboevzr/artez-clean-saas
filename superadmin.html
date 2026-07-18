@@ -398,19 +398,7 @@
         </div>
         <p style="font-size:13px;color:var(--text2);margin-bottom:12px">Категории расходов — шаблон для новых компаний.</p>
         <div id="saExpCatLoading" style="color:var(--text2);font-size:13px">Загрузка…</div>
-        <div class="table-wrap" id="saExpCatWrap" style="display:none">
-          <table>
-            <thead><tr>
-              <th style="width:40px"></th>
-              <th>Название RU</th>
-              <th>Название UZ</th>
-              <th>Родитель</th>
-              <th>Кто утверждает</th>
-              <th style="width:80px"></th>
-            </tr></thead>
-            <tbody id="saExpCatRows"></tbody>
-          </table>
-        </div>
+        <div id="saExpCatTree"></div>
       </div>
 
       <!-- PAGE: Chat Templates (template) -->
@@ -520,10 +508,14 @@
       <div class="field"><label>Кто утверждает</label>
         <select id="saec_approve">
           <option value="manager">Менеджер</option>
-          <option value="admin">Администратор</option>
+          <option value="both">Менеджер → Admin</option>
+          <option value="admin">Только Admin</option>
           <option value="none">Без утверждения</option>
         </select>
       </div>
+      <div class="field"><label>Порог суммы (чек)</label><input id="saec_threshold" type="number" min="0" placeholder="необяз." inputmode="numeric"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
       <div class="field"><label>Порядок</label><input id="saec_sort" type="number" value="0"></div>
     </div>
     <div style="display:flex;gap:16px;align-items:center;margin-bottom:10px">
@@ -2731,7 +2723,7 @@ let _saExpCats = [];
 
 async function loadSaExpCats() {
   document.getElementById('saExpCatLoading').style.display = '';
-  document.getElementById('saExpCatWrap').style.display = 'none';
+  document.getElementById('saExpCatTree').innerHTML = '';
   try {
     const r = await api('/saas/catalog/expense-categories');
     _saExpCats = r.categories || [];
@@ -2743,35 +2735,50 @@ async function loadSaExpCats() {
 
 function renderSaExpCats() {
   document.getElementById('saExpCatLoading').style.display = 'none';
-  const wrap = document.getElementById('saExpCatWrap');
-  const tbody = document.getElementById('saExpCatRows');
+  const tree = document.getElementById('saExpCatTree');
   if (!_saExpCats.length) {
-    wrap.style.display = 'none';
-    document.getElementById('saExpCatLoading').style.display = '';
-    document.getElementById('saExpCatLoading').textContent = 'Нет категорий. Нажмите + Добавить.';
+    tree.innerHTML = '<div style="color:var(--text2);font-size:13px">Нет категорий. Нажмите + Добавить.</div>';
     return;
   }
-  wrap.style.display = '';
-  const catMap = Object.fromEntries(_saExpCats.map(c => [c.id, c]));
-  tbody.innerHTML = _saExpCats.map(c => {
-    const parentName = c.parent_id && catMap[c.parent_id] ? escHtml(catMap[c.parent_id].name_ru) : '—';
-    const approveLabel = {manager:'Менеджер', admin:'Admin', none:'Без утверждения'}[c.approve_level] || c.approve_level;
-    const activeBadge = c.active ? '' : '<span style="color:#dc2626;font-size:11px"> ВЫКЛ</span>';
-    return `<tr>
-      <td style="font-size:20px;text-align:center">${escHtml(c.icon||'')}</td>
-      <td>${escHtml(c.name_ru)}${activeBadge}</td>
-      <td style="color:var(--text2)">${escHtml(c.name_uz||'')}</td>
-      <td style="color:var(--text2)">${parentName}</td>
-      <td style="color:var(--text2)">${approveLabel}</td>
-      <td style="text-align:right;white-space:nowrap">
-        <button class="btn btn-ghost btn-sm" onclick="saExpCatOpenModal(${escHtml(JSON.stringify(c.id))})">✏️</button>
-        <button class="btn btn-ghost btn-sm" style="color:#ef4444" onclick="saExpCatDelete(${escHtml(JSON.stringify(c.id))})">🗑</button>
-      </td>
-    </tr>`;
+  const parents = _saExpCats.filter(c => !c.parent_id);
+  const childrenOf = id => _saExpCats.filter(c => c.parent_id === id);
+  const _EXP_APPROVE = {manager:'👤 Менеджер', both:'👥 Менеджер→Admin', admin:'🔐 Admin', none:''};
+  tree.innerHTML = parents.map(p => {
+    const kids = childrenOf(p.id);
+    return `<div style="border:1.5px solid var(--border);border-radius:12px;margin-bottom:12px;overflow:hidden">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--surface2)">
+        <div>
+          <div style="font-size:15px;font-weight:700">${escHtml(p.icon||'')} ${escHtml(p.name_ru)}${p.active===false?'<span style="color:#dc2626;font-size:11px;margin-left:6px">ВЫКЛ</span>':''}</div>
+          ${p.name_uz ? `<div style="font-size:12px;color:var(--text2);margin-top:1px">${escHtml(p.name_uz)}</div>` : ''}
+        </div>
+        <div style="display:flex;gap:6px">
+          <button onclick="saExpCatOpenModal(${p.id})" style="padding:4px 10px;border:1.5px solid var(--border);border-radius:7px;background:var(--card);font-size:12px;cursor:pointer;color:var(--text)">✏️</button>
+          <button onclick="saExpCatDelete(${p.id})" style="padding:4px 10px;border:1.5px solid #fca5a5;border-radius:7px;background:#fef2f2;color:#dc2626;font-size:12px;cursor:pointer">🗑️</button>
+          <button onclick="saExpCatOpenModal(null,${p.id})" style="padding:4px 10px;border:none;border-radius:7px;background:var(--accent,#163E3B);color:#fff;font-size:12px;cursor:pointer;white-space:nowrap">+ подкатег.</button>
+        </div>
+      </div>
+      ${kids.length ? `<div style="padding:0 14px">${kids.map(c => `
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border)">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="color:var(--text2);font-size:14px">└─</span>
+            <div>
+              <div style="font-size:14px">${escHtml(c.icon||'')} ${escHtml(c.name_ru)}${c.active===false?'<span style="color:#dc2626;font-size:11px;margin-left:4px">ВЫКЛ</span>':''}</div>
+              ${c.name_uz ? `<div style="font-size:11px;color:var(--text2)">${escHtml(c.name_uz)}</div>` : ''}
+            </div>
+            ${_EXP_APPROVE[c.approve_level] ? `<span style="font-size:11px;color:var(--text2)">${_EXP_APPROVE[c.approve_level]}</span>` : ''}
+            ${c.receipt_required ? '<span style="font-size:11px;color:#6b7280">📎 чек</span>' : ''}
+          </div>
+          <div style="display:flex;gap:6px;flex-shrink:0">
+            <button onclick="saExpCatOpenModal(${c.id})" style="padding:4px 10px;border:1.5px solid var(--border);border-radius:7px;background:var(--card);font-size:12px;cursor:pointer;color:var(--text)">✏️</button>
+            <button onclick="saExpCatDelete(${c.id})" style="padding:4px 10px;border:1.5px solid #fca5a5;border-radius:7px;background:#fef2f2;color:#dc2626;font-size:12px;cursor:pointer">🗑️</button>
+          </div>
+        </div>`).join('')}
+      </div>` : `<div style="padding:10px 14px;color:var(--text2);font-size:12px">Подкатегорий нет</div>`}
+    </div>`;
   }).join('');
 }
 
-function saExpCatOpenModal(id) {
+function saExpCatOpenModal(id = null, defaultParentId = null) {
   const c = id != null ? _saExpCats.find(x => x.id === id) : null;
   document.getElementById('saExpCatModalTitle').textContent = c ? '✏️ Редактировать категорию' : '🧾 Новая категория';
   document.getElementById('saec_id').value = c?.id ?? '';
@@ -2779,6 +2786,7 @@ function saExpCatOpenModal(id) {
   document.getElementById('saec_name_ru').value = c?.name_ru || '';
   document.getElementById('saec_name_uz').value = c?.name_uz || '';
   document.getElementById('saec_approve').value = c?.approve_level || 'manager';
+  document.getElementById('saec_threshold').value = c?.amount_threshold || '';
   document.getElementById('saec_sort').value = c?.sort_order ?? 0;
   document.getElementById('saec_receipt').checked = !!c?.receipt_required;
   document.getElementById('saec_for_staff').checked = !!c?.for_staff;
@@ -2786,14 +2794,17 @@ function saExpCatOpenModal(id) {
   const sel = document.getElementById('saec_parent');
   sel.innerHTML = '<option value="">— корневая —</option>' +
     _saExpCats.filter(x => !x.parent_id && x.id !== id).map(x =>
-      `<option value="${x.id}"${c?.parent_id===x.id?' selected':''}>${escHtml(x.icon||'')} ${escHtml(x.name_ru)}</option>`
+      `<option value="${x.id}">${escHtml(x.icon||'')} ${escHtml(x.name_ru)}</option>`
     ).join('');
+  if (c?.parent_id) sel.value = String(c.parent_id);
+  else if (defaultParentId) sel.value = String(defaultParentId);
   document.getElementById('saExpCatErr').textContent = '';
   openModal('saExpCatModal');
 }
 
 async function saveSaExpCat() {
   const id = document.getElementById('saec_id').value;
+  const threshRaw = document.getElementById('saec_threshold').value;
   const body = {
     name_ru: document.getElementById('saec_name_ru').value.trim(),
     name_uz: document.getElementById('saec_name_uz').value.trim(),
@@ -2801,7 +2812,7 @@ async function saveSaExpCat() {
     parent_id: document.getElementById('saec_parent').value ? +document.getElementById('saec_parent').value : null,
     approve_level: document.getElementById('saec_approve').value,
     receipt_required: document.getElementById('saec_receipt').checked,
-    amount_threshold: null,
+    amount_threshold: threshRaw ? +threshRaw : null,
     sort_order: +document.getElementById('saec_sort').value || 0,
     for_staff: document.getElementById('saec_for_staff').checked,
     active: document.getElementById('saec_active').checked,
@@ -3025,12 +3036,12 @@ function renderSaTgMessages() {
           <div style="flex:1;min-width:220px">
             <label style="font-size:12px;color:var(--text2);display:block;margin-bottom:4px">🇷🇺 Русский</label>
             <textarea id="satgru_${status}" class="form-input tg-textarea" rows="7" readonly
-              style="background:var(--surface3,var(--surface2));cursor:default;resize:none">${ruVal}</textarea>
+              style="background:var(--surface3,var(--surface2));color:var(--text);cursor:default;resize:none">${ruVal}</textarea>
           </div>
           <div style="flex:1;min-width:220px">
             <label style="font-size:12px;color:var(--text2);display:block;margin-bottom:4px">🇺🇿 Ўзбекча</label>
             <textarea id="satguz_${status}" class="form-input tg-textarea" rows="7" readonly
-              style="background:var(--surface3,var(--surface2));cursor:default;resize:none">${uzVal}</textarea>
+              style="background:var(--surface3,var(--surface2));color:var(--text);cursor:default;resize:none">${uzVal}</textarea>
           </div>
         </div>
         <div id="satgvars_${status}" style="margin-top:8px;font-size:11px;color:var(--text2);display:none">
@@ -3044,7 +3055,7 @@ function renderSaTgMessages() {
 function _saTgMsgLock(status) {
   ['satgru_','satguz_'].forEach(p => {
     const el = document.getElementById(p + status);
-    if (el) { el.setAttribute('readonly',''); el.style.background='var(--surface3,var(--surface2))'; el.style.cursor='default'; el.style.resize='none'; }
+    if (el) { el.setAttribute('readonly',''); el.style.background='var(--surface3,var(--surface2))'; el.style.color='var(--text)'; el.style.cursor='default'; el.style.resize='none'; }
   });
   document.getElementById('satgpencil_' + status).style.display = '';
   document.getElementById('satgsave_' + status).style.display = 'none';
