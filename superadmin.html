@@ -138,6 +138,18 @@
   .staff-row { display: flex; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
   .staff-row:last-child { border-bottom: none; }
   .staff-edit-form { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 8px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  /* TG messages cards */
+  .tg-msg-card { background:var(--surface2);border:1px solid var(--border);border-radius:12px;overflow:hidden; }
+  .tg-msg-header { display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--surface3,rgba(255,255,255,.04));border-bottom:1px solid var(--border); }
+  .tg-status-name { font-size:14px;font-weight:600; }
+  .tg-msg-body { padding:12px 14px; }
+  .tg-textarea { font-size:13px;width:100%;resize:vertical;min-height:80px;font-family:inherit; }
+  .tg-toggle-label { position:relative;display:inline-flex;align-items:center;cursor:pointer; }
+  .tg-toggle { opacity:0;width:0;height:0;position:absolute; }
+  .tg-toggle-slider { display:inline-block;width:36px;height:20px;background:var(--border);border-radius:20px;transition:background .2s;flex-shrink:0;position:relative; }
+  .tg-toggle-slider::after { content:'';position:absolute;width:16px;height:16px;background:#fff;border-radius:50%;top:2px;left:2px;transition:transform .2s; }
+  .tg-toggle:checked + .tg-toggle-slider { background:var(--accent); }
+  .tg-toggle:checked + .tg-toggle-slider::after { transform:translateX(16px); }
 </style>
 </head>
 <body>
@@ -2936,12 +2948,23 @@ async function ecImportChatTpls() {
 }
 
 // ── TG NOTIFICATIONS TEMPLATE ─────────────────────────
-const _TG_STATUS_LABELS = {
-  new:'🆕 Новая заявка', confirmed:'✅ Подтверждён', pickup:'🚗 Выехал водитель',
-  received:'📥 В мастерской', washing:'🧼 Мойка', drying:'💨 Сушка',
-  packing:'📦 Упаковка', ready:'✅ Готов', delivery:'🚚 Доставка',
-  delivered:'🎉 Доставлен', cancelled:'❌ Отменён'
+const SA_TG_STATUS_ORDER = ['new','confirmed','pickup','received','washing','drying','packing','ready','delivery','delivered','cancelled'];
+const SA_TG_STATUS_NAMES = {
+  new:'Новый', confirmed:'Подтверждён', pickup:'Вывоз', received:'В мастерской',
+  washing:'Мойка', drying:'Сушка', packing:'Упаковка', ready:'Готов',
+  delivery:'Доставка', delivered:'Доставлен', cancelled:'Отменён'
 };
+const SA_TG_STATUS_ICONS = {
+  new:'🆕', confirmed:'✅', pickup:'🚗', received:'📥',
+  washing:'🧼', drying:'💨', packing:'📦', ready:'✅',
+  delivery:'🚚', delivered:'🎉', cancelled:'❌'
+};
+const SA_TG_VARS = [
+  ['{order_num}','Номер заказа'],['{client_name}','Имя клиента'],['{client_phone}','Телефон'],
+  ['{service}','Тип услуги'],['{status}','Статус'],['{pickup_date}','Дата вывоза'],
+  ['{pickup_time}','Время вывоза'],['{address}','Адрес'],['{branch}','Филиал'],
+  ['{total}','Сумма (сум)'],['{note}','Примечание'],['{city}','Город'],
+];
 
 let _saTgMessages = [];
 
@@ -2972,56 +2995,116 @@ function renderSaTgMessages() {
   document.getElementById('saTgMsgLoading').style.display = 'none';
   const list = document.getElementById('saTgMsgList');
   if (!_saTgMessages.length) {
-    list.innerHTML = '<div style="color:var(--text2);font-size:13px">Шаблоны не найдены.</div>';
+    list.innerHTML = '<div style="color:var(--text2);font-size:13px">Шаблоны не найдены. Нажмите 🔄 Загрузить стандартные.</div>';
     return;
   }
-  list.innerHTML = _saTgMessages.map(m => {
-    const label = _TG_STATUS_LABELS[m.status] || m.status;
-    const onOff = m.enabled
-      ? '<span style="background:#dcfce7;color:#15803d;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600">ВКЛ</span>'
-      : '<span style="background:#fee2e2;color:#dc2626;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600">ВЫКЛ</span>';
-    const preview = escHtml((m.message_ru || '').substring(0, 80)) + ((m.message_ru || '').length > 80 ? '…' : '');
-    return `<div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px 16px">
-      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px">
-        <div style="display:flex;align-items:center;gap:8px">
-          <span style="font-size:14px;font-weight:600">${escHtml(label)}</span>
-          ${onOff}
-        </div>
-        <button class="btn btn-ghost btn-sm" onclick="saOpenTgMsgModal(${escHtml(JSON.stringify(m.status))})">✏️</button>
+  const byStatus = {};
+  _saTgMessages.forEach(m => byStatus[m.status] = m);
+  list.innerHTML = SA_TG_STATUS_ORDER.map(status => {
+    const m = byStatus[status] || { status, enabled: false, message_ru: '', message_uz: '' };
+    const ruVal = escHtml(m.message_ru || '');
+    const uzVal = escHtml(m.message_uz || '');
+    const varsHtml = SA_TG_VARS.map(([v,lbl]) =>
+      `<code style="background:var(--surface2);padding:1px 5px;border-radius:3px;cursor:pointer;border:1px solid var(--border);font-size:11px" onclick="saTgInsertVar('${status}','${v}')" title="${lbl}">${v}</code>`
+    ).join(' ');
+    return `<div class="tg-msg-card" id="satgcard-${status}">
+      <div class="tg-msg-header">
+        <label class="tg-toggle-label" title="Включить/выключить уведомление">
+          <input type="checkbox" class="tg-toggle" id="satgen_${status}" ${m.enabled ? 'checked' : ''}
+            onchange="saTgToggleEnabled('${status}')">
+          <span class="tg-toggle-slider"></span>
+        </label>
+        <span class="tg-status-name">${SA_TG_STATUS_ICONS[status]} ${SA_TG_STATUS_NAMES[status]}</span>
+        <div style="flex:1"></div>
+        <button class="btn s-edit-btn" id="satgpencil_${status}" onclick="saTgMsgEdit('${status}')" title="Редактировать">✏️</button>
+        <button class="btn btn-primary" style="padding:5px 14px;font-size:12px;display:none" id="satgsave_${status}" onclick="saveSaTgMsg('${status}')">💾 Сохранить</button>
+        <button class="btn btn-ghost" style="padding:5px 10px;font-size:12px;display:none" id="satgcancel_${status}" onclick="saTgMsgCancel('${status}')">Отмена</button>
       </div>
-      <div style="font-size:12px;color:var(--text2);font-family:monospace;white-space:pre-wrap;line-height:1.4">${preview}</div>
+      <div class="tg-msg-body">
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <div style="flex:1;min-width:220px">
+            <label style="font-size:12px;color:var(--text2);display:block;margin-bottom:4px">🇷🇺 Русский</label>
+            <textarea id="satgru_${status}" class="form-input tg-textarea" rows="7" readonly
+              style="background:var(--surface3,var(--surface2));cursor:default;resize:none">${ruVal}</textarea>
+          </div>
+          <div style="flex:1;min-width:220px">
+            <label style="font-size:12px;color:var(--text2);display:block;margin-bottom:4px">🇺🇿 Ўзбекча</label>
+            <textarea id="satguz_${status}" class="form-input tg-textarea" rows="7" readonly
+              style="background:var(--surface3,var(--surface2));cursor:default;resize:none">${uzVal}</textarea>
+          </div>
+        </div>
+        <div id="satgvars_${status}" style="margin-top:8px;font-size:11px;color:var(--text2);display:none">
+          Вставить переменную: ${varsHtml}
+        </div>
+      </div>
     </div>`;
   }).join('');
 }
 
-let _saTgEditStatus = null;
-
-function saOpenTgMsgModal(status) {
-  const m = _saTgMessages.find(x => x.status === status);
-  if (!m) return;
-  _saTgEditStatus = status;
-  document.getElementById('saTgMsgStatusLbl').textContent = _TG_STATUS_LABELS[status] || status;
-  document.getElementById('satg_enabled').checked = !!m.enabled;
-  document.getElementById('satg_msg_ru').value = m.message_ru || '';
-  document.getElementById('satg_msg_uz').value = m.message_uz || '';
-  document.getElementById('saTgMsgErr').textContent = '';
-  openModal('saTgMsgModal');
+function _saTgMsgLock(status) {
+  ['satgru_','satguz_'].forEach(p => {
+    const el = document.getElementById(p + status);
+    if (el) { el.setAttribute('readonly',''); el.style.background='var(--surface3,var(--surface2))'; el.style.cursor='default'; el.style.resize='none'; }
+  });
+  document.getElementById('satgpencil_' + status).style.display = '';
+  document.getElementById('satgsave_' + status).style.display = 'none';
+  document.getElementById('satgcancel_' + status).style.display = 'none';
+  document.getElementById('satgvars_' + status).style.display = 'none';
 }
 
-async function saveSaTgMsg() {
-  if (!_saTgEditStatus) return;
-  const body = {
-    status:     _saTgEditStatus,
-    enabled:    document.getElementById('satg_enabled').checked,
-    message_ru: document.getElementById('satg_msg_ru').value,
-    message_uz: document.getElementById('satg_msg_uz').value,
-  };
+function saTgMsgEdit(status) {
+  const ru = document.getElementById('satgru_' + status);
+  const uz = document.getElementById('satguz_' + status);
+  ru.dataset.orig = ru.value;
+  uz.dataset.orig = uz.value;
+  ru.removeAttribute('readonly'); ru.style.background=''; ru.style.cursor=''; ru.style.resize='vertical';
+  uz.removeAttribute('readonly'); uz.style.background=''; uz.style.cursor=''; uz.style.resize='vertical';
+  ru.focus();
+  document.getElementById('satgpencil_' + status).style.display = 'none';
+  document.getElementById('satgsave_' + status).style.display = '';
+  document.getElementById('satgcancel_' + status).style.display = '';
+  document.getElementById('satgvars_' + status).style.display = '';
+}
+
+function saTgMsgCancel(status) {
+  const ru = document.getElementById('satgru_' + status);
+  const uz = document.getElementById('satguz_' + status);
+  if (ru.dataset.orig !== undefined) ru.value = ru.dataset.orig;
+  if (uz.dataset.orig !== undefined) uz.value = uz.dataset.orig;
+  const m = _saTgMessages.find(x => x.status === status);
+  const tog = document.getElementById('satgen_' + status);
+  if (tog && m) tog.checked = m.enabled;
+  _saTgMsgLock(status);
+}
+
+function saTgToggleEnabled(status) {
+  saveSaTgMsg(status, true);
+}
+
+function saTgInsertVar(status, varName) {
+  const active = document.activeElement;
+  let ta = null;
+  if (active && (active.id === 'satgru_'+status || active.id === 'satguz_'+status)) ta = active;
+  else ta = document.getElementById('satgru_' + status);
+  if (!ta || ta.hasAttribute('readonly')) return;
+  const s = ta.selectionStart, e = ta.selectionEnd;
+  ta.value = ta.value.slice(0,s) + varName + ta.value.slice(e);
+  ta.selectionStart = ta.selectionEnd = s + varName.length;
+  ta.focus();
+}
+
+async function saveSaTgMsg(status, silent = false) {
+  const enabled = document.getElementById('satgen_' + status)?.checked ?? true;
+  const message_ru = document.getElementById('satgru_' + status)?.value || '';
+  const message_uz = document.getElementById('satguz_' + status)?.value || '';
   try {
-    await api(`/saas/catalog/tg-messages/${_saTgEditStatus}`, 'PUT', body);
-    closeModal('saTgMsgModal');
-    await loadSaTgMessages();
+    const updated = await api(`/saas/catalog/tg-messages/${status}`, 'PUT', { status, enabled, message_ru, message_uz });
+    const idx = _saTgMessages.findIndex(x => x.status === status);
+    if (idx >= 0) _saTgMessages[idx] = updated.message || { status, enabled, message_ru, message_uz };
+    _saTgMsgLock(status);
+    // success toast omitted (superadmin has no showToast)
   } catch(e) {
-    document.getElementById('saTgMsgErr').textContent = e.message;
+    if (!silent) alert('Ошибка: ' + e.message);
   }
 }
 
