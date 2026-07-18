@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ARTEZ SaaS — Superadmin</title>
+<title>Cleano — Superadmin</title>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
@@ -165,7 +165,7 @@
 <div id="loginScreen">
   <div class="login-card">
     <h1>⚙️ SaaS Superadmin</h1>
-    <p>Управление компаниями ARTEZ</p>
+    <p>Cleano — Superadmin панель</p>
     <div class="err" id="loginErr"></div>
     <input type="password" id="secretInput" placeholder="Superadmin secret" autocomplete="current-password"
       onkeydown="if(event.key==='Enter') doLogin()">
@@ -176,7 +176,7 @@
 <!-- MAIN -->
 <div id="mainScreen">
   <div class="topbar">
-    <h1>⚙️ ARTEZ SaaS — Superadmin</h1>
+    <h1>⚙️ Cleano — Superadmin</h1>
     <button class="btn btn-logout btn-sm" onclick="logout()">Выйти</button>
   </div>
   <div class="main-body">
@@ -2667,7 +2667,7 @@ async function ecImportTgMessages() {
 }
 
 async function seedCatalogFromCompany() {
-  if (!confirm('Заполнить шаблон услуг и цен из компании #1 (artez)? Текущий шаблон будет перезаписан.')) return;
+  if (!confirm('Заполнить шаблон услуг и цен из компании #1? Текущий шаблон будет перезаписан.')) return;
   try {
     await api('/saas/catalog/seed-from-company', 'POST');
     alert('✅ Шаблон обновлён из компании #1');
