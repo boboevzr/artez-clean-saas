@@ -4352,19 +4352,19 @@
             </div>
             <!-- Панели -->
             <div id="adsIvrPane-promo">
-              <div style="display:flex;justify-content:flex-end;margin-bottom:8px"><button class="btn btn-primary btn-sm" onclick="adsIvrOpenAdd('promo')">+ Добавить</button></div>
+              <div style="display:flex;justify-content:flex-end;margin-bottom:8px"><button data-i18n="btn.add" class="btn btn-primary btn-sm" onclick="adsIvrOpenAdd('promo')">+ Добавить</button></div>
               <div id="adsIvrList-promo" style="display:flex;flex-direction:column;gap:6px"></div>
             </div>
             <div id="adsIvrPane-greetings" style="display:none">
-              <div style="display:flex;justify-content:flex-end;margin-bottom:8px"><button class="btn btn-primary btn-sm" onclick="adsIvrOpenAdd('greetings')">+ Добавить</button></div>
+              <div style="display:flex;justify-content:flex-end;margin-bottom:8px"><button data-i18n="btn.add" class="btn btn-primary btn-sm" onclick="adsIvrOpenAdd('greetings')">+ Добавить</button></div>
               <div id="adsIvrList-greetings" style="display:flex;flex-direction:column;gap:6px"></div>
             </div>
             <div id="adsIvrPane-reminders" style="display:none">
-              <div style="display:flex;justify-content:flex-end;margin-bottom:8px"><button class="btn btn-primary btn-sm" onclick="adsIvrOpenAdd('reminders')">+ Добавить</button></div>
+              <div style="display:flex;justify-content:flex-end;margin-bottom:8px"><button data-i18n="btn.add" class="btn btn-primary btn-sm" onclick="adsIvrOpenAdd('reminders')">+ Добавить</button></div>
               <div id="adsIvrList-reminders" style="display:flex;flex-direction:column;gap:6px"></div>
             </div>
             <div id="adsIvrPane-prank" style="display:none">
-              <div style="display:flex;justify-content:flex-end;margin-bottom:8px"><button class="btn btn-primary btn-sm" onclick="adsIvrOpenAdd('prank')">+ Добавить</button></div>
+              <div style="display:flex;justify-content:flex-end;margin-bottom:8px"><button data-i18n="btn.add" class="btn btn-primary btn-sm" onclick="adsIvrOpenAdd('prank')">+ Добавить</button></div>
               <div id="adsIvrList-prank" style="display:flex;flex-direction:column;gap:6px"></div>
             </div>
           </div>
@@ -5965,6 +5965,32 @@ const _adminI18n = {
     'tg.msg.desc':'Когда оператор меняет статус заказа — клиент получает сообщение в Telegram. Нажмите ✏️ чтобы редактировать шаблон.',
     'tg.vars.title':'⚙️ Переменные','tg.vars.hint':'Нажми — скопируется',
     'th.orders':'Заказов','th.last.order.tg':'Последний заказ',
+    'ad.lbl.name':'Название кампании','ad.lbl.ivr.dest':'IVR / куда попадёт клиент',
+    'ad.lbl.parallel':'Макс. параллельных звонков','ad.lbl.groups':'Группы контактов',
+    'ad.loading.groups':'Загрузка групп...','ad.groups.hint':'Выберите одну или несколько групп',
+    'ad.lbl.schedule':'📅 Расписание звонков','ad.lbl.time':'Время:',
+    'ad.lbl.weekdays':'Дни недели:','ad.lbl.period':'Период:','ad.lbl.no.limit':'(пусто = без ограничений)',
+    'day.mon':'Пн','day.tue':'Вт','day.wed':'Ср','day.thu':'Чт','day.fri':'Пт','day.sat':'Сб','day.sun':'Вс',
+    'ad.modal.new':'Новая кампания','ad.modal.edit':'Редактировать кампанию',
+    'ad.btn.export.answered':'📤 Экспорт дозвонившихся','ad.btn.export.no_answer':'📤 Экспорт не дозвонившихся',
+    'ad.btn.grp.answered':'🗂 Группа дозвонившихся','ad.btn.grp.no_answer':'🗂 Группа недозвонившихся',
+    'ad.btn.fork':'📋 Повтор /2','ad.btn.clone':'🗐 Клонировать',
+    'ad.search.ph':'🔍 Поиск по телефону или имени...','th.duration':'Длит.','th.time':'Время',
+    'ad.test.title':'Тест звонка','ad.test.desc':'Одиночный звонок через агента',
+    'ad.test.phones.lbl':'Телефоны (до 5)','ad.lbl.ivr.menu':'IVR / голосовое меню',
+    'ad.test.call.btn':'📞 Позвонить',
+    'ad.grp.name.lbl':'Название группы','ad.grp.notes.lbl':'Примечание',
+    'ad.grp.modal.new':'Новая группа','ad.grp.modal.edit':'Редактировать группу',
+    'ad.grp.import.crm':'+ Импорт из CRM',
+    'ad.grp.ph.phone':'Номер телефона (напр. 973661300)','ad.grp.ph.name':'Имя (необязательно)',
+    'ad.import.title':'📋 Импорт контактов','ad.import.lbl.filters':'Фильтры',
+    'ad.import.src.both':'CRM + Контакты','ad.import.src.clients':'CRM клиенты',
+    'ad.import.src.refs':'Справочник','ad.import.ph.search':'Поиск по имени или телефону',
+    'ad.import.all.prefixes':'Все префиксы',
+    'adg.tab.page':'Страница','adg.tab.all':'Все найденные',
+    'adg.btn.select':'✓ Выбрать страницу','adg.btn.deselect':'✗ Снять страницу',
+    'th.company':'Компания','ad.import.selected':'Выбрано:',
+    'ad.import.btn':'✅ Импортировать выбранных',
   },
   uz: {
     'btn.add':'+ Qoʻshish','btn.save':'💾 Saqlash','btn.cancel':'Bekor qilish',
@@ -6355,6 +6381,32 @@ const _adminI18n = {
     'tg.msg.desc':'Operator buyurtma holatini oʻzgartirganda — mijoz Telegramda xabar oladi. Shablonni tahrirlash uchun ✏️ bosing.',
     'tg.vars.title':'⚙️ Oʻzgaruvchilar','tg.vars.hint':'Bosing — nusxa olinadi',
     'th.orders':'Buyurtmalar','th.last.order.tg':'Oxirgi buyurtma',
+    'ad.lbl.name':'Kampaniya nomi','ad.lbl.ivr.dest':'IVR / mijoz qayerga tushadi',
+    'ad.lbl.parallel':'Maks. parallel qoʻngʻiroqlar','ad.lbl.groups':'Kontakt guruhlari',
+    'ad.loading.groups':'Guruhlar yuklanmoqda...','ad.groups.hint':'Bir yoki bir nechta guruh tanlang',
+    'ad.lbl.schedule':'📅 Qoʻngʻiroq jadvali','ad.lbl.time':'Vaqt:',
+    'ad.lbl.weekdays':'Hafta kunlari:','ad.lbl.period':'Davr:','ad.lbl.no.limit':'(boʻsh = cheksiz)',
+    'day.mon':'Du','day.tue':'Se','day.wed':'Ch','day.thu':'Pa','day.fri':'Ju','day.sat':'Sh','day.sun':'Ya',
+    'ad.modal.new':'Yangi kampaniya','ad.modal.edit':'Kampaniyani tahrirlash',
+    'ad.btn.export.answered':'📤 Ulanganlarni eksport','ad.btn.export.no_answer':'📤 Ulanmaganlarni eksport',
+    'ad.btn.grp.answered':'🗂 Ulanganlar guruhi','ad.btn.grp.no_answer':'🗂 Ulanmaganlar guruhi',
+    'ad.btn.fork':'📋 Takror /2','ad.btn.clone':'🗐 Klonlash',
+    'ad.search.ph':'🔍 Telefon yoki ism boʻyicha qidirish...','th.duration':'Davom.','th.time':'Vaqt',
+    'ad.test.title':'Test qoʻngʻiroq','ad.test.desc':'Agent orqali bitta qoʻngʻiroq',
+    'ad.test.phones.lbl':'Telefonlar (5 tagacha)','ad.lbl.ivr.menu':'IVR / ovozli menyu',
+    'ad.test.call.btn':'📞 Qoʻngʻiroq',
+    'ad.grp.name.lbl':'Guruh nomi','ad.grp.notes.lbl':'Izoh',
+    'ad.grp.modal.new':'Yangi guruh','ad.grp.modal.edit':'Guruhni tahrirlash',
+    'ad.grp.import.crm':'+ CRMdan import',
+    'ad.grp.ph.phone':'Telefon raqami (mas. 973661300)','ad.grp.ph.name':'Ism (majburiy emas)',
+    'ad.import.title':'📋 Kontaktlarni import','ad.import.lbl.filters':'Filtrlar',
+    'ad.import.src.both':'CRM + Kontaktlar','ad.import.src.clients':'CRM mijozlar',
+    'ad.import.src.refs':'Maʼlumotnoma','ad.import.ph.search':'Ism yoki telefon boʻyicha qidirish',
+    'ad.import.all.prefixes':'Barcha prefikslar',
+    'adg.tab.page':'Sahifa','adg.tab.all':'Barcha topilganlar',
+    'adg.btn.select':'✓ Sahifani tanlash','adg.btn.deselect':'✗ Sahifadan olib tashlash',
+    'th.company':'Kompaniya','ad.import.selected':'Tanlangan:',
+    'ad.import.btn':'✅ Tanlanganlarni import',
   },
 };
 function _applyAdminI18n() {
@@ -19174,36 +19226,36 @@ function confirmBranchLoc() {
 
     <div style="display:flex;flex-direction:column;gap:14px">
       <div>
-        <label class="cfg-label">Название кампании</label>
+        <label class="cfg-label" data-i18n="ad.lbl.name">Название кампании</label>
         <input id="adName" class="price-input" style="width:100%" placeholder="Например: Акция июль 2026">
       </div>
 
       <div>
-        <label class="cfg-label">IVR / куда попадёт клиент</label>
+        <label class="cfg-label" data-i18n="ad.lbl.ivr.dest">IVR / куда попадёт клиент</label>
         <select id="adExtenSel" class="price-input" style="width:100%"></select>
       </div>
       <div>
-        <label class="cfg-label">Макс. параллельных звонков</label>
+        <label class="cfg-label" data-i18n="ad.lbl.parallel">Макс. параллельных звонков</label>
         <input id="adParallel" class="price-input" type="number" min="1" max="20" style="width:140px" value="4">
       </div>
 
       <div>
-        <label class="cfg-label">Группы контактов</label>
+        <label class="cfg-label" data-i18n="ad.lbl.groups">Группы контактов</label>
         <div id="adGroupsSelect" style="border:1px solid var(--border);border-radius:10px;max-height:180px;overflow-y:auto;background:var(--surface)">
-          <div style="padding:12px;color:var(--text2);font-size:13px">Загрузка групп...</div>
+          <div data-i18n="ad.loading.groups" style="padding:12px;color:var(--text2);font-size:13px">Загрузка групп...</div>
         </div>
-        <div style="font-size:11px;color:var(--text2);margin-top:4px">Выберите одну или несколько групп</div>
+        <div data-i18n="ad.groups.hint" style="font-size:11px;color:var(--text2);margin-top:4px">Выберите одну или несколько групп</div>
       </div>
 
       <!-- Расписание -->
       <div style="border:1px solid var(--border);border-radius:10px;padding:14px;background:var(--surface)">
-        <div style="font-size:13px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:6px">
+        <div data-i18n="ad.lbl.schedule" style="font-size:13px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:6px">
           📅 Расписание звонков
         </div>
 
         <!-- Время -->
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap">
-          <span style="font-size:12px;color:var(--text2);min-width:56px">Время:</span>
+          <span data-i18n="ad.lbl.time" style="font-size:12px;color:var(--text2);min-width:56px">Время:</span>
           <input id="adSchedFrom" type="time" class="price-input" value="09:00" style="width:110px">
           <span style="color:var(--text2)">—</span>
           <input id="adSchedTo" type="time" class="price-input" value="21:00" style="width:110px">
@@ -19211,32 +19263,32 @@ function confirmBranchLoc() {
 
         <!-- Дни недели -->
         <div style="margin-bottom:10px">
-          <div style="font-size:12px;color:var(--text2);margin-bottom:6px">Дни недели:</div>
+          <div data-i18n="ad.lbl.weekdays" style="font-size:12px;color:var(--text2);margin-bottom:6px">Дни недели:</div>
           <div style="display:flex;gap:5px;flex-wrap:wrap">
-            <label id="adDayLbl0" style="display:flex;align-items:center;gap:3px;padding:4px 8px;border-radius:6px;border:1px solid var(--border);cursor:pointer;font-size:12px;background:var(--surface2)"><input type="checkbox" name="adDay" value="0" checked style="display:none" onchange="adDayToggle(this)">Пн</label>
-            <label id="adDayLbl1" style="display:flex;align-items:center;gap:3px;padding:4px 8px;border-radius:6px;border:1px solid var(--border);cursor:pointer;font-size:12px;background:var(--surface2)"><input type="checkbox" name="adDay" value="1" checked style="display:none" onchange="adDayToggle(this)">Вт</label>
-            <label id="adDayLbl2" style="display:flex;align-items:center;gap:3px;padding:4px 8px;border-radius:6px;border:1px solid var(--border);cursor:pointer;font-size:12px;background:var(--surface2)"><input type="checkbox" name="adDay" value="2" checked style="display:none" onchange="adDayToggle(this)">Ср</label>
-            <label id="adDayLbl3" style="display:flex;align-items:center;gap:3px;padding:4px 8px;border-radius:6px;border:1px solid var(--border);cursor:pointer;font-size:12px;background:var(--surface2)"><input type="checkbox" name="adDay" value="3" checked style="display:none" onchange="adDayToggle(this)">Чт</label>
-            <label id="adDayLbl4" style="display:flex;align-items:center;gap:3px;padding:4px 8px;border-radius:6px;border:1px solid var(--border);cursor:pointer;font-size:12px;background:var(--surface2)"><input type="checkbox" name="adDay" value="4" checked style="display:none" onchange="adDayToggle(this)">Пт</label>
-            <label id="adDayLbl5" style="display:flex;align-items:center;gap:3px;padding:4px 8px;border-radius:6px;border:1px solid var(--border);cursor:pointer;font-size:12px;background:var(--surface2)"><input type="checkbox" name="adDay" value="5" checked style="display:none" onchange="adDayToggle(this)">Сб</label>
-            <label id="adDayLbl6" style="display:flex;align-items:center;gap:3px;padding:4px 8px;border-radius:6px;border:1px solid var(--border);cursor:pointer;font-size:12px;background:var(--surface2)"><input type="checkbox" name="adDay" value="6" checked style="display:none" onchange="adDayToggle(this)">Вс</label>
+            <label id="adDayLbl0" style="display:flex;align-items:center;gap:3px;padding:4px 8px;border-radius:6px;border:1px solid var(--border);cursor:pointer;font-size:12px;background:var(--surface2)"><input type="checkbox" name="adDay" value="0" checked style="display:none" onchange="adDayToggle(this)"><span data-i18n="day.mon">Пн</span></label>
+            <label id="adDayLbl1" style="display:flex;align-items:center;gap:3px;padding:4px 8px;border-radius:6px;border:1px solid var(--border);cursor:pointer;font-size:12px;background:var(--surface2)"><input type="checkbox" name="adDay" value="1" checked style="display:none" onchange="adDayToggle(this)"><span data-i18n="day.tue">Вт</span></label>
+            <label id="adDayLbl2" style="display:flex;align-items:center;gap:3px;padding:4px 8px;border-radius:6px;border:1px solid var(--border);cursor:pointer;font-size:12px;background:var(--surface2)"><input type="checkbox" name="adDay" value="2" checked style="display:none" onchange="adDayToggle(this)"><span data-i18n="day.wed">Ср</span></label>
+            <label id="adDayLbl3" style="display:flex;align-items:center;gap:3px;padding:4px 8px;border-radius:6px;border:1px solid var(--border);cursor:pointer;font-size:12px;background:var(--surface2)"><input type="checkbox" name="adDay" value="3" checked style="display:none" onchange="adDayToggle(this)"><span data-i18n="day.thu">Чт</span></label>
+            <label id="adDayLbl4" style="display:flex;align-items:center;gap:3px;padding:4px 8px;border-radius:6px;border:1px solid var(--border);cursor:pointer;font-size:12px;background:var(--surface2)"><input type="checkbox" name="adDay" value="4" checked style="display:none" onchange="adDayToggle(this)"><span data-i18n="day.fri">Пт</span></label>
+            <label id="adDayLbl5" style="display:flex;align-items:center;gap:3px;padding:4px 8px;border-radius:6px;border:1px solid var(--border);cursor:pointer;font-size:12px;background:var(--surface2)"><input type="checkbox" name="adDay" value="5" checked style="display:none" onchange="adDayToggle(this)"><span data-i18n="day.sat">Сб</span></label>
+            <label id="adDayLbl6" style="display:flex;align-items:center;gap:3px;padding:4px 8px;border-radius:6px;border:1px solid var(--border);cursor:pointer;font-size:12px;background:var(--surface2)"><input type="checkbox" name="adDay" value="6" checked style="display:none" onchange="adDayToggle(this)"><span data-i18n="day.sun">Вс</span></label>
           </div>
         </div>
 
         <!-- Период дат -->
         <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
-          <span style="font-size:12px;color:var(--text2);min-width:56px">Период:</span>
+          <span data-i18n="ad.lbl.period" style="font-size:12px;color:var(--text2);min-width:56px">Период:</span>
           <input id="adDateFrom" type="date" class="price-input" style="width:148px">
           <span style="color:var(--text2)">—</span>
           <input id="adDateTo" type="date" class="price-input" style="width:148px">
-          <span style="font-size:11px;color:var(--text2)">(пусто = без ограничений)</span>
+          <span data-i18n="ad.lbl.no.limit" style="font-size:11px;color:var(--text2)">(пусто = без ограничений)</span>
         </div>
       </div>
     </div>
 
     <div style="display:flex;gap:10px;margin-top:20px">
-      <button class="btn btn-ghost btn-sm" onclick="adCloseModal()">Отмена</button>
-      <button class="btn btn-primary" style="flex:1" onclick="adSaveCampaign()">💾 Сохранить</button>
+      <button class="btn btn-ghost btn-sm" data-i18n="btn.cancel" onclick="adCloseModal()">Отмена</button>
+      <button class="btn btn-primary" data-i18n="btn.save" style="flex:1" onclick="adSaveCampaign()">💾 Сохранить</button>
     </div>
   </div>
 </div>
@@ -19251,26 +19303,26 @@ function confirmBranchLoc() {
     <div id="adDetailStats" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:10px;flex-shrink:0"></div>
     <!-- Панель действий -->
     <div id="adDetailActions" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--border);flex-shrink:0">
-      <button onclick="adExportCsv('answered')" class="btn btn-sm" style="background:#f0fdf4;color:#16a34a;border:1px solid #86efac">📤 Экспорт дозвонившихся</button>
-      <button onclick="adExportCsv('no_answer')" class="btn btn-sm" style="background:#fef2f2;color:#dc2626;border:1px solid #fca5a5">📤 Экспорт не дозвонившихся</button>
-      <button onclick="adSaveGroup('answered')" class="btn btn-sm" style="background:#eff6ff;color:#2563eb;border:1px solid #93c5fd">🗂 Группа дозвонившихся</button>
-      <button onclick="adSaveGroup('no_answer')" class="btn btn-sm" style="background:#fef9c3;color:#854d0e;border:1px solid #fde68a">🗂 Группа недозвонившихся</button>
-      <button onclick="adForkCampaign()" class="btn btn-sm" style="background:#faf5ff;color:#7c3aed;border:1px solid #c4b5fd">📋 Повтор /2</button>
-      <button onclick="adCloneCampaign()" class="btn btn-sm" style="background:var(--surface2);color:var(--text);border:1px solid var(--border)">🗐 Клонировать</button>
+      <button onclick="adExportCsv('answered')" data-i18n="ad.btn.export.answered" class="btn btn-sm" style="background:#f0fdf4;color:#16a34a;border:1px solid #86efac">📤 Экспорт дозвонившихся</button>
+      <button onclick="adExportCsv('no_answer')" data-i18n="ad.btn.export.no_answer" class="btn btn-sm" style="background:#fef2f2;color:#dc2626;border:1px solid #fca5a5">📤 Экспорт не дозвонившихся</button>
+      <button onclick="adSaveGroup('answered')" data-i18n="ad.btn.grp.answered" class="btn btn-sm" style="background:#eff6ff;color:#2563eb;border:1px solid #93c5fd">🗂 Группа дозвонившихся</button>
+      <button onclick="adSaveGroup('no_answer')" data-i18n="ad.btn.grp.no_answer" class="btn btn-sm" style="background:#fef9c3;color:#854d0e;border:1px solid #fde68a">🗂 Группа недозвонившихся</button>
+      <button onclick="adForkCampaign()" data-i18n="ad.btn.fork" class="btn btn-sm" style="background:#faf5ff;color:#7c3aed;border:1px solid #c4b5fd">📋 Повтор /2</button>
+      <button onclick="adCloneCampaign()" data-i18n="ad.btn.clone" class="btn btn-sm" style="background:var(--surface2);color:var(--text);border:1px solid var(--border)">🗐 Клонировать</button>
     </div>
     <div style="flex-shrink:0;margin-bottom:8px">
-      <input id="adCallSearch" class="filter-input" placeholder="🔍 Поиск по телефону или имени..." oninput="_adRenderCallsTable()" style="width:100%;box-sizing:border-box;">
+      <input id="adCallSearch" class="filter-input" data-i18n-ph="ad.search.ph" placeholder="🔍 Поиск по телефону или имени..." oninput="_adRenderCallsTable()" style="width:100%;box-sizing:border-box;">
     </div>
     <div style="overflow-y:auto;flex:1">
       <table style="width:100%;border-collapse:collapse;font-size:13px">
         <thead>
           <tr style="border-bottom:2px solid var(--border)">
-            <th style="text-align:left;padding:8px 6px;color:var(--text2);font-weight:600">#</th>
-            <th style="text-align:left;padding:8px 6px;color:var(--text2);font-weight:600">Телефон</th>
-            <th style="text-align:left;padding:8px 6px;color:var(--text2);font-weight:600">Имя</th>
-            <th style="text-align:left;padding:8px 6px;color:var(--text2);font-weight:600">Статус</th>
-            <th style="text-align:left;padding:8px 6px;color:var(--text2);font-weight:600">Время</th>
-            <th style="text-align:left;padding:8px 6px;color:var(--text2);font-weight:600">Длит.</th>
+            <th style="text-align:left;padding:8px 6px;color:var(--text2);font-weight:600" data-i18n="th.num">#</th>
+            <th style="text-align:left;padding:8px 6px;color:var(--text2);font-weight:600" data-i18n="th.phone">Телефон</th>
+            <th style="text-align:left;padding:8px 6px;color:var(--text2);font-weight:600" data-i18n="th.name">Имя</th>
+            <th style="text-align:left;padding:8px 6px;color:var(--text2);font-weight:600" data-i18n="th.status">Статус</th>
+            <th style="text-align:left;padding:8px 6px;color:var(--text2);font-weight:600" data-i18n="th.time">Время</th>
+            <th style="text-align:left;padding:8px 6px;color:var(--text2);font-weight:600" data-i18n="th.duration">Длит.</th>
           </tr>
         </thead>
         <tbody id="adCallsBody"></tbody>
@@ -19286,8 +19338,8 @@ function confirmBranchLoc() {
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
       <div style="width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">📞</div>
       <div style="flex:1">
-        <div style="font-weight:700;font-size:16px">Тест звонка</div>
-        <div style="font-size:12px;color:var(--text2);margin-top:1px">Одиночный звонок через агента</div>
+        <div data-i18n="ad.test.title" style="font-weight:700;font-size:16px">Тест звонка</div>
+        <div data-i18n="ad.test.desc" style="font-size:12px;color:var(--text2);margin-top:1px">Одиночный звонок через агента</div>
       </div>
       <button onclick="adCloseTest()" style="width:32px;height:32px;border-radius:50%;border:1px solid var(--border);background:none;color:var(--text2);cursor:pointer;font-size:16px">✕</button>
     </div>
@@ -19296,8 +19348,8 @@ function confirmBranchLoc() {
       <!-- Телефоны -->
       <div>
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-          <label class="cfg-label" style="margin:0">Телефоны (до 5)</label>
-          <button id="adTestAddBtn" onclick="_adAddTestPhone()" class="btn btn-sm" style="padding:2px 10px;font-size:12px">＋ Добавить</button>
+          <label data-i18n="ad.test.phones.lbl" class="cfg-label" style="margin:0">Телефоны (до 5)</label>
+          <button id="adTestAddBtn" data-i18n="btn.add" onclick="_adAddTestPhone()" class="btn btn-sm" style="padding:2px 10px;font-size:12px">＋ Добавить</button>
         </div>
         <div id="adTestHistoryChips" style="display:none;gap:6px;flex-wrap:wrap;margin-bottom:8px"></div>
         <div id="adTestPhones" style="display:flex;flex-direction:column;gap:7px"></div>
@@ -19305,7 +19357,7 @@ function confirmBranchLoc() {
 
       <!-- IVR -->
       <div>
-        <label class="cfg-label">IVR / голосовое меню</label>
+        <label data-i18n="ad.lbl.ivr.menu" class="cfg-label">IVR / голосовое меню</label>
         <select id="adTestExten" class="price-input" style="width:100%;font-size:14px"></select>
       </div>
 
@@ -19314,8 +19366,8 @@ function confirmBranchLoc() {
     </div>
 
     <div style="display:flex;gap:10px;margin-top:20px">
-      <button class="btn btn-ghost btn-sm" onclick="adCloseTest()">Закрыть</button>
-      <button class="btn btn-primary" style="flex:1;height:42px;font-size:15px" id="adTestBtn" onclick="adDoTest()">📞 Позвонить</button>
+      <button data-i18n="btn.close" class="btn btn-ghost btn-sm" onclick="adCloseTest()">Закрыть</button>
+      <button data-i18n="ad.test.call.btn" class="btn btn-primary" style="flex:1;height:42px;font-size:15px" id="adTestBtn" onclick="adDoTest()">📞 Позвонить</button>
     </div>
   </div>
 </div>
@@ -19329,17 +19381,17 @@ function confirmBranchLoc() {
     </div>
     <div style="display:flex;flex-direction:column;gap:14px">
       <div>
-        <label class="cfg-label">Название группы</label>
+        <label data-i18n="ad.grp.name.lbl" class="cfg-label">Название группы</label>
         <input id="adgName" class="price-input" style="width:100%" placeholder="Например: Клиенты Зарафшан">
       </div>
       <div>
-        <label class="cfg-label">Примечание</label>
+        <label data-i18n="ad.grp.notes.lbl" class="cfg-label">Примечание</label>
         <textarea id="adgNotes" class="price-input" rows="3" style="width:100%;resize:vertical" placeholder="Описание группы..."></textarea>
       </div>
     </div>
     <div style="display:flex;gap:10px;margin-top:20px">
-      <button class="btn btn-ghost btn-sm" onclick="adgCloseModal()">Отмена</button>
-      <button class="btn btn-primary" style="flex:1" onclick="adgSave()">💾 Сохранить</button>
+      <button data-i18n="btn.cancel" class="btn btn-ghost btn-sm" onclick="adgCloseModal()">Отмена</button>
+      <button data-i18n="btn.save" class="btn btn-primary" style="flex:1" onclick="adgSave()">💾 Сохранить</button>
     </div>
   </div>
 </div>
@@ -19353,23 +19405,23 @@ function confirmBranchLoc() {
         <div id="adgMembersCount" style="font-size:12px;color:var(--text2)"></div>
       </div>
       <div style="display:flex;gap:8px;align-items:center">
-        <button class="btn btn-sm" style="background:var(--surface2);color:var(--text)" onclick="adgOpenImport()">+ Импорт из CRM</button>
+        <button data-i18n="ad.grp.import.crm" class="btn btn-sm" style="background:var(--surface2);color:var(--text)" onclick="adgOpenImport()">+ Импорт из CRM</button>
         <button onclick="adgCloseMembers()" style="width:32px;height:32px;border-radius:50%;border:1px solid var(--border);background:none;color:var(--text2);cursor:pointer">✕</button>
       </div>
     </div>
     <!-- Ручное добавление -->
     <div style="display:flex;gap:8px;margin-bottom:12px;flex-shrink:0">
-      <input id="adgAddPhone" class="price-input" style="flex:1" placeholder="Номер телефона (напр. 973661300)">
-      <input id="adgAddName" class="price-input" style="flex:1" placeholder="Имя (необязательно)">
+      <input id="adgAddPhone" data-i18n-ph="ad.grp.ph.phone" class="price-input" style="flex:1" placeholder="Номер телефона (напр. 973661300)">
+      <input id="adgAddName" data-i18n-ph="ad.grp.ph.name" class="price-input" style="flex:1" placeholder="Имя (необязательно)">
       <button class="btn btn-primary btn-sm" onclick="adgAddManual()">+ Добавить</button>
     </div>
     <div style="overflow-y:auto;flex:1">
       <table style="width:100%;border-collapse:collapse;font-size:13px">
         <thead>
           <tr style="border-bottom:2px solid var(--border)">
-            <th style="text-align:left;padding:8px 6px;color:var(--text2);font-weight:600">Телефон</th>
-            <th style="text-align:left;padding:8px 6px;color:var(--text2);font-weight:600">Имя</th>
-            <th style="text-align:left;padding:8px 6px;color:var(--text2);font-weight:600">Источник</th>
+            <th data-i18n="th.phone" style="text-align:left;padding:8px 6px;color:var(--text2);font-weight:600">Телефон</th>
+            <th data-i18n="th.name" style="text-align:left;padding:8px 6px;color:var(--text2);font-weight:600">Имя</th>
+            <th data-i18n="th.source" style="text-align:left;padding:8px 6px;color:var(--text2);font-weight:600">Источник</th>
             <th style="padding:8px 6px"></th>
           </tr>
         </thead>
@@ -19383,21 +19435,21 @@ function confirmBranchLoc() {
 <div id="adgImportModal" class="modal-overlay hidden" style="z-index:510" onclick="if(event.target===this)adgCloseImport()">
   <div class="modal-box" style="max-width:min(720px,96vw);width:96vw;max-height:92vh;overflow:hidden;display:flex;flex-direction:column">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-shrink:0">
-      <h3 style="margin:0">📋 Импорт контактов</h3>
+      <h3 data-i18n="ad.import.title" style="margin:0">📋 Импорт контактов</h3>
       <button onclick="adgCloseImport()" style="width:32px;height:32px;border-radius:50%;border:1px solid var(--border);background:none;color:var(--text2);cursor:pointer">✕</button>
     </div>
     <!-- Фильтры -->
     <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:8px;flex-shrink:0">
-      <div style="font-size:11px;color:var(--text2);font-weight:600;margin-bottom:7px;text-transform:uppercase;letter-spacing:.5px">Фильтры</div>
+      <div data-i18n="ad.import.lbl.filters" style="font-size:11px;color:var(--text2);font-weight:600;margin-bottom:7px;text-transform:uppercase;letter-spacing:.5px">Фильтры</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
         <select id="adgImportSrc" class="price-input" style="width:170px" onchange="adgBrowse(0)">
-          <option value="both">CRM + Контакты</option>
-          <option value="clients">CRM клиенты</option>
-          <option value="contacts">Справочник</option>
+          <option value="both" data-i18n="ad.import.src.both">CRM + Контакты</option>
+          <option value="clients" data-i18n="ad.import.src.clients">CRM клиенты</option>
+          <option value="contacts" data-i18n="ad.import.src.refs">Справочник</option>
         </select>
-        <input id="adgImportQ" class="price-input" style="flex:1;min-width:160px" placeholder="Поиск по имени или телефону" oninput="adgBrowseDelay()">
+        <input id="adgImportQ" data-i18n-ph="ad.import.ph.search" class="price-input" style="flex:1;min-width:160px" placeholder="Поиск по имени или телефону" oninput="adgBrowseDelay()">
         <select id="adgImportPrefix" class="price-input" style="width:160px" onchange="adgBrowse(0)">
-          <option value="">Все префиксы</option>
+          <option value="" data-i18n="ad.import.all.prefixes">Все префиксы</option>
           <option value="90">90 — Beeline</option>
           <option value="91">91 — Uzmobile</option>
           <option value="93">93 — Uzmobile</option>
@@ -19429,12 +19481,12 @@ function confirmBranchLoc() {
     <!-- Вкладки: Страница / Все найденные -->
     <div style="margin-bottom:8px;flex-shrink:0">
       <div class="adg-tabs-row">
-        <button id="adgTabPage" class="adg-tab active" onclick="adgTabSwitch('page')">Страница</button>
-        <button id="adgTabAll"  class="adg-tab"        onclick="adgTabSwitch('all')">Все найденные</button>
+        <button id="adgTabPage" data-i18n="adg.tab.page" class="adg-tab active" onclick="adgTabSwitch('page')">Страница</button>
+        <button id="adgTabAll" data-i18n="adg.tab.all" class="adg-tab"  onclick="adgTabSwitch('all')">Все найденные</button>
       </div>
       <div class="adg-tab-body">
-        <button id="adgBtnSelect"   onclick="adgSelectActive()"   style="padding:5px 16px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--text);font-size:13px;cursor:pointer">✓ Выбрать страницу</button>
-        <button id="adgBtnDeselect" onclick="adgDeselectActive()" style="padding:5px 16px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--text);font-size:13px;cursor:pointer">✗ Снять страницу</button>
+        <button id="adgBtnSelect"   data-i18n="adg.btn.select"   onclick="adgSelectActive()"   style="padding:5px 16px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--text);font-size:13px;cursor:pointer">✓ Выбрать страницу</button>
+        <button id="adgBtnDeselect" data-i18n="adg.btn.deselect" onclick="adgDeselectActive()" style="padding:5px 16px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--text);font-size:13px;cursor:pointer">✗ Снять страницу</button>
       </div>
     </div>
     <!-- Таблица -->
@@ -19443,10 +19495,10 @@ function confirmBranchLoc() {
         <thead>
           <tr style="border-bottom:2px solid var(--border)">
             <th style="padding:8px 6px;width:32px"><input type="checkbox" id="adgSelAllCb" onchange="adgSelAllToggle(this.checked)"></th>
-            <th style="text-align:left;padding:8px 6px;color:var(--text2);font-weight:600">Телефон</th>
-            <th style="text-align:left;padding:8px 6px;color:var(--text2);font-weight:600">Имя</th>
-            <th style="text-align:left;padding:8px 6px;color:var(--text2);font-weight:600">Компания</th>
-            <th style="text-align:left;padding:8px 6px;color:var(--text2);font-weight:600">Источник</th>
+            <th data-i18n="th.phone" style="text-align:left;padding:8px 6px;color:var(--text2);font-weight:600">Телефон</th>
+            <th data-i18n="th.name" style="text-align:left;padding:8px 6px;color:var(--text2);font-weight:600">Имя</th>
+            <th data-i18n="th.company" style="text-align:left;padding:8px 6px;color:var(--text2);font-weight:600">Компания</th>
+            <th data-i18n="th.source" style="text-align:left;padding:8px 6px;color:var(--text2);font-weight:600">Источник</th>
           </tr>
         </thead>
         <tbody id="adgImportBody"></tbody>
@@ -19457,9 +19509,9 @@ function confirmBranchLoc() {
     <!-- Нижняя строка: статистика + кнопка -->
     <div style="padding:10px 0 0;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;border-top:1px solid var(--border);gap:12px;flex-wrap:wrap">
       <div style="font-size:13px;color:var(--text2)">
-        Найдено: <b id="adgFoundCount">—</b> &nbsp;·&nbsp; Выбрано: <b id="adgSelCount">0</b>
+        <span data-i18n="tg.found">Найдено:</span> <b id="adgFoundCount">—</b> &nbsp;·&nbsp; <span data-i18n="ad.import.selected">Выбрано:</span> <b id="adgSelCount">0</b>
       </div>
-      <button class="btn btn-primary btn-sm" onclick="adgImportSelected()">✅ Импортировать выбранных</button>
+      <button data-i18n="ad.import.btn" class="btn btn-primary btn-sm" onclick="adgImportSelected()">✅ Импортировать выбранных</button>
     </div>
   </div>
 </div>
@@ -19560,14 +19612,14 @@ async function adgLoad() {
 
 function adgOpenCreate() {
   _adgEditId = null;
-  document.getElementById('adgModalTitle').textContent = 'Новая группа';
+  document.getElementById('adgModalTitle').textContent = _t('ad.grp.modal.new');
   document.getElementById('adgName').value = '';
   document.getElementById('adgNotes').value = '';
   document.getElementById('adgModal').classList.remove('hidden');
 }
 function adgOpenEdit(id, name, notes) {
   _adgEditId = id;
-  document.getElementById('adgModalTitle').textContent = 'Редактировать группу';
+  document.getElementById('adgModalTitle').textContent = _t('ad.grp.modal.edit');
   document.getElementById('adgName').value = name;
   document.getElementById('adgNotes').value = notes;
   document.getElementById('adgModal').classList.remove('hidden');
@@ -20149,7 +20201,7 @@ function _adInitDays(days) {
 
 async function adOpenCreate() {
   _adEditId = null;
-  document.getElementById('adModalTitle').textContent = 'Новая кампания';
+  document.getElementById('adModalTitle').textContent = _t('ad.modal.new');
   document.getElementById('adName').value = '';
   document.getElementById('adParallel').value = '4';
   document.getElementById('adSchedFrom').value = '09:00';
@@ -20163,7 +20215,7 @@ async function adOpenCreate() {
 
 async function adOpenEdit(id) {
   _adEditId = id;
-  document.getElementById('adModalTitle').textContent = 'Редактировать кампанию';
+  document.getElementById('adModalTitle').textContent = _t('ad.modal.edit');
   await Promise.all([adLoadGroupsForSelect(), _adLoadExtenSels()]);
   const c = await apiGet(`/admin/autodial/campaigns/${id}`);
   if (!c) { showToast('Не удалось загрузить кампанию', 'error'); return; }
