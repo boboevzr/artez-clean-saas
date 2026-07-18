@@ -368,6 +368,7 @@
       <div class="page" id="page-sa-tg-messages">
         <div class="section-header">
           <div class="page-title" style="margin:0">📱 Telegram · Уведомления (шаблон)</div>
+          <button class="btn-outline" onclick="seedTgMessages()">🔄 Загрузить стандартные</button>
         </div>
         <p style="font-size:13px;color:var(--text2);margin-bottom:16px">Шаблоны сообщений клиентам при смене статуса заказа. Копируются в новые компании при создании. Нажмите ✏️ чтобы редактировать.</p>
         <div id="saTgMsgLoading" style="color:var(--text2);font-size:13px">Загрузка…</div>
@@ -2943,6 +2944,17 @@ const _TG_STATUS_LABELS = {
 };
 
 let _saTgMessages = [];
+
+async function seedTgMessages() {
+  if (!confirm('Загрузить стандартные шаблоны TG-уведомлений? Пропустит уже существующие.')) return;
+  try {
+    const r = await api('POST', '/api/saas/catalog/tg-messages/seed');
+    alert(`Готово. Добавлено: ${r.inserted}`);
+    await loadSaTgMessages();
+  } catch(e) {
+    alert('Ошибка: ' + e.message);
+  }
+}
 
 async function loadSaTgMessages() {
   document.getElementById('saTgMsgLoading').style.display = '';
