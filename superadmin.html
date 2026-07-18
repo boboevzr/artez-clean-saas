@@ -2948,7 +2948,7 @@ let _saTgMessages = [];
 async function seedTgMessages() {
   if (!confirm('Загрузить стандартные шаблоны TG-уведомлений? Пропустит уже существующие.')) return;
   try {
-    const r = await api('POST', '/api/saas/catalog/tg-messages/seed');
+    const r = await api('/api/saas/catalog/tg-messages/seed', 'POST');
     alert(`Готово. Добавлено: ${r.inserted}`);
     await loadSaTgMessages();
   } catch(e) {
@@ -2960,7 +2960,7 @@ async function loadSaTgMessages() {
   document.getElementById('saTgMsgLoading').style.display = '';
   document.getElementById('saTgMsgList').innerHTML = '';
   try {
-    const r = await api('GET', '/api/saas/catalog/tg-messages');
+    const r = await api('/api/saas/catalog/tg-messages');
     _saTgMessages = r.messages || [];
     renderSaTgMessages();
   } catch(e) {
@@ -3017,7 +3017,7 @@ async function saveSaTgMsg() {
     message_uz: document.getElementById('satg_msg_uz').value,
   };
   try {
-    await api('PUT', `/api/saas/catalog/tg-messages/${_saTgEditStatus}`, body);
+    await api(`/api/saas/catalog/tg-messages/${_saTgEditStatus}`, 'PUT', body);
     closeModal('saTgMsgModal');
     await loadSaTgMessages();
   } catch(e) {
