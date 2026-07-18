@@ -3613,10 +3613,10 @@
             <select id="smsCntGroupSel" class="price-input" style="font-size:13px;min-width:180px" onchange="smsCntLoad()">
               <option value="" data-i18n="sms.all.groups">— все группы —</option>
             </select>
-            <button onclick="smsCntImportOpen()" class="btn btn-sm" style="background:var(--surface2);color:var(--text)">📥 Импорт</button>
-            <button onclick="smsCntExportCsv()" class="btn btn-sm" style="background:var(--surface2);color:var(--text)">📤 Экспорт</button>
-            <button onclick="smsCntDownloadTemplate()" class="btn btn-sm" style="background:var(--surface2);color:var(--text)" title="Скачать шаблон CSV">📋 Шаблон</button>
-            <button onclick="smsCntOpenAdd()" class="btn btn-primary btn-sm">+ Добавить</button>
+            <button onclick="smsCntImportOpen()" class="btn btn-sm" style="background:var(--surface2);color:var(--text)" data-i18n="clients.btn.import">📥 Импорт</button>
+            <button onclick="smsCntExportCsv()" class="btn btn-sm" style="background:var(--surface2);color:var(--text)" data-i18n="clients.btn.export">📤 Экспорт</button>
+            <button onclick="smsCntDownloadTemplate()" class="btn btn-sm" style="background:var(--surface2);color:var(--text)" title="Скачать шаблон CSV" data-i18n="clients.btn.template">📋 Шаблон</button>
+            <button onclick="smsCntOpenAdd()" class="btn btn-primary btn-sm" data-i18n="btn.add">+ Добавить</button>
           </div>
         </div>
         <!-- Статистика -->
@@ -3645,20 +3645,20 @@
       <div id="smsCntModal" class="modal-overlay hidden">
         <div class="modal-box" style="max-width:420px;width:94%">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
-            <h3 style="margin:0">Добавить контакт</h3>
+            <h3 style="margin:0" data-i18n="sms.cnt.add.title">Добавить контакт</h3>
             <button onclick="smsCntCloseModal()" style="background:none;border:none;font-size:22px;cursor:pointer;color:var(--text2)">✕</button>
           </div>
           <div style="display:flex;flex-direction:column;gap:12px">
             <div>
-              <label class="cfg-label">Группа</label>
+              <label class="cfg-label" data-i18n="th.group">Группа</label>
               <select id="smsCntAddGroup" class="price-input" style="width:100%"></select>
             </div>
             <div>
-              <label class="cfg-label">Ф.И.О (необязательно)</label>
+              <label class="cfg-label" data-i18n="sms.cnt.fio.lbl">Ф.И.О (необязательно)</label>
               <input id="smsCntAddName" class="price-input" style="width:100%" placeholder="Иванов Иван">
             </div>
             <div>
-              <label class="cfg-label">Телефон</label>
+              <label class="cfg-label" data-i18n="th.phone">Телефон</label>
               <div style="display:flex;align-items:center;border:1.5px solid var(--border);border-radius:10px;overflow:hidden;background:var(--surface)">
                 <span style="padding:9px 12px;background:var(--surface2);color:var(--text2);font-size:13px;border-right:1px solid var(--border);white-space:nowrap;font-weight:500">+998</span>
                 <input id="smsCntAddPhone" style="flex:1;border:none;background:transparent;padding:9px 12px;color:var(--text);font-size:14px;outline:none" placeholder="90 123 45 67" maxlength="9" oninput="this.value=this.value.replace(/\D/g,'').slice(0,9)">
@@ -3667,8 +3667,8 @@
           </div>
           <div id="smsCntModalErr" style="display:none;padding:8px 12px;border-radius:8px;font-size:13px;margin-top:12px;background:#fef2f2;color:#dc2626;border:1px solid #fca5a5"></div>
           <div style="display:flex;gap:8px;margin-top:18px">
-            <button onclick="smsCntSaveAdd()" class="btn btn-primary" style="flex:1">💾 Добавить</button>
-            <button onclick="smsCntCloseModal()" class="btn btn-sm" style="background:var(--surface2);color:var(--text)">Отмена</button>
+            <button onclick="smsCntSaveAdd()" class="btn btn-primary" style="flex:1" data-i18n="sms.cnt.add.btn">💾 Добавить</button>
+            <button onclick="smsCntCloseModal()" class="btn btn-sm" style="background:var(--surface2);color:var(--text)" data-i18n="btn.cancel">Отмена</button>
           </div>
         </div>
       </div>
@@ -3677,14 +3677,14 @@
       <div id="smsCntImportModal" class="modal-overlay hidden" onclick="if(event.target===this)smsCntImportClose()">
         <div class="modal-box" style="max-width:560px;width:96%;max-height:90vh;overflow-y:auto">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
-            <h3 style="margin:0">📥 Импорт контактов CSV</h3>
+            <h3 style="margin:0" data-i18n="sms.imp.title">📥 Импорт контактов CSV</h3>
             <button onclick="smsCntImportClose()" style="background:none;border:none;font-size:22px;cursor:pointer;color:var(--text2)">✕</button>
           </div>
           <div style="display:flex;flex-direction:column;gap:14px">
             <div>
-              <label class="cfg-label">Группа для импорта</label>
+              <label class="cfg-label" data-i18n="sms.imp.group.lbl">Группа для импорта</label>
               <select id="smsCntImpGroup" class="price-input" style="width:100%">
-                <option value="">— выберите группу —</option>
+                <option value="" data-i18n="sms.grp.select.ph">— выберите группу —</option>
               </select>
             </div>
             <div style="background:var(--surface2);border-radius:10px;padding:12px;font-size:13px;color:var(--text2)">
@@ -3786,7 +3786,7 @@
           </div>
 
           <div style="text-align:right;margin-top:16px">
-            <button onclick="document.getElementById('smsSymbolsModal').classList.add('hidden')" class="btn btn-primary">Закрыть</button>
+            <button onclick="document.getElementById('smsSymbolsModal').classList.add('hidden')" class="btn btn-primary" data-i18n="btn.close">Закрыть</button>
           </div>
         </div>
       </div>
@@ -3864,33 +3864,33 @@
         <div id="smsPane-group" style="max-width:520px;display:none;flex-direction:column;gap:14px">
 
           <div>
-            <label class="cfg-label">Ник (альфа имя)</label>
+            <label class="cfg-label" data-i18n="sms.nick.lbl">Ник (альфа имя)</label>
             <select id="smsGroupNick" class="price-input" style="width:100%;font-size:14px">
               <option value="">⏳ Загрузка...</option>
             </select>
           </div>
 
           <div>
-            <label class="cfg-label">Название рассылки</label>
+            <label class="cfg-label" data-i18n="sms.grp.dispatch.lbl">Название рассылки</label>
             <input id="smsGroupName" class="price-input" style="width:100%" placeholder="Напр.: Акция июль 2026">
           </div>
 
           <div>
-            <label class="cfg-label">Группа получателей</label>
+            <label class="cfg-label" data-i18n="sms.grp.recipients.lbl">Группа получателей</label>
             <select id="smsGroupId" class="price-input" style="width:100%;font-size:14px">
-              <option value="">— выберите группу —</option>
+              <option value="" data-i18n="sms.grp.select.ph">— выберите группу —</option>
             </select>
             <div id="smsGroupCount" style="font-size:12px;color:var(--text2);margin-top:4px"></div>
           </div>
 
           <div>
-            <label class="cfg-label">Время отправки</label>
+            <label class="cfg-label" data-i18n="sms.grp.time.lbl">Время отправки</label>
             <div style="display:flex;gap:8px;flex-wrap:wrap">
               <label style="display:flex;align-items:center;gap:6px;font-size:14px;cursor:pointer;padding:10px 14px;border-radius:10px;border:1.5px solid var(--border);flex:1;justify-content:center" id="smsSchedNowLabel">
-                <input type="radio" name="smsSchedule" value="now" checked onchange="smsSendToggleSchedule()" style="accent-color:#6366f1"> Сейчас
+                <input type="radio" name="smsSchedule" value="now" checked onchange="smsSendToggleSchedule()" style="accent-color:#6366f1"> <span data-i18n="sms.grp.now">Сейчас</span>
               </label>
               <label style="display:flex;align-items:center;gap:6px;font-size:14px;cursor:pointer;padding:10px 14px;border-radius:10px;border:1.5px solid var(--border);flex:1;justify-content:center" id="smsSchedLaterLabel">
-                <input type="radio" name="smsSchedule" value="later" onchange="smsSendToggleSchedule()" style="accent-color:#6366f1"> 🕐 По расписанию
+                <input type="radio" name="smsSchedule" value="later" onchange="smsSendToggleSchedule()" style="accent-color:#6366f1"> <span data-i18n="sms.grp.schedule">🕐 По расписанию</span>
               </label>
             </div>
             <div id="smsSchedPicker" style="display:none;margin-top:8px">
@@ -3925,19 +3925,19 @@
           <div id="smsCostBar" style="display:none;border-radius:12px;border:1px solid var(--border);overflow:hidden">
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;font-size:13px">
               <div style="padding:10px 14px;border-right:1px solid var(--border)">
-                <div style="color:var(--text2);font-size:11px;margin-bottom:3px">💳 Баланс</div>
+                <div style="color:var(--text2);font-size:11px;margin-bottom:3px" data-i18n="sms.cost.balance">💳 Баланс</div>
                 <div id="smsCostBalance" style="font-weight:700;font-size:15px">—</div>
-                <div style="font-size:11px;color:var(--text2)">сум</div>
+                <div style="font-size:11px;color:var(--text2)" data-i18n="pay.currency">сум</div>
               </div>
               <div style="padding:10px 14px;border-right:1px solid var(--border)">
-                <div style="color:var(--text2);font-size:11px;margin-bottom:3px">📤 Стоимость рассылки</div>
+                <div style="color:var(--text2);font-size:11px;margin-bottom:3px" data-i18n="sms.cost.dispatch">📤 Стоимость рассылки</div>
                 <div id="smsCostSpend" style="font-weight:700;font-size:15px">—</div>
                 <div id="smsCostSpendSub" style="font-size:11px;color:var(--text2)"></div>
               </div>
               <div style="padding:10px 14px">
-                <div style="color:var(--text2);font-size:11px;margin-bottom:3px">✅ Остаток</div>
+                <div style="color:var(--text2);font-size:11px;margin-bottom:3px" data-i18n="sms.cost.left">✅ Остаток</div>
                 <div id="smsCostLeft" style="font-weight:700;font-size:15px">—</div>
-                <div style="font-size:11px;color:var(--text2)">сум</div>
+                <div style="font-size:11px;color:var(--text2)" data-i18n="pay.currency">сум</div>
               </div>
             </div>
           </div>
@@ -3958,8 +3958,8 @@
 
         <!-- Главные вкладки -->
         <div style="display:flex;border-bottom:2px solid var(--border);margin-bottom:20px">
-          <button id="smsTplMain-templates" onclick="smsTplMainTab('templates')" style="padding:8px 22px;border:none;background:none;font-size:14px;font-weight:600;cursor:pointer;border-bottom:2px solid #6366f1;margin-bottom:-2px;color:var(--text)">📋 Шаблоны</button>
-          <button id="smsTplMain-system"    onclick="smsTplMainTab('system')"    style="padding:8px 22px;border:none;background:none;font-size:14px;font-weight:600;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;color:var(--text2)">🔑 Системные</button>
+          <button id="smsTplMain-templates" onclick="smsTplMainTab('templates')" style="padding:8px 22px;border:none;background:none;font-size:14px;font-weight:600;cursor:pointer;border-bottom:2px solid #6366f1;margin-bottom:-2px;color:var(--text)" data-i18n="sms.tpl.tab.templates">📋 Шаблоны</button>
+          <button id="smsTplMain-system"    onclick="smsTplMainTab('system')"    style="padding:8px 22px;border:none;background:none;font-size:14px;font-weight:600;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;color:var(--text2)" data-i18n="sms.tpl.tab.system">🔑 Системные</button>
         </div>
 
         <!-- ВКЛАДКА: Шаблоны -->
@@ -3967,11 +3967,11 @@
           <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px">
             <!-- Категории -->
             <div style="display:flex;gap:8px;flex-wrap:wrap" id="smsTplTabs">
-              <button class="btn btn-sm" id="smsTplTab-cleaning" onclick="smsTplSetCat('cleaning')" style="background:var(--accent);color:#fff">🧺 Химчистка</button>
-              <button class="btn btn-sm" id="smsTplTab-greeting" onclick="smsTplSetCat('greeting')" style="background:var(--surface2);color:var(--text)">🎉 Поздравления</button>
-              <button class="btn btn-sm" id="smsTplTab-osago"    onclick="smsTplSetCat('osago')"    style="background:var(--surface2);color:var(--text)">🚗 ОСАГО</button>
-              <button class="btn btn-sm" id="smsTplTab-other"    onclick="smsTplSetCat('other')"    style="background:var(--surface2);color:var(--text)">📁 Другие</button>
-              <button class="btn btn-sm" id="smsTplTab-all"      onclick="smsTplSetCat('all')"      style="background:var(--surface2);color:var(--text)">🔍 Все</button>
+              <button class="btn btn-sm" id="smsTplTab-cleaning" onclick="smsTplSetCat('cleaning')" style="background:var(--accent);color:#fff" data-i18n="sms.cat.cleaning">🧺 Химчистка</button>
+              <button class="btn btn-sm" id="smsTplTab-greeting" onclick="smsTplSetCat('greeting')" style="background:var(--surface2);color:var(--text)" data-i18n="sms.cat.greetings">🎉 Поздравления</button>
+              <button class="btn btn-sm" id="smsTplTab-osago"    onclick="smsTplSetCat('osago')"    style="background:var(--surface2);color:var(--text)" data-i18n="sms.cat.osago">🚗 ОСАГО</button>
+              <button class="btn btn-sm" id="smsTplTab-other"    onclick="smsTplSetCat('other')"    style="background:var(--surface2);color:var(--text)" data-i18n="sms.cat.other">📁 Другие</button>
+              <button class="btn btn-sm" id="smsTplTab-all"      onclick="smsTplSetCat('all')"      style="background:var(--surface2);color:var(--text)" data-i18n="sms.cat.all">🔍 Все</button>
             </div>
             <button class="btn btn-primary btn-sm" onclick="smsTplOpenCreate()" data-i18n="sms.btn.add.template">+ Добавить шаблон</button>
           </div>
@@ -4049,10 +4049,10 @@
             <div>
               <label class="cfg-label">Категория</label>
               <select id="smsTplCat" class="price-input" style="width:100%">
-                <option value="cleaning">🧺 Химчистка</option>
-                <option value="greeting">🎉 Поздравления</option>
-                <option value="osago">🚗 ОСАГО</option>
-                <option value="other">📁 Другие</option>
+                <option value="cleaning" data-i18n="sms.cat.cleaning">🧺 Химчистка</option>
+                <option value="greeting" data-i18n="sms.cat.greetings">🎉 Поздравления</option>
+                <option value="osago" data-i18n="sms.cat.osago">🚗 ОСАГО</option>
+                <option value="other" data-i18n="sms.cat.other">📁 Другие</option>
               </select>
             </div>
             <div>
@@ -5942,6 +5942,13 @@ const _adminI18n = {
     'debt.no.due':'⚪ Без срока','debt.overdue':'🔴 Просрочен','debt.today':'🟡 Сегодня','debt.days':'дн.',
     'leads.pick.agent':'Выбрать агента','leads.pick.staff':'Выбрать сотрудника','leads.btn.all':'Все',
     'ph.select':'— выберите —',
+    'sms.grp.dispatch.lbl':'Название рассылки','sms.grp.recipients.lbl':'Группа получателей',
+    'sms.grp.select.ph':'— выберите группу —','sms.grp.time.lbl':'Время отправки',
+    'sms.grp.now':'Сейчас','sms.grp.schedule':'🕐 По расписанию',
+    'sms.cost.balance':'💳 Баланс','sms.cost.dispatch':'📤 Стоимость рассылки','sms.cost.left':'✅ Остаток',
+    'sms.cnt.add.title':'Добавить контакт','sms.cnt.fio.lbl':'Ф.И.О (необязательно)','sms.cnt.add.btn':'💾 Добавить',
+    'sms.imp.title':'📥 Импорт контактов CSV','sms.imp.group.lbl':'Группа для импорта',
+    'sms.tpl.tab.templates':'📋 Шаблоны','sms.tpl.tab.system':'🔑 Системные',
   },
   uz: {
     'btn.add':'+ Qoʻshish','btn.save':'💾 Saqlash','btn.cancel':'Bekor qilish',
@@ -6309,6 +6316,13 @@ const _adminI18n = {
     'debt.no.due':'⚪ Muddat yoʻq','debt.overdue':'🔴 Muddati oʻtgan','debt.today':'🟡 Bugun','debt.days':'kun',
     'leads.pick.agent':'Agent tanlash','leads.pick.staff':'Xodim tanlash','leads.btn.all':'Barchasi',
     'ph.select':'— tanlang —',
+    'sms.grp.dispatch.lbl':'Tarqatma nomi','sms.grp.recipients.lbl':'Oluvchilar guruhi',
+    'sms.grp.select.ph':'— guruhni tanlang —','sms.grp.time.lbl':'Yuborish vaqti',
+    'sms.grp.now':'Hozir','sms.grp.schedule':'🕐 Jadvallash',
+    'sms.cost.balance':'💳 Balans','sms.cost.dispatch':'📤 Tarqatma narxi','sms.cost.left':'✅ Qoldiq',
+    'sms.cnt.add.title':'Kontakt qoʻshish','sms.cnt.fio.lbl':'F.I.O (ixtiyoriy)','sms.cnt.add.btn':'💾 Qoʻshish',
+    'sms.imp.title':'📥 CSV kontaktlarni import qilish','sms.imp.group.lbl':'Import uchun guruh',
+    'sms.tpl.tab.templates':'📋 Shablonlar','sms.tpl.tab.system':'🔑 Tizimli',
   },
 };
 function _applyAdminI18n() {
