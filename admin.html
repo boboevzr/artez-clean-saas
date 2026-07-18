@@ -5933,6 +5933,15 @@ const _adminI18n = {
     'empty.autodial.groups.hint':'Нет групп. Сначала создайте группу.',
     'empty.calls':'Нет звонков','empty.search':'Ничего не найдено',
     'empty.admin.staff':'Нет сотрудников с доступом в admin',
+    'th.datetime':'Дата / время','th.order':'Заказ','th.amount':'Сумма','th.method':'Метод',
+    'th.created.by':'Кто создал','th.confirmed.by':'Кто подтвердил',
+    'pay.status.confirmed':'✅ Подтверждён','pay.status.rejected':'❌ Отклонён','pay.status.pending':'⏳ Ожидает',
+    'pay.log.empty':'Нет записей оплат за период','pay.log.count':'записей',
+    'pay.purpose.prepayment':'Предоплата','pay.purpose.partial':'Частичная оплата',
+    'pay.purpose.final':'Окончательный расчёт','pay.purpose.payment':'Оплата',
+    'debt.no.due':'⚪ Без срока','debt.overdue':'🔴 Просрочен','debt.today':'🟡 Сегодня','debt.days':'дн.',
+    'leads.pick.agent':'Выбрать агента','leads.pick.staff':'Выбрать сотрудника','leads.btn.all':'Все',
+    'ph.select':'— выберите —',
   },
   uz: {
     'btn.add':'+ Qoʻshish','btn.save':'💾 Saqlash','btn.cancel':'Bekor qilish',
@@ -6291,6 +6300,15 @@ const _adminI18n = {
     'empty.autodial.groups.hint':'Guruhlar yoʻq. Avval guruh yarating.',
     'empty.calls':'Qoʻngʻiroqlar yoʻq','empty.search':'Hech narsa topilmadi',
     'empty.admin.staff':'Admin uchun xodimlar yoʻq',
+    'th.datetime':'Sana / vaqt','th.order':'Buyurtma','th.amount':'Summa','th.method':'Usul',
+    'th.created.by':'Kim yaratdi','th.confirmed.by':'Kim tasdiqladi',
+    'pay.status.confirmed':'✅ Tasdiqlangan','pay.status.rejected':'❌ Rad etildi','pay.status.pending':'⏳ Kutmoqda',
+    'pay.log.empty':'Davr uchun toʻlov yozuvlari yoʻq','pay.log.count':'yozuv',
+    'pay.purpose.prepayment':'Oldindan toʻlov','pay.purpose.partial':'Qisman toʻlov',
+    'pay.purpose.final':'Yakuniy hisob-kitob','pay.purpose.payment':'Toʻlov',
+    'debt.no.due':'⚪ Muddat yoʻq','debt.overdue':'🔴 Muddati oʻtgan','debt.today':'🟡 Bugun','debt.days':'kun',
+    'leads.pick.agent':'Agent tanlash','leads.pick.staff':'Xodim tanlash','leads.btn.all':'Barchasi',
+    'ph.select':'— tanlang —',
   },
 };
 function _applyAdminI18n() {
@@ -8269,7 +8287,7 @@ function populateSelects() {
   ['tsFilterStaff','ts_staff'].forEach(id => {
     const el = document.getElementById(id); if (!el) return;
     const val = el.value;
-    el.innerHTML = id === 'tsFilterStaff' ? '<option value="">Все сотрудники</option>' : '<option value="">— выберите —</option>';
+    el.innerHTML = id === 'tsFilterStaff' ? `<option value="">${_t('workon.all.staff')}</option>` : `<option value="">${_t('ph.select')}</option>`;
     staffList.forEach(s => el.innerHTML += `<option value="${s.id}">${s.name}</option>`);
     el.value = val;
   });
@@ -11197,13 +11215,13 @@ async function loadCashHistory() {
   el.innerHTML = `
     <table style="width:100%;border-collapse:collapse;font-size:13px;background:var(--card);border:1.5px solid var(--sep);border-radius:12px;overflow:hidden">
       <thead><tr style="background:var(--surface2);color:var(--text2)">
-        <th style="padding:9px 12px;text-align:left;font-weight:600;white-space:nowrap">Дата</th>
-        <th style="padding:9px 12px;text-align:left;font-weight:600">Сотрудник</th>
-        <th style="padding:9px 12px;text-align:left;font-weight:600">Филиал</th>
-        <th style="padding:9px 12px;text-align:right;font-weight:600">💵 Нал</th>
-        <th style="padding:9px 12px;text-align:right;font-weight:600">💳 Карта</th>
-        <th style="padding:9px 12px;text-align:right;font-weight:600">📲 Перев.</th>
-        <th style="padding:9px 12px;text-align:right;font-weight:600">Итого</th>
+        <th style="padding:9px 12px;text-align:left;font-weight:600;white-space:nowrap">${_t('th.date')}</th>
+        <th style="padding:9px 12px;text-align:left;font-weight:600">${_t('th.staff')}</th>
+        <th style="padding:9px 12px;text-align:left;font-weight:600">${_t('th.branch')}</th>
+        <th style="padding:9px 12px;text-align:right;font-weight:600">${_t('pay.cash.short')}</th>
+        <th style="padding:9px 12px;text-align:right;font-weight:600">${_t('pay.card')}</th>
+        <th style="padding:9px 12px;text-align:right;font-weight:600">${_t('pay.transfer')}</th>
+        <th style="padding:9px 12px;text-align:right;font-weight:600">${_t('pay.total')}</th>
       </tr></thead>
       <tbody>
         ${rows.map((r,i) => `<tr style="border-top:1px solid var(--sep);${i%2?'background:var(--surface2)':''}">
@@ -11216,7 +11234,7 @@ async function loadCashHistory() {
           <td style="padding:8px 12px;text-align:right;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums">${fmt(r.total)}</td>
         </tr>`).join('')}
         <tr style="border-top:2px solid var(--border);background:var(--surface2);font-weight:700">
-          <td colspan="3" style="padding:9px 12px;color:var(--text2)">Итого</td>
+          <td colspan="3" style="padding:9px 12px;color:var(--text2)">${_t('pay.total')}</td>
           <td style="padding:9px 12px;text-align:right;font-variant-numeric:tabular-nums">${fmt(totals.cash)}</td>
           <td style="padding:9px 12px;text-align:right;font-variant-numeric:tabular-nums">${fmt(totals.card)}</td>
           <td style="padding:9px 12px;text-align:right;font-variant-numeric:tabular-nums">${fmt(totals.transfer)}</td>
@@ -11239,13 +11257,13 @@ async function loadDebtOrders() {
   const today = new Date(); today.setHours(0,0,0,0);
   const fmt = v => Number(Math.round(v || 0)).toLocaleString('ru');
   const statusBadge = r => {
-    if (!r.debt_due_date) return '<span style="background:var(--surface2);color:var(--text2);font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px">⚪ Без срока</span>';
+    if (!r.debt_due_date) return `<span style="background:var(--surface2);color:var(--text2);font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px">${_t('debt.no.due')}</span>`;
     const due = new Date(r.debt_due_date + 'T00:00:00'); due.setHours(0,0,0,0);
     const diff = Math.round((due - today) / 86400000);
-    if (diff < 0)  return `<span style="background:#fee2e2;color:#dc2626;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px">🔴 Просрочен ${-diff} дн.</span>`;
-    if (diff === 0) return '<span style="background:#fef3c7;color:#b45309;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px">🟡 Сегодня</span>';
-    if (diff <= 3)  return `<span style="background:#fef3c7;color:#b45309;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px">🟡 ${diff} дн.</span>`;
-    return `<span style="background:#dcfce7;color:#15803d;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px">🟢 ${diff} дн.</span>`;
+    if (diff < 0)  return `<span style="background:#fee2e2;color:#dc2626;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px">${_t('debt.overdue')} ${-diff} ${_t('debt.days')}</span>`;
+    if (diff === 0) return `<span style="background:#fef3c7;color:#b45309;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px">${_t('debt.today')}</span>`;
+    if (diff <= 3)  return `<span style="background:#fef3c7;color:#b45309;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px">🟡 ${diff} ${_t('debt.days')}</span>`;
+    return `<span style="background:#dcfce7;color:#15803d;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px">🟢 ${diff} ${_t('debt.days')}</span>`;
   };
   const dueFmt = s => s ? new Date(s + 'T00:00:00').toLocaleDateString('ru',{day:'numeric',month:'short',year:'numeric'}) : '—';
   el.innerHTML = `<table style="width:100%;border-collapse:collapse;font-size:13px;background:var(--card);border:1.5px solid var(--sep);border-radius:12px;overflow:hidden">
@@ -11436,24 +11454,24 @@ async function loadPaymentsLog() {
   const el    = document.getElementById('paymentsLogTable');
   const cntEl = document.getElementById('paymentsLogCount');
   const rows  = data.payments || [];
-  cntEl.textContent = rows.length ? `${rows.length} записей` : '';
+  cntEl.textContent = rows.length ? `${rows.length} ${_t('pay.log.count')}` : '';
   const mLabel = { cash:_t('pay.cash.short'), card:_t('pay.card'), transfer:_t('pay.transfer') };
   const statusBadge = p => {
-    if (p.confirmed === true)  return '<span style="color:var(--green,#16a34a);font-weight:600">✅ Подтверждён</span>';
-    if (p.confirmed === false && p.confirmed_at) return '<span style="color:#dc2626;font-weight:600">❌ Отклонён</span>';
-    return '<span style="color:#d97706;font-weight:600">⏳ Ожидает</span>';
+    if (p.confirmed === true)  return `<span style="color:var(--green,#16a34a);font-weight:600">${_t('pay.status.confirmed')}</span>`;
+    if (p.confirmed === false && p.confirmed_at) return `<span style="color:#dc2626;font-weight:600">${_t('pay.status.rejected')}</span>`;
+    return `<span style="color:#d97706;font-weight:600">${_t('pay.status.pending')}</span>`;
   };
   el.innerHTML = rows.length ? `
     <div style="overflow-x:auto">
     <table style="width:100%;border-collapse:collapse;font-size:12px;background:var(--card);border:1.5px solid var(--sep);border-radius:12px;overflow:hidden">
       <thead><tr style="background:var(--surface2);color:var(--text2)">
-        <th style="padding:8px 10px;text-align:left;font-weight:600;white-space:nowrap">Дата / время</th>
-        <th style="padding:8px 10px;text-align:left;font-weight:600">Заказ</th>
-        <th style="padding:8px 10px;text-align:right;font-weight:600">Сумма</th>
-        <th style="padding:8px 10px;text-align:left;font-weight:600">Метод</th>
-        <th style="padding:8px 10px;text-align:left;font-weight:600">Статус</th>
-        <th style="padding:8px 10px;text-align:left;font-weight:600">Кто создал</th>
-        <th style="padding:8px 10px;text-align:left;font-weight:600">Кто подтвердил</th>
+        <th style="padding:8px 10px;text-align:left;font-weight:600;white-space:nowrap">${_t('th.datetime')}</th>
+        <th style="padding:8px 10px;text-align:left;font-weight:600">${_t('th.order')}</th>
+        <th style="padding:8px 10px;text-align:right;font-weight:600">${_t('th.amount')}</th>
+        <th style="padding:8px 10px;text-align:left;font-weight:600">${_t('th.method')}</th>
+        <th style="padding:8px 10px;text-align:left;font-weight:600">${_t('th.status')}</th>
+        <th style="padding:8px 10px;text-align:left;font-weight:600">${_t('th.created.by')}</th>
+        <th style="padding:8px 10px;text-align:left;font-weight:600">${_t('th.confirmed.by')}</th>
       </tr></thead>
       <tbody>${rows.map((p,i) => {
         const dt = new Date(p.created_at).toLocaleString('ru',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit'});
@@ -11470,7 +11488,7 @@ async function loadPaymentsLog() {
         </tr>`;
       }).join('')}</tbody>
     </table></div>`
-  : `<div style="text-align:center;color:var(--text2);padding:20px;font-size:13px">Нет записей оплат за период</div>`;
+  : `<div style="text-align:center;color:var(--text2);padding:20px;font-size:13px">${_t('pay.log.empty')}</div>`;
 }
 
 
@@ -11494,7 +11512,7 @@ let _pmCachedPaid = 0;
 let _pmCachedPending = 0;
 
 const _PM_M_LABEL = { get cash(){ return _t('pay.cash.short'); }, get card(){ return _t('pay.card'); }, get transfer(){ return _t('pay.transfer'); } };
-const _PM_P_LABEL = { prepayment:'Предоплата', partial:'Частичная оплата', final:'Окончательный расчёт', payment:'Оплата' };
+const _PM_P_LABEL = { get prepayment(){ return _t('pay.purpose.prepayment'); }, get partial(){ return _t('pay.purpose.partial'); }, get final(){ return _t('pay.purpose.final'); }, get payment(){ return _t('pay.purpose.payment'); } };
 
 async function loadOrderPayment(o) {
   const token = adminToken || localStorage.getItem(TOKEN_KEY);
@@ -12529,11 +12547,11 @@ function _renderAdminLeadsSourcePersonRow() {
   }
   const isAgent = _adminLeadsSourceFilter === 'agent';
   const label = _adminLeadsSourcePersonId ? _adminSourcePersonCache[_adminLeadsSourcePersonId] || '...' : null;
-  const pickBtn = isAgent ? 'Выбрать агента' : 'Выбрать сотрудника';
+  const pickBtn = isAgent ? _t('leads.pick.agent') : _t('leads.pick.staff');
   const allActive = !_adminLeadsSourcePersonId;
   const s = (a) => `padding:5px 14px;border-radius:20px;font-size:13px;font-weight:600;white-space:nowrap;cursor:pointer;border:1.5px solid ${a?'var(--accent)':'var(--border)'};background:${a?'var(--accent)':'var(--surface2)'};color:${a?'#fff':'var(--text)'};transition:all .15s`;
   row.innerHTML =
-    `<button onclick="setAdminLeadsSourcePerson(null)" style="${s(allActive)}">Все</button>` +
+    `<button onclick="setAdminLeadsSourcePerson(null)" style="${s(allActive)}">${_t('leads.btn.all')}</button>` +
     `<button onclick="openAdminSourcePersonModal()" style="${s(!allActive)}">${label ? '✓ ' + label : pickBtn}</button>`;
   row.style.display = 'flex';
 }
@@ -12550,7 +12568,7 @@ function openAdminSourcePersonModal() {
   });
   _adminSourcePersonCache = {};
   Object.entries(persons).forEach(([pid, d]) => { _adminSourcePersonCache[pid] = d.name; });
-  const title = _adminLeadsSourceFilter === 'agent' ? 'Выбрать агента' : 'Выбрать сотрудника';
+  const title = _adminLeadsSourceFilter === 'agent' ? _t('leads.pick.agent') : _t('leads.pick.staff');
   let modal = document.getElementById('adminSourcePersonModal');
   if (!modal) {
     modal = document.createElement('div');
