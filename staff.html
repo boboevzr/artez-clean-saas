@@ -11435,6 +11435,8 @@ async function _openPaymentReview(orderId, paymentId, paymentData) {
   }
 }
 function closePaymentReviewModal() {
+  const _prCBtn = document.getElementById('prConfirmBtn');
+  if (_prCBtn) { _prCBtn.disabled = false; _prCBtn.textContent = '✅ Подтвердить'; }
   document.getElementById('paymentReviewModal').style.display = 'none';
   prHideRejectForm();
   _prOrderId = null; _prPaymentId = null;
