@@ -1861,15 +1861,15 @@
         <!-- ───── Вкладка: Балансы ───── -->
         <div id="cashTabPane_balances" style="display:none">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-            <div style="font-size:13px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px">💵 Наличные на руках</div>
-            <button onclick="loadCashBalance()" style="padding:5px 12px;background:var(--surface2);border:1.5px solid var(--sep);border-radius:8px;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer">↻ Обновить</button>
+            <div data-i18n="cash.balances.title" style="font-size:13px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px">💵 Наличные на руках</div>
+            <button onclick="loadCashBalance()" data-i18n="btn.update" style="padding:5px 12px;background:var(--surface2);border:1.5px solid var(--sep);border-radius:8px;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer">↻ Обновить</button>
           </div>
           <div id="cashBalance1" style="margin-bottom:16px">
-            <div style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">🧑‍💼 Исполнители (на руках)</div>
+            <div data-i18n="cash.balances.staff" style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">🧑‍💼 Исполнители (на руках)</div>
             <div id="cashBalance1List"></div>
           </div>
           <div id="cashBalance2" style="margin-bottom:20px">
-            <div style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">💰 Ответственные за кассу</div>
+            <div data-i18n="cash.balances.managers" style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">💰 Ответственные за кассу</div>
             <div id="cashBalance2List"></div>
           </div>
           <!-- Форма приёма наличных -->
@@ -2506,7 +2506,7 @@
               <option value="10">Октябрь</option><option value="11">Ноябрь</option><option value="12">Декабрь</option>
             </select>
             <select id="workonStaff" class="filter-input" style="min-width:180px" onchange="loadWorkOn()">
-              <option value="">Все сотрудники</option>
+              <option value="" data-i18n="workon.all.staff">Все сотрудники</option>
             </select>
             <button class="btn btn-primary btn-sm" onclick="loadWorkOn()" data-i18n="btn.refresh">🔄 Обновить</button>
           </div>
@@ -5923,6 +5923,16 @@ const _adminI18n = {
     'sf.lead.fixed.type':'Фиксированная сумма (сум)','sf.lead.pct.type':'% от суммы заказа',
     'sf.lbl.pct':'Процент (%)','sf.lead.global':'глобально',
     'sm.lbl.staff':'Сотрудник','sm.btn.create':'Создать',
+    'lbl.all.days':'Все дни','workon.all.staff':'Все сотрудники',
+    'cash.balances.title':'💵 Наличные на руках',
+    'cash.balances.staff':'🧑‍💼 Исполнители (на руках)',
+    'cash.balances.managers':'💰 Ответственные за кассу',
+    'empty.deposits':'Инкассаций пока нет',
+    'empty.expenses.queue':'Нет расходов на утверждение',
+    'empty.plans':'Нет планов',
+    'empty.autodial.groups.hint':'Нет групп. Сначала создайте группу.',
+    'empty.calls':'Нет звонков','empty.search':'Ничего не найдено',
+    'empty.admin.staff':'Нет сотрудников с доступом в admin',
   },
   uz: {
     'btn.add':'+ Qoʻshish','btn.save':'💾 Saqlash','btn.cancel':'Bekor qilish',
@@ -6271,6 +6281,16 @@ const _adminI18n = {
     'sf.lead.fixed.type':'Belgilangan miqdor (soʻm)','sf.lead.pct.type':'Buyurtma summasidan %',
     'sf.lbl.pct':'Foiz (%)','sf.lead.global':'global',
     'sm.lbl.staff':'Xodim','sm.btn.create':'Yaratish',
+    'lbl.all.days':'Barcha kunlar','workon.all.staff':'Barcha xodimlar',
+    'cash.balances.title':'💵 Qoʻldagi naqd',
+    'cash.balances.staff':'🧑‍💼 Ijrochilar (qoʻlda)',
+    'cash.balances.managers':'💰 Kassa masʼullari',
+    'empty.deposits':'Inkassatsiyalar hali yoʻq',
+    'empty.expenses.queue':'Tasdiqlanadigan xarajatlar yoʻq',
+    'empty.plans':'Rejalar yoʻq',
+    'empty.autodial.groups.hint':'Guruhlar yoʻq. Avval guruh yarating.',
+    'empty.calls':'Qoʻngʻiroqlar yoʻq','empty.search':'Hech narsa topilmadi',
+    'empty.admin.staff':'Admin uchun xodimlar yoʻq',
   },
 };
 function _applyAdminI18n() {
@@ -6857,14 +6877,14 @@ let _smEditId = null;
 async function staffMgmtLoad() {
   const el = document.getElementById('staffMgmtList');
   if (!el) return;
-  el.innerHTML = '<div style="color:var(--text-secondary)">Загрузка…</div>';
+  el.innerHTML = `<div style="color:var(--text-secondary)">${_t('lbl.loading')}</div>`;
   try {
     const r = await apiGet('/staff/list');
     const ADMIN_ROLES = ['admin','manager','callcenter'];
     const list = (r?.staff || []).filter(s => ADMIN_ROLES.includes(s.role));
     const meId = _adminMe?.id;
     if (!list.length) {
-      el.innerHTML = '<div style="color:var(--text-secondary)">Нет сотрудников с доступом в admin</div>';
+      el.innerHTML = `<div style="color:var(--text-secondary)">${_t('empty.admin.staff')}</div>`;
     } else {
       el.innerHTML = list.map(s => {
         const isActive = s.active !== false;
@@ -11148,7 +11168,7 @@ function _initCashHistory() {
   if (mSel) mSel.value = today.getMonth() + 1;
   if (dSel && !dSel.options.length) {
     const all = document.createElement('option');
-    all.value = '0'; all.textContent = 'Все дни';
+    all.value = '0'; all.textContent = _t('lbl.all.days');
     dSel.appendChild(all);
     for (let d = 1; d <= 31; d++) {
       const o = document.createElement('option');
@@ -11166,10 +11186,10 @@ async function loadCashHistory() {
   const branch = document.getElementById('cashHistBranch')?.value || '';
   const el     = document.getElementById('cashHistoryTable');
   if (!el) return;
-  el.innerHTML = '<div style="color:var(--text2);font-size:13px;padding:10px 0">Загрузка…</div>';
+  el.innerHTML = `<div style="color:var(--text2);font-size:13px;padding:10px 0">${_t('lbl.loading')}</div>`;
   const d = await apiGet(`/admin/cash/history?year=${year}&month=${month}&day=${day}&branch=${encodeURIComponent(branch)}`).catch(() => null);
   const rows = d?.rows || [];
-  if (!rows.length) { el.innerHTML = '<div style="color:var(--text2);font-size:13px;padding:20px;text-align:center">Нет данных за выбранный период</div>'; return; }
+  if (!rows.length) { el.innerHTML = `<div style="color:var(--text2);font-size:13px;padding:20px;text-align:center">${_t('empty.no.data')}</div>`; return; }
   const fmt = v => Number(Math.round(v || 0)).toLocaleString('ru');
   const dateLabel = d => new Date(d + 'T00:00:00').toLocaleDateString('ru',{day:'numeric',month:'short'});
   const totals = { cash:0, card:0, transfer:0, total:0 };
@@ -16479,7 +16499,7 @@ async function loadBankDeposits() {
   const d = await apiGet('/admin/cash/bank-deposits').catch(() => null);
   const list = d?.deposits || [];
   if (!list.length) {
-    el.innerHTML = '<div style="color:var(--text2);font-size:13px;text-align:center;padding:10px">Инкассаций пока нет</div>';
+    el.innerHTML = `<div style="color:var(--text2);font-size:13px;text-align:center;padding:10px">${_t('empty.deposits')}</div>`;
     return;
   }
   const fmt = v => Number(Math.round(v)).toLocaleString('ru');
@@ -16861,11 +16881,11 @@ function _expCatLabel(e) {
 async function expAdmLoadQueue() {
   const el = document.getElementById('expAdmQueueList');
   if (!el) return;
-  el.innerHTML = '<div style="color:var(--text2);font-size:13px">Загружаю…</div>';
+  el.innerHTML = `<div style="color:var(--text2);font-size:13px">${_t('lbl.loading')}</div>`;
   const data = await apiGet('/admin/expenses/pending-admin').catch(() => null);
   const list = data?.expenses || [];
   const fmt = v => Number(Math.round(v)).toLocaleString('ru');
-  if (!list.length) { el.innerHTML = '<div style="color:var(--text2);padding:12px 0">Нет расходов на утверждение</div>'; return; }
+  if (!list.length) { el.innerHTML = `<div style="color:var(--text2);padding:12px 0">${_t('empty.expenses.queue')}</div>`; return; }
   el.innerHTML = list.map(e => {
     const dt = new Date(e.created_at).toLocaleString('ru',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
     const staffBadge = e.for_staff_id
@@ -17154,7 +17174,7 @@ function plansRender() {
     if (so !== 0) return so;
     return (_prioOrder[a.priority]??1) - (_prioOrder[b.priority]??1);
   });
-  if (!data.length) { el.innerHTML = '<div style="color:var(--text2);padding:20px;text-align:center">Нет планов</div>'; return; }
+  if (!data.length) { el.innerHTML = `<div style="color:var(--text2);padding:20px;text-align:center">${_t('empty.plans')}</div>`; return; }
   el.innerHTML = data.map(p => {
     const st    = p.status || 'new';
     const doneAt = p.done_at ? new Date(p.done_at).toLocaleDateString('ru-RU') : '';
@@ -19746,7 +19766,7 @@ async function adLoadGroupsForSelect() {
 function _adRenderGroupSelect(selected) {
   const wrap = document.getElementById('adGroupsSelect');
   if (!_adGroups.length) {
-    wrap.innerHTML = '<div style="padding:12px;color:var(--text2);font-size:13px">Нет групп. Сначала создайте группу.</div>';
+    wrap.innerHTML = `<div style="padding:12px;color:var(--text2);font-size:13px">${_t('empty.autodial.groups.hint')}</div>`;
     return;
   }
   wrap.innerHTML = _adGroups.map(g => `
@@ -20329,7 +20349,7 @@ async function _adRefreshDetail() {
   `;
   const tbody = document.getElementById('adCallsBody');
   if (!calls || !calls.length) {
-    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text2)">Нет звонков</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text2)">${_t('empty.calls')}</td></tr>`;
     return;
   }
   _adDetailCalls = calls;
@@ -20344,7 +20364,7 @@ function _adRenderCallsTable() {
     ? _adDetailCalls.filter(c => (c.phone||'').includes(q) || (c.name||'').toLowerCase().includes(q))
     : _adDetailCalls;
   if (!rows.length) {
-    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text2)">${q ? 'Ничего не найдено' : 'Нет звонков'}</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text2)">${q ? _t('empty.search') : _t('empty.calls')}</td></tr>`;
     return;
   }
   tbody.innerHTML = rows.map((c, i) => {
@@ -21177,7 +21197,7 @@ async function smsRepByMonth() {
   const res = await apiGet(`/admin/sms/reports/by-month?start_date=${sd}&end_date=${ed}`);
   if (!res) { el.innerHTML = _smsRepError('Ошибка запроса'); return; }
   const rows = res?.data || res?.result || res;
-  if (!Array.isArray(rows) || !rows.length) { el.innerHTML = '<div style="padding:20px;color:var(--text2);text-align:center">Нет данных за выбранный период</div>'; return; }
+  if (!Array.isArray(rows) || !rows.length) { el.innerHTML = `<div style="padding:20px;color:var(--text2);text-align:center">${_t('empty.no.data')}</div>`; return; }
   el.innerHTML = _smsRepTable(rows, ['month','dispatches','sent_sms','total_phones']);
 }
 
@@ -21190,7 +21210,7 @@ async function smsRepByDate() {
   });
   if (!res) { el.innerHTML = _smsRepError('Ошибка запроса'); return; }
   const rows = res?.data || res?.result || res;
-  if (!Array.isArray(rows) || !rows.length) { el.innerHTML = '<div style="padding:20px;color:var(--text2);text-align:center">Нет данных за выбранный период</div>'; return; }
+  if (!Array.isArray(rows) || !rows.length) { el.innerHTML = `<div style="padding:20px;color:var(--text2);text-align:center">${_t('empty.no.data')}</div>`; return; }
   el.innerHTML = _smsRepTable(rows, ['date','dispatches','sent_sms','total_phones']);
 }
 
@@ -21203,7 +21223,7 @@ async function smsRepByDispatch() {
   });
   if (!res) { el.innerHTML = _smsRepError('Ошибка запроса'); return; }
   const rows = res?.data || res?.result || res;
-  if (!Array.isArray(rows) || !rows.length) { el.innerHTML = '<div style="padding:20px;color:var(--text2);text-align:center">Нет данных за выбранный период</div>'; return; }
+  if (!Array.isArray(rows) || !rows.length) { el.innerHTML = `<div style="padding:20px;color:var(--text2);text-align:center">${_t('empty.no.data')}</div>`; return; }
   el.innerHTML = _smsRepTable(rows, ['id','name','message_preview','total_phones','sent_count','status','scheduled','sent_at']);
 }
 
