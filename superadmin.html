@@ -378,7 +378,10 @@
       <div class="page" id="page-sa-expense-cats">
         <div class="section-header">
           <div class="page-title" style="margin:0">🧾 Расходы (шаблон)</div>
-          <button class="btn btn-primary btn-sm" onclick="saExpCatOpenModal()">+ Добавить</button>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-ghost btn-sm" onclick="seedExpCatsFromCompany()">↓ Заполнить из компании</button>
+            <button class="btn btn-primary btn-sm" onclick="saExpCatOpenModal()">+ Добавить</button>
+          </div>
         </div>
         <p style="font-size:13px;color:var(--text2);margin-bottom:12px">Категории расходов — шаблон для новых компаний.</p>
         <div id="saExpCatLoading" style="color:var(--text2);font-size:13px">Загрузка…</div>
@@ -2803,6 +2806,14 @@ async function saExpCatDelete(id) {
   if (!confirm('Удалить категорию?')) return;
   try {
     await api(`/saas/catalog/expense-categories/${id}`, 'DELETE');
+    await loadSaExpCats();
+  } catch(e) { alert('Ошибка: ' + e.message); }
+}
+
+async function seedExpCatsFromCompany() {
+  if (!confirm('Заменить шаблон категорий расходов данными из компании #1? Текущий шаблон будет удалён.')) return;
+  try {
+    await api('/saas/catalog/expense-categories/seed-from-company', 'POST');
     await loadSaExpCats();
   } catch(e) { alert('Ошибка: ' + e.message); }
 }
