@@ -3030,15 +3030,15 @@
 
           <div class="card" id="card-tg-bot" style="margin-bottom:14px">
             <div class="cfg-title-row">
-              <h3 class="cfg-title">🤖 Бот заявок</h3>
+              <h3 class="cfg-title" data-i18n="tg.card.bot">🤖 Бот заявок</h3>
               <button class="btn s-edit-btn" onclick="editCard('card-tg-bot')">✏️</button>
             </div>
             <div class="cfg-field" style="margin-bottom:12px">
-              <label>Ссылка</label>
+              <label data-i18n="tg.field.link">Ссылка</label>
               <input type="url" id="cfg_social_tg_bot" class="form-input" disabled placeholder="https://t.me/artez_orders_bot">
             </div>
             <div class="cfg-field" style="margin-bottom:10px">
-              <label>Токен бота (для уведомлений API)</label>
+              <label data-i18n="tg.field.token">Токен бота (для уведомлений API)</label>
               <div class="cfg-pwd-wrap">
                 <input type="password" id="cfg_tg_bot_token" class="form-input" disabled placeholder="8871514482:AAG...">
                 <button type="button" class="cfg-eye" onclick="togglePwd('cfg_tg_bot_token',this)" tabindex="-1">👁</button>
@@ -3052,8 +3052,8 @@
             </div>
             <hr style="border:none;border-top:1px solid var(--border);margin:14px 0">
             <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-              <button class="btn" style="background:#2563eb;color:#fff;gap:6px" onclick="botBroadcastRestart()">🔄 Перезапустить бот для всех</button>
-              <span style="font-size:12px;color:var(--text2)">Отправит всем клиентам сообщение «Нажмите /start»</span>
+              <button class="btn" style="background:#2563eb;color:#fff;gap:6px" onclick="botBroadcastRestart()" data-i18n="tg.btn.restart.bot">🔄 Перезапустить бот для всех</button>
+              <span style="font-size:12px;color:var(--text2)" data-i18n="tg.btn.restart.desc">Отправит всем клиентам сообщение «Нажмите /start»</span>
             </div>
           </div>
 
@@ -3061,24 +3061,24 @@
           <div class="card" id="card-master-pass" style="margin-bottom:14px">
             <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
               <div>
-                <div style="font-weight:700;font-size:14px">🔐 Мастер-пароль admin.html</div>
-                <div style="font-size:12px;color:var(--text2);margin-top:3px">Пароль для входа в admin.html и подтверждения удалений</div>
+                <div style="font-weight:700;font-size:14px" data-i18n="tg.master.title">🔐 Мастер-пароль admin.html</div>
+                <div style="font-size:12px;color:var(--text2);margin-top:3px" data-i18n="tg.master.desc">Пароль для входа в admin.html и подтверждения удалений</div>
               </div>
-              <button class="btn" style="background:var(--accent);color:#fff;white-space:nowrap;flex-shrink:0" onclick="openMasterPassModal()">🔑 Сменить пароль</button>
+              <button class="btn" style="background:var(--accent);color:#fff;white-space:nowrap;flex-shrink:0" onclick="openMasterPassModal()" data-i18n="tg.master.btn">🔑 Сменить пароль</button>
             </div>
           </div>
 
           <div class="card" id="card-tg-group" style="margin-bottom:14px">
             <div class="cfg-title-row">
-              <h3 class="cfg-title">💬 Группа TG</h3>
+              <h3 class="cfg-title" data-i18n="tg.card.group">💬 Группа TG</h3>
               <button class="btn s-edit-btn" onclick="editCard('card-tg-group')">✏️</button>
             </div>
             <div class="cfg-field" style="margin-bottom:12px">
-              <label>Ссылка</label>
+              <label data-i18n="tg.field.link">Ссылка</label>
               <input type="url" id="cfg_social_tg_group" class="form-input" disabled placeholder="https://t.me/artez_gilam_yuvish">
             </div>
             <div class="cfg-field" style="margin-bottom:10px">
-              <label>ID группы</label>
+              <label data-i18n="tg.field.group.id">ID группы</label>
               <input type="text" id="cfg_tg_group_sms_id" class="form-input" disabled placeholder="-5303335722">
             </div>
             <div class="cfg-actions">
@@ -3090,11 +3090,11 @@
 
           <div class="card" id="card-tg-orders">
             <div class="cfg-title-row">
-              <h3 class="cfg-title">📋 Группы Заказов</h3>
+              <h3 class="cfg-title" data-i18n="tg.card.orders.groups">📋 Группы Заказов</h3>
               <button class="btn s-edit-btn" onclick="editCard('card-tg-orders')">✏️</button>
             </div>
             <div class="cfg-field" style="margin-bottom:10px">
-              <label>ID общей группы (fallback)</label>
+              <label data-i18n="tg.field.group.fallback">ID общей группы (fallback)</label>
               <input type="text" id="cfg_tg_group_id" class="form-input" disabled placeholder="-5211502458">
             </div>
             <p style="color:var(--text2);font-size:14px">
@@ -3110,12 +3110,12 @@
           <!-- Медиа-канал -->
           <div class="card" id="card-tg-measure" style="margin-bottom:14px">
             <div class="cfg-title-row">
-              <h3 class="cfg-title">📁 Медиа-канал</h3>
+              <h3 class="cfg-title" data-i18n="tg.card.media">📁 Медиа-канал</h3>
               <button class="btn s-edit-btn" onclick="editMeasureChannelCard()">✏️</button>
             </div>
             <p class="cfg-hint" style="margin-bottom:12px">Сюда загружаются все фото и видео замеров, а также чеки оплат. Бот должен быть администратором этого канала.</p>
             <div class="cfg-field" style="margin-bottom:10px">
-              <label>ID канала</label>
+              <label data-i18n="tg.field.channel.id">ID канала</label>
               <input type="text" id="measureChannelInput" class="form-input" disabled placeholder="-1004453880659">
             </div>
             <div class="cfg-actions">
@@ -3128,12 +3128,12 @@
           <!-- Касса — ТГ-канал -->
           <div class="card" id="card-tg-cash" style="margin-bottom:14px">
             <div class="cfg-title-row">
-              <h3 class="cfg-title">💵 Канал кассы</h3>
+              <h3 class="cfg-title" data-i18n="tg.card.cash">💵 Канал кассы</h3>
               <button class="btn s-edit-btn" onclick="editCashChannelCard()">✏️</button>
             </div>
             <p class="cfg-hint" style="margin-bottom:12px">Все операции с кассой (передачи наличных, чеки, подтверждения) отправляются в этот канал.</p>
             <div class="cfg-field" style="margin-bottom:10px">
-              <label>ID канала</label>
+              <label data-i18n="tg.field.channel.id">ID канала</label>
               <input type="text" id="cashChannelInput" class="form-input" disabled placeholder="-1003860114169">
             </div>
             <div class="cfg-hint" style="margin-bottom:10px">Узнать ID: добавьте бот в канал как администратора и напишите в канале, затем проверьте через <code style="font-size:11px;background:var(--surface2);padding:1px 4px;border-radius:3px">getUpdates</code>.</div>
@@ -3147,14 +3147,14 @@
           <!-- Группа лидов + шаблоны -->
           <div class="card" id="card-tg-leads" style="margin-top:14px">
             <div class="cfg-title-row">
-              <h3 class="cfg-title">🎯 Группа Лидов</h3>
+              <h3 class="cfg-title" data-i18n="tg.card.leads">🎯 Группа Лидов</h3>
               <button class="btn s-edit-btn" onclick="editCard('card-tg-leads')">✏️</button>
             </div>
 
             <!-- Чекбокс активности -->
             <label id="leads_group_enabled_wrap" style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;margin-bottom:14px;cursor:pointer;background:var(--accent-bg,#e8f5e9);border:1.5px solid var(--accent,#163E3B)">
               <input type="checkbox" id="cfg_leads_group_enabled" disabled onchange="updateLeadsGroupStatus()" style="width:18px;height:18px;accent-color:#163E3B;cursor:pointer;flex-shrink:0">
-              <span style="font-size:14px;font-weight:600;color:var(--accent,#163E3B)">Отправлять уведомления в группу</span>
+              <span style="font-size:14px;font-weight:600;color:var(--accent,#163E3B)" data-i18n="tg.leads.enabled">Отправлять уведомления в группу</span>
             </label>
 
             <div style="font-size:12px;color:var(--text2);margin-bottom:12px">
@@ -3162,7 +3162,7 @@
             </div>
 
             <div class="cfg-field" style="margin-bottom:10px">
-              <label>📋 ID общей группы (fallback)</label>
+              <label data-i18n="tg.field.group.fallback">ID общей группы (fallback)</label>
               <input type="text" id="cfg_leads_group_id" class="form-input" disabled placeholder="-1004486597965">
             </div>
             <p style="color:var(--text2);font-size:14px;margin-bottom:14px">
@@ -3178,10 +3178,10 @@
             </div>
 
             <div class="cfg-field" style="margin-bottom:4px;margin-top:14px">
-              <label>⏱ Просрочен через (минут)</label>
+              <label data-i18n="tg.field.overdue">⏱ Просрочен через (минут)</label>
               <div style="display:flex;align-items:center;gap:10px">
                 <input id="cfg_callback_overdue_minutes" type="number" min="1" max="1440" class="form-input" disabled style="width:100px" placeholder="10">
-                <span style="font-size:13px;color:var(--text2)">минут после запланированного времени</span>
+                <span style="font-size:13px;color:var(--text2)" data-i18n="tg.field.overdue.suffix">минут после запланированного времени</span>
               </div>
             </div>
 
@@ -3195,7 +3195,7 @@
           <!-- Карточка: Группа водителей (маршруты) -->
           <div class="card" id="card-tg-delivery" style="margin-top:14px">
             <div class="cfg-title-row">
-              <h3 class="cfg-title">🚗 Группа водителей / доставщиков</h3>
+              <h3 class="cfg-title" data-i18n="tg.card.delivery">🚗 Группа водителей / доставщиков</h3>
               <button class="btn s-edit-btn" onclick="editCard('card-tg-delivery')">✏️</button>
             </div>
             <p style="color:var(--text2);font-size:14px;margin-bottom:12px">
@@ -3216,12 +3216,12 @@
           <!-- Карточка: Новые клиенты -->
           <div class="card" id="card-tg-new-clients" style="margin-top:14px">
             <div class="cfg-title-row">
-              <h3 class="cfg-title">👤 Новые пользователи сайта</h3>
+              <h3 class="cfg-title" data-i18n="tg.card.new.clients">👤 Новые пользователи сайта</h3>
               <button class="btn s-edit-btn" onclick="editCard('card-tg-new-clients')">✏️</button>
             </div>
             <div style="font-size:12px;color:var(--text2);margin-bottom:10px">При каждой регистрации (SMS или Telegram) — сообщение придёт в эту группу и личным DM сотрудникам с включённым тумблером «🔔 Уведомления о новых клиентах» в их карточке.</div>
             <div class="cfg-field" style="margin-bottom:4px">
-              <label>📋 ID группы «Новые клиенты»</label>
+              <label data-i18n="tg.field.new.clients.group">ID группы «Новые клиенты»</label>
               <input type="text" id="cfg_new_clients_group_id" class="form-input" disabled placeholder="-1003768571929">
             </div>
 
@@ -3238,14 +3238,14 @@
       <!-- TG: УВЕДОМЛЕНИЯ ПО СТАТУСАМ -->
       <div class="page" id="page-tg-messages">
         <div class="section-header"><h2>📱 Telegram · Уведомления</h2></div>
-        <p style="color:var(--muted);font-size:13px;margin-bottom:16px;">Когда оператор меняет статус заказа — клиент получает сообщение в Telegram. Нажмите ✏️ чтобы редактировать шаблон.</p>
+        <p style="color:var(--muted);font-size:13px;margin-bottom:16px;" data-i18n="tg.msg.desc">Когда оператор меняет статус заказа — клиент получает сообщение в Telegram. Нажмите ✏️ чтобы редактировать шаблон.</p>
         <div style="display:flex;gap:20px;align-items:flex-start;">
           <!-- Карточки шаблонов -->
           <div id="tgMsgList" style="display:flex;flex-direction:column;gap:12px;flex:1;min-width:0;"></div>
           <!-- Панель переменных -->
           <div class="tg-vars-panel" id="tgVarsPanel">
-            <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;">⚙️ Переменные</div>
-            <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">Нажми — скопируется</div>
+            <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;" data-i18n="tg.vars.title">⚙️ Переменные</div>
+            <div style="font-size:11px;color:var(--muted);margin-bottom:10px;" data-i18n="tg.vars.hint">Нажми — скопируется</div>
             <div id="tgVarsPanelList"></div>
           </div>
         </div>
@@ -3262,13 +3262,13 @@
           <table style="width:100%;border-collapse:collapse;font-size:13px;min-width:560px;">
             <thead>
               <tr style="background:var(--bg-secondary);text-align:left;">
-                <th style="padding:8px 10px;border:1px solid var(--border);white-space:nowrap;">Клиент</th>
-                <th style="padding:8px 10px;border:1px solid var(--border);white-space:nowrap;">Телефон</th>
+                <th style="padding:8px 10px;border:1px solid var(--border);white-space:nowrap;" data-i18n="th.client">Клиент</th>
+                <th style="padding:8px 10px;border:1px solid var(--border);white-space:nowrap;" data-i18n="th.phone">Телефон</th>
                 <th style="padding:8px 10px;border:1px solid var(--border);white-space:nowrap;">Telegram</th>
-                <th style="padding:8px 10px;border:1px solid var(--border);white-space:nowrap;text-align:center;">Заказов</th>
+                <th style="padding:8px 10px;border:1px solid var(--border);white-space:nowrap;text-align:center;" data-i18n="th.orders">Заказов</th>
                 <th style="padding:8px 10px;border:1px solid var(--border);white-space:nowrap;text-align:center;width:60px;"></th>
                 <th style="padding:8px 10px;border:1px solid var(--border);white-space:nowrap;text-align:right;" data-i18n="th.orders.spent">Потрачено</th>
-                <th style="padding:8px 10px;border:1px solid var(--border);white-space:nowrap;">Последний заказ</th>
+                <th style="padding:8px 10px;border:1px solid var(--border);white-space:nowrap;" data-i18n="th.last.order.tg">Последний заказ</th>
               </tr>
             </thead>
             <tbody id="tgClientsTbody">
@@ -5949,6 +5949,22 @@ const _adminI18n = {
     'sms.cnt.add.title':'Добавить контакт','sms.cnt.fio.lbl':'Ф.И.О (необязательно)','sms.cnt.add.btn':'💾 Добавить',
     'sms.imp.title':'📥 Импорт контактов CSV','sms.imp.group.lbl':'Группа для импорта',
     'sms.tpl.tab.templates':'📋 Шаблоны','sms.tpl.tab.system':'🔑 Системные',
+    'tg.card.bot':'🤖 Бот заявок','tg.card.group':'💬 Группа TG',
+    'tg.card.orders.groups':'📋 Группы Заказов','tg.card.media':'📁 Медиа-канал',
+    'tg.card.cash':'💵 Канал кассы','tg.card.leads':'🎯 Группа Лидов',
+    'tg.card.delivery':'🚗 Группа водителей / доставщиков','tg.card.new.clients':'👤 Новые пользователи сайта',
+    'tg.field.link':'Ссылка','tg.field.token':'Токен бота (для уведомлений API)',
+    'tg.field.group.id':'ID группы','tg.field.group.fallback':'ID общей группы (fallback)','tg.field.channel.id':'ID канала',
+    'tg.field.new.clients.group':'ID группы «Новые клиенты»',
+    'tg.field.overdue':'⏱ Просрочен через (минут)','tg.field.overdue.suffix':'минут после запланированного времени',
+    'tg.leads.enabled':'Отправлять уведомления в группу',
+    'tg.btn.restart.bot':'🔄 Перезапустить бот для всех',
+    'tg.btn.restart.desc':'Отправит всем клиентам сообщение «Нажмите /start»',
+    'tg.master.title':'🔐 Мастер-пароль admin.html',
+    'tg.master.desc':'Пароль для входа в admin.html и подтверждения удалений','tg.master.btn':'🔑 Сменить пароль',
+    'tg.msg.desc':'Когда оператор меняет статус заказа — клиент получает сообщение в Telegram. Нажмите ✏️ чтобы редактировать шаблон.',
+    'tg.vars.title':'⚙️ Переменные','tg.vars.hint':'Нажми — скопируется',
+    'th.orders':'Заказов','th.last.order.tg':'Последний заказ',
   },
   uz: {
     'btn.add':'+ Qoʻshish','btn.save':'💾 Saqlash','btn.cancel':'Bekor qilish',
@@ -6323,6 +6339,22 @@ const _adminI18n = {
     'sms.cnt.add.title':'Kontakt qoʻshish','sms.cnt.fio.lbl':'F.I.O (ixtiyoriy)','sms.cnt.add.btn':'💾 Qoʻshish',
     'sms.imp.title':'📥 CSV kontaktlarni import qilish','sms.imp.group.lbl':'Import uchun guruh',
     'sms.tpl.tab.templates':'📋 Shablonlar','sms.tpl.tab.system':'🔑 Tizimli',
+    'tg.card.bot':'🤖 Buyurtmalar boti','tg.card.group':'💬 TG Guruhi',
+    'tg.card.orders.groups':'📋 Buyurtmalar guruhlari','tg.card.media':'📁 Media-kanal',
+    'tg.card.cash':'💵 Kassa kanali','tg.card.leads':'🎯 Lidlar guruhi',
+    'tg.card.delivery':'🚗 Haydovchilar / yetkazuvchilar guruhi','tg.card.new.clients':'👤 Yangi sayt foydalanuvchilari',
+    'tg.field.link':'Havola','tg.field.token':'Bot tokeni (API bildirishnomalar uchun)',
+    'tg.field.group.id':'Guruh IDsi','tg.field.group.fallback':'Umumiy guruh IDsi (fallback)','tg.field.channel.id':'Kanal IDsi',
+    'tg.field.new.clients.group':'Yangi mijozlar guruhi IDsi',
+    'tg.field.overdue':'⏱ Muddat oʻtishi (daqiqa)','tg.field.overdue.suffix':'belgilangan vaqtdan keyin daqiqa',
+    'tg.leads.enabled':'Guruhga bildirishnomalar yuborish',
+    'tg.btn.restart.bot':'🔄 Botni barchaga qayta ishga tushirish',
+    'tg.btn.restart.desc':'Barcha mijozlarga «/start bosing» xabarini yuboradi',
+    'tg.master.title':'🔐 admin.html master-paroli',
+    'tg.master.desc':'admin.html ga kirish va oʻchirishlarni tasdiqlash uchun parol','tg.master.btn':'🔑 Parolni oʻzgartirish',
+    'tg.msg.desc':'Operator buyurtma holatini oʻzgartirganda — mijoz Telegramda xabar oladi. Shablonni tahrirlash uchun ✏️ bosing.',
+    'tg.vars.title':'⚙️ Oʻzgaruvchilar','tg.vars.hint':'Bosing — nusxa olinadi',
+    'th.orders':'Buyurtmalar','th.last.order.tg':'Oxirgi buyurtma',
   },
 };
 function _applyAdminI18n() {
