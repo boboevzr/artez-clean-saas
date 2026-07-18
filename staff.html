@@ -11407,6 +11407,9 @@ async function _openPaymentReview(orderId, paymentId, paymentData) {
       <span style="font-size:12px;color:#888">🧑‍💼 ${staffName}</span>
       ${phoneHtml}
     </div>`;
+  // Сброс состояния кнопки (может остаться disabled после предыдущего подтверждения)
+  const confirmBtn = document.getElementById('prConfirmBtn');
+  if (confirmBtn) { confirmBtn.disabled = false; confirmBtn.textContent = '✅ Подтвердить'; }
   // Загружаем чек
   const receiptEl = document.getElementById('prReceiptArea');
   receiptEl.innerHTML = `<div style="text-align:center;color:#aaa;padding:30px">⏳ Загружаем чек…</div>`;
