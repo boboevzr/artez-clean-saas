@@ -1336,7 +1336,7 @@
         </defs>
         <circle cx="100" cy="100" r="68" fill="none" stroke="url(#tealatop)" stroke-width="22" stroke-linecap="round" stroke-dasharray="356 72" transform="rotate(-90 100 100)"/>
         <circle cx="100" cy="32" r="12" fill="#C79A3D"/>
-      </svg></span> <span>Cleano</span> <span style="color:var(--text2); font-weight:400; font-size:14px;">Админ</span></div>
+      </svg></span> <span>Cleano</span> <span style="color:var(--text2); font-weight:400; font-size:14px;">Админ</span><img id="topbarCompanyLogo" src="" alt="" style="display:none;width:22px;height:22px;border-radius:6px;object-fit:cover;margin-left:4px"></div>
     <div class="topbar-right">
       <button id="adminLangBtn" onclick="_toggleAdminLang()" style="background:none;border:1.5px solid var(--border);border-radius:8px;padding:3px 9px;font-size:12px;font-weight:700;color:var(--text2);cursor:pointer;line-height:1.4">UZ</button>
       <div class="profile-btn" id="profileBtn" onclick="toggleProfileMenu()">
@@ -6806,6 +6806,8 @@ async function uploadCompanyLogo(input) {
     const img = document.getElementById('cp_logo_preview');
     const ph  = document.getElementById('cp_logo_placeholder');
     img.src = d.logo_url; img.style.display = ''; ph.style.display = 'none';
+    localStorage.setItem('admin_company_logo', d.logo_url || '');
+    _setProfileLogo(d.logo_url);
     showToast('Логотип обновлён');
   } catch(e) {
     showToast('Ошибка: ' + e.message, 'error');
@@ -7415,14 +7417,26 @@ function _setProfileSlug(slug) {
   setEl('profileMenuSlug', slug);
 }
 
+function _setProfileLogo(logoUrl) {
+  const img = document.getElementById('topbarCompanyLogo');
+  if (!img) return;
+  if (logoUrl) { img.src = logoUrl; img.style.display = ''; }
+  else { img.style.display = 'none'; }
+}
+
 function _updateProfileUI() {
-  const cached = localStorage.getItem('admin_company_slug');
-  if (cached) { _setProfileSlug(cached); return; }
+  const cachedSlug = localStorage.getItem('admin_company_slug');
+  const cachedLogo = localStorage.getItem('admin_company_logo');
+  if (cachedSlug) _setProfileSlug(cachedSlug);
+  if (cachedLogo !== null) _setProfileLogo(cachedLogo || null);
+  if (cachedSlug && cachedLogo !== null) return;
   apiGet('/company/info').then(d => {
     if (d?.slug) {
       localStorage.setItem('admin_company_slug', d.slug);
       _setProfileSlug(d.slug);
     }
+    localStorage.setItem('admin_company_logo', d?.logo_url || '');
+    _setProfileLogo(d?.logo_url || null);
   }).catch(() => {});
 }
 

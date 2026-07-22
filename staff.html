@@ -665,6 +665,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-s
   </div>
   <!-- Шаг 2: логин/пароль -->
   <div id="lsAuthPanel" class="login-form" style="display:none">
+    <img id="lsCompanyLogo" src="" alt="" style="display:none;width:48px;height:48px;border-radius:12px;object-fit:cover;margin:0 auto 8px">
     <div id="lsCompanyName" style="font-size:15px;font-weight:600;text-align:center;color:var(--text)"></div>
     <div style="text-align:center">
       <a href="#" onclick="event.preventDefault();_showSlugPanel()" style="font-size:13px;color:var(--text2)">Сменить компанию</a>
@@ -1762,6 +1763,8 @@ async function doSlugStep() {
     if (!res.ok) throw new Error(data.detail || 'Компания не найдена');
     localStorage.setItem('staff_company_slug', data.slug);
     localStorage.setItem('staff_company_name', data.name);
+    if (data.logo_url) localStorage.setItem('staff_company_logo', data.logo_url);
+    else localStorage.removeItem('staff_company_logo');
     _showAuthPanel();
   } catch(e) {
     err.textContent = e.message; err.style.display = 'block';
@@ -1776,11 +1779,15 @@ function _showSlugPanel() {
   document.getElementById('loginError').style.display = 'none';
   localStorage.removeItem('staff_company_slug');
   localStorage.removeItem('staff_company_name');
+  localStorage.removeItem('staff_company_logo');
 }
 
 function _showAuthPanel() {
   const name = localStorage.getItem('staff_company_name') || localStorage.getItem('staff_company_slug') || '';
   document.getElementById('lsCompanyName').textContent = name;
+  const logo = localStorage.getItem('staff_company_logo');
+  const logoEl = document.getElementById('lsCompanyLogo');
+  if (logo) { logoEl.src = logo; logoEl.style.display = ''; } else { logoEl.style.display = 'none'; }
   document.getElementById('lsSlugPanel').style.display = 'none';
   document.getElementById('lsAuthPanel').style.display = '';
   document.getElementById('loginError2').style.display = 'none';

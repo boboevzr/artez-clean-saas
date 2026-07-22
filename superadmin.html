@@ -1302,7 +1302,7 @@ function renderCompanies(list) {
     return `
     <tr>
       <td class="mono">${c.id}</td>
-      <td style="font-weight:600">${escHtml(c.name)}</td>
+      <td style="font-weight:600;display:flex;align-items:center;gap:8px">${c.logo_url ? `<img src="${c.logo_url}" alt="" style="width:24px;height:24px;border-radius:6px;object-fit:cover;flex-shrink:0">` : ''}${escHtml(c.name)}</td>
       <td class="mono">${escHtml(c.slug)}</td>
       <td style="font-size:12px;color:var(--text2)">${escHtml(c.contact_name||'—')}<br><span style="font-size:11px">${escHtml(c.contact_phone||'')}</span></td>
       <td><span class="badge badge-blue">${c.plan}</span><br><span style="font-size:11px;color:var(--text2)">${c.max_branches||0} фил.</span></td>
