@@ -2707,6 +2707,7 @@
         <!-- Под-вкладки -->
         <div style="display:flex;gap:6px;flex-wrap:nowrap;overflow-x:auto;margin-bottom:20px;padding-bottom:4px;-webkit-overflow-scrolling:touch;scrollbar-width:none;">
 
+          <button class="s-tab"        data-stab="profile" onclick="switchStab(this)">🏢 Профиль</button>
           <button class="s-tab active" data-stab="contacts" onclick="switchStab(this)" data-i18n="cfg.tab.contacts">📞 Контакты</button>
           <button class="s-tab"        data-stab="staff-mgmt" onclick="switchStab(this);staffMgmtLoad()" data-i18n="cfg.tab.staff">👤 Сотрудники</button>
           <button class="s-tab"        data-stab="eskiz"    onclick="switchStab(this)" data-i18n="cfg.tab.sms">📨 SMS (Eskiz)</button>
@@ -2716,6 +2717,41 @@
         </div>
 
         <div style="max-width:660px;">
+
+          <!-- ─── Профиль компании ─── -->
+          <div class="s-panel" id="stab-profile" style="display:none">
+            <div class="card" id="card-company-profile">
+              <div class="cfg-title-row">
+                <h3 class="cfg-title">🏢 Профиль компании</h3>
+                <button class="btn s-edit-btn" onclick="editCard('card-company-profile')">✏️</button>
+              </div>
+              <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px">
+                <img id="cp_logo_preview" src="" alt="Логотип" style="width:64px;height:64px;border-radius:12px;object-fit:cover;background:var(--bg2);border:1px solid var(--border);display:none">
+                <div id="cp_logo_placeholder" style="width:64px;height:64px;border-radius:12px;background:var(--bg2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:24px;color:var(--text2)">🏢</div>
+                <div>
+                  <input type="file" id="cp_logo_file" accept="image/*" style="display:none" onchange="uploadCompanyLogo(this)">
+                  <button class="btn btn-ghost btn-sm" type="button" onclick="document.getElementById('cp_logo_file').click()">🖼️ Загрузить лого</button>
+                  <div style="font-size:11px;color:var(--text2);margin-top:4px">PNG/JPG, до 400 КБ</div>
+                </div>
+              </div>
+              <div class="contacts-grid">
+                <div class="cfg-field">
+                  <label>Название компании</label>
+                  <input type="text" id="cfg_company_name" class="form-input" disabled placeholder="Cleano">
+                </div>
+                <div class="cfg-field">
+                  <label>Slug (используется при входе сотрудников)</label>
+                  <input type="text" id="cfg_company_slug" class="form-input" disabled placeholder="my-company">
+                  <div style="font-size:11px;color:var(--text2);margin-top:4px">⚠️ При смене slug всем сотрудникам нужно будет ввести новый slug при следующем входе</div>
+                </div>
+              </div>
+              <div class="cfg-actions">
+                <button class="btn btn-primary  s-save-btn"   onclick="saveCompanyProfile()" style="display:none;">💾 Сохранить</button>
+                <button class="btn btn-ghost    s-cancel-btn" onclick="cancelCard('card-company-profile', ['company_name','company_slug'])" style="display:none;">Отмена</button>
+                <span class="s-msg" id="msg_card-company-profile"></span>
+              </div>
+            </div>
+          </div>
 
           <!-- ─── Контакты ─── -->
           <div class="s-panel" id="stab-contacts">
@@ -6718,6 +6754,66 @@ async function saveCompanySocial() {
   }
 }
 
+async function _loadCompanyProfile() {
+  try {
+    const d = await apiGet('/company/info');
+    if (!d) return;
+    const nameEl = document.getElementById('cfg_company_name');
+    const slugEl = document.getElementById('cfg_company_slug');
+    if (nameEl) nameEl.value = d.name || '';
+    if (slugEl) slugEl.value = d.slug || '';
+    _cfgOriginal['company_name'] = d.name || '';
+    _cfgOriginal['company_slug'] = d.slug || '';
+    const img = document.getElementById('cp_logo_preview');
+    const ph  = document.getElementById('cp_logo_placeholder');
+    if (d.logo_url) { img.src = d.logo_url; img.style.display = ''; ph.style.display = 'none'; }
+    else { img.style.display = 'none'; ph.style.display = ''; }
+  } catch(e) { console.error('_loadCompanyProfile:', e); }
+}
+
+async function saveCompanyProfile() {
+  const name = document.getElementById('cfg_company_name')?.value?.trim() || '';
+  const slug = document.getElementById('cfg_company_slug')?.value?.trim() || '';
+  const slugChanged = slug !== (_cfgOriginal['company_slug'] || '');
+  if (slugChanged && !confirm('Slug изменится на "' + slug + '". Всем сотрудникам нужно будет ввести новый slug при следующем входе. Продолжить?')) {
+    return;
+  }
+  try {
+    const res = await apiFetch(`${API_BASE}/company/profile`, {
+      method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ name, slug })
+    });
+    if (!res.ok) { const d = await res.json().catch(()=>({})); throw new Error(d.detail || 'Ошибка сохранения'); }
+    _cfgOriginal['company_name'] = name;
+    _cfgOriginal['company_slug'] = slug;
+    if (slugChanged) localStorage.setItem('admin_company_slug', slug);
+    _setProfileSlug(slug);
+    cancelCard('card-company-profile', ['company_name','company_slug']);
+    showToast('Сохранено');
+  } catch(e) {
+    showToast('Ошибка: ' + e.message, 'error');
+  }
+}
+
+async function uploadCompanyLogo(input) {
+  const file = input.files?.[0];
+  if (!file) return;
+  const fd = new FormData();
+  fd.append('file', file);
+  try {
+    const res = await apiFetch(`${API_BASE}/company/logo`, { method: 'POST', body: fd });
+    const d = await res.json();
+    if (!res.ok) throw new Error(d.detail || 'Ошибка загрузки');
+    const img = document.getElementById('cp_logo_preview');
+    const ph  = document.getElementById('cp_logo_placeholder');
+    img.src = d.logo_url; img.style.display = ''; ph.style.display = 'none';
+    showToast('Логотип обновлён');
+  } catch(e) {
+    showToast('Ошибка: ' + e.message, 'error');
+  } finally {
+    input.value = '';
+  }
+}
+
 // ── Branch Cards (read-only view) ────────────────────────────────────────
 function _brVal(v) { return v || '<span style="color:var(--text2);font-style:italic">—</span>'; }
 function _brSectionLabel(text) {
@@ -10362,6 +10458,7 @@ function switchStab(btn) {
   const tab = btn.dataset.stab;
   const panel = document.getElementById('stab-' + tab);
   if (panel) panel.style.display = '';
+  if (tab === 'profile') { _loadCompanyProfile(); }
   if (tab === 'contacts') { renderBranchContactCards(); _loadCompanySocial(); }
   if (tab === 'agents') {
     loadAgentCommissionSettings();
