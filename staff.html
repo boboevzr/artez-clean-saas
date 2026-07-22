@@ -3,17 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<link rel="icon" href="/LOGO/favicon.ico">
-<link rel="apple-touch-icon" href="/LOGO/artez-icon-1024.png">
+<link rel="icon" href="/LOGO/cleano-favicon.ico">
+<link rel="apple-touch-icon" href="/LOGO/cleano-icon-1024.png">
 <meta name="theme-color" content="#163E3B">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="ARTEZ Staff">
+<meta name="apple-mobile-web-app-title" content="Cleano Staff">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<title>ARTEZ Staff</title>
+<title>Cleano Staff</title>
 <link rel="manifest" href="staff-manifest.json">
 <script src="config.js"></script>
 <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -716,7 +716,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-s
   <div class="drawer-backdrop" onclick="closeDrawer()"></div>
   <div class="drawer-panel">
     <div class="drawer-header">
-      <div class="drawer-logo">ARTEZ</div>
+      <div class="drawer-logo">CLEANO</div>
       <div class="drawer-sub" id="drawerSubtitle">Сотрудник</div>
     </div>
     <div id="drawerNav"></div>
@@ -727,8 +727,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-s
   <!-- Desktop sidebar (hidden on mobile via CSS) -->
   <div class="desk-sidebar" id="deskSidebar" style="display:none;">
     <div class="desk-sidebar-logo">
-      <div class="desk-logo-mark">A</div>
-      <div class="desk-logo-name">ARTEZ</div>
+      <div class="desk-logo-mark">C</div>
+      <div class="desk-logo-name">CLEANO</div>
       <button class="nav-toggle-btn" id="sidebarToggleBtn" onclick="toggleSidebarCollapse()" title="Свернуть">«</button>
     </div>
     <div class="desk-nav" id="deskNav"></div>
@@ -740,7 +740,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-s
     <!-- Топбар -->
     <div class="topbar">
       <button class="mob-menu-btn" onclick="openDrawer()" aria-label="Меню">☰</button>
-      <div class="topbar-title" id="tbTitle">ARTEZ</div>
+      <div class="topbar-title" id="tbTitle">CLEANO</div>
       <button onclick="openChatPanel()" id="chatTopBtn"
         style="position:relative;background:none;border:none;font-size:22px;cursor:pointer;padding:4px 8px;line-height:1;display:none" title="Чаты">
         💬
@@ -1176,7 +1176,7 @@ function _toggleLang() {
 function _applyPageI18n() {
   buildDrawerNav();
   buildDeskSidebar();
-  document.getElementById('tbTitle').textContent = ({ dashboard:'ARTEZ', leads:t('nav.leads'), orders:t('nav.orders'), clients:t('nav.clients'), notifications:t('nav.notifications'), profile:t('nav.profile') })[currentPage] || 'ARTEZ';
+  document.getElementById('tbTitle').textContent = ({ dashboard:'CLEANO', leads:t('nav.leads'), orders:t('nav.orders'), clients:t('nav.clients'), notifications:t('nav.notifications'), profile:t('nav.profile') })[currentPage] || 'CLEANO';
   _applyOrderFormI18n?.();
   _applyOrderCardI18n?.();
   if (currentPage === 'leads')     { pageLeadsI18n();     return; }
@@ -2221,8 +2221,8 @@ function gotoPage(pageId) {
                   (pageId === 'orders' && hasPermission('orders') && currentStaff?.can_create_order !== false);
   fab.style.display = showFab ? 'flex' : 'none';
 
-  const titles = { dashboard:'ARTEZ', leads:t('nav.leads'), orders:t('nav.orders'), clients:t('nav.clients'), notifications:t('nav.notifications'), delivery:'🚚 Доставка', timesheet:'📅 Табель', profile:t('nav.profile') };
-  document.getElementById('tbTitle').textContent = titles[pageId] || 'ARTEZ';
+  const titles = { dashboard:'CLEANO', leads:t('nav.leads'), orders:t('nav.orders'), clients:t('nav.clients'), notifications:t('nav.notifications'), delivery:'🚚 Доставка', timesheet:'📅 Табель', profile:t('nav.profile') };
+  document.getElementById('tbTitle').textContent = titles[pageId] || 'CLEANO';
 
   const pad = document.getElementById('scrollPad');
   const scroll = document.getElementById('mainContent');
