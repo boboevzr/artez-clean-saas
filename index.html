@@ -6702,7 +6702,7 @@
       try {
         // Сначала проверяем — есть ли незакрытый чат с этого или другого устройства
         if (phone) {
-          const chk = await fetch(`${API_BASE}/chat/active-by-phone?phone=${encodeURIComponent(phone)}`);
+          const chk = await fetch(`${API_BASE}/chat/active-by-phone?phone=${encodeURIComponent(phone)}&company_slug=${encodeURIComponent(window.APP_COMPANY_SLUG||'')}`);
           if (chk.ok) {
             const { session } = await chk.json();
             if (session?.code) {
@@ -6717,7 +6717,7 @@
         const res = await fetch(`${API_BASE}/chat/start`, {
           method: 'POST',
           headers: {'Content-Type':'application/json'},
-          body: JSON.stringify({ client_name: name, client_phone: phone, lang: lang || 'uz' })
+          body: JSON.stringify({ client_name: name, client_phone: phone, lang: lang || 'uz', company_slug: window.APP_COMPANY_SLUG })
         });
         const data = await res.json();
         if (!res.ok || !data.code) { showOrderAlert(t('chat.errStart')); return; }
