@@ -3782,26 +3782,9 @@
           <h4 data-i18n="nav.contacts">Контакты</h4>
           <a id="fc_short" href="tel:1221" style="font-weight:700;font-size:15px;">☎️ 1221</a>
           <a id="fc_main" href="tel:+998792221221">📞 +998 79 222-12-21</a>
-          <div style="margin-top:8px;font-size:12px;opacity:.7;font-weight:600;" data-i18n="branch.zarafshan">📍 Зарафшан</div>
-          <a id="fc_zar1" href="tel:+998882001221">📱 88 200-12-21</a>
-          <a id="fc_zar2" href="#" style="display:none">📱 </a>
-          <div style="display:flex;gap:8px;margin-top:4px;flex-wrap:wrap;">
-            <a id="fc_zar_admin_tg" href="#" target="_blank" rel="noopener" style="display:none;align-items:center;gap:4px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.393c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.94z"/></svg>Написать админу</a>
-            <a id="fc_zar_tg" href="#" target="_blank" rel="noopener" style="display:none;align-items:center;gap:4px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.393c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.94z"/></svg>Группа</a>
-            <a id="fc_zar_wa" href="#" target="_blank" rel="noopener" style="display:none">WhatsApp</a>
-            <a id="fc_zar_ig" href="#" target="_blank" rel="noopener" style="display:none">Instagram</a>
-          </div>
-          <div style="margin-top:8px;font-size:12px;opacity:.7;font-weight:600;" data-i18n="branch.navoi">📍 Навои</div>
-          <a id="fc_nav1" href="tel:+998997500020">📱 99 750-00-20</a>
-          <a id="fc_nav2" href="#" style="display:none">📱 </a>
-          <div style="display:flex;gap:8px;margin-top:4px;flex-wrap:wrap;">
-            <a id="fc_nav_admin_tg" href="#" target="_blank" rel="noopener" style="display:none;align-items:center;gap:4px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.393c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.94z"/></svg>Написать админу</a>
-            <a id="fc_nav_tg" href="#" target="_blank" rel="noopener" style="display:none;align-items:center;gap:4px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.393c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.94z"/></svg>Группа</a>
-            <a id="fc_nav_wa" href="#" target="_blank" rel="noopener" style="display:none">WhatsApp</a>
-            <a id="fc_nav_ig" href="#" target="_blank" rel="noopener" style="display:none">Instagram</a>
-          </div>
-          <div style="margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.1);">
-            <a id="fc_tg_bot" href="https://t.me/artez_orders_bot" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:6px;">🤖 Telegram-бот заявок</a>
+          <div id="fcBranches"></div>
+          <div id="fc_tg_bot_row" style="margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.1);">
+            <a id="fc_tg_bot" href="#" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:6px;">🤖 Telegram-бот заявок</a>
           </div>
         </div>
       </div>
@@ -4731,6 +4714,32 @@
   let _isAgent = false;
   let osagoTiers = { tier1: 200000, tier2: 400000, tier3: 700000, pct1: 5, pct2: 10, pct3: 20 };
 
+  // Название и логотип компании (шапка + подвал + копирайт)
+  (async function loadCompanyBranding() {
+    try {
+      const r = await fetch(API_BASE + '/company/resolve?slug=' + encodeURIComponent(window.APP_COMPANY_SLUG||''));
+      if (!r.ok) return;
+      const d = await r.json();
+      if (d.name) {
+        document.querySelectorAll('.logo-title').forEach(el => el.textContent = d.name);
+        const chn = document.getElementById('chatHeadName');
+        if (chn) chn.textContent = d.name;
+        const year = new Date().getFullYear();
+        const crRu = `© ${year} ${d.name}. Все права защищены.`;
+        const crUz = `© ${year} ${d.name}. Barcha huquqlar himoyalangan.`;
+        I18N.ru['footer.copyright'] = crRu;
+        I18N.uz['footer.copyright'] = crUz;
+        const crEl = document.querySelector('[data-i18n="footer.copyright"]');
+        if (crEl) crEl.textContent = (lang === 'uz') ? crUz : crRu;
+      }
+      if (d.logo_url) {
+        document.querySelectorAll('.logo-mark').forEach(el => {
+          el.innerHTML = `<img src="${d.logo_url}" alt="" style="width:100%;height:100%;object-fit:contain;border-radius:8px">`;
+        });
+      }
+    } catch (_) {}
+  })();
+
   // Загружаем пороги ОСАГО с сервера (без auth)
   (async function loadOsagoTiers() {
     try {
@@ -4740,12 +4749,12 @@
   })();
 
   // Загружаем настройки сайта (контакты, соцсети) с сервера
-  (async function loadSiteSettings() {
+  window._siteSettingsPromise = (async function loadSiteSettings() {
     try {
       const r = await fetch(API_BASE + '/settings/site?company_slug=' + encodeURIComponent(window.APP_COMPANY_SLUG||''));
-      if (!r.ok) return;
+      if (!r.ok) return null;
       const { settings: s } = await r.json();
-      if (!s) return;
+      if (!s) return null;
 
       // Форматирование номера для отображения
       function fmtPhone(raw) {
@@ -4764,56 +4773,27 @@
         return 'tel:' + d;
       }
 
-      // Footer контакты
-      if (s.contact_short) {
-        const el = document.getElementById('fc_short');
-        if (el) { el.href = 'tel:' + s.contact_short; el.textContent = '☎️ ' + s.contact_short; }
+      // Footer контакты — short/main скрываем полностью, если у компании их нет
+      const fcShort = document.getElementById('fc_short');
+      if (fcShort) {
+        if (s.contact_short) { fcShort.style.display = ''; fcShort.href = 'tel:' + s.contact_short; fcShort.textContent = '☎️ ' + s.contact_short; }
+        else                 { fcShort.style.display = 'none'; }
       }
-      [['contact_main','fc_main'],['contact_zarafshan_1','fc_zar1'],['contact_navoi_1','fc_nav1']].forEach(([key, id]) => {
-        if (!s[key]) return;
-        const el = document.getElementById(id);
-        const prefix = id === 'fc_main' ? '📞 ' : '📱 ';
-        if (el) { el.href = telHref(s[key]); el.textContent = prefix + fmtPhone(s[key]); }
-      });
-      // Phone 2 for branches — показываем только если заполнено
-      [['contact_zarafshan_2','fc_zar2'],['contact_navoi_2','fc_nav2']].forEach(([key, id]) => {
-        const el = document.getElementById(id);
-        if (!el) return;
-        const val = s[key];
-        if (val && val.trim()) {
-          el.href = telHref(val);
-          el.textContent = '📱 ' + fmtPhone(val);
-          el.style.display = '';
-        } else {
-          el.style.display = 'none';
-        }
-      });
+      const fcMain = document.getElementById('fc_main');
+      if (fcMain) {
+        if (s.contact_main) { fcMain.style.display = ''; fcMain.href = telHref(s.contact_main); fcMain.textContent = '📞 ' + fmtPhone(s.contact_main); }
+        else                { fcMain.style.display = 'none'; }
+      }
 
-      // Соцсети филиалов в подвале
-      const fcSocials = [
-        ['contact_zarafshan_admin_tg','fc_zar_admin_tg', v => v],
-        ['contact_zarafshan_telegram','fc_zar_tg', v => v],
-        ['contact_zarafshan_whatsapp','fc_zar_wa', v => `https://wa.me/${v.replace(/\D/g,'')}`],
-        ['contact_zarafshan_instagram','fc_zar_ig', v => v],
-        ['contact_navoi_admin_tg','fc_nav_admin_tg', v => v],
-        ['contact_navoi_telegram','fc_nav_tg', v => v],
-        ['contact_navoi_whatsapp','fc_nav_wa', v => `https://wa.me/${v.replace(/\D/g,'')}`],
-        ['contact_navoi_instagram','fc_nav_ig', v => v],
-      ];
-      fcSocials.forEach(([key, id, toHref]) => {
-        const val = s[key];
-        const el  = document.getElementById(id);
-        if (!el) return;
-        if (val) { el.href = toHref(val); el.style.display = 'flex'; }
-        else     { el.style.display = 'none'; }
-      });
-
-      // Telegram-бот в подвале
-      const botUrl = s.social_tg_bot || 'https://t.me/artez_orders_bot';
-      const fcBot = document.getElementById('fc_tg_bot');
-      if (fcBot) fcBot.href = botUrl;
-      const cmBot = document.getElementById('cmBot');
-      if (cmBot) cmBot.href = botUrl;
+      // Telegram-бот в подвале — только если у компании реально настроен свой бот
+      const botRow = document.getElementById('fc_tg_bot_row');
+      const fcBot  = document.getElementById('fc_tg_bot');
+      if (s.social_tg_bot) {
+        if (fcBot) fcBot.href = s.social_tg_bot;
+        if (botRow) botRow.style.display = '';
+      } else if (botRow) {
+        botRow.style.display = 'none';
+      }
 
       // Яндекс Карты — загружаем скрипт с актуальным ключом
       const ymapsKey = s.yandex_maps_key || '270b3869-e967-409a-8194-1c0fb8835abf';
@@ -4831,31 +4811,23 @@
         document.head.appendChild(sc);
       }
 
-      // Обновляем текст успешной заявки
-      const short = s.contact_short || '1221';
-      const main  = s.contact_main  ? fmtPhone(s.contact_main) : '79 222-12-21';
-      const z1 = s.contact_zarafshan_1 ? fmtPhone(s.contact_zarafshan_1) : '88 200-12-21';
-      const n1 = s.contact_navoi_1 ? fmtPhone(s.contact_navoi_1) : '99 750-00-20';
-      const zarPhones = s.contact_zarafshan_2 ? `${z1} / ${fmtPhone(s.contact_zarafshan_2)}` : z1;
-      const navPhones = s.contact_navoi_2    ? `${n1} / ${fmtPhone(s.contact_navoi_2)}`    : n1;
-      const successRu = `Вам позвонят с номеров:\n☎️ ${short}\n📞 ${main}\n\nЗарафшан: ${zarPhones}\nНавои: ${navPhones}`;
-      const successUz = `Sizga quyidagi raqamlardan qo'ng'iroq qilinadi:\n☎️ ${short}\n📞 ${main}\n\nZarafshon: ${zarPhones}\nNavoiy: ${navPhones}`;
-      I18N.ru['order.successText'] = successRu;
-      I18N.uz['order.successText'] = successUz;
-
-      // ОСАГО партнёр — телефон и промокод
+      // ОСАГО партнёр — телефон и промокод (только если реально настроено у компании)
       if (s.osago_partner_phone || s.osago_partner_promo) {
-        const phone = s.osago_partner_phone ? fmtPhone(s.osago_partner_phone) : '+998 93 612-13-00';
-        const promo = s.osago_partner_promo || 'ARTEZ';
-        I18N.ru['dr.bonus.note'] = `📞 ${phone}. При оформлении страховки назовите промокод ${promo}.`;
-        I18N.uz['dr.bonus.note'] = `📞 ${phone}. Sug'urta rasmiylashtirishda ${promo} promo-kodini ayting.`;
+        const phone = s.osago_partner_phone ? fmtPhone(s.osago_partner_phone) : '';
+        const promo = s.osago_partner_promo || '';
+        const noteRu = promo ? `📞 ${phone}. При оформлении страховки назовите промокод ${promo}.` : `📞 ${phone}. Свяжитесь с нами для получения промокода.`;
+        const noteUz = promo ? `📞 ${phone}. Sug'urta rasmiylashtirishda ${promo} promo-kodini ayting.` : `📞 ${phone}. Promo-kod olish uchun biz bilan bog'laning.`;
+        I18N.ru['dr.bonus.note'] = noteRu;
+        I18N.uz['dr.bonus.note'] = noteUz;
         document.querySelectorAll('[data-i18n="dr.bonus.note"]').forEach(el => {
           el.textContent = I18N[currentLang || 'ru']['dr.bonus.note'];
         });
       }
 
-    } catch (_) {}
+      return s;
+    } catch (_) { return null; }
   })();
+
 
   function statusClass(s){ return 's-' + (s || 'new').replace(/_/g, '-'); }
 
@@ -6197,7 +6169,8 @@
 
   // ===== CONTACT MODAL =====
   let _siteSettings  = null;
-  let _activeBranch  = 'zarafshan';
+  let _activeBranch  = null;
+  let _siteBranches  = [];
 
   async function _loadSiteSettings() {
     try {
@@ -6207,19 +6180,10 @@
     } catch(e) {}
   }
 
-  const _fallback = {
-    contact_short:       '1221',
-    contact_main:        '+998792221221',
-    contact_zarafshan_1: '+998882001221',
-    contact_navoi_1:     '+998997500020',
-  };
-
   function switchBranch(branch) {
     _activeBranch = branch;
-    document.getElementById('cmBranchZarafshan')?.classList.toggle('active', branch === 'zarafshan');
-    document.getElementById('cmBranchNavoi')?.classList.toggle('active',     branch === 'navoi');
-    document.getElementById('cmContentZarafshan')?.classList.toggle('active', branch === 'zarafshan');
-    document.getElementById('cmContentNavoi')?.classList.toggle('active',     branch === 'navoi');
+    document.querySelectorAll('#cmTabs .cm-branch-btn').forEach(b => b.classList.toggle('active', b.dataset.branch === branch));
+    document.querySelectorAll('#cmBranchContents .cm-branch-content').forEach(c => c.classList.toggle('active', c.dataset.branch === branch));
   }
 
   function _fmtPhone(raw) {
@@ -6237,69 +6201,116 @@
     if (d.length === 9)  return 'tel:+998' + d;
     return 'tel:' + d;
   }
+  function _escHtml(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  const _TG_SVG = '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.393c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.94z"/></svg>';
+
+  // Рендерит блок филиалов (произвольное число) в плавающее меню — вызывается один раз, при загрузке /api/site-contacts
+  function _renderModalBranches(contacts) {
+    const tabs = document.getElementById('cmTabs');
+    const body = document.getElementById('cmBranchContents');
+    if (!tabs || !body) return;
+    if (!contacts || !contacts.length) { tabs.innerHTML = ''; body.innerHTML = ''; return; }
+    tabs.innerHTML = contacts.map((c, i) =>
+      `<button type="button" class="cm-branch-btn${i===0?' active':''}" data-branch="${_escHtml(c.branch)}" onclick="switchBranch('${c.branch}')">📍 ${_escHtml(c.branch_name || c.branch)}</button>`
+    ).join('');
+    body.innerHTML = contacts.map((c, i) => {
+      const phones = (c.phones || []).filter(Boolean);
+      const phonesHtml = phones.map(p =>
+        `<a class="cm-branch-phone" href="${_telHref(p)}"><div class="cm-branch-phone-ico">📱</div><span>${_fmtPhone(p)}</span></a>`
+      ).join('');
+      const pills = [];
+      if (c.telegram)  pills.push(`<a class="cm-pill cm-pill-tg" href="${_escHtml(c.telegram)}" target="_blank" rel="noopener">${_TG_SVG} <span data-i18n="cm.group">Группа</span></a>`);
+      if (c.whatsapp)  pills.push(`<a class="cm-pill cm-pill-wa" href="https://wa.me/${c.whatsapp.replace(/\D/g,'')}" target="_blank" rel="noopener">💬 WhatsApp</a>`);
+      if (c.instagram) pills.push(`<a class="cm-pill cm-pill-ig" href="${_escHtml(c.instagram)}" target="_blank" rel="noopener">📸 Instagram</a>`);
+      const pillsHtml = pills.length ? `<div class="cm-pills">${pills.join('')}</div>` : '';
+      return `<div class="cm-branch-content${i===0?' active':''}" data-branch="${_escHtml(c.branch)}">${phonesHtml}${pillsHtml}</div>`;
+    }).join('');
+    _activeBranch = contacts[0]?.branch || null;
+  }
+
+  function _renderFooterBranches(contacts) {
+    const el = document.getElementById('fcBranches');
+    if (!el) return;
+    if (!contacts || !contacts.length) { el.innerHTML = ''; return; }
+    el.innerHTML = contacts.map(c => {
+      const phones = (c.phones || []).filter(Boolean);
+      const phonesHtml = phones.map(p => `<a href="${_telHref(p)}">📱 ${_fmtPhone(p)}</a>`).join('');
+      const pills = [];
+      if (c.telegram)  pills.push(`<a href="${_escHtml(c.telegram)}" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:4px">${_TG_SVG}<span data-i18n="cm.group">Группа</span></a>`);
+      if (c.whatsapp)  pills.push(`<a href="https://wa.me/${c.whatsapp.replace(/\D/g,'')}" target="_blank" rel="noopener">WhatsApp</a>`);
+      if (c.instagram) pills.push(`<a href="${_escHtml(c.instagram)}" target="_blank" rel="noopener">Instagram</a>`);
+      const pillsHtml = pills.length ? `<div style="display:flex;gap:8px;margin-top:4px;flex-wrap:wrap;">${pills.join('')}</div>` : '';
+      return `<div style="margin-top:8px;font-size:12px;opacity:.7;font-weight:600;">📍 ${_escHtml(c.branch_name || c.branch)}</div>${phonesHtml}${pillsHtml}`;
+    }).join('');
+  }
+
+  // Загружаем контакты филиалов (произвольное число) один раз при загрузке страницы
+  window._siteBranchesPromise = (async function loadSiteBranches() {
+    try {
+      const r = await fetch(`${API_BASE}/site-contacts?company_slug=${encodeURIComponent(window.APP_COMPANY_SLUG||'')}`);
+      const d = await r.json();
+      _siteBranches = (d.ok && d.contacts) ? d.contacts : [];
+    } catch(e) { _siteBranches = []; }
+    _renderModalBranches(_siteBranches);
+    _renderFooterBranches(_siteBranches);
+    _renderCbBranchTabs(_siteBranches);
+    return _siteBranches;
+  })();
+
+  // Собираем текст «успешной заявки» из short/main (settings) + номеров филиалов (site-contacts) —
+  // ждём оба запроса, т.к. они грузятся параллельно и порядок завершения не гарантирован.
+  Promise.all([window._siteSettingsPromise, window._siteBranchesPromise]).then(([s, branches]) => {
+    s = s || {}; branches = branches || [];
+    const lines = ['Вам позвонят с номеров:'];
+    const linesUz = ["Sizga quyidagi raqamlardan qo'ng'iroq qilinadi:"];
+    if (s.contact_short) { lines.push(`☎️ ${s.contact_short}`); linesUz.push(`☎️ ${s.contact_short}`); }
+    if (s.contact_main)  { lines.push(`📞 ${_fmtPhone(s.contact_main)}`); linesUz.push(`📞 ${_fmtPhone(s.contact_main)}`); }
+    branches.forEach(c => {
+      const phones = (c.phones || []).filter(Boolean).map(_fmtPhone).join(' / ');
+      if (phones) { lines.push(`\n${c.branch_name || c.branch}: ${phones}`); linesUz.push(`\n${c.branch_name || c.branch}: ${phones}`); }
+    });
+    I18N.ru['order.successText'] = lines.join('\n');
+    I18N.uz['order.successText'] = linesUz.join('\n');
+  }).catch(() => {});
 
   function _renderContactModal() {
-    const s = Object.assign({}, _fallback, _siteSettings || {});
+    const s = _siteSettings || {};
 
-    // Short number
-    const sh = document.getElementById('cmShort');
-    const sn = sh?.querySelector('.cm-short-num');
-    if (sh && s.contact_short) { sh.href = 'tel:' + s.contact_short; if(sn) sn.textContent = s.contact_short; }
-
-    // Main / call center
-    const cm = document.getElementById('cmMain');
-    if (cm && s.contact_main) {
-      cm.href = _telHref(s.contact_main);
-      const n = cm.querySelector('.cm-cc-num');
-      if (n) n.textContent = _fmtPhone(s.contact_main);
+    // Short number — скрываем полностью, если у компании его нет (не подставляем чужой номер)
+    const shRow = document.getElementById('cmShort');
+    if (shRow) {
+      if (s.contact_short) {
+        shRow.style.display = '';
+        shRow.href = 'tel:' + s.contact_short;
+        const sn = shRow.querySelector('.cm-short-num');
+        if (sn) sn.textContent = s.contact_short;
+      } else {
+        shRow.style.display = 'none';
+      }
     }
 
-    // Branch phones
-    const setPhone = (id, val) => {
-      const el = document.getElementById(id);
-      if (!el || !val) return;
-      el.href = _telHref(val);
-      const sp = el.querySelector('span');
-      if (sp) sp.textContent = _fmtPhone(val);
-    };
-    setPhone('cmZarPhone', s.contact_zarafshan_1);
-    setPhone('cmNavPhone', s.contact_navoi_1);
-
-    // Phone 2 — show only if not empty
-    const setPhone2 = (id, val) => {
-      const el = document.getElementById(id);
-      if (!el) return;
-      if (val && val.trim()) {
-        el.href = _telHref(val);
-        const sp = el.querySelector('span');
-        if (sp) sp.textContent = _fmtPhone(val);
-        el.classList.remove('hidden');
+    // Main / call center — аналогично
+    const cm = document.getElementById('cmMain');
+    if (cm) {
+      if (s.contact_main) {
+        cm.style.display = '';
+        cm.href = _telHref(s.contact_main);
+        const n = cm.querySelector('.cm-cc-num');
+        if (n) n.textContent = _fmtPhone(s.contact_main);
       } else {
-        el.classList.add('hidden');
+        cm.style.display = 'none';
       }
-    };
-    setPhone2('cmZarPhone2', s.contact_zarafshan_2 || '');
-    setPhone2('cmNavPhone2', s.contact_navoi_2 || '');
+    }
 
-    // Social pills
-    const setPill = (id, href) => {
-      const el = document.getElementById(id);
-      if (!el) return;
-      if (href) { el.href = href; el.classList.remove('hidden'); }
-      else      { el.href = '#';  el.classList.add('hidden'); }
-    };
-    setPill('cmZarAdminTg', s.contact_zarafshan_admin_tg || '');
-    setPill('cmZarTg', s.contact_zarafshan_telegram || '');
-    setPill('cmZarWa', s.contact_zarafshan_whatsapp ? `https://wa.me/${s.contact_zarafshan_whatsapp.replace(/\D/g,'')}` : '');
-    setPill('cmZarIg', s.contact_zarafshan_instagram || '');
-    setPill('cmNavAdminTg', s.contact_navoi_admin_tg || '');
-    setPill('cmNavTg', s.contact_navoi_telegram || '');
-    setPill('cmNavWa', s.contact_navoi_whatsapp ? `https://wa.me/${s.contact_navoi_whatsapp.replace(/\D/g,'')}` : '');
-    setPill('cmNavIg', s.contact_navoi_instagram || '');
-
-    // Bot
+    // Bot — только если у компании реально настроен свой бот
     const bot = document.getElementById('cmBot');
-    if (bot) bot.href = s.social_tg_bot || 'https://t.me/artez_orders_bot';
+    if (bot) {
+      if (s.social_tg_bot) { bot.href = s.social_tg_bot; bot.classList.remove('hidden'); }
+      else                 { bot.href = '#';             bot.classList.add('hidden'); }
+    }
   }
 
   function toggleContactModal() {
@@ -6495,7 +6506,15 @@
   }
 
   // ── Обратный звонок ──
-  let _cbBranch = 'zarafshan';
+  let _cbBranch = null;
+
+  function _renderCbBranchTabs(contacts) {
+    const el = document.getElementById('cbBranchRow');
+    if (!el) return;
+    el.innerHTML = (contacts || []).map((c, i) =>
+      `<button type="button" class="cb-branch-btn${i===0?' active':''}" data-branch="${_escHtml(c.branch)}" onclick="setCbBranch('${c.branch}')">📍 ${_escHtml(c.branch_name || c.branch)}</button>`
+    ).join('');
+  }
 
   function openCallbackModal(branch) {
     if (!currentUser) {
@@ -6504,7 +6523,7 @@
       setTimeout(() => openDrawer('orders'), 400);
       return;
     }
-    _cbBranch = branch || (document.getElementById('cmBranchNavoi')?.classList.contains('active') ? 'navoi' : 'zarafshan');
+    _cbBranch = branch || _activeBranch || (_siteBranches[0] && _siteBranches[0].branch) || null;
     setCbBranch(_cbBranch);
     const inp = document.getElementById('cbPhoneInput');
     if (inp) inp.value = currentUser.phone || '';
@@ -6521,8 +6540,7 @@
 
   function setCbBranch(b) {
     _cbBranch = b;
-    document.getElementById('cbBranchZar')?.classList.toggle('active', b === 'zarafshan');
-    document.getElementById('cbBranchNav')?.classList.toggle('active', b === 'navoi');
+    document.querySelectorAll('#cbBranchRow .cb-branch-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.branch === b));
   }
 
   async function submitCallback() {
@@ -6545,7 +6563,7 @@
         },
         body: JSON.stringify({
           phone,
-          branch: t('branch.' + _cbBranch),
+          branch: (_siteBranches.find(c => c.branch === _cbBranch)?.branch_name) || _cbBranch || '',
           name: currentUser?.first_name || '',
           profile_phone: currentUser?.phone || '',
         }),
@@ -7006,58 +7024,13 @@
     <!-- Body -->
     <div class="cm-body">
 
-      <!-- Branch tabs -->
-      <div class="cm-tabs">
-        <button class="cm-branch-btn active" id="cmBranchZarafshan" onclick="switchBranch('zarafshan')" data-i18n="branch.zarafshan">📍 Зарафшан</button>
-        <button class="cm-branch-btn"        id="cmBranchNavoi"     onclick="switchBranch('navoi')" data-i18n="branch.navoi">📍 Навои</button>
-      </div>
+      <!-- Branch tabs (генерируются динамически из /api/site-contacts) -->
+      <div class="cm-tabs" id="cmTabs"></div>
+      <div id="cmBranchContents"></div>
 
-      <!-- Зарафшан -->
-      <div class="cm-branch-content active" id="cmContentZarafshan">
-        <a class="cm-branch-phone" id="cmZarPhone" href="tel:+998882001221">
-          <div class="cm-branch-phone-ico">📱</div>
-          <span>88 200-12-21</span>
-        </a>
-        <a class="cm-branch-phone hidden" id="cmZarPhone2" href="#">
-          <div class="cm-branch-phone-ico">📱</div>
-          <span></span>
-        </a>
-        <div class="cm-tg-row">
-          <a class="cm-pill cm-pill-tg hidden" id="cmZarAdminTg" href="#" target="_blank" rel="noopener"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.393c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.94z"/></svg> <span data-i18n="cm.write">Написать</span></a>
-          <a class="cm-pill cm-pill-tg hidden" id="cmZarTg" href="#" target="_blank" rel="noopener"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.393c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.94z"/></svg> <span data-i18n="cm.group">Группа</span></a>
-        </div>
-        <div class="cm-bot-chat-row">
-          <a class="cm-pill cm-pill-tg" href="https://t.me/artez_orders_bot" target="_blank" rel="noopener">🤖 <span data-i18n="cm.bot">Бот</span></a>
-          <button class="chat-pill" onclick="openChatWidget();closeContactModal()" data-i18n="cm.chat">💬 Чат</button>
-        </div>
-        <div class="cm-pills">
-          <a class="cm-pill cm-pill-wa hidden" id="cmZarWa" href="#" target="_blank" rel="noopener">💬 WhatsApp</a>
-          <a class="cm-pill cm-pill-ig hidden" id="cmZarIg" href="#" target="_blank" rel="noopener">📸 Instagram</a>
-        </div>
-      </div>
-
-      <!-- Навои -->
-      <div class="cm-branch-content" id="cmContentNavoi">
-        <a class="cm-branch-phone" id="cmNavPhone" href="tel:+998997500020">
-          <div class="cm-branch-phone-ico">📱</div>
-          <span>99 750-00-20</span>
-        </a>
-        <a class="cm-branch-phone hidden" id="cmNavPhone2" href="#">
-          <div class="cm-branch-phone-ico">📱</div>
-          <span></span>
-        </a>
-        <div class="cm-tg-row">
-          <a class="cm-pill cm-pill-tg hidden" id="cmNavAdminTg" href="#" target="_blank" rel="noopener"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.393c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.94z"/></svg> <span data-i18n="cm.write">Написать</span></a>
-          <a class="cm-pill cm-pill-tg hidden" id="cmNavTg" href="#" target="_blank" rel="noopener"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.393c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.94z"/></svg> <span data-i18n="cm.group">Группа</span></a>
-        </div>
-        <div class="cm-bot-chat-row">
-          <a class="cm-pill cm-pill-tg" href="https://t.me/artez_orders_bot" target="_blank" rel="noopener">🤖 <span data-i18n="cm.bot">Бот</span></a>
-          <button class="chat-pill" onclick="openChatWidget();closeContactModal()" data-i18n="cm.chat">💬 Чат</button>
-        </div>
-        <div class="cm-pills">
-          <a class="cm-pill cm-pill-wa hidden" id="cmNavWa" href="#" target="_blank" rel="noopener">💬 WhatsApp</a>
-          <a class="cm-pill cm-pill-ig hidden" id="cmNavIg" href="#" target="_blank" rel="noopener">📸 Instagram</a>
-        </div>
+      <div class="cm-bot-chat-row">
+        <a class="cm-pill cm-pill-tg hidden" id="cmBot" href="#" target="_blank" rel="noopener">🤖 <span data-i18n="cm.bot">Бот</span></a>
+        <button class="chat-pill" onclick="openChatWidget();closeContactModal()" data-i18n="cm.chat">💬 Чат</button>
       </div>
 
       <!-- Order -->
@@ -7074,10 +7047,7 @@
     <button class="cb-modal-close" onclick="closeCallbackModal()">✕</button>
     <div class="cb-modal-title" data-i18n="cb.title">🔔 Обратный звонок</div>
     <div class="cb-modal-sub" data-i18n="cb.sub">Оставьте номер — перезвоним в течение 15 минут</div>
-    <div class="cb-branch-row">
-      <button class="cb-branch-btn active" id="cbBranchZar" onclick="setCbBranch('zarafshan')" data-i18n="branch.zarafshan">📍 Зарафшан</button>
-      <button class="cb-branch-btn" id="cbBranchNav" onclick="setCbBranch('navoi')" data-i18n="branch.navoi">📍 Навои</button>
-    </div>
+    <div class="cb-branch-row" id="cbBranchRow"></div>
     <div class="cb-phone-label" data-i18n="cb.phoneLabel">Ваш номер телефона</div>
     <input class="cb-phone-input" id="cbPhoneInput" type="tel" placeholder="+998 XX XXX-XX-XX" data-i18n-placeholder="cb.phonePh">
     <div class="consent-row" style="margin:10px 0 8px">
@@ -7094,7 +7064,7 @@
   <div class="chat-head">
     <div class="chat-head-ava">🧹</div>
     <div class="chat-head-info">
-      <div class="chat-head-name">ARTEZ</div>
+      <div class="chat-head-name" id="chatHeadName">ARTEZ</div>
       <div class="chat-head-status" id="chatHeadStatus" data-i18n="chat.statusWait">Обычно отвечаем быстро</div>
     </div>
     <button class="chat-head-close" onclick="closeChatWidget()">✕</button>
