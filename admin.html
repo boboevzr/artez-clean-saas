@@ -1385,6 +1385,9 @@
       <div class="nav-item" data-page="promotions" onclick="switchPage(this)">
         <span class="nav-icon">🎉</span> Акции
       </div>
+      <div class="nav-item" data-page="tariff" onclick="switchPage(this)">
+        <span class="nav-icon">💳</span> Мой тариф
+      </div>
       <!-- CRM аккордеон -->
       <div class="nav-group" id="navgroup-crm">
         <div class="nav-group-header" onclick="toggleNavGroup('crm')">
@@ -3345,6 +3348,63 @@
             <tbody id="promoTbody"></tbody>
           </table>
           <div id="promoEmpty" style="display:none" class="loader" data-i18n="promo.empty">Акций пока нет</div>
+        </div>
+      </div>
+
+      <!-- ТАРИФ КОМПАНИИ -->
+      <div class="page" id="page-tariff">
+        <div class="section-header"><h2>💳 Мой тариф</h2></div>
+
+        <div class="card" id="tariffCurrentCard" style="margin-bottom:20px">
+          <div id="tariffCurrentBody" style="color:var(--text2)">Загрузка…</div>
+        </div>
+
+        <h3 style="margin:0 0 12px;font-size:15px;font-weight:700">Доступные тарифы</h3>
+        <div id="tariffPlansGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-bottom:20px"></div>
+
+        <div class="card">
+          <div class="cfg-title-row">
+            <h3 class="cfg-title">💬 Поддержка</h3>
+          </div>
+          <div id="tariffSupportBody" style="font-size:14px;color:var(--text2)">Загрузка…</div>
+        </div>
+      </div>
+
+      <!-- Модалка: лимит филиалов достигнут -->
+      <div id="modalBranchLimit" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:2000;align-items:center;justify-content:center">
+        <div class="card" style="max-width:380px;width:90%;text-align:center">
+          <div style="font-size:36px;margin-bottom:10px">🚫</div>
+          <h3 style="margin:0 0 8px;font-size:17px;font-weight:700">Достигнут лимит филиалов</h3>
+          <div id="branchLimitMsg" style="font-size:14px;color:var(--text2);margin-bottom:18px">На вашем тарифе достигнут лимит филиалов.</div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <button class="btn btn-primary" onclick="closeBranchLimitModal();document.querySelector('.nav-item[data-page=&quot;tariff&quot;]')?.click()">📈 Перейти к тарифам</button>
+            <div id="branchLimitSupportBtns" style="display:flex;gap:8px;justify-content:center"></div>
+            <button class="btn btn-ghost" onclick="closeBranchLimitModal()">Понятно</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Модалка: тестовая оплата -->
+      <div id="modalCheckout" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:2000;align-items:center;justify-content:center">
+        <div class="card" style="max-width:380px;width:90%">
+          <div style="background:#fef9c3;color:#854d0e;border-radius:8px;padding:8px 12px;font-size:12px;font-weight:600;margin-bottom:14px;text-align:center">
+            ⚠️ ТЕСТОВЫЙ РЕЖИМ — реальный платёжный шлюз ещё не подключён
+          </div>
+          <h3 style="margin:0 0 12px;font-size:16px;font-weight:700" id="checkoutTitle">Оформление тарифа</h3>
+          <div style="margin-bottom:14px">
+            <div style="font-size:12px;color:var(--text2);margin-bottom:4px">Период</div>
+            <select class="form-input" id="checkoutMonths" onchange="_checkoutUpdatePrice()">
+              <option value="1">1 месяц</option>
+              <option value="3">3 месяца</option>
+              <option value="6">6 месяцев</option>
+              <option value="12">12 месяцев</option>
+            </select>
+          </div>
+          <div style="font-size:22px;font-weight:800;margin-bottom:18px" id="checkoutPrice">—</div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-primary" style="flex:1" onclick="confirmCheckout()">✅ Подтвердить оплату (тест)</button>
+            <button class="btn btn-ghost" onclick="closeCheckoutModal()">Отмена</button>
+          </div>
         </div>
       </div>
 
@@ -6987,12 +7047,129 @@ async function saveBranchForm() {
       await loadBranches();
       renderBranchContactCards();
       showToast(_bfMode === 'add' ? 'Филиал создан' : 'Филиал сохранён');
+    } else if (r.detail && r.detail.includes('лимит филиалов')) {
+      closeBranchForm();
+      openBranchLimitModal(r.detail);
     } else {
       showToast(r.detail || 'Ошибка', 'error');
     }
   } catch(e) {
     if (e.message !== '401') showToast('Ошибка: ' + e.message, 'error');
   }
+}
+
+// ── ТАРИФ КОМПАНИИ ────────────────────────────────────────────────────────
+let _tariffPlans = [];
+let _supportContact = { telegram: '', phone: '' };
+
+function _supportBtnsHtml() {
+  const btns = [];
+  if (_supportContact.telegram) btns.push(`<a class="btn btn-ghost btn-sm" href="${_esc(_supportContact.telegram)}" target="_blank" rel="noopener">✈️ Telegram</a>`);
+  if (_supportContact.phone) btns.push(`<a class="btn btn-ghost btn-sm" href="tel:${_esc(_supportContact.phone.replace(/\s/g,''))}">📞 ${_esc(_supportContact.phone)}</a>`);
+  return btns.join('');
+}
+
+async function loadSupportContact() {
+  try {
+    const r = await apiGet('/company/support-contact');
+    if (r?.ok) _supportContact = { telegram: r.telegram || '', phone: r.phone || '' };
+  } catch(e) {}
+}
+
+async function loadTariffPage() {
+  await loadSupportContact();
+  const supportEl = document.getElementById('tariffSupportBody');
+  if (supportEl) {
+    const btns = _supportBtnsHtml();
+    supportEl.innerHTML = btns
+      ? `Если нужен другой лимит филиалов/сотрудников или есть вопросы по тарифу — напишите нам:<div style="display:flex;gap:8px;margin-top:10px">${btns}</div>`
+      : 'Контакты поддержки пока не настроены.';
+  }
+
+  const curEl = document.getElementById('tariffCurrentBody');
+  try {
+    const [subRes, plansRes] = await Promise.all([apiGet('/company/subscription'), apiGet('/company/plans')]);
+    _tariffPlans = (plansRes?.ok && plansRes.plans) || [];
+    const sub = subRes?.ok ? subRes.subscription : null;
+    if (curEl) {
+      curEl.innerHTML = sub
+        ? `Текущий тариф: <b>${_esc(sub.plan_name)}</b> · до <b>${_esc(sub.end_date)}</b> · филиалов до <b>${sub.max_branches}</b>, сотрудников до <b>${sub.max_staff}</b>`
+        : 'Активной подписки не найдено — выберите тариф ниже.';
+    }
+    renderTariffPlans(_tariffPlans, sub);
+  } catch(e) {
+    if (curEl) curEl.textContent = 'Ошибка загрузки тарифа';
+  }
+}
+
+function renderTariffPlans(plans, currentSub) {
+  const grid = document.getElementById('tariffPlansGrid');
+  if (!grid) return;
+  grid.innerHTML = (plans || []).map(p => {
+    const isCurrent = currentSub && currentSub.plan_id === p.id;
+    const price1 = (p.monthly_prices && p.monthly_prices['1']) || p.base_price;
+    return `
+    <div class="card" style="text-align:center;${isCurrent ? 'border-color:var(--accent);border-width:2px' : ''}">
+      <div style="font-size:16px;font-weight:800;margin-bottom:6px">${_esc(p.display_name)}</div>
+      <div style="font-size:13px;color:var(--text2);margin-bottom:10px">${p.max_branches} филиал(ов) · ${p.max_staff} сотрудников</div>
+      <div style="font-size:20px;font-weight:800;margin-bottom:12px">${price1.toLocaleString('ru-RU')} сум<span style="font-size:12px;font-weight:400;color:var(--text2)">/мес</span></div>
+      ${isCurrent
+        ? `<button class="btn btn-ghost" disabled style="width:100%">✅ Текущий тариф</button>`
+        : `<button class="btn btn-primary" style="width:100%" onclick="openCheckoutModal(${p.id})">Выбрать</button>`}
+    </div>`;
+  }).join('') || '<p style="color:var(--text2)">Тарифы не найдены</p>';
+}
+
+let _checkoutPlanId = null;
+
+function openCheckoutModal(planId) {
+  _checkoutPlanId = planId;
+  const plan = _tariffPlans.find(p => p.id === planId);
+  if (!plan) return;
+  document.getElementById('checkoutTitle').textContent = `Тариф «${plan.display_name}»`;
+  document.getElementById('checkoutMonths').value = '1';
+  _checkoutUpdatePrice();
+  document.getElementById('modalCheckout').style.display = 'flex';
+}
+
+function closeCheckoutModal() {
+  document.getElementById('modalCheckout').style.display = 'none';
+}
+
+function _checkoutUpdatePrice() {
+  const plan = _tariffPlans.find(p => p.id === _checkoutPlanId);
+  if (!plan) return;
+  const months = document.getElementById('checkoutMonths').value;
+  const perMonth = (plan.monthly_prices && plan.monthly_prices[months]) || plan.base_price;
+  const total = perMonth * parseInt(months);
+  document.getElementById('checkoutPrice').textContent = `${total.toLocaleString('ru-RU')} сум`;
+}
+
+async function confirmCheckout() {
+  const months = parseInt(document.getElementById('checkoutMonths').value);
+  try {
+    const r = await apiPost('/company/checkout', { plan_id: _checkoutPlanId, months });
+    if (r?.ok) {
+      closeCheckoutModal();
+      showToast('Тариф применён (тестовый режим)');
+      loadTariffPage();
+    } else {
+      showToast(r?.detail || 'Ошибка оформления', 'error');
+    }
+  } catch(e) {
+    if (e.message !== '401') showToast('Ошибка: ' + e.message, 'error');
+  }
+}
+
+async function openBranchLimitModal(message) {
+  document.getElementById('branchLimitMsg').textContent = message || 'На вашем тарифе достигнут лимит филиалов.';
+  if (!_supportContact.telegram && !_supportContact.phone) await loadSupportContact();
+  document.getElementById('branchLimitSupportBtns').innerHTML = _supportBtnsHtml();
+  document.getElementById('modalBranchLimit').style.display = 'flex';
+}
+
+function closeBranchLimitModal() {
+  document.getElementById('modalBranchLimit').style.display = 'none';
 }
 
 // ── Map picker (unified, with geolocation fallback) ───────────────────────
@@ -7728,6 +7905,7 @@ function _activatePage(page) {
   if (page === 'dashboard')   loadDashboard();
   if (page === 'cash')        { loadCashDashboard(); cashTabSwitch('payments'); }
   if (page === 'promotions')  promoLoad();
+  if (page === 'tariff')      loadTariffPage();
   if (page === 'staff')       loadStaffFromAPI();
   if (page === 'agents')      loadStaffFromAPI();
   if (page === 'leads')       adminLoadLeads();
@@ -18945,6 +19123,7 @@ function confirmBranchLoc() {
     <div class="nav-item" data-page="routes"         onclick="mobDrawerGo(this)"><span class="nav-icon">🚗</span> Маршруты</div>
     <div class="nav-item" data-page="cash"           onclick="mobDrawerGo(this)"><span class="nav-icon">💰</span> Касса</div>
     <div class="nav-item" data-page="promotions"     onclick="mobDrawerGo(this)"><span class="nav-icon">🎉</span> Акции</div>
+    <div class="nav-item" data-page="tariff"         onclick="mobDrawerGo(this)"><span class="nav-icon">💳</span> Мой тариф</div>
 
     <!-- CRM accordion -->
     <div class="mob-drawer-group-header" id="mobDrawerCrmHeader" onclick="toggleMobDrawerCrm()">
