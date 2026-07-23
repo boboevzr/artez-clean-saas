@@ -13253,7 +13253,7 @@ async function submitDeleteClient() {
   if (!pwd) { errEl.textContent = 'Введите пароль'; errEl.style.display = ''; return; }
   const res = await fetch(`${API_BASE}/clients/${_deleteClientId}/delete`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${adminToken}` },
     body: JSON.stringify({ password: pwd })
   });
   if (res.ok) {
