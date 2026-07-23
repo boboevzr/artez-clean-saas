@@ -4732,9 +4732,15 @@
         const crEl = document.querySelector('[data-i18n="footer.copyright"]');
         if (crEl) crEl.textContent = (lang === 'uz') ? crUz : crRu;
       }
-      if (d.logo_url) {
+      const safeLogo = _safeUrl(d.logo_url);
+      if (safeLogo) {
         document.querySelectorAll('.logo-mark').forEach(el => {
-          el.innerHTML = `<img src="${d.logo_url}" alt="" style="width:100%;height:100%;object-fit:contain;border-radius:8px">`;
+          el.innerHTML = '';
+          const img = document.createElement('img');
+          img.src = safeLogo;
+          img.alt = '';
+          img.style.cssText = 'width:100%;height:100%;object-fit:contain;border-radius:8px';
+          el.appendChild(img);
         });
       }
     } catch (_) {}
@@ -4788,8 +4794,9 @@
       // Telegram-бот в подвале — только если у компании реально настроен свой бот
       const botRow = document.getElementById('fc_tg_bot_row');
       const fcBot  = document.getElementById('fc_tg_bot');
-      if (s.social_tg_bot) {
-        if (fcBot) fcBot.href = s.social_tg_bot;
+      const safeBotUrl = _safeUrl(s.social_tg_bot);
+      if (safeBotUrl) {
+        if (fcBot) fcBot.href = safeBotUrl;
         if (botRow) botRow.style.display = '';
       } else if (botRow) {
         botRow.style.display = 'none';
@@ -6185,6 +6192,12 @@
     document.querySelectorAll('#cmTabs .cm-branch-btn').forEach(b => b.classList.toggle('active', b.dataset.branch === branch));
     document.querySelectorAll('#cmBranchContents .cm-branch-content').forEach(c => c.classList.toggle('active', c.dataset.branch === branch));
   }
+  window.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('cmTabs')?.addEventListener('click', e => {
+      const btn = e.target.closest('.cm-branch-btn');
+      if (btn) switchBranch(btn.dataset.branch);
+    });
+  });
 
   function _fmtPhone(raw) {
     const d = (raw||'').replace(/\D/g,'');
@@ -6204,6 +6217,14 @@
   function _escHtml(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   }
+  // Разрешает вставлять href/src только для http(s)-ссылок — блокирует javascript:/data: и подобные схемы
+  function _safeUrl(raw) {
+    if (!raw) return '';
+    try {
+      const u = new URL(String(raw), location.href);
+      return (u.protocol === 'http:' || u.protocol === 'https:') ? u.href : '';
+    } catch (_) { return ''; }
+  }
 
   const _TG_SVG = '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.393c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.94z"/></svg>';
 
@@ -6214,7 +6235,7 @@
     if (!tabs || !body) return;
     if (!contacts || !contacts.length) { tabs.innerHTML = ''; body.innerHTML = ''; return; }
     tabs.innerHTML = contacts.map((c, i) =>
-      `<button type="button" class="cm-branch-btn${i===0?' active':''}" data-branch="${_escHtml(c.branch)}" onclick="switchBranch('${c.branch}')">📍 ${_escHtml(c.branch_name || c.branch)}</button>`
+      `<button type="button" class="cm-branch-btn${i===0?' active':''}" data-branch="${_escHtml(c.branch)}">📍 ${_escHtml(c.branch_name || c.branch)}</button>`
     ).join('');
     body.innerHTML = contacts.map((c, i) => {
       const phones = (c.phones || []).filter(Boolean);
@@ -6222,9 +6243,9 @@
         `<a class="cm-branch-phone" href="${_telHref(p)}"><div class="cm-branch-phone-ico">📱</div><span>${_fmtPhone(p)}</span></a>`
       ).join('');
       const pills = [];
-      if (c.telegram)  pills.push(`<a class="cm-pill cm-pill-tg" href="${_escHtml(c.telegram)}" target="_blank" rel="noopener">${_TG_SVG} <span data-i18n="cm.group">Группа</span></a>`);
+      if (_safeUrl(c.telegram))  pills.push(`<a class="cm-pill cm-pill-tg" href="${_escHtml(_safeUrl(c.telegram))}" target="_blank" rel="noopener">${_TG_SVG} <span data-i18n="cm.group">Группа</span></a>`);
       if (c.whatsapp)  pills.push(`<a class="cm-pill cm-pill-wa" href="https://wa.me/${c.whatsapp.replace(/\D/g,'')}" target="_blank" rel="noopener">💬 WhatsApp</a>`);
-      if (c.instagram) pills.push(`<a class="cm-pill cm-pill-ig" href="${_escHtml(c.instagram)}" target="_blank" rel="noopener">📸 Instagram</a>`);
+      if (_safeUrl(c.instagram)) pills.push(`<a class="cm-pill cm-pill-ig" href="${_escHtml(_safeUrl(c.instagram))}" target="_blank" rel="noopener">📸 Instagram</a>`);
       const pillsHtml = pills.length ? `<div class="cm-pills">${pills.join('')}</div>` : '';
       return `<div class="cm-branch-content${i===0?' active':''}" data-branch="${_escHtml(c.branch)}">${phonesHtml}${pillsHtml}</div>`;
     }).join('');
@@ -6239,9 +6260,9 @@
       const phones = (c.phones || []).filter(Boolean);
       const phonesHtml = phones.map(p => `<a href="${_telHref(p)}">📱 ${_fmtPhone(p)}</a>`).join('');
       const pills = [];
-      if (c.telegram)  pills.push(`<a href="${_escHtml(c.telegram)}" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:4px">${_TG_SVG}<span data-i18n="cm.group">Группа</span></a>`);
+      if (_safeUrl(c.telegram))  pills.push(`<a href="${_escHtml(_safeUrl(c.telegram))}" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:4px">${_TG_SVG}<span data-i18n="cm.group">Группа</span></a>`);
       if (c.whatsapp)  pills.push(`<a href="https://wa.me/${c.whatsapp.replace(/\D/g,'')}" target="_blank" rel="noopener">WhatsApp</a>`);
-      if (c.instagram) pills.push(`<a href="${_escHtml(c.instagram)}" target="_blank" rel="noopener">Instagram</a>`);
+      if (_safeUrl(c.instagram)) pills.push(`<a href="${_escHtml(_safeUrl(c.instagram))}" target="_blank" rel="noopener">Instagram</a>`);
       const pillsHtml = pills.length ? `<div style="display:flex;gap:8px;margin-top:4px;flex-wrap:wrap;">${pills.join('')}</div>` : '';
       return `<div style="margin-top:8px;font-size:12px;opacity:.7;font-weight:600;">📍 ${_escHtml(c.branch_name || c.branch)}</div>${phonesHtml}${pillsHtml}`;
     }).join('');
@@ -6308,8 +6329,9 @@
     // Bot — только если у компании реально настроен свой бот
     const bot = document.getElementById('cmBot');
     if (bot) {
-      if (s.social_tg_bot) { bot.href = s.social_tg_bot; bot.classList.remove('hidden'); }
-      else                 { bot.href = '#';             bot.classList.add('hidden'); }
+      const safeBotUrl = _safeUrl(s.social_tg_bot);
+      if (safeBotUrl) { bot.href = safeBotUrl; bot.classList.remove('hidden'); }
+      else             { bot.href = '#';       bot.classList.add('hidden'); }
     }
   }
 
@@ -6512,7 +6534,7 @@
     const el = document.getElementById('cbBranchRow');
     if (!el) return;
     el.innerHTML = (contacts || []).map((c, i) =>
-      `<button type="button" class="cb-branch-btn${i===0?' active':''}" data-branch="${_escHtml(c.branch)}" onclick="setCbBranch('${c.branch}')">📍 ${_escHtml(c.branch_name || c.branch)}</button>`
+      `<button type="button" class="cb-branch-btn${i===0?' active':''}" data-branch="${_escHtml(c.branch)}">📍 ${_escHtml(c.branch_name || c.branch)}</button>`
     ).join('');
   }
 
@@ -6542,6 +6564,12 @@
     _cbBranch = b;
     document.querySelectorAll('#cbBranchRow .cb-branch-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.branch === b));
   }
+  window.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('cbBranchRow')?.addEventListener('click', e => {
+      const btn = e.target.closest('.cb-branch-btn');
+      if (btn) setCbBranch(btn.dataset.branch);
+    });
+  });
 
   async function submitCallback() {
     const phone = document.getElementById('cbPhoneInput')?.value?.trim();
