@@ -1313,6 +1313,7 @@ function renderCompanies(list) {
       <td style="display:flex;gap:6px;flex-wrap:wrap">
         <button class="btn btn-primary btn-sm" onclick="openEditCompany(${c.id})">✏️</button>
         <button class="btn btn-ghost btn-sm" onclick="impersonateCompany(${c.id})" title="Войти как admin этой компании">🔑</button>
+        <a class="btn btn-ghost btn-sm" href="index.html?company_slug=${encodeURIComponent(c.slug)}" target="_blank" title="Открыть сайт компании">🌐</a>
         <button class="btn btn-sm" onclick="deleteCompany(${c.id})" style="background:#dc3545;color:#fff;border:none" title="Удалить компанию и все данные">🗑️</button>
       </td>
     </tr>`

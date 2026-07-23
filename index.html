@@ -11,6 +11,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="config.js"></script>
+<script>
+  // company_slug из URL (?company_slug=...) переопределяет config.js — для ссылок вида index.html?company_slug=X из суперадмина
+  (function(){
+    var qs = new URLSearchParams(location.search).get('company_slug');
+    if (qs) window.APP_COMPANY_SLUG = qs;
+  })();
+</script>
 <style>
   :root{
     --teal-deep:   #0E2D2A;
@@ -4330,7 +4338,7 @@
 
   // ===== CALCULATOR =====
   // ===== API =====
-  const API_BASE = "https://artez-api-production.up.railway.app/api";
+  const API_BASE = (window.APP_API_URL || "https://artez-api-production.up.railway.app") + "/api";
 
   // Дефолтные единицы измерения (показываются до загрузки из API)
   let UNITS = {
