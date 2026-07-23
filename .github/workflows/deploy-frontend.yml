@@ -17,6 +17,10 @@ on:
         description: 'Название компании'
         required: false
         default: 'ARTEZ'
+      company_slug:
+        description: 'Slug компании (для регистрации/входа клиентов сайта — company_id на бэкенде)'
+        required: false
+        default: 'artez'
 
 jobs:
   deploy:
@@ -32,16 +36,19 @@ jobs:
           EVENT_NAME: ${{ github.event_name }}
           INPUT_API_URL: ${{ github.event.inputs.api_url }}
           INPUT_CO_NAME: ${{ github.event.inputs.company_name }}
+          INPUT_CO_SLUG: ${{ github.event.inputs.company_slug }}
         run: |
           if [ "$EVENT_NAME" = "push" ]; then
             API_URL="https://web-production-eef2a.up.railway.app"
             CO_NAME="ARTEZ"
+            CO_SLUG="artez"
           else
             API_URL="$INPUT_API_URL"
             CO_NAME="$INPUT_CO_NAME"
+            CO_SLUG="$INPUT_CO_SLUG"
           fi
-          printf 'window.APP_COMPANY_NAME = "%s";\nwindow.APP_API_URL      = "%s";\n' \
-            "$CO_NAME" "$API_URL" > config.js
+          printf 'window.APP_COMPANY_NAME = "%s";\nwindow.APP_API_URL      = "%s";\nwindow.APP_COMPANY_SLUG = "%s";\n' \
+            "$CO_NAME" "$API_URL" "$CO_SLUG" > config.js
           echo "Generated config.js:"
           cat config.js
 

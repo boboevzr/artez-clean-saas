@@ -4523,7 +4523,7 @@
     try {
       const data = await apiFetch('/register-via-tg', {
         method: 'POST',
-        body: JSON.stringify({ phone: _regTgPhone, first_name, password, lang: lang || 'ru' }),
+        body: JSON.stringify({ phone: _regTgPhone, first_name, password, lang: lang || 'ru', company_slug: window.APP_COMPANY_SLUG }),
       });
       localStorage.setItem('artez_token', data.token);
       await loadDashboard(data.user);
@@ -4616,7 +4616,7 @@
     try {
       const data = await apiFetch('/register', {
         method: 'POST',
-        body: JSON.stringify({ phone, password, first_name, lang: lang || 'ru' }),
+        body: JSON.stringify({ phone, password, first_name, lang: lang || 'ru', company_slug: window.APP_COMPANY_SLUG }),
       });
       pendingPhone = data.phone;
       pendingViaTg = false;
@@ -4642,7 +4642,7 @@
     try {
       const data = await apiFetch('/verify', {
         method: 'POST',
-        body: JSON.stringify({ phone: pendingPhone, code }),
+        body: JSON.stringify({ phone: pendingPhone, code, company_slug: window.APP_COMPANY_SLUG }),
       });
       localStorage.setItem('artez_token', data.token);
       await loadDashboard(data.user);
@@ -4680,7 +4680,7 @@
     try {
       await apiFetch('/resend-code', {
         method: 'POST',
-        body: JSON.stringify({ phone: pendingPhone, purpose: 'register', via_tg: pendingViaTg }),
+        body: JSON.stringify({ phone: pendingPhone, purpose: 'register', via_tg: pendingViaTg, company_slug: window.APP_COMPANY_SLUG }),
       });
       showAlert(t('auth.codeResent'), 'success');
       startResendCountdown(link);
@@ -4701,7 +4701,7 @@
     try {
       const data = await apiFetch('/login', {
         method: 'POST',
-        body: JSON.stringify({ phone, password }),
+        body: JSON.stringify({ phone, password, company_slug: window.APP_COMPANY_SLUG }),
       });
       localStorage.setItem('artez_token', data.token);
       await loadDashboard(data.user);
