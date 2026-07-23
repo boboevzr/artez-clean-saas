@@ -3554,10 +3554,7 @@
         </div>
         <div class="field">
           <label data-i18n="order.branch">Филиал <span style="color:#dc2626">*</span></label>
-          <div class="pill-group" id="sBranchGroup">
-            <button type="button" class="pill-btn" data-branch="zarafshan" data-i18n="branch.zarafshan">📍 Зарафшан</button>
-            <button type="button" class="pill-btn" data-branch="navoi" data-i18n="branch.navoi">📍 Навои</button>
-          </div>
+          <div class="pill-group" id="sBranchGroup"></div>
           <input type="hidden" id="sBranch" required>
         </div>
         <div class="consent-row">
@@ -3582,19 +3579,7 @@
 
         <div class="field">
           <label data-i18n="order.branch">Филиал</label>
-          <div class="pill-group" id="branchGroup">
-            <button type="button" class="pill-btn" data-branch="zarafshan" data-i18n="branch.zarafshan">📍 Зарафшан</button>
-            <button type="button" class="pill-btn" data-branch="navoi" data-i18n="branch.navoi">📍 Навои</button>
-          </div>
-        </div>
-
-        <div class="field">
-          <label for="dCity" data-i18n="order.cityLabel">Город / район</label>
-          <div class="select-wrap">
-            <select id="dCity">
-              <option value="" data-i18n="order.chooseBranchFirst">Сначала выберите филиал</option>
-            </select>
-          </div>
+          <div class="pill-group" id="branchGroup"></div>
         </div>
 
         <div class="field">
@@ -3972,10 +3957,6 @@
       'dr.openCabinet': 'Открыть кабинет',
       months: ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'],
       dow: ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'],
-      cities: {
-        zarafshan: ['г. Зарафшан','г. Учкудук','Тамдинский район','пос. Рахат','пос. Мурунтау','пос. Даугизтау'],
-        navoi:     ['г. Навои','Карманинский район','Навбахорский район','Хатирчинский район','Нуратинский район','Канимехский район'],
-      },
       // Before/After
       'ba.eyebrow': 'Результат', 'ba.title': 'До и после чистки',
       'ba.carpet': 'Ковёр', 'ba.mattress': 'Матрас', 'ba.curtains': 'Шторы', 'ba.sofa': 'Диван',
@@ -4192,10 +4173,6 @@
       "dr.openCabinet": "Kabinetni ochish",
       months: ['Yanvar','Fevral','Mart','Aprel','May','Iyun','Iyul','Avgust','Sentyabr','Oktyabr','Noyabr','Dekabr'],
       dow: ['Du','Se','Ch','Pa','Ju','Sha','Ya'],
-      cities: {
-        zarafshan: ['Zarafshon shahri','Uchquduq shahri','Tomdi tumani','Rahat shaharchasi','Muruntov shaharchasi','Daugiztoʻ shaharchasi'],
-        navoi:     ['Navoiy shahri','Karmana tumani','Navbahor tumani','Xatirchi tumani','Nurota tumani','Qonimex tumani'],
-      },
       // Before/After
       'ba.eyebrow': 'Natija', 'ba.title': "Tozalashdan oldin va keyin",
       'ba.carpet': 'Gilam', 'ba.mattress': 'Matras', 'ba.curtains': 'Parda', 'ba.sofa': 'Divan',
@@ -4932,10 +4909,9 @@
     btn.disabled = !ok;
     btn.style.opacity = ok ? '1' : '.45';
     // Подсветить выбранный филиал
-    ['Zar','Nav'].forEach(s => {
-      const lbl = document.getElementById('branchLabel' + s);
-      const inp = document.getElementById('branch' + s);
-      if (lbl) lbl.style.borderColor = (inp && inp.checked) ? 'var(--teal,#1F6E66)' : 'rgba(255,255,255,.12)';
+    document.querySelectorAll('.agent-branch-label').forEach(lbl => {
+      const inp = lbl.querySelector('input[name="agentBranch"]');
+      lbl.style.borderColor = (inp && inp.checked) ? 'var(--teal,#1F6E66)' : 'rgba(255,255,255,.12)';
     });
   }
 
@@ -4962,14 +4938,11 @@
       <div style="margin-bottom:12px">
         <div style="font-size:13px;font-weight:600;color:var(--ink-soft);margin-bottom:8px">📍 Выберите филиал:</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-          <label id="branchLabelZar" style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.12);border-radius:10px;cursor:pointer;font-size:13px;font-weight:600;transition:border-color .15s">
-            <input type="radio" name="agentBranch" value="zarafshan" id="branchZar" onchange="_agentBranchChanged()" style="accent-color:var(--teal,#1F6E66)">
-            Зарафшан
-          </label>
-          <label id="branchLabelNav" style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.12);border-radius:10px;cursor:pointer;font-size:13px;font-weight:600;transition:border-color .15s">
-            <input type="radio" name="agentBranch" value="navoi" id="branchNav" onchange="_agentBranchChanged()" style="accent-color:var(--teal,#1F6E66)">
-            Навои
-          </label>
+          ${_siteBranches.map(b => `
+          <label class="agent-branch-label" data-branch="${_escHtml(b.slug)}" style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.12);border-radius:10px;cursor:pointer;font-size:13px;font-weight:600;transition:border-color .15s">
+            <input type="radio" name="agentBranch" value="${_escHtml(b.slug)}" onchange="_agentBranchChanged()" style="accent-color:var(--teal,#1F6E66)">
+            ${_escHtml(_branchName(b))}
+          </label>`).join('')}
         </div>
       </div>
       <label style="display:flex;align-items:flex-start;gap:10px;padding:12px 14px;background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.1);border-radius:10px;cursor:pointer;margin-bottom:12px;font-size:13px;color:var(--ink-soft);line-height:1.5">
@@ -5566,8 +5539,7 @@
   }
 
   // ===== ORDER MODAL =====
-  function citiesFor(branch){ return (I18N[lang].cities || I18N.ru.cities)[branch] || []; }
-  function branchName(key){ return t('branch.' + key); }
+  function branchName(key){ const c = _siteBranches.find(b => b.slug === key); return c ? _branchName(c) : key; }
   function serviceName(key){ return t('svc.' + key); }
   function serviceTypeName(key){ return t('type.' + key); }
 
@@ -5582,7 +5554,7 @@
 
   let yandexMap = null;
   let yandexMarker = null;
-  let selectedBranch = 'zarafshan';
+  let selectedBranch = null;
   let selectedServiceType = 'standard';
   let selectedDateOpt = null;
   let selectedDateValue = null; // dd.mm.yyyy
@@ -5615,12 +5587,10 @@
     // Активируем первую кнопку филиала по умолчанию если ничего не выбрано
     const activeBranch = document.querySelector('#branchGroup .pill-btn.active');
     if (!activeBranch) {
-      const firstBranch = document.querySelector('#branchGroup .pill-btn[data-branch="zarafshan"]');
+      const firstBranch = document.querySelector('#branchGroup .pill-btn');
       if (firstBranch) {
         firstBranch.classList.add('active');
-        selectedBranch = 'zarafshan';
-        const citySelect = document.getElementById('dCity');
-        if (citySelect) citySelect.innerHTML = citiesFor('zarafshan').map(c => `<option value="${c}">${c}</option>`).join('');
+        selectedBranch = firstBranch.dataset.branch;
       }
     }
 
@@ -5684,28 +5654,14 @@
     if (e.target === this) closeAlertModal();
   });
 
-  // ── ФИЛИАЛ → ГОРОД ──
-  document.querySelectorAll('#branchGroup .pill-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('#branchGroup .pill-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      selectedBranch = btn.dataset.branch;
-
-      const citySelect = document.getElementById('dCity');
-      citySelect.innerHTML = citiesFor(selectedBranch).map(c => `<option value="${c}">${c}</option>`).join('');
-
-      // Карта центрируется по первому городу нового филиала
-      centerMapOnCity();
-    });
-  });
-
-  // ── ГОРОД → КАРТА ──
-  // Делегируем на document — работает даже если select перерисовывается
-  document.addEventListener('change', (e) => {
-    if (e.target && e.target.id === 'dCity') {
-      console.log('[ARTEZ] dCity changed →', e.target.value);
-      centerMapOnCity();
-    }
+  // ── ВЫБОР ФИЛИАЛА → КАРТА ──
+  document.getElementById('branchGroup')?.addEventListener('click', (e) => {
+    const btn = e.target.closest('.pill-btn');
+    if (!btn) return;
+    document.querySelectorAll('#branchGroup .pill-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    selectedBranch = btn.dataset.branch;
+    centerMapOnBranch();
   });
 
   // ── ТИП УСЛУГИ ──
@@ -5806,38 +5762,8 @@
   }
 
   // ── КАРТА (Yandex) ──
-  // Координаты по городам/районам (RU-ключи совпадают со значениями cities.ru)
-  const CITY_CENTERS = {
-    // Филиал Зарафшан
-    'г. Зарафшан':       [41.5689, 64.2086],
-    'г. Учкудук':        [42.154366, 63.560209],
-    'Тамдинский район':  [41.717635, 64.529192],
-    'пос. Рахат':        [41.539547, 64.145666],
-    'пос. Мурунтау':     [41.529349, 64.600759],
-    'пос. Даугизтау':    [41.174020, 64.246207],
-    // Филиал Навои
-    'г. Навои':          [40.1041, 65.3741],
-    'Карманинский район':[40.138285, 65.361397],
-    'Навбахорский район':[40.213473, 65.313805],
-    'Хатирчинский район':[40.063620, 65.861847],
-    'Нуратинский район': [40.563570, 65.698606],
-    'Канимехский район': [40.276873, 65.136005],
-    // UZ-ключи (те же координаты)
-    'Zarafshon shahri':  [41.5689, 64.2086],
-    'Uchquduq shahri':   [42.154366, 63.560209],
-    'Tomdi tumani':      [41.717635, 64.529192],
-    'Rahat shaharchasi': [41.539547, 64.145666],
-    'Muruntov shaharchasi':[41.529349, 64.600759],
-    'Daugiztoʻ shaharchasi':[41.174020, 64.246207],
-    'Navoiy shahri':     [40.1041, 65.3741],
-    'Karmana tumani':    [40.138285, 65.361397],
-    'Navbahor tumani':   [40.213473, 65.313805],
-    'Xatirchi tumani':   [40.063620, 65.861847],
-    'Nurota tumani':     [40.563570, 65.698606],
-    'Qonimex tumani':    [40.276873, 65.136005],
-  };
-  // Центр по умолчанию (Зарафшан)
-  const DEFAULT_CENTER = [41.5689, 64.2086];
+  // Нейтральный дефолт (Ташкент) — если у выбранного филиала ещё не заданы координаты
+  const DEFAULT_CENTER = [41.311081, 69.240562];
 
   // Расстояние между двумя точками в км (формула гаверсинусов)
   function distanceKm(a, b){
@@ -5852,31 +5778,27 @@
     return 2 * R * Math.asin(Math.sqrt(h));
   }
 
-  // Возвращает центр выбранного города из select#dCity
-  function getCityCenter(){
-    const citySelect = document.getElementById('dCity');
-    const cityVal = citySelect ? citySelect.value : '';
-    return CITY_CENTERS[cityVal] || DEFAULT_CENTER;
+  // Возвращает координаты выбранного филиала (город) — или дефолт, если не заданы
+  function getBranchCenter(){
+    const c = _siteBranches.find(b => b.slug === selectedBranch) || _siteBranches[0];
+    if (c && c.lat != null && c.lon != null) return [Number(c.lat), Number(c.lon)];
+    return DEFAULT_CENTER;
   }
 
-  // Безусловно центрирует карту на выбранный город (без геолокации).
+  // Центрирует карту на выбранный филиал (без геолокации).
   // Геолокация используется только при первом открытии карты (initYandexMap).
-  function centerMapOnCity(){
+  function centerMapOnBranch(){
     if (!yandexMap) return;
-    const cityCenter = getCityCenter();
-    console.log('[ARTEZ] centerMapOnCity → city:', document.getElementById('dCity')?.value, '→ center:', cityCenter);
+    const branchCenter = getBranchCenter();
     setTimeout(() => {
-      yandexMap.setCenter(cityCenter, 14);
-      yandexMarker.geometry.setCoordinates(cityCenter);
+      yandexMap.setCenter(branchCenter, 14);
+      yandexMarker.geometry.setCoordinates(branchCenter);
     }, 50);
   }
 
-  // Псевдоним для вызовов из branchGroup (меняет центр по текущему городу)
-  function centerMapOnBranch(){ centerMapOnCity(); }
-
   function initYandexMap(){
-    // Центр берём из текущего значения select#dCity
-    const cityCenter = getCityCenter();
+    // Центр берём из координат выбранного филиала
+    const cityCenter = getBranchCenter();
 
     function createMap(center, zoom){
       yandexMap = new ymaps.Map('orderMap', {
@@ -6022,13 +5944,13 @@
   // ── ПРОСТАЯ ФОРМА ──
   // ── Pill-кнопки ФИЛИАЛА в быстрой форме ──
   let selectedSimpleBranch = '';
-  document.querySelectorAll('#sBranchGroup .pill-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('#sBranchGroup .pill-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      selectedSimpleBranch = btn.dataset.branch;
-      document.getElementById('sBranch').value = selectedSimpleBranch;
-    });
+  document.getElementById('sBranchGroup')?.addEventListener('click', (e) => {
+    const btn = e.target.closest('.pill-btn');
+    if (!btn) return;
+    document.querySelectorAll('#sBranchGroup .pill-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    selectedSimpleBranch = btn.dataset.branch;
+    document.getElementById('sBranch').value = selectedSimpleBranch;
   });
 
   simpleOrderForm.addEventListener('submit', async (e) => {
@@ -6076,7 +5998,6 @@
       first_name: document.getElementById('dName').value.trim(),
       phone: document.getElementById('dPhone').value.trim(),
       branch: branchName(selectedBranch),
-      city: document.getElementById('dCity').value,
       address: document.getElementById('dAddress').value.trim(),
       location: getMarkerCoords(),
       location_address: _mapLocationAddress || '',
@@ -6087,7 +6008,7 @@
       total_price: lastCalcTotal > 0 ? Math.round(lastCalcTotal) : null,
     };
 
-    if (!payload.first_name || !payload.phone || !payload.address || !payload.city){
+    if (!payload.first_name || !payload.phone || !payload.address){
       showOrderAlert(t('order.fillRequiredFields'));
       return;
     }
@@ -6099,13 +6020,10 @@
   function refreshDynamicUI(){
     // мини-календарь, если открыт
     if (miniCal && miniCal.style.display !== 'none' && miniCal.innerHTML) renderMiniCal();
-    // список городов, если филиал уже выбран
-    if (selectedBranch){
-      const citySelect = document.getElementById('dCity');
-      const prevVal = citySelect.value;
-      citySelect.innerHTML = citiesFor(selectedBranch).map(c => `<option value="${c}">${c}</option>`).join('');
-      if (citiesFor(selectedBranch).includes(prevVal)) citySelect.value = prevVal;
-    }
+    // кнопки филиалов — обновить подписи на новом языке, сохранив выбор
+    _renderCalcBranchPills(_siteBranches);
+    if (selectedSimpleBranch) document.querySelector(`#sBranchGroup .pill-btn[data-branch="${CSS.escape(selectedSimpleBranch)}"]`)?.classList.add('active');
+    if (selectedBranch) document.querySelector(`#branchGroup .pill-btn[data-branch="${CSS.escape(selectedBranch)}"]`)?.classList.add('active');
     // личный кабинет — статусы заказов
     renderDashboardOrders();
     // промо-модалка/баннер, если открыты
@@ -6228,60 +6146,79 @@
 
   const _TG_SVG = '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.393c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.94z"/></svg>';
 
-  // Рендерит блок филиалов (произвольное число) в плавающее меню — вызывается один раз, при загрузке /api/site-contacts
-  function _renderModalBranches(contacts) {
+  // Название филиала на текущем языке (name_ru/name_uz из /api/site-branches)
+  function _branchName(c) {
+    if (!c) return '';
+    return (lang === 'uz' && c.name_uz) ? c.name_uz : (c.name_ru || c.name_uz || c.slug || '');
+  }
+
+  // Рендерит блок филиалов (произвольное число) в плавающее меню — вызывается один раз, при загрузке /api/site-branches
+  function _renderModalBranches(branches) {
     const tabs = document.getElementById('cmTabs');
     const body = document.getElementById('cmBranchContents');
     if (!tabs || !body) return;
-    if (!contacts || !contacts.length) { tabs.innerHTML = ''; body.innerHTML = ''; return; }
-    tabs.innerHTML = contacts.map((c, i) =>
-      `<button type="button" class="cm-branch-btn${i===0?' active':''}" data-branch="${_escHtml(c.branch)}">📍 ${_escHtml(c.branch_name || c.branch)}</button>`
+    if (!branches || !branches.length) { tabs.innerHTML = ''; body.innerHTML = ''; return; }
+    tabs.innerHTML = branches.map((c, i) =>
+      `<button type="button" class="cm-branch-btn${i===0?' active':''}" data-branch="${_escHtml(c.slug)}">📍 ${_escHtml(_branchName(c))}</button>`
     ).join('');
-    body.innerHTML = contacts.map((c, i) => {
+    body.innerHTML = branches.map((c, i) => {
       const phones = (c.phones || []).filter(Boolean);
       const phonesHtml = phones.map(p =>
         `<a class="cm-branch-phone" href="${_telHref(p)}"><div class="cm-branch-phone-ico">📱</div><span>${_fmtPhone(p)}</span></a>`
       ).join('');
       const pills = [];
-      if (_safeUrl(c.telegram))  pills.push(`<a class="cm-pill cm-pill-tg" href="${_escHtml(_safeUrl(c.telegram))}" target="_blank" rel="noopener">${_TG_SVG} <span data-i18n="cm.group">Группа</span></a>`);
+      if (_safeUrl(c.telegram_link)) pills.push(`<a class="cm-pill cm-pill-tg" href="${_escHtml(_safeUrl(c.telegram_link))}" target="_blank" rel="noopener">${_TG_SVG} <span data-i18n="cm.group">Группа</span></a>`);
+      if (_safeUrl(c.admin_tg_link)) pills.push(`<a class="cm-pill cm-pill-tg" href="${_escHtml(_safeUrl(c.admin_tg_link))}" target="_blank" rel="noopener">${_TG_SVG} <span data-i18n="cm.write">Написать</span></a>`);
       if (c.whatsapp)  pills.push(`<a class="cm-pill cm-pill-wa" href="https://wa.me/${c.whatsapp.replace(/\D/g,'')}" target="_blank" rel="noopener">💬 WhatsApp</a>`);
       if (_safeUrl(c.instagram)) pills.push(`<a class="cm-pill cm-pill-ig" href="${_escHtml(_safeUrl(c.instagram))}" target="_blank" rel="noopener">📸 Instagram</a>`);
       const pillsHtml = pills.length ? `<div class="cm-pills">${pills.join('')}</div>` : '';
-      return `<div class="cm-branch-content${i===0?' active':''}" data-branch="${_escHtml(c.branch)}">${phonesHtml}${pillsHtml}</div>`;
+      return `<div class="cm-branch-content${i===0?' active':''}" data-branch="${_escHtml(c.slug)}">${phonesHtml}${pillsHtml}</div>`;
     }).join('');
-    _activeBranch = contacts[0]?.branch || null;
+    _activeBranch = branches[0]?.slug || null;
   }
 
-  function _renderFooterBranches(contacts) {
+  function _renderFooterBranches(branches) {
     const el = document.getElementById('fcBranches');
     if (!el) return;
-    if (!contacts || !contacts.length) { el.innerHTML = ''; return; }
-    el.innerHTML = contacts.map(c => {
+    if (!branches || !branches.length) { el.innerHTML = ''; return; }
+    el.innerHTML = branches.map(c => {
       const phones = (c.phones || []).filter(Boolean);
       const phonesHtml = phones.map(p => `<a href="${_telHref(p)}">📱 ${_fmtPhone(p)}</a>`).join('');
       const pills = [];
-      if (_safeUrl(c.telegram))  pills.push(`<a href="${_escHtml(_safeUrl(c.telegram))}" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:4px">${_TG_SVG}<span data-i18n="cm.group">Группа</span></a>`);
+      if (_safeUrl(c.telegram_link)) pills.push(`<a href="${_escHtml(_safeUrl(c.telegram_link))}" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:4px">${_TG_SVG}<span data-i18n="cm.group">Группа</span></a>`);
       if (c.whatsapp)  pills.push(`<a href="https://wa.me/${c.whatsapp.replace(/\D/g,'')}" target="_blank" rel="noopener">WhatsApp</a>`);
       if (_safeUrl(c.instagram)) pills.push(`<a href="${_escHtml(_safeUrl(c.instagram))}" target="_blank" rel="noopener">Instagram</a>`);
       const pillsHtml = pills.length ? `<div style="display:flex;gap:8px;margin-top:4px;flex-wrap:wrap;">${pills.join('')}</div>` : '';
-      return `<div style="margin-top:8px;font-size:12px;opacity:.7;font-weight:600;">📍 ${_escHtml(c.branch_name || c.branch)}</div>${phonesHtml}${pillsHtml}`;
+      return `<div style="margin-top:8px;font-size:12px;opacity:.7;font-weight:600;">📍 ${_escHtml(_branchName(c))}</div>${phonesHtml}${pillsHtml}`;
     }).join('');
   }
 
-  // Загружаем контакты филиалов (произвольное число) один раз при загрузке страницы
+  // Кнопки-филиалы в калькуляторе (простая + подробная форма заказа)
+  function _renderCalcBranchPills(branches) {
+    const html = (branches || []).map(b =>
+      `<button type="button" class="pill-btn" data-branch="${_escHtml(b.slug)}">📍 ${_escHtml(_branchName(b))}</button>`
+    ).join('');
+    const sGroup = document.getElementById('sBranchGroup');
+    const dGroup = document.getElementById('branchGroup');
+    if (sGroup) sGroup.innerHTML = html;
+    if (dGroup) dGroup.innerHTML = html;
+  }
+
+  // Загружаем филиалы компании (произвольное число) один раз при загрузке страницы
   window._siteBranchesPromise = (async function loadSiteBranches() {
     try {
-      const r = await fetch(`${API_BASE}/site-contacts?company_slug=${encodeURIComponent(window.APP_COMPANY_SLUG||'')}`);
+      const r = await fetch(`${API_BASE}/site-branches?company_slug=${encodeURIComponent(window.APP_COMPANY_SLUG||'')}`);
       const d = await r.json();
-      _siteBranches = (d.ok && d.contacts) ? d.contacts : [];
+      _siteBranches = (d.ok && d.branches) ? d.branches : [];
     } catch(e) { _siteBranches = []; }
     _renderModalBranches(_siteBranches);
     _renderFooterBranches(_siteBranches);
     _renderCbBranchTabs(_siteBranches);
+    _renderCalcBranchPills(_siteBranches);
     return _siteBranches;
   })();
 
-  // Собираем текст «успешной заявки» из short/main (settings) + номеров филиалов (site-contacts) —
+  // Собираем текст «успешной заявки» из short/main (settings) + номеров филиалов —
   // ждём оба запроса, т.к. они грузятся параллельно и порядок завершения не гарантирован.
   Promise.all([window._siteSettingsPromise, window._siteBranchesPromise]).then(([s, branches]) => {
     s = s || {}; branches = branches || [];
@@ -6291,7 +6228,7 @@
     if (s.contact_main)  { lines.push(`📞 ${_fmtPhone(s.contact_main)}`); linesUz.push(`📞 ${_fmtPhone(s.contact_main)}`); }
     branches.forEach(c => {
       const phones = (c.phones || []).filter(Boolean).map(_fmtPhone).join(' / ');
-      if (phones) { lines.push(`\n${c.branch_name || c.branch}: ${phones}`); linesUz.push(`\n${c.branch_name || c.branch}: ${phones}`); }
+      if (phones) { lines.push(`\n${_branchName(c)}: ${phones}`); linesUz.push(`\n${_branchName(c)}: ${phones}`); }
     });
     I18N.ru['order.successText'] = lines.join('\n');
     I18N.uz['order.successText'] = linesUz.join('\n');
@@ -6530,11 +6467,11 @@
   // ── Обратный звонок ──
   let _cbBranch = null;
 
-  function _renderCbBranchTabs(contacts) {
+  function _renderCbBranchTabs(branches) {
     const el = document.getElementById('cbBranchRow');
     if (!el) return;
-    el.innerHTML = (contacts || []).map((c, i) =>
-      `<button type="button" class="cb-branch-btn${i===0?' active':''}" data-branch="${_escHtml(c.branch)}">📍 ${_escHtml(c.branch_name || c.branch)}</button>`
+    el.innerHTML = (branches || []).map((c, i) =>
+      `<button type="button" class="cb-branch-btn${i===0?' active':''}" data-branch="${_escHtml(c.slug)}">📍 ${_escHtml(_branchName(c))}</button>`
     ).join('');
   }
 
@@ -6545,7 +6482,7 @@
       setTimeout(() => openDrawer('orders'), 400);
       return;
     }
-    _cbBranch = branch || _activeBranch || (_siteBranches[0] && _siteBranches[0].branch) || null;
+    _cbBranch = branch || _activeBranch || (_siteBranches[0] && _siteBranches[0].slug) || null;
     setCbBranch(_cbBranch);
     const inp = document.getElementById('cbPhoneInput');
     if (inp) inp.value = currentUser.phone || '';
@@ -6591,7 +6528,7 @@
         },
         body: JSON.stringify({
           phone,
-          branch: (_siteBranches.find(c => c.branch === _cbBranch)?.branch_name) || _cbBranch || '',
+          branch: _branchName(_siteBranches.find(c => c.slug === _cbBranch)) || _cbBranch || '',
           name: currentUser?.first_name || '',
           profile_phone: currentUser?.phone || '',
         }),
@@ -7052,7 +6989,7 @@
     <!-- Body -->
     <div class="cm-body">
 
-      <!-- Branch tabs (генерируются динамически из /api/site-contacts) -->
+      <!-- Branch tabs (генерируются динамически из /api/site-branches) -->
       <div class="cm-tabs" id="cmTabs"></div>
       <div id="cmBranchContents"></div>
 
