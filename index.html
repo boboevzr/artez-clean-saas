@@ -4359,7 +4359,7 @@
   // Загружаем актуальные цены из БД и обновляем страницу
   async function loadPrices() {
     try {
-      const res = await fetch(`${API_BASE}/prices`);
+      const res = await fetch(`${API_BASE}/prices?company_slug=${encodeURIComponent(window.APP_COMPANY_SLUG||'')}`);
       if (!res.ok) return;
       const data = await res.json();
       if (data.units) UNITS = data.units;
@@ -4726,7 +4726,7 @@
   // Загружаем пороги ОСАГО с сервера (без auth)
   (async function loadOsagoTiers() {
     try {
-      const r = await fetch(API_BASE + '/settings/osago');
+      const r = await fetch(API_BASE + '/settings/osago?company_slug=' + encodeURIComponent(window.APP_COMPANY_SLUG||''));
       if (r.ok) { const d = await r.json(); if (d.tiers) osagoTiers = d.tiers; }
     } catch (_) {}
   })();
@@ -4734,7 +4734,7 @@
   // Загружаем настройки сайта (контакты, соцсети) с сервера
   (async function loadSiteSettings() {
     try {
-      const r = await fetch(API_BASE + '/settings/site');
+      const r = await fetch(API_BASE + '/settings/site?company_slug=' + encodeURIComponent(window.APP_COMPANY_SLUG||''));
       if (!r.ok) return;
       const { settings: s } = await r.json();
       if (!s) return;
@@ -5553,7 +5553,7 @@
       return;
     }
     try {
-      const data = await apiFetch('/promo/public');
+      const data = await apiFetch(`/promo/public?company_slug=${encodeURIComponent(window.APP_COMPANY_SLUG||'')}`);
       if (!data || data.mode !== 'public') return;
       const seenKey = 'artez_promo_anon_seen_' + data.code;
       _promoIsAnon = true;
@@ -6193,7 +6193,7 @@
 
   async function _loadSiteSettings() {
     try {
-      const r = await fetch(`${API_BASE}/settings/site`);
+      const r = await fetch(`${API_BASE}/settings/site?company_slug=${encodeURIComponent(window.APP_COMPANY_SLUG||'')}`);
       const d = await r.json();
       if (d.ok && d.settings) _siteSettings = d.settings;
     } catch(e) {}
