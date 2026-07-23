@@ -264,6 +264,22 @@
             <span id="gs_msg" class="save-msg" style="display:none">✓ Сохранено</span>
           </div>
         </div>
+
+        <div class="card" style="max-width:560px;margin-top:16px">
+          <div class="card-title">💬 Контакты поддержки (для всех компаний)</div>
+          <div class="field">
+            <label>Telegram (ссылка)</label>
+            <input id="gs_support_tg" type="text" placeholder="https://t.me/username">
+          </div>
+          <div class="field">
+            <label>Телефон</label>
+            <input id="gs_support_phone" type="text" placeholder="+998 90 123-45-67">
+          </div>
+          <div style="display:flex;align-items:center;gap:12px">
+            <button class="btn btn-primary btn-sm" onclick="saveSupportContact()">💾 Сохранить</button>
+            <span id="gs_support_msg" class="save-msg" style="display:none">✓ Сохранено</span>
+          </div>
+        </div>
       </div>
 
       <!-- PAGE: Plans -->
@@ -1189,7 +1205,7 @@ function showPage(name, navEl) {
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.getElementById('page-' + name).classList.add('active');
   if (navEl) navEl.classList.add('active');
-  if (name === 'settings') loadGlobalSettings();
+  if (name === 'settings') { loadGlobalSettings(); loadSupportContact(); }
   if (name === 'plans') loadPlans();
   if (name === 'maintenance') maintenancePreview();
   if (name === 'sa-departments') saRenderDepts();
@@ -1261,6 +1277,26 @@ async function saveGlobalSettings() {
   msg.style.display = 'none';
   try {
     await api('/saas/global-settings', 'PUT', { yandex_maps_key: key });
+    msg.style.display = '';
+    setTimeout(() => msg.style.display = 'none', 3000);
+  } catch(e) { alert(e.message); }
+}
+
+async function loadSupportContact() {
+  try {
+    const d = await api('/saas/support-contact');
+    document.getElementById('gs_support_tg').value = d.telegram || '';
+    document.getElementById('gs_support_phone').value = d.phone || '';
+  } catch(e) {}
+}
+
+async function saveSupportContact() {
+  const telegram = document.getElementById('gs_support_tg').value.trim();
+  const phone = document.getElementById('gs_support_phone').value.trim();
+  const msg = document.getElementById('gs_support_msg');
+  msg.style.display = 'none';
+  try {
+    await api('/saas/support-contact', 'PUT', { telegram, phone });
     msg.style.display = '';
     setTimeout(() => msg.style.display = 'none', 3000);
   } catch(e) { alert(e.message); }
