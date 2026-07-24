@@ -909,6 +909,10 @@
 
   // ── Дизайн сайта: шаблон (CSS-скин) + палитра (CSS-переменные цветов) ──
   // preview_template/preview_palette в URL — для live-превью из admin.html (iframe), не сохраняются.
+  // *.css/*.js на этом хостинге отдаются с Cache-Control: max-age=2592000 (30 дней) — при
+  // правках template-0N.css бампать DESIGN_ASSET_V ниже, иначе браузеры продолжат месяц
+  // показывать старую версию файла даже после деплоя фикса.
+  const DESIGN_ASSET_V = 2;
   (async function applySiteDesign() {
     try {
       const qs = new URLSearchParams(location.search);
@@ -953,7 +957,7 @@
       if (templateKey && templateKey !== 'template-01') {
         const link = document.createElement('link');
         link.rel = 'stylesheet';
-        link.href = templateKey + '.css';
+        link.href = templateKey + '.css?v=' + DESIGN_ASSET_V;
         document.head.appendChild(link);
       }
     } catch (_) {}
