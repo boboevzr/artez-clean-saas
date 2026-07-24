@@ -3173,6 +3173,10 @@
                   <label>Основной номер</label>
                   <input type="text" id="cfg_contact_main" class="form-input" disabled placeholder="+998 XX XXX-XX-XX" inputmode="tel">
                 </div>
+                <div class="cfg-field">
+                  <label>Email для клиентов</label>
+                  <input type="email" id="cfg_contact_email" class="form-input" disabled placeholder="info@example.com">
+                </div>
               </div>
             </div>
             <div class="cfg-actions">
@@ -11178,7 +11182,7 @@ async function tsResetMonth() {
 // ── SITE SETTINGS ──
 const SITE_KEYS = [
   'social_instagram','social_tg_bot','social_tg_group',
-  'contact_short','contact_main',
+  'contact_short','contact_main','contact_email',
   'tg_bot_token','tg_group_id','tg_group_sms_id',
   'leads_group_id','leads_group_enabled','lead_notify_ru','callback_overdue_minutes',
   'new_clients_group_id',
@@ -11197,7 +11201,7 @@ const SITE_KEYS = [
 const TAB_KEYS = {
   social:   ['social_instagram'],
   contacts: [
-    'contact_short','contact_main',
+    'contact_short','contact_main','contact_email',
   ],
   eskiz:    ['eskiz_email','eskiz_password','eskiz_from','sms_text_register','sms_text_login','sms_text_reset'],
   sheets:   ['sheets_url'],

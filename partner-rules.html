@@ -3,8 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Правила партнёрской программы — ARTEZ</title>
+  <title id="pageTitle">Правила партнёрской программы — ARTEZ</title>
   <link rel="icon" href="LOGO/favicon.ico">
+  <script src="config.js"></script>
+  <script>
+    (function(){
+      var qs = new URLSearchParams(location.search).get('company_slug');
+      if (qs) window.APP_COMPANY_SLUG = qs;
+    })();
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@700;800&display=swap" rel="stylesheet">
@@ -145,7 +152,7 @@
 
     <div class="section">
       <div class="section-title">1. Общие положения</div>
-      <p>Настоящие Правила регулируют условия участия в партнёрской программе компании <strong>ARTEZ</strong> (г. Зарафшан и г. Навои, Узбекистан) — профессиональной чистки ковров и текстиля.</p>
+      <p>Настоящие Правила регулируют условия участия в партнёрской программе компании <strong>ARTEZ</strong> (Узбекистан) — профессиональной чистки ковров и текстиля.</p>
       <p>Принимая участие в программе, партнёр (агент) полностью соглашается с настоящими Правилами и <a href="privacy.html" style="color:var(--teal)">Политикой конфиденциальности</a> ARTEZ.</p>
       <div class="callout">Партнёрская программа действует для физических лиц, зарегистрированных на сайте artez.uz.</div>
     </div>
@@ -281,7 +288,7 @@
 
     <div class="section">
       <div class="section-title">1. Umumiy qoidalar</div>
-      <p>Ushbu Qoidalar <strong>ARTEZ</strong> kompaniyasi (Zarafshon va Navoiy shaharlari, O'zbekiston) hamkorlik dasturida ishtirok etish shartlarini belgilaydi.</p>
+      <p>Ushbu Qoidalar <strong>ARTEZ</strong> kompaniyasi (O'zbekiston) hamkorlik dasturida ishtirok etish shartlarini belgilaydi.</p>
       <p>Dasturda ishtirok etib, hamkor (agent) ushbu Qoidalar va ARTEZ <a href="privacy.html" style="color:var(--teal)">Maxfiylik siyosati</a>ga to'liq rozilik bildiradi.</p>
       <div class="callout">Hamkorlik dasturi artez.uz saytida ro'yxatdan o'tgan jismoniy shaxslar uchun amal qiladi.</div>
     </div>
@@ -405,8 +412,8 @@
   </div>
 </div>
 
-<footer>
-  © 2026 ARTEZ — Профессиональная чистка ковров · Зарафшан, Навои
+<footer id="pageFooter">
+  © 2026 ARTEZ — Профессиональная чистка ковров
 </footer>
 
 <script>
@@ -420,6 +427,66 @@
   // Применяем язык из localStorage при загрузке
   const saved = localStorage.getItem('artez_lang');
   if (saved && saved !== 'ru') setLang(saved);
+
+  // ── Company data (per-tenant): имя/бот/телефон/комиссия вместо жёстких ARTEZ-значений ──
+  (async function loadCompanyData(){
+    try {
+      const API_BASE = (window.APP_API_URL || "https://artez-api-production.up.railway.app") + "/api";
+      const slug = window.APP_COMPANY_SLUG || '';
+      const [company, site] = await Promise.all([
+        fetch(API_BASE + '/company/resolve?slug=' + encodeURIComponent(slug)).then(r => r.ok ? r.json() : null).catch(() => null),
+        fetch(API_BASE + '/settings/site?company_slug=' + encodeURIComponent(slug)).then(r => r.ok ? r.json() : null).catch(() => null),
+      ]);
+      const name = company && company.name;
+      const s = site && site.settings;
+      if (!name && !s) return;
+
+      const host = location.host;
+      const rawPhone = (s && (s.contact_main || s.contact_short)) || '';
+      const phoneDigits = rawPhone.replace(/\D/g, '');
+      let phoneDisplay = '+998 79 222-12-21';
+      if (phoneDigits) {
+        const loc = phoneDigits.startsWith('998') ? phoneDigits.slice(3) : phoneDigits;
+        phoneDisplay = `+998 ${loc.slice(0,2)} ${loc.slice(2,5)}-${loc.slice(5,7)}-${loc.slice(7)}`;
+      }
+      const phoneTel = phoneDigits ? (phoneDigits.startsWith('998') ? '+' + phoneDigits : '+998' + phoneDigits) : '+998792221221';
+      let botUrl = 'https://t.me/artez_orders_bot';
+      let botHandle = '@artez_orders_bot';
+      if (s && s.social_tg_bot) {
+        const raw = s.social_tg_bot.trim();
+        botUrl = /^https?:\/\//.test(raw) ? raw : 'https://t.me/' + raw.replace(/^@/, '');
+        botHandle = '@' + botUrl.split('/').pop();
+      }
+      let commission = '5–10%';
+      if (s) {
+        const ctype = s.agent_commission_type || 'percent';
+        if (ctype === 'fixed' && s.agent_commission_fixed) {
+          commission = Number(s.agent_commission_fixed).toLocaleString('ru-RU').replace(/,/g, ' ') + ' сум';
+        } else if (s.agent_commission_percent) {
+          commission = s.agent_commission_percent + '%';
+        }
+      }
+
+      const replaceAll = (str) => {
+        let v = str;
+        if (name) v = v.split('ARTEZ').join(name);
+        v = v.split('artez.uz').join(host);
+        v = v.split('https://t.me/artez_orders_bot').join(botUrl);
+        v = v.split('@artez_orders_bot').join(botHandle);
+        v = v.split('tel:+998792221221').join('tel:' + phoneTel);
+        v = v.split('+998 79 222-12-21').join(phoneDisplay);
+        v = v.split('5–10%').join(commission);
+        return v;
+      };
+
+      document.querySelectorAll('[data-lang]').forEach(el => { el.innerHTML = replaceAll(el.innerHTML); });
+      document.title = replaceAll(document.title);
+      const footer = document.getElementById('pageFooter');
+      if (footer) footer.innerHTML = replaceAll(footer.innerHTML);
+      const logoImg = document.querySelector('.header-logo img');
+      if (logoImg && name) logoImg.alt = name;
+    } catch (e) {}
+  })();
 </script>
 </body>
 </html>

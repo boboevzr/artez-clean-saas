@@ -4,10 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title id="pageTitle">Агентская программа ARTEZ — зарабатывайте на рекомендациях</title>
-  <meta name="description" content="Станьте агентом ARTEZ и получайте 5–10% от каждого заказа. Рекомендуйте чистку ковров, следите за статусом в личном кабинете.">
+  <meta name="description" id="metaDescription" content="Станьте агентом ARTEZ и получайте 5–10% от каждого заказа. Рекомендуйте чистку ковров, следите за статусом в личном кабинете.">
   <link rel="icon" href="/LOGO/favicon.ico">
   <link rel="apple-touch-icon" href="/LOGO/artez-icon-1024.png">
   <meta name="theme-color" content="#163E3B">
+  <script src="config.js"></script>
+  <script>
+    (function(){
+      var qs = new URLSearchParams(location.search).get('company_slug');
+      if (qs) window.APP_COMPANY_SLUG = qs;
+    })();
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -318,7 +325,7 @@
   <div class="wrap topbar-inner">
     <a href="/" class="logo">
       <div class="logo-icon">🧺</div>
-      ARTEZ
+      <span id="logoText">ARTEZ</span>
     </a>
     <div class="topbar-right">
       <a href="/" class="back-link">
@@ -496,8 +503,8 @@
 
 <!-- Footer -->
 <footer>
-  <p id="footerText">© 2026 ARTEZ — профессиональная чистка ковров. Зарафшан, Навои.</p>
-  <p style="margin-top:6px"><a href="/">artez.uz</a> · <a href="tel:1221">1221</a> · <a href="https://t.me/artez_orders_bot">Telegram бот</a></p>
+  <p id="footerText">© 2026 ARTEZ — профессиональная чистка ковров.</p>
+  <p style="margin-top:6px"><a href="/" id="footerSiteLink">artez.uz</a> · <a href="tel:1221" id="footerPhoneLink">1221</a> · <a href="https://t.me/artez_orders_bot" id="footerBotLink">Telegram бот</a></p>
 </footer>
 
 <script>
@@ -542,12 +549,12 @@
       card4p: 'В личном кабинете видите все свои заявки, их статус и статистику — в любое время с телефона.',
       earnTitle: 'Сколько можно заработать?',
       earnSub: 'Вознаграждение зависит от суммы заказов ваших клиентов.',
-      earn1amount: '130 000 сум',
-      earn1label: '1 ковёр 10 м² × 13 000 сум<br>ваш % ≈ 5–10% = 6 500–13 000 сум',
-      earn2amount: '5 ковров',
-      earn2label: 'в месяц от знакомых<br>≈ 32 500–65 000 сум/мес',
-      earn3amount: '20+ ковров',
-      earn3label: 'активный агент<br>≈ 130 000–260 000 сум/мес',
+      earn1amount: '5–10%',
+      earn1label: 'ваш процент с суммы<br>каждого заказа клиента',
+      earn2amount: 'Несколько клиентов',
+      earn2label: 'в месяц от знакомых —<br>стабильный доп. доход',
+      earn3amount: 'Активный агент',
+      earn3label: 'чем больше клиентов —<br>тем выше доход',
       earnNote: '* Расчёт примерный. Точный размер вознаграждения уточняйте у администратора.',
       howTitle: 'Как стать агентом?',
       howSub: 'Всего 3 простых шага — займёт меньше 5 минут.',
@@ -579,7 +586,7 @@
       ctaText: 'Регистрация занимает 2 минуты. Начните уже сегодня.',
       ctaBtn1: '🤝 Зарегистрироваться',
       ctaBtn2: '📱 Написать в бот',
-      footerText: '© 2026 ARTEZ — профессиональная чистка ковров. Зарафшан, Навои.',
+      footerText: '© 2026 ARTEZ — профессиональная чистка ковров.',
     },
     uz: {
       pageTitle: "ARTEZ agentlik dasturi — tavsiyalar orqali daromad qiling",
@@ -604,12 +611,12 @@
       card4p: "Shaxsiy kabinetda barcha buyurtmalaringizni, ularning holatini va statistikani — istalgan vaqtda telefoningizdan ko'rasiz.",
       earnTitle: "Qancha daromad qilish mumkin?",
       earnSub: "Mukofot mijozlaringiz buyurtmalarining summasiga bog'liq.",
-      earn1amount: '130 000 so\'m',
-      earn1label: "1 gilam 10 m² × 13 000 so'm<br>sizning % ≈ 5–10% = 6 500–13 000 so'm",
-      earn2amount: '5 ta gilam',
-      earn2label: "oyiga tanishlardan<br>≈ 32 500–65 000 so'm/oy",
-      earn3amount: '20+ gilam',
-      earn3label: "faol agent<br>≈ 130 000–260 000 so'm/oy",
+      earn1amount: '5–10%',
+      earn1label: "har bir mijoz buyurtmasi<br>summasidan sizning foizingiz",
+      earn2amount: "Bir nechta mijoz",
+      earn2label: "oyiga tanishlardan —<br>barqaror qo'shimcha daromad",
+      earn3amount: "Faol agent",
+      earn3label: "qancha ko'p mijoz —<br>shuncha yuqori daromad",
       earnNote: "* Hisob taxminiy. Aniq mukofot miqdorini administrator bilan aniqlang.",
       howTitle: "Agent bo'lish qanday?",
       howSub: "Atigi 3 ta oddiy qadam — 5 daqiqadan kam vaqt ketadi.",
@@ -641,7 +648,7 @@
       ctaText: "Ro'yxatdan o'tish 2 daqiqa oladi. Bugunoq boshlang.",
       ctaBtn1: "🤝 Ro'yxatdan o'tish",
       ctaBtn2: "📱 Botga yozish",
-      footerText: "© 2026 ARTEZ — professional gilam tozalash. Zarafshon, Navoiy.",
+      footerText: "© 2026 ARTEZ — professional gilam tozalash.",
     },
   };
 
@@ -678,6 +685,78 @@
 
   // Init
   applyLang(currentLang);
+
+  // ── Company data (per-tenant): имя/бот/телефон/комиссия вместо жёстких ARTEZ-значений ──
+  (async function loadCompanyData(){
+    try {
+      const API_BASE = (window.APP_API_URL || "https://artez-api-production.up.railway.app") + "/api";
+      const slug = window.APP_COMPANY_SLUG || '';
+      const [company, site] = await Promise.all([
+        fetch(API_BASE + '/company/resolve?slug=' + encodeURIComponent(slug)).then(r => r.ok ? r.json() : null).catch(() => null),
+        fetch(API_BASE + '/settings/site?company_slug=' + encodeURIComponent(slug)).then(r => r.ok ? r.json() : null).catch(() => null),
+      ]);
+      const name = company && company.name;
+      const s = site && site.settings;
+      if (!name && !s) return;
+
+      const host = location.host;
+      const phone = (s && (s.contact_short || s.contact_main)) || '1221';
+      let botUrl = 'https://t.me/artez_orders_bot';
+      let botHandle = '@artez_orders_bot';
+      if (s && s.social_tg_bot) {
+        const raw = s.social_tg_bot.trim();
+        botUrl = /^https?:\/\//.test(raw) ? raw : 'https://t.me/' + raw.replace(/^@/, '');
+        botHandle = '@' + botUrl.split('/').pop();
+      }
+      let commission = '5–10%';
+      if (s) {
+        const ctype = s.agent_commission_type || 'percent';
+        if (ctype === 'fixed' && s.agent_commission_fixed) {
+          commission = Number(s.agent_commission_fixed).toLocaleString('ru-RU').replace(/,/g, ' ') + ' сум';
+        } else if (s.agent_commission_percent) {
+          commission = s.agent_commission_percent + '%';
+        }
+      }
+
+      ['ru', 'uz'].forEach(l => {
+        const d = T[l];
+        Object.keys(d).forEach(k => {
+          if (typeof d[k] !== 'string') return;
+          let v = d[k];
+          if (name) v = v.split('ARTEZ').join(name);
+          v = v.split('artez.uz').join(host);
+          v = v.split('https://t.me/artez_orders_bot').join(botUrl);
+          v = v.split('@artez_orders_bot').join(botHandle);
+          v = v.split('1221').join(phone);
+          v = v.split('5–10%').join(commission);
+          d[k] = v;
+        });
+      });
+
+      const logoText = document.getElementById('logoText');
+      if (logoText && name) logoText.textContent = name;
+      const footerSite = document.getElementById('footerSiteLink');
+      const footerPhone = document.getElementById('footerPhoneLink');
+      const footerBot = document.getElementById('footerBotLink');
+      const heroBtn2 = document.getElementById('heroBtn2');
+      const ctaBtn2 = document.getElementById('ctaBtn2');
+      if (footerSite) footerSite.href = '/';
+      if (footerPhone) footerPhone.href = 'tel:' + phone.replace(/\D/g, '');
+      if (footerBot) footerBot.href = botUrl;
+      if (heroBtn2) heroBtn2.href = botUrl;
+      if (ctaBtn2) ctaBtn2.href = botUrl;
+
+      const metaDesc = document.getElementById('metaDescription');
+      if (metaDesc) {
+        let content = metaDesc.getAttribute('content');
+        if (name) content = content.split('ARTEZ').join(name);
+        content = content.split('5–10%').join(commission);
+        metaDesc.setAttribute('content', content);
+      }
+
+      applyLang(currentLang);
+    } catch (e) {}
+  })();
 </script>
 
 </body>
