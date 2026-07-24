@@ -3025,7 +3025,7 @@
       <div class="service-card reveal reveal-d1">
         <div class="service-icon service-icon-1">🧺</div>
         <h3 data-i18n="svc.carpet.name">Чистка ковра</h3>
-        <div class="price-unit" data-i18n="services.priceUnit">сум / м²</div>
+        <div class="price-unit" id="unit-carpet">сум / м²</div>
         <div class="price-row"><span data-i18n="type.standard.name">Стандартный</span><b id="price-carpet-standard">13 000</b></div>
         <div class="price-row"><span data-i18n="type.express.name">Быстрый</span><b id="price-carpet-express">18 000</b></div>
       </div>
@@ -3033,7 +3033,7 @@
       <div class="service-card reveal reveal-d2">
         <div class="service-icon service-icon-2">🏠</div>
         <h3 data-i18n="svc.carpet_home.name">Чистка ковра на дому</h3>
-        <div class="price-unit" data-i18n="services.priceUnit">сум / м²</div>
+        <div class="price-unit" id="unit-carpet_home">сум / м²</div>
         <div class="price-row"><span data-i18n="type.standard.name">Стандартный</span><b id="price-carpet_home-standard">15 000</b></div>
         <div class="price-row"><span data-i18n="type.express.name">Быстрый</span><b id="price-carpet_home-express">20 000</b></div>
       </div>
@@ -3041,7 +3041,7 @@
       <div class="service-card reveal reveal-d3">
         <div class="service-icon service-icon-3">🛋</div>
         <h3 data-i18n="svc.sofa.name">Чистка диван, кресло</h3>
-        <div class="price-unit" data-i18n="services.priceUnit">сум / м²</div>
+        <div class="price-unit" id="unit-sofa">сум / м²</div>
         <div class="price-row"><span data-i18n="type.standard.name">Стандартный</span><b id="price-sofa-standard">100 000</b></div>
         <div class="price-row"><span data-i18n="type.express.name">Быстрый</span><b id="price-sofa-express">150 000</b></div>
       </div>
@@ -3049,7 +3049,7 @@
       <div class="service-card reveal reveal-d4">
         <div class="service-icon service-icon-4">🛏</div>
         <h3 data-i18n="svc.mattress.name">Чистка матрас, одеяло</h3>
-        <div class="price-unit" data-i18n="services.priceUnit">сум / м²</div>
+        <div class="price-unit" id="unit-mattress">сум / м²</div>
         <div class="price-row"><span data-i18n="type.standard.name">Стандартный</span><b id="price-mattress-standard">30 000</b></div>
         <div class="price-row"><span data-i18n="type.express.name">Быстрый</span><b id="price-mattress-express">40 000</b></div>
       </div>
@@ -3057,7 +3057,7 @@
       <div class="service-card reveal reveal-d4">
         <div class="service-icon service-icon-5">🪟</div>
         <h3 data-i18n="svc.curtains.name">Чистка штор</h3>
-        <div class="price-unit" data-i18n="services.priceUnit">сум / м²</div>
+        <div class="price-unit" id="unit-curtains">сум / м²</div>
         <div class="price-row"><span data-i18n="type.standard.name">Стандартный</span><b id="price-curtains-standard">5 000</b></div>
         <div class="price-row"><span data-i18n="type.express.name">Быстрый</span><b id="price-curtains-express">8 000</b></div>
       </div>
@@ -3669,9 +3669,8 @@
       'type.standard': '🧺 Стандартный', 'type.express': '⚡ Быстрый',
       'type.standard.name': 'Стандартный', 'type.express.name': 'Быстрый',
       'unit.sum': 'сум', 'unit.m2': 'м²',
-      'services.eyebrow': 'Прайс-лист ARTEZ', 'services.title': 'Услуги и цены',
-      'services.sub': 'Стоимость указана за 1 м². Точная сумма пересчитывается в калькуляторе автоматически.',
-      'services.priceUnit': 'сум / м²',
+      'services.eyebrow': 'Прайс-лист', 'services.title': 'Услуги и цены',
+      'services.sub': 'Стоимость указана за единицу измерения услуги. Точная сумма пересчитывается в калькуляторе автоматически.',
       'cabinet.eyebrow': 'Личный кабинет', 'cabinet.title': 'Все ваши заявки — в одном месте',
       'cabinet.text': 'Следите за статусом заказа, смотрите историю чисток и оформляйте новые заявки в пару кликов — без звонков и ожидания на линии.',
       'cabinet.feature1': 'Статус заявки в реальном времени — от приёма до доставки',
@@ -3855,9 +3854,8 @@
       'type.standard': '🧺 Standart', 'type.express': '⚡ Tezkor',
       'type.standard.name': 'Standart', 'type.express.name': 'Tezkor',
       'unit.sum': "so'm", 'unit.m2': 'm²',
-      'services.eyebrow': 'ARTEZ narxlar ro\'yxati', 'services.title': 'Xizmatlar va narxlar',
-      'services.sub': "Narx 1 m² uchun ko'rsatilgan. Aniq summa kalkulyatorda avtomatik hisoblanadi.",
-      'services.priceUnit': "so'm / m²",
+      'services.eyebrow': "Narxlar ro'yxati", 'services.title': 'Xizmatlar va narxlar',
+      'services.sub': "Narx xizmat o'lchov birligi uchun ko'rsatilgan. Aniq summa kalkulyatorda avtomatik hisoblanadi.",
       'cabinet.eyebrow': 'Shaxsiy kabinet', 'cabinet.title': 'Barcha buyurtmalaringiz — bir joyda',
       'cabinet.text': "Buyurtma holatini kuzating, tozalash tarixini ko'ring va bir necha bosishda yangi buyurtma bering — qo'ng'iroqsiz va kutishsiz.",
       'cabinet.feature1': "Buyurtma holati real vaqtda — qabuldan yetkazib berishgacha",
@@ -4023,6 +4021,9 @@
 
   let lang = localStorage.getItem('artez_lang') || 'uz';
 
+  // ===== API ===== (объявлено рано — используется в IIFE ниже, включая carousel/stats до строки, где раньше был объявлен)
+  const API_BASE = (window.APP_API_URL || "https://artez-api-production.up.railway.app") + "/api";
+
   function t(key) {
     const val = (I18N[lang] && I18N[lang][key] !== undefined) ? I18N[lang][key] : I18N.ru[key];
     return val !== undefined ? val : key;
@@ -4166,9 +4167,6 @@
   })();
 
   // ===== CALCULATOR =====
-  // ===== API =====
-  const API_BASE = (window.APP_API_URL || "https://artez-api-production.up.railway.app") + "/api";
-
   // Дефолтные единицы измерения (показываются до загрузки из API)
   let UNITS = {
     m2:  { symbol_ru: 'м²', symbol_uz: 'm²' },
@@ -4209,6 +4207,9 @@
           const el = document.getElementById(`price-${svc}-${type}`);
           if (el) el.textContent = info.price.toLocaleString('ru-RU').replace(/,/g,' ');
         }
+        const unitEl = document.getElementById(`unit-${svc}`);
+        const repInfo = types.standard || Object.values(types)[0];
+        if (unitEl && repInfo) unitEl.textContent = `${t('unit.sum')} / ${unitSymbol(repInfo.unit_key)}`;
       }
 
       // Пересчитываем калькулятор с новыми ценами
@@ -6793,9 +6794,10 @@
     if (e.key === 'ArrowLeft')  lbNav(-1);
     if (e.key === 'ArrowRight') lbNav(1);
   });
-  (function() {
+  window.addEventListener('DOMContentLoaded', () => {
     let _sx = null;
     const lb = document.getElementById('photoLightbox');
+    if (!lb) return;
     lb.addEventListener('touchstart', e => { _sx = e.touches[0].clientX; }, { passive: true });
     lb.addEventListener('touchend', e => {
       if (_sx === null) return;
@@ -6803,7 +6805,7 @@
       if (Math.abs(dx) > 50) lbNav(dx < 0 ? 1 : -1);
       _sx = null;
     }, { passive: true });
-  })();
+  });
 
   // ── Scroll to top on page load + плавный fade-in ──
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
