@@ -2718,6 +2718,8 @@
           <button class="s-tab"        data-stab="receipt"    onclick="switchStab(this)" data-i18n="cfg.tab.receipt">🧾 Чек</button>
           <button class="s-tab"        data-stab="slides"     onclick="switchStab(this)">🖼️ Слайдер</button>
           <button class="s-tab"        data-stab="stats"      onclick="switchStab(this)">📊 Статистика</button>
+          <button class="s-tab"        data-stab="reviews"    onclick="switchStab(this)">⭐ Отзывы</button>
+          <button class="s-tab"        data-stab="faq"        onclick="switchStab(this)">❓ FAQ</button>
         </div>
 
         <div style="max-width:660px;">
@@ -2924,6 +2926,69 @@
             </div>
           </div>
 
+          <!-- ─── Отзывы ─── -->
+          <div class="s-panel" id="stab-reviews" style="display:none;">
+            <div class="card">
+              <div class="cfg-title-row">
+                <h3 class="cfg-title">⭐ Отзывы клиентов</h3>
+              </div>
+              <p class="cfg-hint">Показываются в блоке отзывов на главной странице.</p>
+              <div id="reviewsList" style="margin-top:10px"></div>
+              <button class="btn btn-primary" onclick="openReviewModal()" style="margin-top:12px">+ Добавить отзыв</button>
+            </div>
+          </div>
+
+          <!-- ─── FAQ ─── -->
+          <div class="s-panel" id="stab-faq" style="display:none;">
+            <div class="card">
+              <div class="cfg-title-row">
+                <h3 class="cfg-title">❓ Часто задаваемые вопросы</h3>
+              </div>
+              <p class="cfg-hint">Показываются в блоке FAQ на главной странице.</p>
+              <div id="faqList" style="margin-top:10px"></div>
+              <button class="btn btn-primary" onclick="openFaqModal()" style="margin-top:12px">+ Добавить вопрос</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Модалка: отзыв -->
+      <div id="modalReviewForm" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:2000;align-items:center;justify-content:center">
+        <div class="card" style="max-width:480px;width:92%;max-height:88vh;overflow-y:auto">
+          <h3 style="margin:0 0 14px;font-size:16px;font-weight:700" id="reviewModalTitle">Новый отзыв</h3>
+          <div class="form-group"><label class="form-label">Имя автора</label><input class="form-input" id="rv_author" placeholder="Малика Р."></div>
+          <div class="form-group">
+            <label class="form-label">Оценка</label>
+            <select class="form-input" id="rv_rating">
+              <option value="5">⭐⭐⭐⭐⭐ (5)</option>
+              <option value="4">⭐⭐⭐⭐ (4)</option>
+              <option value="3">⭐⭐⭐ (3)</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Текст отзыва (RU)</label><textarea class="form-input" id="rv_text_ru" rows="3"></textarea></div>
+          <div class="form-group"><label class="form-label">Текст отзыва (UZ)</label><textarea class="form-input" id="rv_text_uz" rows="3"></textarea></div>
+          <div class="form-group"><label class="form-label">Город/подпись (RU)</label><input class="form-input" id="rv_city_ru" placeholder="г. Навои"></div>
+          <div class="form-group"><label class="form-label">Город/подпись (UZ)</label><input class="form-input" id="rv_city_uz" placeholder="Navoiy"></div>
+          <div style="display:flex;gap:8px;margin-top:14px">
+            <button class="btn btn-primary" style="flex:1" onclick="saveReviewForm()">💾 Сохранить</button>
+            <button class="btn btn-ghost" onclick="closeReviewModal()">Отмена</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Модалка: вопрос FAQ -->
+      <div id="modalFaqForm" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:2000;align-items:center;justify-content:center">
+        <div class="card" style="max-width:480px;width:92%;max-height:88vh;overflow-y:auto">
+          <h3 style="margin:0 0 14px;font-size:16px;font-weight:700" id="faqModalTitle">Новый вопрос</h3>
+          <div class="form-group"><label class="form-label">Вопрос (RU)</label><input class="form-input" id="fq_question_ru" placeholder="Сколько времени занимает чистка?"></div>
+          <div class="form-group"><label class="form-label">Вопрос (UZ)</label><input class="form-input" id="fq_question_uz" placeholder="Tozalash qancha vaqt oladi?"></div>
+          <div class="form-group"><label class="form-label">Ответ (RU)</label><textarea class="form-input" id="fq_answer_ru" rows="3"></textarea></div>
+          <div class="form-group"><label class="form-label">Ответ (UZ)</label><textarea class="form-input" id="fq_answer_uz" rows="3"></textarea></div>
+          <div style="display:flex;gap:8px;margin-top:14px">
+            <button class="btn btn-primary" style="flex:1" onclick="saveFaqForm()">💾 Сохранить</button>
+            <button class="btn btn-ghost" onclick="closeFaqModal()">Отмена</button>
+          </div>
         </div>
       </div>
 
@@ -2995,6 +3060,26 @@
                 <button class="btn btn-primary  s-save-btn"   onclick="saveCompanyProfile()" style="display:none;">💾 Сохранить</button>
                 <button class="btn btn-ghost    s-cancel-btn" onclick="cancelCard('card-company-profile', ['company_name','company_slug'])" style="display:none;">Отмена</button>
                 <span class="s-msg" id="msg_card-company-profile"></span>
+              </div>
+            </div>
+
+            <div class="card" id="card-footer-about" style="margin-top:20px">
+              <div class="cfg-title-row">
+                <h3 class="cfg-title">📝 О компании (текст в футере сайта)</h3>
+                <button class="btn s-edit-btn" onclick="editCard('card-footer-about')">✏️</button>
+              </div>
+              <div class="cfg-field" style="margin-bottom:12px">
+                <label>Текст (RU)</label>
+                <textarea class="form-input" id="cfg_footer_about_ru" disabled rows="2" placeholder="Химчистка ковров, мягкой мебели на дому..."></textarea>
+              </div>
+              <div class="cfg-field">
+                <label>Текст (UZ)</label>
+                <textarea class="form-input" id="cfg_footer_about_uz" disabled rows="2" placeholder="Uyga gilam, yumshoq mebelni tozalash xizmati..."></textarea>
+              </div>
+              <div class="cfg-actions">
+                <button class="btn btn-primary  s-save-btn"   onclick="saveCard('card-footer-about', ['footer_about_ru','footer_about_uz'])" style="display:none;">💾 Сохранить</button>
+                <button class="btn btn-ghost    s-cancel-btn" onclick="cancelCard('card-footer-about', ['footer_about_ru','footer_about_uz'])" style="display:none;">Отмена</button>
+                <span class="s-msg" id="msg_card-footer-about"></span>
               </div>
             </div>
           </div>
@@ -7403,6 +7488,167 @@ async function saveAllSiteStats() {
   }
 }
 
+// ── ОТЗЫВЫ ────────────────────────────────────────────────────────────────
+let _reviews = [];
+let _reviewEditId = null;
+
+async function loadSiteReviews() {
+  try {
+    const r = await apiGet('/admin/site-reviews');
+    _reviews = (r?.ok && r.reviews) || [];
+  } catch(e) { _reviews = []; }
+  renderReviewsList();
+}
+
+function renderReviewsList() {
+  const wrap = document.getElementById('reviewsList');
+  if (!wrap) return;
+  wrap.innerHTML = _reviews.map(rv => `
+    <div class="card" style="margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;gap:10px">
+        <div style="min-width:0">
+          <div style="font-weight:700;font-size:14px">${_esc(rv.author_name)} <span style="font-weight:400;color:var(--text2);font-size:12px">${_esc(rv.city_ru || '')}</span></div>
+          <div style="font-size:12px;color:var(--amber,#c98c24)">${'⭐'.repeat(rv.rating || 5)}</div>
+          <div style="font-size:13px;color:var(--text2);margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:360px">${_esc(rv.text_ru || '')}</div>
+        </div>
+        <div style="display:flex;gap:6px;flex-shrink:0">
+          <button class="btn btn-ghost btn-sm" onclick="openReviewModal(${rv.id})">✏️</button>
+          <button class="btn btn-ghost btn-sm" style="color:var(--danger)" onclick="deleteReview(${rv.id})">🗑️</button>
+        </div>
+      </div>
+    </div>
+  `).join('') || '<p style="color:var(--text2)">Отзывов пока нет.</p>';
+}
+
+function openReviewModal(id) {
+  _reviewEditId = id || null;
+  const rv = id ? _reviews.find(x => x.id === id) : null;
+  document.getElementById('reviewModalTitle').textContent = id ? 'Редактировать отзыв' : 'Новый отзыв';
+  document.getElementById('rv_author').value = rv?.author_name || '';
+  document.getElementById('rv_rating').value = String(rv?.rating || 5);
+  document.getElementById('rv_text_ru').value = rv?.text_ru || '';
+  document.getElementById('rv_text_uz').value = rv?.text_uz || '';
+  document.getElementById('rv_city_ru').value = rv?.city_ru || '';
+  document.getElementById('rv_city_uz').value = rv?.city_uz || '';
+  document.getElementById('modalReviewForm').style.display = 'flex';
+}
+
+function closeReviewModal() {
+  document.getElementById('modalReviewForm').style.display = 'none';
+}
+
+async function saveReviewForm() {
+  const body = {
+    author_name: document.getElementById('rv_author').value.trim(),
+    rating: parseInt(document.getElementById('rv_rating').value) || 5,
+    text_ru: document.getElementById('rv_text_ru').value.trim(),
+    text_uz: document.getElementById('rv_text_uz').value.trim(),
+    city_ru: document.getElementById('rv_city_ru').value.trim(),
+    city_uz: document.getElementById('rv_city_uz').value.trim(),
+    sort_order: _reviewEditId ? (_reviews.find(x => x.id === _reviewEditId)?.sort_order || 0) : _reviews.length,
+  };
+  try {
+    const r = _reviewEditId
+      ? await apiPut(`/admin/site-reviews/${_reviewEditId}`, body)
+      : await apiPost('/admin/site-reviews', body);
+    if (!r?.ok) { showToast(r?.detail || 'Ошибка', 'error'); return; }
+    closeReviewModal();
+    await loadSiteReviews();
+    showToast('Отзыв сохранён');
+  } catch(e) {
+    if (e.message !== '401') showToast('Ошибка: ' + e.message, 'error');
+  }
+}
+
+async function deleteReview(id) {
+  if (!confirm('Удалить отзыв?')) return;
+  try {
+    const r = await apiDelete(`/admin/site-reviews/${id}`);
+    if (r?.ok) { await loadSiteReviews(); showToast('Отзыв удалён'); }
+    else showToast(r?.detail || 'Ошибка', 'error');
+  } catch(e) {
+    if (e.message !== '401') showToast('Ошибка: ' + e.message, 'error');
+  }
+}
+
+// ── FAQ ───────────────────────────────────────────────────────────────────
+let _faqItems = [];
+let _faqEditId = null;
+
+async function loadSiteFaq() {
+  try {
+    const r = await apiGet('/admin/site-faq');
+    _faqItems = (r?.ok && r.faq) || [];
+  } catch(e) { _faqItems = []; }
+  renderFaqList();
+}
+
+function renderFaqList() {
+  const wrap = document.getElementById('faqList');
+  if (!wrap) return;
+  wrap.innerHTML = _faqItems.map(f => `
+    <div class="card" style="margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;gap:10px">
+        <div style="min-width:0">
+          <div style="font-weight:700;font-size:14px">${_esc(f.question_ru)}</div>
+          <div style="font-size:13px;color:var(--text2);margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:360px">${_esc(f.answer_ru || '')}</div>
+        </div>
+        <div style="display:flex;gap:6px;flex-shrink:0">
+          <button class="btn btn-ghost btn-sm" onclick="openFaqModal(${f.id})">✏️</button>
+          <button class="btn btn-ghost btn-sm" style="color:var(--danger)" onclick="deleteFaqItem(${f.id})">🗑️</button>
+        </div>
+      </div>
+    </div>
+  `).join('') || '<p style="color:var(--text2)">Вопросов пока нет.</p>';
+}
+
+function openFaqModal(id) {
+  _faqEditId = id || null;
+  const f = id ? _faqItems.find(x => x.id === id) : null;
+  document.getElementById('faqModalTitle').textContent = id ? 'Редактировать вопрос' : 'Новый вопрос';
+  document.getElementById('fq_question_ru').value = f?.question_ru || '';
+  document.getElementById('fq_question_uz').value = f?.question_uz || '';
+  document.getElementById('fq_answer_ru').value = f?.answer_ru || '';
+  document.getElementById('fq_answer_uz').value = f?.answer_uz || '';
+  document.getElementById('modalFaqForm').style.display = 'flex';
+}
+
+function closeFaqModal() {
+  document.getElementById('modalFaqForm').style.display = 'none';
+}
+
+async function saveFaqForm() {
+  const body = {
+    question_ru: document.getElementById('fq_question_ru').value.trim(),
+    question_uz: document.getElementById('fq_question_uz').value.trim(),
+    answer_ru: document.getElementById('fq_answer_ru').value.trim(),
+    answer_uz: document.getElementById('fq_answer_uz').value.trim(),
+    sort_order: _faqEditId ? (_faqItems.find(x => x.id === _faqEditId)?.sort_order || 0) : _faqItems.length,
+  };
+  try {
+    const r = _faqEditId
+      ? await apiPut(`/admin/site-faq/${_faqEditId}`, body)
+      : await apiPost('/admin/site-faq', body);
+    if (!r?.ok) { showToast(r?.detail || 'Ошибка', 'error'); return; }
+    closeFaqModal();
+    await loadSiteFaq();
+    showToast('Вопрос сохранён');
+  } catch(e) {
+    if (e.message !== '401') showToast('Ошибка: ' + e.message, 'error');
+  }
+}
+
+async function deleteFaqItem(id) {
+  if (!confirm('Удалить вопрос?')) return;
+  try {
+    const r = await apiDelete(`/admin/site-faq/${id}`);
+    if (r?.ok) { await loadSiteFaq(); showToast('Вопрос удалён'); }
+    else showToast(r?.detail || 'Ошибка', 'error');
+  } catch(e) {
+    if (e.message !== '401') showToast('Ошибка: ' + e.message, 'error');
+  }
+}
+
 // ── Map picker (unified, with geolocation fallback) ───────────────────────
 let _mapPickerCb = null;
 
@@ -10863,6 +11109,7 @@ const SITE_KEYS = [
   'sms_text_register','sms_text_login','sms_text_reset',
   'sheets_url',
   'receipt_header_text','receipt_slogan','receipt_footer_note',
+  'footer_about_ru','footer_about_uz',
 ];
 const TAB_KEYS = {
   social:   ['social_instagram'],
@@ -10900,6 +11147,8 @@ function switchStab(btn) {
   if (tab === 'receipt') _updateReceiptPreview();
   if (tab === 'slides')  loadSiteSlides();
   if (tab === 'stats')   loadSiteStatsAdmin();
+  if (tab === 'reviews') loadSiteReviews();
+  if (tab === 'faq')     loadSiteFaq();
 }
 
 function switchCompanyStab(btn) {
