@@ -2303,7 +2303,6 @@
                 <th data-i18n="th.client">Клиент</th>
                 <th data-i18n="th.telegram">Telegram</th>
                 <th data-i18n="th.agent">Агент</th>
-                <th data-i18n="th.auto">Авто</th>
                 <th data-i18n="th.reg">Регистрация</th>
                 <th data-i18n="th.last.login">Последний вход</th>
                 <th style="width:60px"></th>
@@ -2703,7 +2702,6 @@
         </div>
       </div>
 
-      <!-- OSAGO SETTINGS PAGE -->
       <!-- SITE SETTINGS PAGE -->
       <div class="page" id="page-siteconfig">
         <div class="section-header"><h2>⚙️ Настройки сайта</h2></div>
@@ -4130,7 +4128,6 @@
               <button onclick="document.getElementById('smsSingleCat').value='';smsFilterTpl('smsSingleCat','smsSingleTpl');smsSingleCatHighlight(this)" style="font-size:12px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--accent);color:#fff;cursor:pointer;flex-shrink:0" data-i18n="sms.cat.all">Все</button>
               <button onclick="document.getElementById('smsSingleCat').value='cleaning';smsFilterTpl('smsSingleCat','smsSingleTpl');smsSingleCatHighlight(this)" style="font-size:12px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer;flex-shrink:0" data-i18n="sms.cat.cleaning">🧺 Химчистка</button>
               <button onclick="document.getElementById('smsSingleCat').value='greeting';smsFilterTpl('smsSingleCat','smsSingleTpl');smsSingleCatHighlight(this)" style="font-size:12px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer;flex-shrink:0" data-i18n="sms.cat.greetings">🎉 Поздравления</button>
-              <button onclick="document.getElementById('smsSingleCat').value='osago';smsFilterTpl('smsSingleCat','smsSingleTpl');smsSingleCatHighlight(this)" style="font-size:12px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer;flex-shrink:0" data-i18n="sms.cat.osago">🚗 ОСАГО</button>
               <button onclick="document.getElementById('smsSingleCat').value='other';smsFilterTpl('smsSingleCat','smsSingleTpl');smsSingleCatHighlight(this)" style="font-size:12px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer;flex-shrink:0" data-i18n="sms.cat.other">📁 Другие</button>
             </div>
             <input type="hidden" id="smsSingleCat" value="">
@@ -4199,7 +4196,6 @@
               <button onclick="document.getElementById('smsGroupCat').value='';smsFilterTpl('smsGroupCat','smsGroupTpl');smsGroupCatHighlight(this)" style="font-size:12px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--accent);color:#fff;cursor:pointer;flex-shrink:0" data-i18n="sms.cat.all">Все</button>
               <button onclick="document.getElementById('smsGroupCat').value='cleaning';smsFilterTpl('smsGroupCat','smsGroupTpl');smsGroupCatHighlight(this)" style="font-size:12px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer;flex-shrink:0" data-i18n="sms.cat.cleaning">🧺 Химчистка</button>
               <button onclick="document.getElementById('smsGroupCat').value='greeting';smsFilterTpl('smsGroupCat','smsGroupTpl');smsGroupCatHighlight(this)" style="font-size:12px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer;flex-shrink:0" data-i18n="sms.cat.greetings">🎉 Поздравления</button>
-              <button onclick="document.getElementById('smsGroupCat').value='osago';smsFilterTpl('smsGroupCat','smsGroupTpl');smsGroupCatHighlight(this)" style="font-size:12px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer;flex-shrink:0" data-i18n="sms.cat.osago">🚗 ОСАГО</button>
               <button onclick="document.getElementById('smsGroupCat').value='other';smsFilterTpl('smsGroupCat','smsGroupTpl');smsGroupCatHighlight(this)" style="font-size:12px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer;flex-shrink:0" data-i18n="sms.cat.other">📁 Другие</button>
             </div>
             <input type="hidden" id="smsGroupCat" value="">
@@ -4264,7 +4260,6 @@
             <div style="display:flex;gap:8px;flex-wrap:wrap" id="smsTplTabs">
               <button class="btn btn-sm" id="smsTplTab-cleaning" onclick="smsTplSetCat('cleaning')" style="background:var(--accent);color:#fff" data-i18n="sms.cat.cleaning">🧺 Химчистка</button>
               <button class="btn btn-sm" id="smsTplTab-greeting" onclick="smsTplSetCat('greeting')" style="background:var(--surface2);color:var(--text)" data-i18n="sms.cat.greetings">🎉 Поздравления</button>
-              <button class="btn btn-sm" id="smsTplTab-osago"    onclick="smsTplSetCat('osago')"    style="background:var(--surface2);color:var(--text)" data-i18n="sms.cat.osago">🚗 ОСАГО</button>
               <button class="btn btn-sm" id="smsTplTab-other"    onclick="smsTplSetCat('other')"    style="background:var(--surface2);color:var(--text)" data-i18n="sms.cat.other">📁 Другие</button>
               <button class="btn btn-sm" id="smsTplTab-all"      onclick="smsTplSetCat('all')"      style="background:var(--surface2);color:var(--text)" data-i18n="sms.cat.all">🔍 Все</button>
             </div>
@@ -4346,7 +4341,6 @@
               <select id="smsTplCat" class="price-input" style="width:100%">
                 <option value="cleaning" data-i18n="sms.cat.cleaning">🧺 Химчистка</option>
                 <option value="greeting" data-i18n="sms.cat.greetings">🎉 Поздравления</option>
-                <option value="osago" data-i18n="sms.cat.osago">🚗 ОСАГО</option>
                 <option value="other" data-i18n="sms.cat.other">📁 Другие</option>
               </select>
             </div>
@@ -5893,7 +5887,7 @@ const _adminI18n = {
     'th.service':'Услуга','th.orders.count':'Заявок','th.last.order':'Последняя заявка',
     'th.extra.phone':'Доп.номер','th.fio':'Фамилия Имя Отчество',
     'th.extra.phone2':'Доп.тел','th.short.addr':'Кр. адрес','th.full.addr':'Полный адрес',
-    'th.telegram':'Telegram','th.agent':'Агент','th.auto':'Авто',
+    'th.telegram':'Telegram','th.agent':'Агент',
     'th.reg':'Регистрация','th.last.login':'Последний вход','th.tg.id':'Telegram ID',
     'th.dept':'Отдел','th.title':'Название','th.desc':'Описание',
     'th.staff.count':'Сотрудников','th.sal.type':'Тип зарплаты','th.rate':'Ставка',
@@ -6108,7 +6102,7 @@ const _adminI18n = {
     'sms.nick.lbl':'Ник (альфа имя)','sms.short.ph':'4546 (короткий номер)',
     'sms.template.lbl':'Шаблон',
     'sms.cat.all':'Все','sms.cat.cleaning':'🧺 Химчистка',
-    'sms.cat.greetings':'🎉 Поздравления','sms.cat.osago':'🚗 ОСАГО',
+    'sms.cat.greetings':'🎉 Поздравления',
     'sms.cat.other':'📁 Другие','sms.no.template':'— Без шаблона —',
     'sms.text.lbl':'Текст сообщения','sms.text.ph':'Введите текст сообщения...',
     'sms.chars.help':'📌 Инструкция по символам','sms.btn.send':'📤 Отправить',
@@ -6371,7 +6365,7 @@ const _adminI18n = {
     'th.last.order':'Oxirgi buyurtma','th.extra.phone':'Qoʻsh. tel',
     'th.fio':'Familiya Ism Sharaf','th.extra.phone2':'Qoʻsh. tel',
     'th.short.addr':'Qisc. manzil','th.full.addr':'Toʻliq manzil',
-    'th.telegram':'Telegram','th.agent':'Agent','th.auto':'Avto',
+    'th.telegram':'Telegram','th.agent':'Agent',
     'th.reg':'Roʻyxatdan oʻtgan','th.last.login':'Oxirgi kirish','th.tg.id':'Telegram ID',
     'th.dept':'Boʻlim','th.title':'Nomi','th.desc':'Tavsif',
     'th.staff.count':'Xodimlar','th.sal.type':'Maosh turi','th.rate':'Stavka',
@@ -6586,7 +6580,7 @@ const _adminI18n = {
     'sms.nick.lbl':'Nik (alfa nomi)','sms.short.ph':'4546 (qisqa raqam)',
     'sms.template.lbl':'Shablon',
     'sms.cat.all':'Barchasi','sms.cat.cleaning':'🧺 Kimyoviy tozalash',
-    'sms.cat.greetings':'🎉 Tabriklar','sms.cat.osago':'🚗 OSAGO',
+    'sms.cat.greetings':'🎉 Tabriklar',
     'sms.cat.other':'📁 Boshqalar','sms.no.template':'— Shablonsiz —',
     'sms.text.lbl':'Xabar matni','sms.text.ph':'Xabar matnini kiriting...',
     'sms.chars.help':'📌 Belgilar boʻyicha koʻrsatma','sms.btn.send':'📤 Yuborish',
@@ -14628,13 +14622,11 @@ async function adminLoadSiteUsers() {
   const verified = users.filter(u => u.is_verified).length;
   const withTg   = users.filter(u => u.tg_id).length;
   const agents   = users.filter(u => u.is_agent).length;
-  const withCar  = users.filter(u => u.car_plate).length;
   if (stats) stats.innerHTML = [
     ['👥 Всего', total, '#6366f1'],
     ['✅ Подтверждены', verified, '#34c759'],
     ['📱 Telegram', withTg, '#007aff'],
     ['🤝 Агенты', agents, '#ff9500'],
-    ['🚗 С авто', withCar, '#5856d6'],
   ].map(([l,v,c]) => `<span style="font-size:13px;padding:5px 14px;border-radius:20px;background:${c}18;color:${c};font-weight:700;white-space:nowrap">${l}: ${v}</span>`).join('');
 
   // Filter
@@ -14655,9 +14647,6 @@ async function adminLoadSiteUsers() {
     const agentBadge = u.is_agent
       ? `<span style="font-size:11px;padding:2px 7px;border-radius:10px;background:#ff950018;color:#ff9500;font-weight:600">🤝 Агент</span>`
       : `<span style="font-size:12px;color:var(--text2)">—</span>`;
-    const carBadge = u.car_plate
-      ? `<span style="font-size:11px;padding:2px 7px;border-radius:10px;background:#5856d618;color:#5856d6;font-weight:600">🚗 ${u.car_plate}</span>`
-      : `<span style="font-size:12px;color:var(--text2)">—</span>`;
     return `<tr style="cursor:pointer" onclick="openSiteUserCard(${u.id})">
       <td style="color:var(--text2);font-size:12px">${i+1}</td>
       <td>
@@ -14671,7 +14660,6 @@ async function adminLoadSiteUsers() {
       </td>
       <td>${tgBadge}</td>
       <td>${agentBadge}</td>
-      <td>${carBadge}</td>
       <td style="font-size:12px;white-space:nowrap;color:var(--text2)">${_fmtDate(u.created_at)}</td>
       <td style="font-size:12px;white-space:nowrap;color:var(--text2)">${_fmtDt(u.last_login)}</td>
       <td><button class="btn btn-sm" style="padding:4px 10px;font-size:12px" onclick="event.stopPropagation();openSiteUserCard(${u.id})">✏️</button></td>
@@ -14707,20 +14695,10 @@ function openSiteUserCard(userId) {
   document.getElementById('suCardRegDate').textContent = _fmtDt(u.created_at);
   document.getElementById('suCardLastLogin').textContent = _fmtDt(u.last_login);
   document.getElementById('suCardAddress').textContent = u.address || '—';
-  document.getElementById('suCardCar').textContent = u.car_plate || '—';
-  const osagoVal = u.osago_expiry ? _fmtDate(u.osago_expiry) : '—';
-  const osagoEl = document.getElementById('suCardOsago');
-  osagoEl.textContent = osagoVal;
-  if (u.osago_expiry) {
-    const diff = (new Date(u.osago_expiry) - new Date()) / 86400000;
-    osagoEl.style.color = diff < 30 ? '#ff3b30' : diff < 90 ? '#ff9500' : '';
-  }
 
   // Форма редактирования
   document.getElementById('suEditName').value     = u.first_name || '';
   document.getElementById('suEditAddress').value  = u.address || '';
-  document.getElementById('suEditCar').value      = u.car_plate || '';
-  document.getElementById('suEditOsago').value    = u.osago_expiry ? u.osago_expiry.split('T')[0] : '';
 
   // Сброс пароля
   document.getElementById('suResetPassInput').value = '';
@@ -14759,8 +14737,6 @@ async function suSaveEdit() {
     body: JSON.stringify({
       first_name:   document.getElementById('suEditName').value.trim(),
       address:      document.getElementById('suEditAddress').value.trim(),
-      car_plate:    document.getElementById('suEditCar').value.trim(),
-      osago_expiry: document.getElementById('suEditOsago').value.trim() || null,
     })
   });
   btn.disabled = false; btn.textContent = '💾 Сохранить';
@@ -19976,17 +19952,9 @@ function confirmBranchLoc() {
           <div style="font-size:10px;color:#6b6b8a;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">🕐 Последний вход</div>
           <div id="suCardLastLogin" style="font-size:12px;font-weight:600;color:#e0e0f0"></div>
         </div>
-        <div style="padding:10px 14px;border-bottom:1px solid #2a2b42;border-right:1px solid #2a2b42">
+        <div style="padding:10px 14px;border-bottom:1px solid #2a2b42;grid-column:1/-1">
           <div style="font-size:10px;color:#6b6b8a;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">📍 Адрес</div>
           <div id="suCardAddress" style="font-size:12px;font-weight:600;color:#e0e0f0"></div>
-        </div>
-        <div style="padding:10px 14px;border-bottom:1px solid #2a2b42">
-          <div style="font-size:10px;color:#6b6b8a;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">🚗 Авто</div>
-          <div id="suCardCar" style="font-size:12px;font-weight:600;color:#e0e0f0"></div>
-        </div>
-        <div style="padding:10px 14px;grid-column:1/-1">
-          <div style="font-size:10px;color:#6b6b8a;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">🛡 ОСАГО до</div>
-          <div id="suCardOsago" style="font-size:12px;font-weight:600;color:#e0e0f0"></div>
         </div>
       </div>
 
@@ -19995,23 +19963,13 @@ function confirmBranchLoc() {
         style="width:100%;padding:11px;border-radius:12px;border:1px solid #2a2b42;background:#22233a;color:#a0a0c0;font-size:13px;cursor:pointer;transition:background .15s"
         onmouseover="this.style.background='#2a2b42'" onmouseout="this.style.background='#22233a'">✏️ Редактировать</button>
       <div id="suEditSection" style="display:none;background:#20213a;border:1px solid #2a2b42;border-radius:12px;padding:14px;flex-direction:column;gap:8px">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-          <div>
-            <div style="font-size:11px;color:#6b6b8a;margin-bottom:4px">Имя</div>
-            <input id="suEditName" class="price-input" style="width:100%;background:#16172a;color:#e0e0f0;border-color:#2a2b42" placeholder="Имя клиента">
-          </div>
-          <div>
-            <div style="font-size:11px;color:#6b6b8a;margin-bottom:4px">Гос. номер авто</div>
-            <input id="suEditCar" class="price-input" style="width:100%;text-transform:uppercase;background:#16172a;color:#e0e0f0;border-color:#2a2b42" placeholder="01 A 123 AB">
-          </div>
+        <div>
+          <div style="font-size:11px;color:#6b6b8a;margin-bottom:4px">Имя</div>
+          <input id="suEditName" class="price-input" style="width:100%;background:#16172a;color:#e0e0f0;border-color:#2a2b42" placeholder="Имя клиента">
         </div>
         <div>
           <div style="font-size:11px;color:#6b6b8a;margin-bottom:4px">Адрес</div>
           <input id="suEditAddress" class="price-input" style="width:100%;background:#16172a;color:#e0e0f0;border-color:#2a2b42" placeholder="Адрес">
-        </div>
-        <div>
-          <div style="font-size:11px;color:#6b6b8a;margin-bottom:4px">ОСАГО — срок действия</div>
-          <input id="suEditOsago" class="price-input" type="date" style="width:100%;background:#16172a;color:#e0e0f0;border-color:#2a2b42;color-scheme:dark">
         </div>
         <button id="suEditSaveBtn" class="btn btn-primary" style="width:100%" onclick="suSaveEdit()">💾 Сохранить изменения</button>
       </div>
@@ -22028,7 +21986,7 @@ async function smsLoadTplSelects() {
   });
 }
 
-const _SMS_CAT_LABELS = { cleaning:'🧺 Химчистка', greeting:'🎉 Поздравления', osago:'🚗 ОСАГО', other:'📁 Другие' };
+const _SMS_CAT_LABELS = { cleaning:'🧺 Химчистка', greeting:'🎉 Поздравления', other:'📁 Другие' };
 
 function smsBuildTplOptions(sel, filterCat) {
   const filtered = filterCat ? _smsTplData.filter(t => t.category === filterCat) : _smsTplData;
@@ -22346,7 +22304,6 @@ function smsTplMainTab(tab) {
 const _SMS_TPL_CATS = {
   cleaning: { icon: '🧺', label: 'Химчистка' },
   greeting: { icon: '🎉', label: 'Поздравления' },
-  osago:    { icon: '🚗', label: 'ОСАГО' },
   other:    { icon: '📁', label: 'Другие' },
 };
 
