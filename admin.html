@@ -8767,6 +8767,7 @@ function _activatePage(page) {
   if (page === 'site-users')  adminLoadSiteUsers();
   if (page === 'siteconfig')  { loadSiteSettings(); staffMgmtLoad(); }
   if (page === 'company-settings') { _loadCompanyProfile(); loadSiteSettings(); _loadCompanySocial(); renderBranchContactCards(); loadBranches().then(() => renderBranchContactCards()); }
+  if (page === 'site-design') designLoad();
   if (page === 'tg-bot')      loadSiteSettings();
   if (page === 'tg-messages') loadTgSettings();
   if (page === 'tg-clients')  loadTgClients();
