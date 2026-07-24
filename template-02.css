@@ -62,6 +62,30 @@ nav.nav-links a:hover{ color: var(--ink); }
 .calc-card h2{ color:var(--ink); }
 .calc-card .calc-sub{ color:var(--ink-soft); }
 
+/* Поля/дропдауны/сумма внутри calc-card изначально рассчитаны на тёмную
+   стеклянную подложку (hero всегда был тёмным) — раз в этом шаблоне hero
+   в светлой теме стал светлым, поля нужно перекрасить, иначе "белое на
+   белом". В тёмной теме hero остаётся тёмным (var(--sand) сам темнеет),
+   поэтому здесь трогаем только светлую тему. */
+:root:not([data-theme="dark"]) .calc-card .field select,
+:root:not([data-theme="dark"]) .calc-card .field input{
+  background: var(--sand);
+  color: var(--ink);
+  border-color: var(--line);
+}
+:root:not([data-theme="dark"]) .calc-card .field select option{ background:#fff; color:var(--ink); }
+:root:not([data-theme="dark"]) .calc-card .field input::placeholder{ color: var(--ink-soft); }
+:root:not([data-theme="dark"]) .calc-card .field select:focus,
+:root:not([data-theme="dark"]) .calc-card .field input:focus{ background:#fff; }
+:root:not([data-theme="dark"]) .calc-card .calc-total{ border-top-color: var(--line); }
+:root:not([data-theme="dark"]) .calc-card .calc-total .label{ color: var(--ink-soft); }
+:root:not([data-theme="dark"]) .calc-card .calc-total .amount{
+  background: linear-gradient(135deg, var(--teal) 0%, var(--teal-soft) 100%);
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+}
+:root:not([data-theme="dark"]) .calc-card .calc-total .amount span{ -webkit-text-fill-color: var(--ink-soft); }
+:root:not([data-theme="dark"]) .calc-card .calc-note{ color: var(--ink-soft); }
+
 /* ── Карточки услуг: плоские, без наплыва/свечения при hover ── */
 .service-card{
   box-shadow:none;

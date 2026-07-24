@@ -912,7 +912,7 @@
   // *.css/*.js на этом хостинге отдаются с Cache-Control: max-age=2592000 (30 дней) — при
   // правках template-0N.css бампать DESIGN_ASSET_V ниже, иначе браузеры продолжат месяц
   // показывать старую версию файла даже после деплоя фикса.
-  const DESIGN_ASSET_V = 2;
+  const DESIGN_ASSET_V = 3;
   (async function applySiteDesign() {
     try {
       const qs = new URLSearchParams(location.search);
@@ -2624,14 +2624,19 @@
     }
   }
 
-  function toggleContactModal() {
+  async function toggleContactModal() {
     const overlay = document.getElementById('contactOverlay');
     const btn     = document.getElementById('floatMainBtn');
     const isOpen  = !overlay.classList.contains('open');
     if (isOpen) {
-      overlay.classList.add('open');
+      // Сначала подгружаем реальные контакты компании и рендерим их в модалку,
+      // и только потом показываем оверлей — иначе на миг мелькают заглушки
+      // из статичного HTML (номер 1221 от ARTEZ/company_id=1), пока не придут
+      // настройки текущей компании.
       btn.classList.add('open');
-      _loadSiteSettings().then(_renderContactModal);
+      await _loadSiteSettings();
+      _renderContactModal();
+      overlay.classList.add('open');
     } else {
       closeContactModal();
     }

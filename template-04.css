@@ -14,11 +14,12 @@
 body{ background: var(--line); }
 [data-theme="dark"] body{ background:#10201d; }
 
+/* hero-section/reviews-section/cabinet-section НЕ карточим: у них всегда тёмный
+   фон с белым текстом внутри (calc-card/review-card/cabinet-card рассчитаны
+   именно на тёмную подложку в любой теме сайта) — если сделать фон карточки
+   светлым, весь белый текст внутри становится нечитаемым ("белое на белом"). */
 .section,
-.hero-section,
-.ba-section,
-.reviews-section,
-.cabinet-section{
+.ba-section{
   background: var(--sand-card);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
@@ -26,7 +27,6 @@ body{ background: var(--line); }
   max-width: 1360px;
   overflow:hidden;
 }
-.hero-section{ animation:none; }
 .section-dark{ background: linear-gradient(180deg, #0E2D2A 0%, #112926 100%); }
 
 /* Инлайновый background="var(--sand)" у некоторых секций перебивает карточный фон — выравниваем. */
@@ -45,7 +45,7 @@ body{ background: var(--line); }
 .calc-card{ border-radius: var(--radius-sm); }
 
 @media (max-width: 640px){
-  .section, .hero-section, .ba-section, .reviews-section, .cabinet-section, .stats-strip{
+  .section, .ba-section, .stats-strip{
     margin: 12px 10px;
     border-radius: var(--radius-sm);
   }
