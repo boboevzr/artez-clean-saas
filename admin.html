@@ -2833,6 +2833,79 @@
               </div>
             </div>
 
+            <div class="card" id="card-agent-marketing" style="margin-top:16px">
+              <div class="cfg-title-row">
+                <h3 class="cfg-title">🤝 Текст секции "Стать агентом" на сайте</h3>
+                <button class="btn s-edit-btn" onclick="editCard('card-agent-marketing')">✏️</button>
+              </div>
+              <p class="cfg-hint">Карточка "% от суммы заказа" на сайте берётся автоматически из комиссии выше — здесь её не задают.</p>
+              <div class="cfg-field" style="margin-bottom:12px">
+                <label>Заголовок (RU)</label>
+                <input class="form-input" id="cfg_agent_title_ru" disabled placeholder="Станьте нашим агентом">
+              </div>
+              <div class="cfg-field" style="margin-bottom:12px">
+                <label>Заголовок (UZ)</label>
+                <input class="form-input" id="cfg_agent_title_uz" disabled placeholder="Bizning agentimiz bo'ling">
+              </div>
+              <div class="cfg-field" style="margin-bottom:12px">
+                <label>Описание (RU)</label>
+                <textarea class="form-input" id="cfg_agent_text_ru" disabled rows="2"></textarea>
+              </div>
+              <div class="cfg-field" style="margin-bottom:12px">
+                <label>Описание (UZ)</label>
+                <textarea class="form-input" id="cfg_agent_text_uz" disabled rows="2"></textarea>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:12px">
+                <div class="cfg-field">
+                  <label>Карточка 2 — значение</label>
+                  <input class="form-input" id="cfg_agent_card2_value" disabled placeholder="CRM">
+                </div>
+                <div class="cfg-field">
+                  <label>Карточка 3 — значение</label>
+                  <input class="form-input" id="cfg_agent_card3_value" disabled placeholder="∞">
+                </div>
+                <div class="cfg-field">
+                  <label>Подпись 2 (RU)</label>
+                  <input class="form-input" id="cfg_agent_card2_label_ru" disabled placeholder="личный кабинет">
+                </div>
+                <div class="cfg-field">
+                  <label>Подпись 3 (RU)</label>
+                  <input class="form-input" id="cfg_agent_card3_label_ru" disabled placeholder="без лимита">
+                </div>
+                <div class="cfg-field">
+                  <label>Подпись 2 (UZ)</label>
+                  <input class="form-input" id="cfg_agent_card2_label_uz" disabled placeholder="shaxsiy kabinet">
+                </div>
+                <div class="cfg-field">
+                  <label>Подпись 3 (UZ)</label>
+                  <input class="form-input" id="cfg_agent_card3_label_uz" disabled placeholder="cheklovsiz">
+                </div>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:12px">
+                <div class="cfg-field">
+                  <label>Текст кнопки (RU)</label>
+                  <input class="form-input" id="cfg_agent_cta_text_ru" disabled placeholder="🤝 Стать агентом">
+                </div>
+                <div class="cfg-field">
+                  <label>Текст кнопки (UZ)</label>
+                  <input class="form-input" id="cfg_agent_cta_text_uz" disabled placeholder="🤝 Agent bo'lish">
+                </div>
+                <div class="cfg-field">
+                  <label>Ссылка "Подробнее" (RU)</label>
+                  <input class="form-input" id="cfg_agent_learnmore_text_ru" disabled placeholder="Подробнее о программе">
+                </div>
+                <div class="cfg-field">
+                  <label>Ссылка "Подробнее" (UZ)</label>
+                  <input class="form-input" id="cfg_agent_learnmore_text_uz" disabled placeholder="Dastur haqida batafsil">
+                </div>
+              </div>
+              <div class="cfg-actions">
+                <button class="btn btn-primary  s-save-btn"   onclick="saveCard('card-agent-marketing', ['agent_title_ru','agent_title_uz','agent_text_ru','agent_text_uz','agent_card2_value','agent_card2_label_ru','agent_card2_label_uz','agent_card3_value','agent_card3_label_ru','agent_card3_label_uz','agent_cta_text_ru','agent_cta_text_uz','agent_learnmore_text_ru','agent_learnmore_text_uz'])" style="display:none;">💾 Сохранить</button>
+                <button class="btn btn-ghost    s-cancel-btn" onclick="cancelCard('card-agent-marketing', ['agent_title_ru','agent_title_uz','agent_text_ru','agent_text_uz','agent_card2_value','agent_card2_label_ru','agent_card2_label_uz','agent_card3_value','agent_card3_label_ru','agent_card3_label_uz','agent_cta_text_ru','agent_cta_text_uz','agent_learnmore_text_ru','agent_learnmore_text_uz'])" style="display:none;">Отмена</button>
+                <span class="s-msg" id="msg_card-agent-marketing"></span>
+              </div>
+            </div>
+
             <!-- Список всех начислений -->
             <div class="card" style="margin-top:16px">
               <div class="cfg-title-row" style="margin-bottom:12px">
@@ -11110,6 +11183,11 @@ const SITE_KEYS = [
   'sheets_url',
   'receipt_header_text','receipt_slogan','receipt_footer_note',
   'footer_about_ru','footer_about_uz',
+  'agent_title_ru','agent_title_uz','agent_text_ru','agent_text_uz',
+  'agent_card2_value','agent_card2_label_ru','agent_card2_label_uz',
+  'agent_card3_value','agent_card3_label_ru','agent_card3_label_uz',
+  'agent_cta_text_ru','agent_cta_text_uz',
+  'agent_learnmore_text_ru','agent_learnmore_text_uz',
 ];
 const TAB_KEYS = {
   social:   ['social_instagram'],

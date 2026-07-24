@@ -3537,17 +3537,17 @@
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:32px">
         <div style="background:rgba(255,255,255,0.1);border-radius:14px;padding:20px 14px">
           <div style="font-size:32px;margin-bottom:8px">💰</div>
-          <div style="font-size:20px;font-weight:800;color:#4ade80">5–10%</div>
+          <div id="agentCard1Value" style="font-size:20px;font-weight:800;color:#4ade80">5%</div>
           <div style="font-size:12px;color:rgba(255,255,255,0.7);margin-top:4px" data-i18n="agent.card1.label">от суммы заказа</div>
         </div>
         <div style="background:rgba(255,255,255,0.1);border-radius:14px;padding:20px 14px">
           <div style="font-size:32px;margin-bottom:8px">📋</div>
-          <div style="font-size:20px;font-weight:800;color:#4ade80">CRM</div>
+          <div id="agentCard2Value" style="font-size:20px;font-weight:800;color:#4ade80">CRM</div>
           <div style="font-size:12px;color:rgba(255,255,255,0.7);margin-top:4px" data-i18n="agent.card2.label">личный кабинет</div>
         </div>
         <div style="background:rgba(255,255,255,0.1);border-radius:14px;padding:20px 14px">
           <div style="font-size:32px;margin-bottom:8px">🚀</div>
-          <div style="font-size:20px;font-weight:800;color:#4ade80">∞</div>
+          <div id="agentCard3Value" style="font-size:20px;font-weight:800;color:#4ade80">∞</div>
           <div style="font-size:12px;color:rgba(255,255,255,0.7);margin-top:4px" data-i18n="agent.card3.label">без лимита</div>
         </div>
       </div>
@@ -4641,6 +4641,36 @@
           ? 'Uyga gilam, yumshoq mebel, matras va pardalarni quruq tozalash xizmati.'
           : 'Химчистка ковров, мягкой мебели, матрасов и штор на дому.');
       }
+
+      // Секция "Стать агентом" — текст правим прямо в словаре I18N, чтобы пережить переключение языка
+      if (s.agent_title_ru)          I18N.ru['agent.title'] = s.agent_title_ru;
+      if (s.agent_title_uz)          I18N.uz['agent.title'] = s.agent_title_uz;
+      if (s.agent_text_ru)           I18N.ru['agent.text'] = s.agent_text_ru;
+      if (s.agent_text_uz)           I18N.uz['agent.text'] = s.agent_text_uz;
+      if (s.agent_card2_label_ru)    I18N.ru['agent.card2.label'] = s.agent_card2_label_ru;
+      if (s.agent_card2_label_uz)    I18N.uz['agent.card2.label'] = s.agent_card2_label_uz;
+      if (s.agent_card3_label_ru)    I18N.ru['agent.card3.label'] = s.agent_card3_label_ru;
+      if (s.agent_card3_label_uz)    I18N.uz['agent.card3.label'] = s.agent_card3_label_uz;
+      if (s.agent_cta_text_ru)       I18N.ru['agent.join'] = s.agent_cta_text_ru;
+      if (s.agent_cta_text_uz)       I18N.uz['agent.join'] = s.agent_cta_text_uz;
+      if (s.agent_learnmore_text_ru) I18N.ru['agent.learnMore'] = s.agent_learnmore_text_ru;
+      if (s.agent_learnmore_text_uz) I18N.uz['agent.learnMore'] = s.agent_learnmore_text_uz;
+
+      const commType = s.agent_commission_type || 'percent';
+      if (commType === 'fixed' && s.agent_commission_fixed) {
+        const fixedVal = Number(s.agent_commission_fixed).toLocaleString('ru-RU').replace(/,/g, ' ');
+        I18N.ru['agent.card1.label'] = 'за доставленный заказ';
+        I18N.uz['agent.card1.label'] = "yetkazilgan buyurtma uchun";
+        document.getElementById('agentCard1Value') && (document.getElementById('agentCard1Value').textContent = fixedVal + ' сум');
+      } else {
+        const pct = s.agent_commission_percent || '5';
+        I18N.ru['agent.card1.label'] = 'от суммы заказа';
+        I18N.uz['agent.card1.label'] = "buyurtma summasidan";
+        document.getElementById('agentCard1Value') && (document.getElementById('agentCard1Value').textContent = pct + '%');
+      }
+      if (s.agent_card2_value) document.getElementById('agentCard2Value') && (document.getElementById('agentCard2Value').textContent = s.agent_card2_value);
+      if (s.agent_card3_value) document.getElementById('agentCard3Value') && (document.getElementById('agentCard3Value').textContent = s.agent_card3_value);
+      applyI18n();
 
       // Яндекс Карты — загружаем скрипт с актуальным ключом
       const ymapsKey = s.yandex_maps_key || '270b3869-e967-409a-8194-1c0fb8835abf';
