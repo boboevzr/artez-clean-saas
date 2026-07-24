@@ -752,7 +752,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-s
         🔔
         <span id="notifBadge" style="display:none;position:absolute;top:0;right:2px;background:#ef4444;color:#fff;font-size:10px;font-weight:700;border-radius:10px;min-width:16px;height:16px;line-height:16px;text-align:center;padding:0 3px"></span>
       </button>
-      <button id="langToggleBtn" onclick="_toggleLang()" style="background:none;border:1.5px solid var(--sep);border-radius:8px;padding:3px 9px;font-size:12px;font-weight:700;color:var(--text2);cursor:pointer;line-height:1.4"></button>
+      <div class="lang-switch" id="staffLangSwitch" style="display:flex;align-items:center;background:var(--card);border:1px solid var(--sep);border-radius:999px;padding:3px;gap:2px">
+        <button type="button" data-lang-btn="ru" onclick="_setLang('ru')" style="border:none;background:transparent;color:var(--text2);padding:5px 12px;border-radius:999px;font-size:12px;font-weight:700;cursor:pointer;line-height:1.2">RU</button>
+        <button type="button" data-lang-btn="uz" onclick="_setLang('uz')" style="border:none;background:transparent;color:var(--text2);padding:5px 12px;border-radius:999px;font-size:12px;font-weight:700;cursor:pointer;line-height:1.2">UZ</button>
+      </div>
       <div id="profileDropWrap"></div>
     </div>
 
@@ -1168,11 +1171,19 @@ let currentPage = 'dashboard';
 // ─── i18n ──────────────────────────────────────────────
 let _lang = localStorage.getItem('staff_lang') || 'ru';
 function t(k) { return (_i18n[_lang]||{})[k] || (_i18n.ru||{})[k] || k; }
-function _toggleLang() {
-  _lang = _lang === 'ru' ? 'uz' : 'ru';
+function _setLang(lang) {
+  if (lang !== 'ru' && lang !== 'uz') return;
+  _lang = lang;
   localStorage.setItem('staff_lang', _lang);
-  document.getElementById('langToggleBtn').textContent = _lang === 'uz' ? 'RU' : 'UZ';
+  _updateLangSwitchUI();
   _applyPageI18n();
+}
+function _updateLangSwitchUI() {
+  document.querySelectorAll('#staffLangSwitch [data-lang-btn]').forEach(b => {
+    const active = b.dataset.langBtn === _lang;
+    b.style.background = active ? 'var(--accent)' : 'transparent';
+    b.style.color = active ? '#fff' : 'var(--text2)';
+  });
 }
 function _applyPageI18n() {
   buildDrawerNav();
@@ -1905,8 +1916,7 @@ function startApp() {
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('app').style.display = 'flex';
   document.getElementById('app').style.flexDirection = 'column';
-  const langBtn = document.getElementById('langToggleBtn');
-  if (langBtn) langBtn.textContent = _lang === 'uz' ? 'RU' : 'UZ';
+  _updateLangSwitchUI();
 
   const role    = currentStaff.role;
   const name    = [currentStaff.first_name, currentStaff.last_name].filter(Boolean).join(' ');
@@ -1930,6 +1940,10 @@ function startApp() {
             <div style="font-weight:600;font-size:14px;">${name || 'Сотрудник'}</div>
             <div style="font-size:12px;color:var(--text2);">${roleLabel}</div>
           </div>
+        </div>
+        <div style="padding:8px 14px;font-size:12px;color:var(--text2);border-bottom:1px solid var(--sep)">
+          🏢 ${_esc(localStorage.getItem('staff_company_name') || '—')}
+          ${localStorage.getItem('staff_company_slug') ? ` · <code>${_esc(localStorage.getItem('staff_company_slug'))}</code>` : ''}
         </div>
         <div class="profile-drop-sep"></div>
         <button id="profDrop_cashBtn" class="profile-drop-logout" style="color:var(--text)" onclick="closeProfileDrop();openMyCashModal()">💵 Моя касса</button>

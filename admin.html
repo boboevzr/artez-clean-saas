@@ -1338,7 +1338,10 @@
         <circle cx="100" cy="32" r="12" fill="#C79A3D"/>
       </svg></span> <span>Cleano</span> <span style="color:var(--text2); font-weight:400; font-size:14px;">Админ</span><img id="topbarCompanyLogo" src="" alt="" style="display:none;width:22px;height:22px;border-radius:6px;object-fit:cover;margin-left:4px"></div>
     <div class="topbar-right">
-      <button id="adminLangBtn" onclick="_toggleAdminLang()" style="background:none;border:1.5px solid var(--border);border-radius:8px;padding:3px 9px;font-size:12px;font-weight:700;color:var(--text2);cursor:pointer;line-height:1.4">UZ</button>
+      <div class="lang-switch" id="adminLangSwitch" style="display:flex;align-items:center;background:var(--surface2);border:1px solid var(--border);border-radius:999px;padding:3px;gap:2px">
+        <button type="button" data-lang-btn="ru" onclick="_setAdminLang('ru')" style="border:none;background:transparent;color:var(--text2);padding:5px 12px;border-radius:999px;font-size:12px;font-weight:700;cursor:pointer;line-height:1.2">RU</button>
+        <button type="button" data-lang-btn="uz" onclick="_setAdminLang('uz')" style="border:none;background:transparent;color:var(--text2);padding:5px 12px;border-radius:999px;font-size:12px;font-weight:700;cursor:pointer;line-height:1.2">UZ</button>
+      </div>
       <div class="profile-btn" id="profileBtn" onclick="toggleProfileMenu()">
         <div class="profile-avatar" id="profileAvatar">А</div>
         <div class="profile-info">
@@ -5799,8 +5802,9 @@ let _adminMePromise = Promise.resolve();
 // ── I18N ──
 let _adminLang = localStorage.getItem('admin_lang') || 'ru';
 function _t(k) { return (_adminI18n[_adminLang]||{})[k] || (_adminI18n.ru||{})[k] || k; }
-function _toggleAdminLang() {
-  _adminLang = _adminLang === 'ru' ? 'uz' : 'ru';
+function _setAdminLang(lang) {
+  if (lang !== 'ru' && lang !== 'uz') return;
+  _adminLang = lang;
   localStorage.setItem('admin_lang', _adminLang);
   _applyAdminI18n();
   initBranchSelects();
@@ -6919,8 +6923,11 @@ const _adminI18n = {
   },
 };
 function _applyAdminI18n() {
-  const btn = document.getElementById('adminLangBtn');
-  if (btn) btn.textContent = _adminLang === 'uz' ? 'RU' : 'UZ';
+  document.querySelectorAll('#adminLangSwitch [data-lang-btn]').forEach(b => {
+    const active = b.dataset.langBtn === _adminLang;
+    b.style.background = active ? 'var(--accent)' : 'transparent';
+    b.style.color = active ? '#1A0E00' : 'var(--text2)';
+  });
   const tr = _adminNavTr[_adminLang] || _adminNavTr.ru;
   // Nav: regular items
   document.querySelectorAll('.nav-item[data-page]').forEach(el => {
