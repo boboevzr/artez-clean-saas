@@ -3587,17 +3587,17 @@
         <div class="section-header"><h2>💳 Мой тариф</h2></div>
 
         <div class="card" id="tariffCurrentCard" style="margin-bottom:20px">
-          <div id="tariffCurrentBody" style="color:var(--text2)">Загрузка…</div>
+          <div id="tariffCurrentBody" style="color:var(--text2)" data-i18n="lbl.loading">Загрузка…</div>
         </div>
 
-        <h3 style="margin:0 0 12px;font-size:15px;font-weight:700">Доступные тарифы</h3>
+        <h3 style="margin:0 0 12px;font-size:15px;font-weight:700" data-i18n="tariff.available">Доступные тарифы</h3>
         <div id="tariffPlansGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-bottom:20px"></div>
 
         <div class="card">
           <div class="cfg-title-row">
-            <h3 class="cfg-title">💬 Поддержка</h3>
+            <h3 class="cfg-title" data-i18n="tariff.support">💬 Поддержка</h3>
           </div>
-          <div id="tariffSupportBody" style="font-size:14px;color:var(--text2)">Загрузка…</div>
+          <div id="tariffSupportBody" style="font-size:14px;color:var(--text2)" data-i18n="lbl.loading">Загрузка…</div>
         </div>
       </div>
 
@@ -3605,12 +3605,12 @@
       <div id="modalBranchLimit" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:2000;align-items:center;justify-content:center">
         <div class="card" style="max-width:380px;width:90%;text-align:center">
           <div style="font-size:36px;margin-bottom:10px">🚫</div>
-          <h3 style="margin:0 0 8px;font-size:17px;font-weight:700">Достигнут лимит филиалов</h3>
-          <div id="branchLimitMsg" style="font-size:14px;color:var(--text2);margin-bottom:18px">На вашем тарифе достигнут лимит филиалов.</div>
+          <h3 style="margin:0 0 8px;font-size:17px;font-weight:700" data-i18n="tariff.limit.title">Достигнут лимит филиалов</h3>
+          <div id="branchLimitMsg" style="font-size:14px;color:var(--text2);margin-bottom:18px" data-i18n="tariff.limit.msg">На вашем тарифе достигнут лимит филиалов.</div>
           <div style="display:flex;flex-direction:column;gap:8px">
-            <button class="btn btn-primary" onclick="closeBranchLimitModal();document.querySelector('.nav-item[data-page=&quot;tariff&quot;]')?.click()">📈 Перейти к тарифам</button>
+            <button class="btn btn-primary" onclick="closeBranchLimitModal();document.querySelector('.nav-item[data-page=&quot;tariff&quot;]')?.click()" data-i18n="tariff.limit.goto">📈 Перейти к тарифам</button>
             <div id="branchLimitSupportBtns" style="display:flex;gap:8px;justify-content:center"></div>
-            <button class="btn btn-ghost" onclick="closeBranchLimitModal()">Понятно</button>
+            <button class="btn btn-ghost" onclick="closeBranchLimitModal()" data-i18n="tariff.limit.ok">Понятно</button>
           </div>
         </div>
       </div>
@@ -3618,23 +3618,23 @@
       <!-- Модалка: тестовая оплата -->
       <div id="modalCheckout" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:2000;align-items:center;justify-content:center">
         <div class="card" style="max-width:380px;width:90%">
-          <div style="background:#fef9c3;color:#854d0e;border-radius:8px;padding:8px 12px;font-size:12px;font-weight:600;margin-bottom:14px;text-align:center">
+          <div style="background:#fef9c3;color:#854d0e;border-radius:8px;padding:8px 12px;font-size:12px;font-weight:600;margin-bottom:14px;text-align:center" data-i18n="tariff.test.mode">
             ⚠️ ТЕСТОВЫЙ РЕЖИМ — реальный платёжный шлюз ещё не подключён
           </div>
           <h3 style="margin:0 0 12px;font-size:16px;font-weight:700" id="checkoutTitle">Оформление тарифа</h3>
           <div style="margin-bottom:14px">
-            <div style="font-size:12px;color:var(--text2);margin-bottom:4px">Период</div>
+            <div style="font-size:12px;color:var(--text2);margin-bottom:4px" data-i18n="tariff.period">Период</div>
             <select class="form-input" id="checkoutMonths" onchange="_checkoutUpdatePrice()">
-              <option value="1">1 месяц</option>
-              <option value="3">3 месяца</option>
-              <option value="6">6 месяцев</option>
-              <option value="12">12 месяцев</option>
+              <option value="1" data-i18n="tariff.month.1">1 месяц</option>
+              <option value="3" data-i18n="tariff.month.3">3 месяца</option>
+              <option value="6" data-i18n="tariff.month.6">6 месяцев</option>
+              <option value="12" data-i18n="tariff.month.12">12 месяцев</option>
             </select>
           </div>
           <div style="font-size:22px;font-weight:800;margin-bottom:18px" id="checkoutPrice">—</div>
           <div style="display:flex;gap:8px">
-            <button class="btn btn-primary" style="flex:1" onclick="confirmCheckout()">✅ Подтвердить оплату (тест)</button>
-            <button class="btn btn-ghost" onclick="closeCheckoutModal()">Отмена</button>
+            <button class="btn btn-primary" style="flex:1" onclick="confirmCheckout()" data-i18n="tariff.confirm.pay">✅ Подтвердить оплату (тест)</button>
+            <button class="btn btn-ghost" onclick="closeCheckoutModal()" data-i18n="btn.cancel">Отмена</button>
           </div>
         </div>
       </div>
@@ -3700,16 +3700,16 @@
             <option value="uz">UZ — O'zbek</option>
           </select>
           <select id="ctKeyFilter" onchange="ctLoad()" style="padding:7px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;background:var(--card);">
-            <option value="">Все типы</option>
-            <option value="quick">Быстрые ответы</option>
-            <option value="welcome">Приветствие</option>
-            <option value="auto_reply">Авто-ответ</option>
-            <option value="warn_timeout">Предупреждение (таймаут)</option>
-            <option value="bye_m">Прощание (мужчина)</option>
-            <option value="bye_f">Прощание (женщина)</option>
+            <option value="" data-i18n="lbl.all.types">Все типы</option>
+            <option value="quick" data-i18n="ct.key.quick">Быстрые ответы</option>
+            <option value="welcome" data-i18n="ct.key.welcome">Приветствие</option>
+            <option value="auto_reply" data-i18n="ct.key.auto_reply">Авто-ответ</option>
+            <option value="warn_timeout" data-i18n="ct.key.warn_timeout">Предупреждение (таймаут)</option>
+            <option value="bye_m" data-i18n="ct.key.bye_m">Прощание (мужчина)</option>
+            <option value="bye_f" data-i18n="ct.key.bye_f">Прощание (женщина)</option>
           </select>
-          <button class="btn btn-primary" onclick="ctOpenNew()" style="padding:7px 16px;font-size:13px;">+ Добавить шаблон</button>
-          <button class="btn" onclick="ctSeed()" style="padding:7px 16px;font-size:13px;background:#f3f4f6;">🔄 Загрузить стандартные</button>
+          <button class="btn btn-primary" onclick="ctOpenNew()" style="padding:7px 16px;font-size:13px;" data-i18n="ct.btn.add">+ Добавить шаблон</button>
+          <button class="btn" onclick="ctSeed()" style="padding:7px 16px;font-size:13px;background:#f3f4f6;" data-i18n="ct.btn.seed">🔄 Загрузить стандартные</button>
         </div>
 
         <div id="ctList" style="display:flex;flex-direction:column;gap:8px;max-width:760px;"></div>
@@ -3721,18 +3721,18 @@
             <input type="hidden" id="ctEditId">
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
               <div>
-                <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px;">Тип (key)</label>
+                <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px;" data-i18n="ct.f.type">Тип (key)</label>
                 <select id="ctEditKey" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:8px;font-size:13px;background:var(--bg);">
-                  <option value="quick">quick — Быстрый ответ</option>
-                  <option value="welcome">welcome — Приветствие</option>
-                  <option value="auto_reply">auto_reply — Авто-ответ</option>
-                  <option value="warn_timeout">warn_timeout — Таймаут</option>
-                  <option value="bye_m">bye_m — Прощание (М)</option>
-                  <option value="bye_f">bye_f — Прощание (Ж)</option>
+                  <option value="quick" data-i18n="ct.key.quick.full">quick — Быстрый ответ</option>
+                  <option value="welcome" data-i18n="ct.key.welcome.full">welcome — Приветствие</option>
+                  <option value="auto_reply" data-i18n="ct.key.auto_reply.full">auto_reply — Авто-ответ</option>
+                  <option value="warn_timeout" data-i18n="ct.key.warn_timeout.full">warn_timeout — Таймаут</option>
+                  <option value="bye_m" data-i18n="ct.key.bye_m.full">bye_m — Прощание (М)</option>
+                  <option value="bye_f" data-i18n="ct.key.bye_f.full">bye_f — Прощание (Ж)</option>
                 </select>
               </div>
               <div>
-                <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px;">Язык</label>
+                <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px;" data-i18n="ct.f.lang">Язык</label>
                 <select id="ctEditLang" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:8px;font-size:13px;background:var(--bg);">
                   <option value="ru">RU — Русский</option>
                   <option value="uz">UZ — O'zbek</option>
@@ -3740,24 +3740,24 @@
               </div>
             </div>
             <div>
-              <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px;">Текст шаблона</label>
-              <textarea id="ctEditText" rows="4" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:8px;font-size:13px;background:var(--bg);resize:vertical;box-sizing:border-box;" placeholder="Текст сообщения..."></textarea>
-              <div style="margin-top:5px;font-size:11px;color:var(--muted)">Переменные: <code style="background:var(--border);padding:1px 5px;border-radius:4px;font-size:11px">{name}</code> — имя клиента (подставляется автоматически)</div>
+              <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px;" data-i18n="ct.f.text">Текст шаблона</label>
+              <textarea id="ctEditText" rows="4" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:8px;font-size:13px;background:var(--bg);resize:vertical;box-sizing:border-box;" data-i18n-ph="ct.f.text.ph" placeholder="Текст сообщения..."></textarea>
+              <div style="margin-top:5px;font-size:11px;color:var(--muted)"><span data-i18n="ct.f.vars">Переменные:</span> <code style="background:var(--border);padding:1px 5px;border-radius:4px;font-size:11px">{name}</code> <span data-i18n="ct.f.vars.name">— имя клиента (подставляется автоматически)</span></div>
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
               <div>
-                <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px;">Порядок</label>
+                <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px;" data-i18n="ct.f.sort">Порядок</label>
                 <input type="number" id="ctEditSort" value="10" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:8px;font-size:13px;background:var(--bg);box-sizing:border-box;">
               </div>
               <div style="display:flex;align-items:flex-end;padding-bottom:2px;">
                 <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;">
-                  <input type="checkbox" id="ctEditActive" checked style="width:16px;height:16px;"> Активен
+                  <input type="checkbox" id="ctEditActive" checked style="width:16px;height:16px;"> <span data-i18n="ct.f.active">Активен</span>
                 </label>
               </div>
             </div>
             <div style="display:flex;gap:10px;justify-content:flex-end;">
-              <button class="btn" onclick="ctCloseModal()" style="padding:8px 18px;font-size:13px;">Отмена</button>
-              <button class="btn btn-primary" onclick="ctSave()" style="padding:8px 18px;font-size:13px;">Сохранить</button>
+              <button class="btn" onclick="ctCloseModal()" style="padding:8px 18px;font-size:13px;" data-i18n="btn.cancel">Отмена</button>
+              <button class="btn btn-primary" onclick="ctSave()" style="padding:8px 18px;font-size:13px;" data-i18n="btn.save">Сохранить</button>
             </div>
           </div>
         </div>
@@ -5818,7 +5818,7 @@ function _toggleAdminLang() {
 const _adminNavTr = {
   ru: {
     dashboard:'Дашборд', plans:'План работы', leads:'Лиды',
-    orders:'Заказы', routes:'Маршруты', cash:'Касса', promotions:'Акции',
+    orders:'Заказы', routes:'Маршруты', cash:'Касса', promotions:'Акции', tariff:'Мой тариф',
     'grp.crm':'CRM', clients:'👤 Клиенты', contacts:'📒 Справочник',
     'site-users':'🌐 Польз. сайта',
     'grp.ad':'Автодозвон', 'autodial-groups':'👥 Группы контактов',
@@ -5844,7 +5844,7 @@ const _adminNavTr = {
   },
   uz: {
     dashboard:'Bosh sahifa', plans:'Ish rejasi', leads:'Lidlar',
-    orders:'Buyurtmalar', routes:'Marshrutlar', cash:'Kassa', promotions:'Aksiyalar',
+    orders:'Buyurtmalar', routes:'Marshrutlar', cash:'Kassa', promotions:'Aksiyalar', tariff:'Mening tarifim',
     'grp.crm':'CRM', clients:'👤 Mijozlar', contacts:'📒 Maʼlumotnoma',
     'site-users':'🌐 Sayt foydalanuvchilari',
     'grp.ad':'Avtouzatish', 'autodial-groups':'👥 Kontakt guruhlari',
@@ -5981,6 +5981,35 @@ const _adminI18n = {
     'bf.tg.hint':'ℹ️ Добавьте бота в группу/канал как участника, введите ID и нажмите 🔍 для проверки.',
     'bf.map.title':'Выбрать на карте','bf.map.hint':'Нажмите на карту чтобы поставить метку',
     'bf.map.done':'✅ Готово',
+    'tariff.available':'Доступные тарифы','tariff.support':'💬 Поддержка',
+    'tariff.limit.title':'Достигнут лимит филиалов','tariff.limit.msg':'На вашем тарифе достигнут лимит филиалов.',
+    'tariff.limit.goto':'📈 Перейти к тарифам','tariff.limit.ok':'Понятно',
+    'tariff.test.mode':'⚠️ ТЕСТОВЫЙ РЕЖИМ — реальный платёжный шлюз ещё не подключён',
+    'tariff.period':'Период','tariff.month.1':'1 месяц','tariff.month.3':'3 месяца',
+    'tariff.month.6':'6 месяцев','tariff.month.12':'12 месяцев',
+    'tariff.confirm.pay':'✅ Подтвердить оплату (тест)',
+    'tariff.support.text':'Если нужен другой лимит филиалов/сотрудников или есть вопросы по тарифу — напишите нам:',
+    'tariff.support.none':'Контакты поддержки пока не настроены.',
+    'tariff.current':'Текущий тариф','tariff.until':'до','tariff.branches.up.to':'филиалов до',
+    'tariff.staff.up.to':'сотрудников до','tariff.no.sub':'Активной подписки не найдено — выберите тариф ниже.',
+    'tariff.err.load':'Ошибка загрузки тарифа',
+    'tariff.branches.word':'филиал(ов)','tariff.staff.word':'сотрудников','tariff.per.month':'/мес',
+    'tariff.current.plan':'Текущий тариф','tariff.choose':'Выбрать','tariff.none.found':'Тарифы не найдены',
+    'tariff.modal.title':'Тариф','tariff.applied':'Тариф применён (тестовый режим)',
+    'tariff.err.checkout':'Ошибка оформления',
+    'lbl.all.types':'Все типы',
+    'ct.key.quick':'Быстрые ответы','ct.key.welcome':'Приветствие','ct.key.auto_reply':'Авто-ответ',
+    'ct.key.warn_timeout':'Предупреждение (таймаут)','ct.key.bye_m':'Прощание (мужчина)','ct.key.bye_f':'Прощание (женщина)',
+    'ct.key.quick.full':'quick — Быстрый ответ','ct.key.welcome.full':'welcome — Приветствие',
+    'ct.key.auto_reply.full':'auto_reply — Авто-ответ','ct.key.warn_timeout.full':'warn_timeout — Таймаут',
+    'ct.key.bye_m.full':'bye_m — Прощание (М)','ct.key.bye_f.full':'bye_f — Прощание (Ж)',
+    'ct.btn.add':'+ Добавить шаблон','ct.btn.seed':'🔄 Загрузить стандартные',
+    'ct.f.type':'Тип (key)','ct.f.lang':'Язык','ct.f.text':'Текст шаблона',
+    'ct.f.text.ph':'Текст сообщения...',
+    'ct.f.vars':'Переменные:','ct.f.vars.name':'— имя клиента (подставляется автоматически)',
+    'ct.f.sort':'Порядок','ct.f.active':'Активен',
+    'ct.inactive':'Неактивен','ct.sort.order':'порядок',
+    'ct.modal.new':'Новый шаблон','ct.modal.edit':'Редактировать шаблон',
     'promo.btn.add':'+ Новая акция','promo.empty':'Акций пока нет',
     'th.code':'Код','th.discount':'Скидка','th.period':'Период',
     'th.toggle':'Вкл/Выкл','th.shows':'Показов / Использ.',
@@ -6459,6 +6488,35 @@ const _adminI18n = {
     'bf.tg.hint':"ℹ️ Botni guruh/kanalga a'zo sifatida qo'shing, ID ni kiriting va tekshirish uchun 🔍 tugmasini bosing.",
     'bf.map.title':'Xaritadan tanlang','bf.map.hint':"Belgi qo'yish uchun xaritaga bosing",
     'bf.map.done':'✅ Tayyor',
+    'tariff.available':'Mavjud tariflar','tariff.support':'💬 Yordam',
+    'tariff.limit.title':'Filial limitiga yetdingiz','tariff.limit.msg':'Sizning tarifingizda filial limitiga yetildi.',
+    'tariff.limit.goto':'📈 Tariflarga o\'tish','tariff.limit.ok':'Tushunarli',
+    'tariff.test.mode':"⚠️ TEST REJIMI — haqiqiy to'lov shlyuzi hali ulanmagan",
+    'tariff.period':'Davr','tariff.month.1':'1 oy','tariff.month.3':'3 oy',
+    'tariff.month.6':'6 oy','tariff.month.12':'12 oy',
+    'tariff.confirm.pay':"✅ To'lovni tasdiqlash (test)",
+    'tariff.support.text':"Boshqa filial/xodim limiti kerak bo'lsa yoki tarif bo'yicha savollaringiz bo'lsa — bizga yozing:",
+    'tariff.support.none':"Yordam kontaktlari hali sozlanmagan.",
+    'tariff.current':'Joriy tarif','tariff.until':'muddati','tariff.branches.up.to':'filiallar',
+    'tariff.staff.up.to':'xodimlar', 'tariff.no.sub':"Faol obuna topilmadi — quyidan tarif tanlang.",
+    'tariff.err.load':'Tarifni yuklashda xatolik',
+    'tariff.branches.word':'filial','tariff.staff.word':'xodim','tariff.per.month':'/oy',
+    'tariff.current.plan':'Joriy tarif','tariff.choose':'Tanlash','tariff.none.found':'Tariflar topilmadi',
+    'tariff.modal.title':'Tarif','tariff.applied':"Tarif qo'llanildi (test rejimi)",
+    'tariff.err.checkout':"Rasmiylashtirishda xatolik",
+    'lbl.all.types':'Barcha turlar',
+    'ct.key.quick':'Tezkor javoblar','ct.key.welcome':'Salomlashuv','ct.key.auto_reply':'Avto-javob',
+    'ct.key.warn_timeout':'Ogohlantirish (timeout)','ct.key.bye_m':'Xayrlashuv (erkak)','ct.key.bye_f':'Xayrlashuv (ayol)',
+    'ct.key.quick.full':'quick — Tezkor javob','ct.key.welcome.full':'welcome — Salomlashuv',
+    'ct.key.auto_reply.full':'auto_reply — Avto-javob','ct.key.warn_timeout.full':'warn_timeout — Timeout',
+    'ct.key.bye_m.full':'bye_m — Xayrlashuv (E)','ct.key.bye_f.full':'bye_f — Xayrlashuv (A)',
+    'ct.btn.add':"+ Shablon qo'shish",'ct.btn.seed':"🔄 Standartlarni yuklash",
+    'ct.f.type':'Turi (key)','ct.f.lang':'Til','ct.f.text':'Shablon matni',
+    'ct.f.text.ph':'Xabar matni...',
+    'ct.f.vars':"O'zgaruvchilar:",'ct.f.vars.name':"— mijoz ismi (avtomatik qo'yiladi)",
+    'ct.f.sort':'Tartib','ct.f.active':'Faol',
+    'ct.inactive':'Faol emas','ct.sort.order':'tartib',
+    'ct.modal.new':'Yangi shablon','ct.modal.edit':'Shablonni tahrirlash',
     'promo.btn.add':'+ Yangi aksiya','promo.empty':'Aksiyalar yo\'q',
     'th.code':'Kod','th.discount':'Chegirma','th.period':'Davr',
     'th.toggle':'Yoq/Oʻchir','th.shows':'Koʻrsatildi / Ishlatildi',
@@ -6863,7 +6921,7 @@ function _applyAdminI18n() {
     siteconfig:'⚙️ Настройки сайта','company-settings':'🏢 Настройки компании','tg-bot':'📱 Telegram · Настройки бота',
     'tg-messages':'📱 Telegram · Уведомления','tg-clients':'📱 Telegram · Клиенты',
     'tg-vars':'⚙️ Переменные проекта','db-maintenance':'🗄️ Обслуживание БД',
-    promotions:'🎉 Акции',plans:'📋 План работы',
+    promotions:'🎉 Акции',plans:'📋 План работы',tariff:'💳 Мой тариф',
     'chat-templates':'💬 Шаблоны чата','role-perms':'🔐 Роли и доступы',
     temp:'🗑️ Чистка БД','autodial-groups':'👥 Группы контактов',
     'autodial-campaigns':'📋 Кампании','autodial-greetings':'🎉 Поздравления',
@@ -6885,7 +6943,7 @@ function _applyAdminI18n() {
     siteconfig:'⚙️ Sayt sozlamalari','company-settings':'🏢 Kompaniya sozlamalari','tg-bot':'📱 Telegram · Bot sozlamalari',
     'tg-messages':'📱 Telegram · Xabarnomalar','tg-clients':'📱 Telegram · Mijozlar',
     'tg-vars':'⚙️ Loyiha oʻzgaruvchilari','db-maintenance':'🗄️ MB xizmati',
-    promotions:'🎉 Aksiyalar',plans:'📋 Ish rejasi',
+    promotions:'🎉 Aksiyalar',plans:'📋 Ish rejasi',tariff:"💳 Mening tarifim",
     'chat-templates':'💬 Chat shablonlari','role-perms':'🔐 Rollar va ruxsatlar',
     temp:'🗑️ MB tozalash','autodial-groups':'👥 Kontakt guruhlari',
     'autodial-campaigns':'📋 Kampaniyalar','autodial-greetings':'🎉 Tabriklar',
@@ -7437,8 +7495,8 @@ async function loadTariffPage() {
   if (supportEl) {
     const btns = _supportBtnsHtml();
     supportEl.innerHTML = btns
-      ? `Если нужен другой лимит филиалов/сотрудников или есть вопросы по тарифу — напишите нам:<div style="display:flex;gap:8px;margin-top:10px">${btns}</div>`
-      : 'Контакты поддержки пока не настроены.';
+      ? `${_t('tariff.support.text')}<div style="display:flex;gap:8px;margin-top:10px">${btns}</div>`
+      : _t('tariff.support.none');
   }
 
   const curEl = document.getElementById('tariffCurrentBody');
@@ -7448,12 +7506,12 @@ async function loadTariffPage() {
     const sub = subRes?.ok ? subRes.subscription : null;
     if (curEl) {
       curEl.innerHTML = sub
-        ? `Текущий тариф: <b>${_esc(sub.plan_name)}</b> · до <b>${_esc(sub.end_date)}</b> · филиалов до <b>${sub.max_branches}</b>, сотрудников до <b>${sub.max_staff}</b>`
-        : 'Активной подписки не найдено — выберите тариф ниже.';
+        ? `${_t('tariff.current')}: <b>${_esc(sub.plan_name)}</b> · ${_t('tariff.until')} <b>${_esc(sub.end_date)}</b> · ${_t('tariff.branches.up.to')} <b>${sub.max_branches}</b>, ${_t('tariff.staff.up.to')} <b>${sub.max_staff}</b>`
+        : _t('tariff.no.sub');
     }
     renderTariffPlans(_tariffPlans, sub);
   } catch(e) {
-    if (curEl) curEl.textContent = 'Ошибка загрузки тарифа';
+    if (curEl) curEl.textContent = _t('tariff.err.load');
   }
 }
 
@@ -7466,13 +7524,13 @@ function renderTariffPlans(plans, currentSub) {
     return `
     <div class="card" style="text-align:center;${isCurrent ? 'border-color:var(--accent);border-width:2px' : ''}">
       <div style="font-size:16px;font-weight:800;margin-bottom:6px">${_esc(p.display_name)}</div>
-      <div style="font-size:13px;color:var(--text2);margin-bottom:10px">${p.max_branches} филиал(ов) · ${p.max_staff} сотрудников</div>
-      <div style="font-size:20px;font-weight:800;margin-bottom:12px">${price1.toLocaleString('ru-RU')} сум<span style="font-size:12px;font-weight:400;color:var(--text2)">/мес</span></div>
+      <div style="font-size:13px;color:var(--text2);margin-bottom:10px">${p.max_branches} ${_t('tariff.branches.word')} · ${p.max_staff} ${_t('tariff.staff.word')}</div>
+      <div style="font-size:20px;font-weight:800;margin-bottom:12px">${price1.toLocaleString('ru-RU')} сум<span style="font-size:12px;font-weight:400;color:var(--text2)">${_t('tariff.per.month')}</span></div>
       ${isCurrent
-        ? `<button class="btn btn-ghost" disabled style="width:100%">✅ Текущий тариф</button>`
-        : `<button class="btn btn-primary" style="width:100%" onclick="openCheckoutModal(${p.id})">Выбрать</button>`}
+        ? `<button class="btn btn-ghost" disabled style="width:100%">✅ ${_t('tariff.current.plan')}</button>`
+        : `<button class="btn btn-primary" style="width:100%" onclick="openCheckoutModal(${p.id})">${_t('tariff.choose')}</button>`}
     </div>`;
-  }).join('') || '<p style="color:var(--text2)">Тарифы не найдены</p>';
+  }).join('') || `<p style="color:var(--text2)">${_t('tariff.none.found')}</p>`;
 }
 
 let _checkoutPlanId = null;
@@ -7481,7 +7539,7 @@ function openCheckoutModal(planId) {
   _checkoutPlanId = planId;
   const plan = _tariffPlans.find(p => p.id === planId);
   if (!plan) return;
-  document.getElementById('checkoutTitle').textContent = `Тариф «${plan.display_name}»`;
+  document.getElementById('checkoutTitle').textContent = `${_t('tariff.modal.title')} «${plan.display_name}»`;
   document.getElementById('checkoutMonths').value = '1';
   _checkoutUpdatePrice();
   document.getElementById('modalCheckout').style.display = 'flex';
@@ -7506,10 +7564,10 @@ async function confirmCheckout() {
     const r = await apiPost('/company/checkout', { plan_id: _checkoutPlanId, months });
     if (r?.ok) {
       closeCheckoutModal();
-      showToast('Тариф применён (тестовый режим)');
+      showToast(_t('tariff.applied'));
       loadTariffPage();
     } else {
-      showToast(r?.detail || 'Ошибка оформления', 'error');
+      showToast(r?.detail || _t('tariff.err.checkout'), 'error');
     }
   } catch(e) {
     if (e.message !== '401') showToast('Ошибка: ' + e.message, 'error');
@@ -7517,7 +7575,7 @@ async function confirmCheckout() {
 }
 
 async function openBranchLimitModal(message) {
-  document.getElementById('branchLimitMsg').textContent = message || 'На вашем тарифе достигнут лимит филиалов.';
+  document.getElementById('branchLimitMsg').textContent = message || _t('tariff.limit.msg');
   if (!_supportContact.telegram && !_supportContact.phone) await loadSupportContact();
   document.getElementById('branchLimitSupportBtns').innerHTML = _supportBtnsHtml();
   document.getElementById('modalBranchLimit').style.display = 'flex';
@@ -18351,7 +18409,7 @@ async function ctLoad() {
   const keyF  = document.getElementById('ctKeyFilter')?.value  || '';
   const list = document.getElementById('ctList');
   if (!list) return;
-  list.innerHTML = '<div style="color:var(--muted);font-size:13px;padding:16px 0;">Загрузка...</div>';
+  list.innerHTML = `<div style="color:var(--muted);font-size:13px;padding:16px 0;">${_t('lbl.loading')}</div>`;
   try {
     const res = await apiFetch(`${API_BASE}/chat/templates`);
     const rows = await res.json();
@@ -18365,10 +18423,10 @@ async function ctLoad() {
     <div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px;display:flex;gap:12px;align-items:flex-start;">
       <div style="flex:1;min-width:0;">
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:6px;">
-          <span style="background:${CT_KEY_COLOR[t.key]||'#6b7280'};color:#fff;font-size:11px;font-weight:700;padding:2px 8px;border-radius:12px;">${CT_KEY_LABEL[t.key]||t.key}</span>
+          <span style="background:${CT_KEY_COLOR[t.key]||'#6b7280'};color:#fff;font-size:11px;font-weight:700;padding:2px 8px;border-radius:12px;">${_t('ct.key.'+t.key)||t.key}</span>
           <span style="background:var(--card);border:1px solid var(--border);font-size:11px;padding:2px 8px;border-radius:12px;font-weight:600;">${t.lang.toUpperCase()}</span>
-          ${!t.active ? '<span style="font-size:11px;color:var(--muted);">⏸ Неактивен</span>' : ''}
-          <span style="font-size:11px;color:var(--muted);margin-left:auto;">#{t.id} · порядок ${t.sort_order}</span>
+          ${!t.active ? `<span style="font-size:11px;color:var(--muted);">⏸ ${_t('ct.inactive')}</span>` : ''}
+          <span style="font-size:11px;color:var(--muted);margin-left:auto;">#{t.id} · ${_t('ct.sort.order')} ${t.sort_order}</span>
         </div>
         <div style="font-size:13px;white-space:pre-wrap;word-break:break-word;">${_escH(t.text)}</div>
       </div>
@@ -18389,7 +18447,7 @@ function ctOpenNew() {
   document.getElementById('ctEditText').value = '';
   document.getElementById('ctEditSort').value = '10';
   document.getElementById('ctEditActive').checked = true;
-  document.getElementById('ctModalTitle').textContent = 'Новый шаблон';
+  document.getElementById('ctModalTitle').textContent = _t('ct.modal.new');
   document.getElementById('ctModal').style.display = 'flex';
 }
 
@@ -18402,7 +18460,7 @@ function ctOpenEdit(id) {
   document.getElementById('ctEditText').value = t.text;
   document.getElementById('ctEditSort').value = t.sort_order ?? 10;
   document.getElementById('ctEditActive').checked = !!t.active;
-  document.getElementById('ctModalTitle').textContent = 'Редактировать шаблон #' + id;
+  document.getElementById('ctModalTitle').textContent = _t('ct.modal.edit') + ' #' + id;
   document.getElementById('ctModal').style.display = 'flex';
 }
 
