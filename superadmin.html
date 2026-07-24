@@ -3229,8 +3229,9 @@ function renderSaStats() {
   wrap.innerHTML = _saStats.map((s, i) => `
     <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:10px">
       <div style="font-size:12px;color:var(--text2);margin-bottom:8px">Карточка ${i+1}</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
-        <div class="field"><label>Значение</label><input id="sast_value_${s.id}" value="${escHtml(s.value)}" placeholder="500+"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px">
+        <div class="field"><label>Значение (RU)</label><input id="sast_value_ru_${s.id}" value="${escHtml(s.value_ru)}" placeholder="Бесплатно"></div>
+        <div class="field"><label>Значение (UZ)</label><input id="sast_value_uz_${s.id}" value="${escHtml(s.value_uz)}" placeholder="Bepul"></div>
         <div class="field"><label>Подпись (RU)</label><input id="sast_label_ru_${s.id}" value="${escHtml(s.label_ru)}"></div>
         <div class="field"><label>Подпись (UZ)</label><input id="sast_label_uz_${s.id}" value="${escHtml(s.label_uz)}"></div>
       </div>
@@ -3241,10 +3242,11 @@ function renderSaStats() {
 async function saSaveAllStats() {
   try {
     for (const s of _saStats) {
-      const value = document.getElementById(`sast_value_${s.id}`)?.value?.trim() || '';
+      const value_ru = document.getElementById(`sast_value_ru_${s.id}`)?.value?.trim() || '';
+      const value_uz = document.getElementById(`sast_value_uz_${s.id}`)?.value?.trim() || '';
       const label_ru = document.getElementById(`sast_label_ru_${s.id}`)?.value?.trim() || '';
       const label_uz = document.getElementById(`sast_label_uz_${s.id}`)?.value?.trim() || '';
-      await api(`/saas/catalog/site-stats/${s.id}`, 'PUT', { value, label_ru, label_uz, sort_order: s.sort_order });
+      await api(`/saas/catalog/site-stats/${s.id}`, 'PUT', { value_ru, value_uz, label_ru, label_uz, sort_order: s.sort_order });
     }
     const msg = document.getElementById('saStatsMsg');
     msg.style.display = '';

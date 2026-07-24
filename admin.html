@@ -7527,8 +7527,12 @@ function renderStatsList() {
       <div style="font-size:12px;color:var(--text2);margin-bottom:8px">Карточка ${i + 1}</div>
       <div class="contacts-grid">
         <div class="cfg-field">
-          <label>Значение</label>
-          <input type="text" class="form-input" id="stat_value_${s.id}" value="${_esc(s.value)}" placeholder="500+">
+          <label>Значение (RU)</label>
+          <input type="text" class="form-input" id="stat_value_ru_${s.id}" value="${_esc(s.value_ru)}" placeholder="Бесплатно">
+        </div>
+        <div class="cfg-field">
+          <label>Значение (UZ)</label>
+          <input type="text" class="form-input" id="stat_value_uz_${s.id}" value="${_esc(s.value_uz)}" placeholder="Bepul">
         </div>
         <div class="cfg-field">
           <label>Подпись (RU)</label>
@@ -7548,10 +7552,11 @@ async function saveAllSiteStats() {
   msg.style.display = 'none';
   try {
     for (const s of _statsRows) {
-      const value = document.getElementById(`stat_value_${s.id}`)?.value?.trim() || '';
+      const value_ru = document.getElementById(`stat_value_ru_${s.id}`)?.value?.trim() || '';
+      const value_uz = document.getElementById(`stat_value_uz_${s.id}`)?.value?.trim() || '';
       const label_ru = document.getElementById(`stat_label_ru_${s.id}`)?.value?.trim() || '';
       const label_uz = document.getElementById(`stat_label_uz_${s.id}`)?.value?.trim() || '';
-      await apiPut(`/admin/site-stats/${s.id}`, { value, label_ru, label_uz, sort_order: s.sort_order });
+      await apiPut(`/admin/site-stats/${s.id}`, { value_ru, value_uz, label_ru, label_uz, sort_order: s.sort_order });
     }
     msg.textContent = '✓ Сохранено';
     msg.style.display = '';

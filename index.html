@@ -4121,18 +4121,22 @@
   function _statLabel(s) {
     return (lang === 'uz' && s.label_uz) ? s.label_uz : (s.label_ru || s.label_uz || '');
   }
+  function _statValue(s) {
+    return (lang === 'uz' && s.value_uz) ? s.value_uz : (s.value_ru || s.value_uz || '');
+  }
 
   function renderStats(statsData) {
     const grid = document.getElementById('statsGrid');
     const strip = document.getElementById('statsStrip');
-    const filled = (statsData || []).filter(s => (s.value || '').trim() || (s.label_ru || '').trim() || (s.label_uz || '').trim());
+    const filled = (statsData || []).filter(s => (s.value_ru || '').trim() || (s.value_uz || '').trim() || (s.label_ru || '').trim() || (s.label_uz || '').trim());
     if (!filled.length) { strip.style.display = 'none'; return; }
     strip.style.display = '';
     grid.innerHTML = filled.map((s, i) => {
-      const m = String(s.value || '').match(/^(\d+)(.*)$/);
+      const val = _statValue(s);
+      const m = val.match(/^(\d+)(.*)$/);
       const numHtml = m
         ? `<span data-count="${_escHtml(m[1])}"><span>0</span></span>${_escHtml(m[2])}`
-        : _escHtml(s.value || '');
+        : _escHtml(val);
       return `
       <div class="stat-item reveal reveal-d${i+1}">
         <span class="stat-num">${numHtml}</span>
