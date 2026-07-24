@@ -214,6 +214,18 @@
       <div class="nav-item" data-page="sa-chat-templates" onclick="showPage('sa-chat-templates',this)">
         <span class="icon">💬</span> Шаблоны чата
       </div>
+      <div class="nav-item" data-page="sa-site-slides" onclick="showPage('sa-site-slides',this)">
+        <span class="icon">🖼️</span> Слайдер (шаблон)
+      </div>
+      <div class="nav-item" data-page="sa-site-stats" onclick="showPage('sa-site-stats',this)">
+        <span class="icon">📊</span> Статистика (шаблон)
+      </div>
+      <div class="nav-item" data-page="sa-site-reviews" onclick="showPage('sa-site-reviews',this)">
+        <span class="icon">⭐</span> Отзывы (шаблон)
+      </div>
+      <div class="nav-item" data-page="sa-site-faq" onclick="showPage('sa-site-faq',this)">
+        <span class="icon">❓</span> FAQ (шаблон)
+      </div>
       <div class="nav-item" data-page="settings" onclick="showPage('settings',this)">
         <span class="icon">⚙️</span> Настройки
       </div>
@@ -461,6 +473,47 @@
         <div id="saChatTplList" style="display:flex;flex-direction:column;gap:8px;max-width:760px"></div>
       </div>
 
+      <!-- PAGE: Site Slides (template) -->
+      <div class="page" id="page-sa-site-slides">
+        <div class="section-header">
+          <div class="page-title" style="margin:0">🖼️ Слайдер (шаблон)</div>
+          <button class="btn btn-primary btn-sm" onclick="saSlideOpenModal()">+ Добавить слайд</button>
+        </div>
+        <p style="font-size:13px;color:var(--text2);margin-bottom:12px">Слайды автослайдера — шаблон, который копируется в новую компанию при создании. До 5 слайдов.</p>
+        <div id="saSlidesList" style="max-width:760px"></div>
+      </div>
+
+      <!-- PAGE: Site Stats (template) -->
+      <div class="page" id="page-sa-site-stats">
+        <div class="page-title">📊 Статистика (шаблон)</div>
+        <p style="font-size:13px;color:var(--text2);margin-bottom:12px">Ровно 4 карточки статистики — копируются в новую компанию при создании (компания потом сама меняет значения).</p>
+        <div id="saStatsList" style="max-width:760px"></div>
+        <div style="margin-top:12px">
+          <button class="btn btn-primary btn-sm" onclick="saSaveAllStats()">💾 Сохранить</button>
+          <span id="saStatsMsg" style="display:none;color:var(--accent);font-size:13px;margin-left:8px">✓ Сохранено</span>
+        </div>
+      </div>
+
+      <!-- PAGE: Site Reviews (template) -->
+      <div class="page" id="page-sa-site-reviews">
+        <div class="section-header">
+          <div class="page-title" style="margin:0">⭐ Отзывы (шаблон)</div>
+          <button class="btn btn-primary btn-sm" onclick="saReviewOpenModal()">+ Добавить отзыв</button>
+        </div>
+        <p style="font-size:13px;color:var(--text2);margin-bottom:12px">Отзывы клиентов — шаблон для новых компаний.</p>
+        <div id="saReviewsList" style="max-width:760px"></div>
+      </div>
+
+      <!-- PAGE: Site FAQ (template) -->
+      <div class="page" id="page-sa-site-faq">
+        <div class="section-header">
+          <div class="page-title" style="margin:0">❓ FAQ (шаблон)</div>
+          <button class="btn btn-primary btn-sm" onclick="saFaqOpenModal()">+ Добавить вопрос</button>
+        </div>
+        <p style="font-size:13px;color:var(--text2);margin-bottom:12px">Часто задаваемые вопросы — шаблон для новых компаний.</p>
+        <div id="saFaqList" style="max-width:760px"></div>
+      </div>
+
       <!-- PAGE: Maintenance -->
       <div class="page" id="page-maintenance">
         <div class="page-title">🧹 Чистка базы данных</div>
@@ -596,6 +649,69 @@
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="closeModal('saChatTplModal')">Отмена</button>
       <button class="btn btn-primary" onclick="saveSaChatTpl()">💾 Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Site slide (template) -->
+<div class="modal-bg" id="saSlideModal">
+  <div class="modal" style="max-width:520px;max-height:90vh;overflow-y:auto">
+    <h3 id="saSlideModalTitle">🖼️ Новый слайд</h3>
+    <input type="hidden" id="sasl_id">
+    <div class="field"><label>Фото *</label><input type="file" id="sasl_file" accept="image/*">
+      <div style="font-size:11px;color:var(--text2);margin-top:4px">JPG/PNG, до 1.5 МБ</div>
+      <img id="sasl_preview" style="display:none;max-width:100%;border-radius:8px;margin-top:8px">
+    </div>
+    <div class="field"><label>Эйеброу (RU)</label><input id="sasl_eyebrow_ru"></div>
+    <div class="field"><label>Эйеброу (UZ)</label><input id="sasl_eyebrow_uz"></div>
+    <div class="field"><label>Заголовок (RU)</label><input id="sasl_title_ru"></div>
+    <div class="field"><label>Заголовок (UZ)</label><input id="sasl_title_uz"></div>
+    <div class="field"><label>Описание (RU)</label><textarea id="sasl_text_ru" rows="2"></textarea></div>
+    <div class="field"><label>Описание (UZ)</label><textarea id="sasl_text_uz" rows="2"></textarea></div>
+    <div class="modal-err" id="saSlideErr"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('saSlideModal')">Отмена</button>
+      <button class="btn btn-primary" onclick="saveSaSlide()">💾 Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Site review (template) -->
+<div class="modal-bg" id="saReviewModal">
+  <div class="modal" style="max-width:480px;max-height:90vh;overflow-y:auto">
+    <h3 id="saReviewModalTitle">⭐ Новый отзыв</h3>
+    <input type="hidden" id="sarv_id">
+    <div class="field"><label>Имя автора</label><input id="sarv_author" placeholder="Малика Р."></div>
+    <div class="field"><label>Оценка</label>
+      <select id="sarv_rating">
+        <option value="5">⭐⭐⭐⭐⭐ (5)</option><option value="4">⭐⭐⭐⭐ (4)</option><option value="3">⭐⭐⭐ (3)</option>
+      </select>
+    </div>
+    <div class="field"><label>Текст (RU)</label><textarea id="sarv_text_ru" rows="3"></textarea></div>
+    <div class="field"><label>Текст (UZ)</label><textarea id="sarv_text_uz" rows="3"></textarea></div>
+    <div class="field"><label>Город/подпись (RU)</label><input id="sarv_city_ru" placeholder="г. Навои"></div>
+    <div class="field"><label>Город/подпись (UZ)</label><input id="sarv_city_uz" placeholder="Navoiy"></div>
+    <div class="modal-err" id="saReviewErr"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('saReviewModal')">Отмена</button>
+      <button class="btn btn-primary" onclick="saveSaReview()">💾 Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Site FAQ item (template) -->
+<div class="modal-bg" id="saFaqModal">
+  <div class="modal" style="max-width:480px;max-height:90vh;overflow-y:auto">
+    <h3 id="saFaqModalTitle">❓ Новый вопрос</h3>
+    <input type="hidden" id="safq_id">
+    <div class="field"><label>Вопрос (RU)</label><input id="safq_question_ru"></div>
+    <div class="field"><label>Вопрос (UZ)</label><input id="safq_question_uz"></div>
+    <div class="field"><label>Ответ (RU)</label><textarea id="safq_answer_ru" rows="3"></textarea></div>
+    <div class="field"><label>Ответ (UZ)</label><textarea id="safq_answer_uz" rows="3"></textarea></div>
+    <div class="modal-err" id="saFaqErr"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('saFaqModal')">Отмена</button>
+      <button class="btn btn-primary" onclick="saveSaFaq()">💾 Сохранить</button>
     </div>
   </div>
 </div>
@@ -1216,6 +1332,10 @@ function showPage(name, navEl) {
   if (name === 'sa-tg-messages') loadSaTgMessages();
   if (name === 'sa-expense-cats') loadSaExpCats();
   if (name === 'sa-chat-templates') loadSaChatTpls();
+  if (name === 'sa-site-slides') loadSaSlides();
+  if (name === 'sa-site-stats') loadSaStats();
+  if (name === 'sa-site-reviews') loadSaReviews();
+  if (name === 'sa-site-faq') loadSaFaq();
 }
 
 // ── AUTH ──────────────────────────────────────────────
@@ -2987,6 +3107,286 @@ async function saChatTplDelete(id) {
   try {
     await api(`/saas/catalog/chat-templates/${id}`, 'DELETE');
     await loadSaChatTpls();
+  } catch(e) { alert('Ошибка: ' + e.message); }
+}
+
+// ── Слайдер (шаблон, company_id=0) ──────────────────────────────────────
+let _saSlides = [];
+
+async function loadSaSlides() {
+  document.getElementById('saSlidesList').innerHTML = '<div style="color:var(--text2);font-size:13px">Загрузка…</div>';
+  try {
+    const r = await api('/saas/catalog/site-slides');
+    _saSlides = r.slides || [];
+    renderSaSlides();
+  } catch(e) {
+    document.getElementById('saSlidesList').textContent = 'Ошибка: ' + e.message;
+  }
+}
+
+function renderSaSlides() {
+  const wrap = document.getElementById('saSlidesList');
+  wrap.innerHTML = _saSlides.map(s => `
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:10px;display:flex;gap:12px;align-items:center">
+      <img src="${escHtml(s.image_url)}" style="width:90px;height:60px;object-fit:cover;border-radius:8px;flex-shrink:0;background:var(--card)">
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:700;font-size:14px">${escHtml(s.title_ru || '(без заголовка)')}</div>
+        <div style="font-size:12px;color:var(--text2)">${escHtml(s.eyebrow_ru || '')}</div>
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="saSlideOpenModal(${s.id})">✏️</button>
+      <button class="btn btn-ghost btn-sm" style="color:#ef4444" onclick="saSlideDelete(${s.id})">🗑</button>
+    </div>
+  `).join('') || '<div style="color:var(--text2);font-size:13px">Слайдов пока нет.</div>';
+}
+
+function saSlideOpenModal(id) {
+  const s = id != null ? _saSlides.find(x => x.id === id) : null;
+  document.getElementById('saSlideModalTitle').textContent = s ? '✏️ Редактировать слайд' : '🖼️ Новый слайд';
+  document.getElementById('sasl_id').value = s?.id ?? '';
+  document.getElementById('sasl_file').value = '';
+  document.getElementById('sasl_file').required = !s;
+  const prev = document.getElementById('sasl_preview');
+  prev.style.display = s ? '' : 'none';
+  prev.src = s ? s.image_url : '';
+  document.getElementById('sasl_eyebrow_ru').value = s?.eyebrow_ru || '';
+  document.getElementById('sasl_eyebrow_uz').value = s?.eyebrow_uz || '';
+  document.getElementById('sasl_title_ru').value = s?.title_ru || '';
+  document.getElementById('sasl_title_uz').value = s?.title_uz || '';
+  document.getElementById('sasl_text_ru').value = s?.text_ru || '';
+  document.getElementById('sasl_text_uz').value = s?.text_uz || '';
+  document.getElementById('saSlideErr').textContent = '';
+  openModal('saSlideModal');
+}
+
+document.getElementById('sasl_file')?.addEventListener('change', function() {
+  const f = this.files[0];
+  const prev = document.getElementById('sasl_preview');
+  if (f) { prev.src = URL.createObjectURL(f); prev.style.display = ''; }
+});
+
+async function saveSaSlide() {
+  const id = document.getElementById('sasl_id').value;
+  const file = document.getElementById('sasl_file').files[0];
+  const errEl = document.getElementById('saSlideErr');
+  if (!id && !file) { errEl.textContent = 'Выберите фото'; return; }
+  const fields = {
+    eyebrow_ru: document.getElementById('sasl_eyebrow_ru').value.trim(),
+    eyebrow_uz: document.getElementById('sasl_eyebrow_uz').value.trim(),
+    title_ru: document.getElementById('sasl_title_ru').value.trim(),
+    title_uz: document.getElementById('sasl_title_uz').value.trim(),
+    text_ru: document.getElementById('sasl_text_ru').value.trim(),
+    text_uz: document.getElementById('sasl_text_uz').value.trim(),
+  };
+  try {
+    if (id) {
+      await api(`/saas/catalog/site-slides/${id}`, 'PUT', { ...fields, sort_order: 0 });
+      if (file) {
+        const fd = new FormData(); fd.append('file', file);
+        const res = await fetch(`${API}/saas/catalog/site-slides/${id}/image`, {
+          method: 'POST', headers: { Authorization: 'Bearer ' + _token }, body: fd
+        });
+        if (!res.ok) throw new Error((await res.json()).detail || 'Ошибка загрузки фото');
+      }
+    } else {
+      const fd = new FormData();
+      fd.append('file', file);
+      Object.entries(fields).forEach(([k, v]) => fd.append(k, v));
+      fd.append('sort_order', String(_saSlides.length));
+      const res = await fetch(`${API}/saas/catalog/site-slides`, {
+        method: 'POST', headers: { Authorization: 'Bearer ' + _token }, body: fd
+      });
+      if (!res.ok) throw new Error((await res.json()).detail || 'Ошибка');
+    }
+    closeModal('saSlideModal');
+    await loadSaSlides();
+  } catch(e) { errEl.textContent = e.message; }
+}
+
+async function saSlideDelete(id) {
+  if (!confirm('Удалить слайд?')) return;
+  try {
+    await api(`/saas/catalog/site-slides/${id}`, 'DELETE');
+    await loadSaSlides();
+  } catch(e) { alert('Ошибка: ' + e.message); }
+}
+
+// ── Статистика (шаблон, company_id=0) ───────────────────────────────────
+let _saStats = [];
+
+async function loadSaStats() {
+  document.getElementById('saStatsList').innerHTML = '<div style="color:var(--text2);font-size:13px">Загрузка…</div>';
+  try {
+    const r = await api('/saas/catalog/site-stats');
+    _saStats = r.stats || [];
+    renderSaStats();
+  } catch(e) {
+    document.getElementById('saStatsList').textContent = 'Ошибка: ' + e.message;
+  }
+}
+
+function renderSaStats() {
+  const wrap = document.getElementById('saStatsList');
+  wrap.innerHTML = _saStats.map((s, i) => `
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:10px">
+      <div style="font-size:12px;color:var(--text2);margin-bottom:8px">Карточка ${i+1}</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+        <div class="field"><label>Значение</label><input id="sast_value_${s.id}" value="${escHtml(s.value)}" placeholder="500+"></div>
+        <div class="field"><label>Подпись (RU)</label><input id="sast_label_ru_${s.id}" value="${escHtml(s.label_ru)}"></div>
+        <div class="field"><label>Подпись (UZ)</label><input id="sast_label_uz_${s.id}" value="${escHtml(s.label_uz)}"></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function saSaveAllStats() {
+  try {
+    for (const s of _saStats) {
+      const value = document.getElementById(`sast_value_${s.id}`)?.value?.trim() || '';
+      const label_ru = document.getElementById(`sast_label_ru_${s.id}`)?.value?.trim() || '';
+      const label_uz = document.getElementById(`sast_label_uz_${s.id}`)?.value?.trim() || '';
+      await api(`/saas/catalog/site-stats/${s.id}`, 'PUT', { value, label_ru, label_uz, sort_order: s.sort_order });
+    }
+    const msg = document.getElementById('saStatsMsg');
+    msg.style.display = '';
+    setTimeout(() => msg.style.display = 'none', 3000);
+  } catch(e) { alert('Ошибка: ' + e.message); }
+}
+
+// ── Отзывы (шаблон, company_id=0) ───────────────────────────────────────
+let _saReviews = [];
+
+async function loadSaReviews() {
+  document.getElementById('saReviewsList').innerHTML = '<div style="color:var(--text2);font-size:13px">Загрузка…</div>';
+  try {
+    const r = await api('/saas/catalog/site-reviews');
+    _saReviews = r.reviews || [];
+    renderSaReviews();
+  } catch(e) {
+    document.getElementById('saReviewsList').textContent = 'Ошибка: ' + e.message;
+  }
+}
+
+function renderSaReviews() {
+  const wrap = document.getElementById('saReviewsList');
+  wrap.innerHTML = _saReviews.map(rv => `
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:10px;display:flex;justify-content:space-between;gap:10px">
+      <div style="min-width:0">
+        <div style="font-weight:700;font-size:14px">${escHtml(rv.author_name)} <span style="font-weight:400;color:var(--text2);font-size:12px">${escHtml(rv.city_ru||'')}</span></div>
+        <div style="font-size:13px;color:var(--text2);margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:400px">${escHtml(rv.text_ru||'')}</div>
+      </div>
+      <div style="display:flex;gap:6px;flex-shrink:0">
+        <button class="btn btn-ghost btn-sm" onclick="saReviewOpenModal(${rv.id})">✏️</button>
+        <button class="btn btn-ghost btn-sm" style="color:#ef4444" onclick="saReviewDelete(${rv.id})">🗑</button>
+      </div>
+    </div>
+  `).join('') || '<div style="color:var(--text2);font-size:13px">Отзывов пока нет.</div>';
+}
+
+function saReviewOpenModal(id) {
+  const rv = id != null ? _saReviews.find(x => x.id === id) : null;
+  document.getElementById('saReviewModalTitle').textContent = rv ? '✏️ Редактировать отзыв' : '⭐ Новый отзыв';
+  document.getElementById('sarv_id').value = rv?.id ?? '';
+  document.getElementById('sarv_author').value = rv?.author_name || '';
+  document.getElementById('sarv_rating').value = String(rv?.rating || 5);
+  document.getElementById('sarv_text_ru').value = rv?.text_ru || '';
+  document.getElementById('sarv_text_uz').value = rv?.text_uz || '';
+  document.getElementById('sarv_city_ru').value = rv?.city_ru || '';
+  document.getElementById('sarv_city_uz').value = rv?.city_uz || '';
+  document.getElementById('saReviewErr').textContent = '';
+  openModal('saReviewModal');
+}
+
+async function saveSaReview() {
+  const id = document.getElementById('sarv_id').value;
+  const body = {
+    author_name: document.getElementById('sarv_author').value.trim(),
+    rating: parseInt(document.getElementById('sarv_rating').value) || 5,
+    text_ru: document.getElementById('sarv_text_ru').value.trim(),
+    text_uz: document.getElementById('sarv_text_uz').value.trim(),
+    city_ru: document.getElementById('sarv_city_ru').value.trim(),
+    city_uz: document.getElementById('sarv_city_uz').value.trim(),
+    sort_order: id ? (_saReviews.find(x => x.id === +id)?.sort_order || 0) : _saReviews.length,
+  };
+  try {
+    if (id) await api(`/saas/catalog/site-reviews/${id}`, 'PUT', body);
+    else await api('/saas/catalog/site-reviews', 'POST', body);
+    closeModal('saReviewModal');
+    await loadSaReviews();
+  } catch(e) { document.getElementById('saReviewErr').textContent = e.message; }
+}
+
+async function saReviewDelete(id) {
+  if (!confirm('Удалить отзыв?')) return;
+  try {
+    await api(`/saas/catalog/site-reviews/${id}`, 'DELETE');
+    await loadSaReviews();
+  } catch(e) { alert('Ошибка: ' + e.message); }
+}
+
+// ── FAQ (шаблон, company_id=0) ───────────────────────────────────────────
+let _saFaq = [];
+
+async function loadSaFaq() {
+  document.getElementById('saFaqList').innerHTML = '<div style="color:var(--text2);font-size:13px">Загрузка…</div>';
+  try {
+    const r = await api('/saas/catalog/site-faq');
+    _saFaq = r.faq || [];
+    renderSaFaq();
+  } catch(e) {
+    document.getElementById('saFaqList').textContent = 'Ошибка: ' + e.message;
+  }
+}
+
+function renderSaFaq() {
+  const wrap = document.getElementById('saFaqList');
+  wrap.innerHTML = _saFaq.map(f => `
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:10px;display:flex;justify-content:space-between;gap:10px">
+      <div style="min-width:0">
+        <div style="font-weight:700;font-size:14px">${escHtml(f.question_ru)}</div>
+        <div style="font-size:13px;color:var(--text2);margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:400px">${escHtml(f.answer_ru||'')}</div>
+      </div>
+      <div style="display:flex;gap:6px;flex-shrink:0">
+        <button class="btn btn-ghost btn-sm" onclick="saFaqOpenModal(${f.id})">✏️</button>
+        <button class="btn btn-ghost btn-sm" style="color:#ef4444" onclick="saFaqDelete(${f.id})">🗑</button>
+      </div>
+    </div>
+  `).join('') || '<div style="color:var(--text2);font-size:13px">Вопросов пока нет.</div>';
+}
+
+function saFaqOpenModal(id) {
+  const f = id != null ? _saFaq.find(x => x.id === id) : null;
+  document.getElementById('saFaqModalTitle').textContent = f ? '✏️ Редактировать вопрос' : '❓ Новый вопрос';
+  document.getElementById('safq_id').value = f?.id ?? '';
+  document.getElementById('safq_question_ru').value = f?.question_ru || '';
+  document.getElementById('safq_question_uz').value = f?.question_uz || '';
+  document.getElementById('safq_answer_ru').value = f?.answer_ru || '';
+  document.getElementById('safq_answer_uz').value = f?.answer_uz || '';
+  document.getElementById('saFaqErr').textContent = '';
+  openModal('saFaqModal');
+}
+
+async function saveSaFaq() {
+  const id = document.getElementById('safq_id').value;
+  const body = {
+    question_ru: document.getElementById('safq_question_ru').value.trim(),
+    question_uz: document.getElementById('safq_question_uz').value.trim(),
+    answer_ru: document.getElementById('safq_answer_ru').value.trim(),
+    answer_uz: document.getElementById('safq_answer_uz').value.trim(),
+    sort_order: id ? (_saFaq.find(x => x.id === +id)?.sort_order || 0) : _saFaq.length,
+  };
+  try {
+    if (id) await api(`/saas/catalog/site-faq/${id}`, 'PUT', body);
+    else await api('/saas/catalog/site-faq', 'POST', body);
+    closeModal('saFaqModal');
+    await loadSaFaq();
+  } catch(e) { document.getElementById('saFaqErr').textContent = e.message; }
+}
+
+async function saFaqDelete(id) {
+  if (!confirm('Удалить вопрос?')) return;
+  try {
+    await api(`/saas/catalog/site-faq/${id}`, 'DELETE');
+    await loadSaFaq();
   } catch(e) { alert('Ошибка: ' + e.message); }
 }
 
