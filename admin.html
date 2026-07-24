@@ -753,13 +753,13 @@
   .form-label { font-size: 11px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: .04em; }
 
   /* ── Settings tabs ── */
-  .s-tab {
+  .s-tab, .cs-tab {
     background: var(--surface2); border: 1px solid var(--border); color: var(--text2);
     border-radius: 8px; padding: 7px 14px; font-size: 13px; font-weight: 500;
     cursor: pointer; transition: all .2s; white-space: nowrap; flex-shrink: 0;
   }
-  .s-tab:hover { color: var(--text); border-color: var(--accent); }
-  .s-tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .s-tab:hover, .cs-tab:hover { color: var(--text); border-color: var(--accent); }
+  .s-tab.active, .cs-tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
   .cfg-title-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
   .cfg-title-row .cfg-title { margin-bottom: 0; }
   .s-edit-btn {
@@ -1497,6 +1497,7 @@
           <span class="nav-group-arrow" id="ng-arrow-sys">▸</span>
         </div>
         <div class="nav-group-items" id="ng-items-sys" style="display:none;">
+          <div class="nav-sub-item" data-page="company-settings" onclick="switchSubPage(this)">🏢 Настройки компании</div>
           <div class="nav-sub-item" data-page="siteconfig"     onclick="switchSubPage(this)">⚙️ Настройки сайта</div>
           <div class="nav-sub-item" data-page="role-perms"     onclick="switchSubPage(this)">🔐 Роли и доступы</div>
           <div class="nav-sub-item" data-page="db-maintenance" onclick="switchSubPage(this)">🗄️ Обслуживание БД</div>
@@ -2710,9 +2711,7 @@
         <!-- Под-вкладки -->
         <div style="display:flex;gap:6px;flex-wrap:nowrap;overflow-x:auto;margin-bottom:20px;padding-bottom:4px;-webkit-overflow-scrolling:touch;scrollbar-width:none;">
 
-          <button class="s-tab"        data-stab="profile" onclick="switchStab(this)">🏢 Профиль</button>
-          <button class="s-tab active" data-stab="contacts" onclick="switchStab(this)" data-i18n="cfg.tab.contacts">📞 Контакты</button>
-          <button class="s-tab"        data-stab="staff-mgmt" onclick="switchStab(this);staffMgmtLoad()" data-i18n="cfg.tab.staff">👤 Сотрудники</button>
+          <button class="s-tab active" data-stab="staff-mgmt" onclick="switchStab(this);staffMgmtLoad()" data-i18n="cfg.tab.staff">👤 Сотрудники</button>
           <button class="s-tab"        data-stab="eskiz"    onclick="switchStab(this)" data-i18n="cfg.tab.sms">📨 SMS (Eskiz)</button>
           <button class="s-tab"        data-stab="sheets"     onclick="switchStab(this)" data-i18n="cfg.tab.sheets">📊 Google Sheets</button>
           <button class="s-tab"        data-stab="agents"     onclick="switchStab(this)" data-i18n="cfg.tab.agents">🤝 Агенты</button>
@@ -2721,137 +2720,8 @@
 
         <div style="max-width:660px;">
 
-          <!-- ─── Профиль компании ─── -->
-          <div class="s-panel" id="stab-profile" style="display:none">
-            <div class="card" id="card-company-profile">
-              <div class="cfg-title-row">
-                <h3 class="cfg-title">🏢 Профиль компании</h3>
-                <button class="btn s-edit-btn" onclick="editCard('card-company-profile')">✏️</button>
-              </div>
-              <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px">
-                <img id="cp_logo_preview" src="" alt="Логотип" style="width:64px;height:64px;border-radius:12px;object-fit:cover;background:var(--bg2);border:1px solid var(--border);display:none">
-                <div id="cp_logo_placeholder" style="width:64px;height:64px;border-radius:12px;background:var(--bg2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:24px;color:var(--text2)">🏢</div>
-                <div>
-                  <input type="file" id="cp_logo_file" accept="image/*" style="display:none" onchange="uploadCompanyLogo(this)">
-                  <button class="btn btn-ghost btn-sm" type="button" onclick="document.getElementById('cp_logo_file').click()">🖼️ Загрузить лого</button>
-                  <div style="font-size:11px;color:var(--text2);margin-top:4px">PNG/JPG, до 400 КБ</div>
-                </div>
-              </div>
-              <div class="contacts-grid">
-                <div class="cfg-field">
-                  <label>Название компании</label>
-                  <input type="text" id="cfg_company_name" class="form-input" disabled placeholder="Cleano">
-                </div>
-                <div class="cfg-field">
-                  <label>Slug (используется при входе сотрудников)</label>
-                  <input type="text" id="cfg_company_slug" class="form-input" disabled placeholder="my-company">
-                  <div style="font-size:11px;color:var(--text2);margin-top:4px">⚠️ При смене slug всем сотрудникам нужно будет ввести новый slug при следующем входе</div>
-                </div>
-              </div>
-              <div class="cfg-actions">
-                <button class="btn btn-primary  s-save-btn"   onclick="saveCompanyProfile()" style="display:none;">💾 Сохранить</button>
-                <button class="btn btn-ghost    s-cancel-btn" onclick="cancelCard('card-company-profile', ['company_name','company_slug'])" style="display:none;">Отмена</button>
-                <span class="s-msg" id="msg_card-company-profile"></span>
-              </div>
-            </div>
-          </div>
-
-          <!-- ─── Контакты ─── -->
-          <div class="s-panel" id="stab-contacts">
-            <div class="card">
-              <div class="cfg-title-row">
-                <h3 class="cfg-title">📞 Контактные номера</h3>
-                <button class="btn s-edit-btn" onclick="editTab('contacts')">✏️</button>
-              </div>
-              <div class="contacts-grid">
-                <div class="cfg-field" id="shortNumWrap" style="display:none">
-                  <label>Короткий номер</label>
-                  <input type="text" id="cfg_contact_short" class="form-input" disabled placeholder="1221" inputmode="tel">
-                </div>
-                <div class="cfg-field">
-                  <label>Основной номер</label>
-                  <input type="text" id="cfg_contact_main" class="form-input" disabled placeholder="+998 XX XXX-XX-XX" inputmode="tel">
-                </div>
-              </div>
-            </div>
-            <div class="cfg-actions">
-              <button class="btn btn-primary  s-save-btn"   onclick="saveTab('contacts')" style="display:none;">💾 Сохранить</button>
-              <button class="btn btn-ghost    s-cancel-btn" onclick="cancelTab('contacts')" style="display:none;">Отмена</button>
-              <span class="s-msg" id="msg_contacts"></span>
-            </div>
-            <!-- Соцсети и Telegram компании -->
-            <div class="card" id="card-company-social" style="margin-top:20px">
-              <div class="cfg-title-row">
-                <h3 class="cfg-title">📱 Соцсети и Telegram</h3>
-                <button class="btn s-edit-btn" onclick="editCard('card-company-social')">✏️</button>
-              </div>
-              <div class="contacts-grid">
-                <div class="cfg-field">
-                  <label>WhatsApp (номер без +)</label>
-                  <input type="text" id="cfg_whatsapp" class="form-input" disabled placeholder="998882001221" inputmode="tel">
-                </div>
-                <div class="cfg-field">
-                  <label>Instagram</label>
-                  <input type="url" id="cfg_instagram" class="form-input" disabled placeholder="https://instagram.com/...">
-                </div>
-              </div>
-              <div style="margin-top:12px">
-                <div class="tg-group-card">
-                  <div class="tg-group-head"><span class="tg-group-icon">💬</span>
-                    <div><div class="tg-group-title">Группа компании</div><div class="tg-group-desc">Клиентская группа Telegram</div></div>
-                  </div>
-                  <div class="tg-group-inputs">
-                    <div style="margin-bottom:6px"><input type="url" id="cfg_tg_group_link" class="form-input" disabled placeholder="https://t.me/..."></div>
-                    <div class="tg-id-row">
-                      <input type="text" id="cfg_tg_group_id" class="form-input" disabled placeholder="-100..." inputmode="numeric" style="font-family:monospace">
-                      <button class="btn btn-ghost btn-sm" type="button" onclick="tgCheckId('cfg_tg_group_id','tgn_cfg_group')">🔍</button>
-                    </div>
-                    <span class="tg-chat-name" id="tgn_cfg_group"></span>
-                  </div>
-                </div>
-                <div class="tg-group-card">
-                  <div class="tg-group-head"><span class="tg-group-icon">📢</span>
-                    <div><div class="tg-group-title">Канал компании</div><div class="tg-group-desc">Официальный канал Telegram</div></div>
-                  </div>
-                  <div class="tg-group-inputs">
-                    <div style="margin-bottom:6px"><input type="url" id="cfg_tg_channel_link" class="form-input" disabled placeholder="https://t.me/..."></div>
-                    <div class="tg-id-row">
-                      <input type="text" id="cfg_tg_channel_id" class="form-input" disabled placeholder="-100..." inputmode="numeric" style="font-family:monospace">
-                      <button class="btn btn-ghost btn-sm" type="button" onclick="tgCheckId('cfg_tg_channel_id','tgn_cfg_channel')">🔍</button>
-                    </div>
-                    <span class="tg-chat-name" id="tgn_cfg_channel"></span>
-                  </div>
-                </div>
-                <div class="tg-group-card">
-                  <div class="tg-group-head"><span class="tg-group-icon">👤</span>
-                    <div><div class="tg-group-title">Telegram Администратора</div><div class="tg-group-desc">Личный аккаунт для связи</div></div>
-                  </div>
-                  <div class="tg-group-inputs">
-                    <div style="margin-bottom:6px"><input type="url" id="cfg_tg_admin_link" class="form-input" disabled placeholder="https://t.me/username"></div>
-                    <div class="tg-id-row">
-                      <input type="text" id="cfg_tg_admin_id" class="form-input" disabled placeholder="123456789" inputmode="numeric" style="font-family:monospace">
-                      <button class="btn btn-ghost btn-sm" type="button" onclick="tgCheckId('cfg_tg_admin_id','tgn_cfg_admin')">🔍</button>
-                    </div>
-                    <span class="tg-chat-name" id="tgn_cfg_admin"></span>
-                  </div>
-                </div>
-              </div>
-              <div class="cfg-actions">
-                <button class="btn btn-primary s-save-btn"   onclick="saveCompanySocial()" style="display:none;">💾 Сохранить</button>
-                <button class="btn btn-ghost   s-cancel-btn" onclick="cancelCard('card-company-social',['whatsapp','instagram','tg_group_link','tg_group_id','tg_channel_link','tg_channel_id','tg_admin_link','tg_admin_id'])" style="display:none;">Отмена</button>
-                <span class="s-msg" id="msg_card-company-social"></span>
-              </div>
-            </div>
-
-            <div style="margin-top:20px">
-              <h3 style="margin:0 0 12px;font-size:15px;font-weight:700">🏢 Филиалы</h3>
-              <div id="branchContactsContainer"></div>
-              <button class="btn btn-primary" onclick="openAddBranchModal()" style="margin-top:12px">+ Добавить филиал</button>
-            </div>
-          </div>
-
           <!-- ─── Сотрудники ─── -->
-          <div class="s-panel" id="stab-staff-mgmt" style="display:none;">
+          <div class="s-panel" id="stab-staff-mgmt">
             <div class="card" style="margin-bottom:16px">
               <div class="cfg-title-row">
                 <h3 class="cfg-title">👤 Сотрудники с доступом в admin</h3>
@@ -3023,6 +2893,155 @@
                 <span class="s-msg" id="msg_receipt"></span>
               </div>
             </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- COMPANY SETTINGS PAGE -->
+      <div class="page" id="page-company-settings">
+        <div class="section-header"><h2>🏢 Настройки компании</h2></div>
+
+        <!-- Под-вкладки -->
+        <div style="display:flex;gap:6px;flex-wrap:nowrap;overflow-x:auto;margin-bottom:20px;padding-bottom:4px;-webkit-overflow-scrolling:touch;scrollbar-width:none;">
+          <button class="cs-tab active" data-cstab="profile"  onclick="switchCompanyStab(this)">🏢 Профиль</button>
+          <button class="cs-tab"        data-cstab="contacts" onclick="switchCompanyStab(this)">📞 Контакты</button>
+          <button class="cs-tab"        data-cstab="social"   onclick="switchCompanyStab(this)">📱 Соцсети</button>
+          <button class="cs-tab"        data-cstab="branches" onclick="switchCompanyStab(this)">🏢 Филиалы</button>
+        </div>
+
+        <div style="max-width:660px;">
+
+          <!-- ─── Профиль компании ─── -->
+          <div class="cs-panel" id="cstab-profile">
+            <div class="card" id="card-company-profile">
+              <div class="cfg-title-row">
+                <h3 class="cfg-title">🏢 Профиль компании</h3>
+                <button class="btn s-edit-btn" onclick="editCard('card-company-profile')">✏️</button>
+              </div>
+              <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px">
+                <img id="cp_logo_preview" src="" alt="Логотип" style="width:64px;height:64px;border-radius:12px;object-fit:cover;background:var(--bg2);border:1px solid var(--border);display:none">
+                <div id="cp_logo_placeholder" style="width:64px;height:64px;border-radius:12px;background:var(--bg2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:24px;color:var(--text2)">🏢</div>
+                <div>
+                  <input type="file" id="cp_logo_file" accept="image/*" style="display:none" onchange="uploadCompanyLogo(this)">
+                  <button class="btn btn-ghost btn-sm" type="button" onclick="document.getElementById('cp_logo_file').click()">🖼️ Загрузить лого</button>
+                  <div style="font-size:11px;color:var(--text2);margin-top:4px">PNG/JPG, до 400 КБ</div>
+                </div>
+              </div>
+              <div class="contacts-grid">
+                <div class="cfg-field">
+                  <label>Название компании</label>
+                  <input type="text" id="cfg_company_name" class="form-input" disabled placeholder="Cleano">
+                </div>
+                <div class="cfg-field">
+                  <label>Slug (используется при входе сотрудников)</label>
+                  <input type="text" id="cfg_company_slug" class="form-input" disabled placeholder="my-company">
+                  <div style="font-size:11px;color:var(--text2);margin-top:4px">⚠️ При смене slug всем сотрудникам нужно будет ввести новый slug при следующем входе</div>
+                </div>
+              </div>
+              <div class="cfg-actions">
+                <button class="btn btn-primary  s-save-btn"   onclick="saveCompanyProfile()" style="display:none;">💾 Сохранить</button>
+                <button class="btn btn-ghost    s-cancel-btn" onclick="cancelCard('card-company-profile', ['company_name','company_slug'])" style="display:none;">Отмена</button>
+                <span class="s-msg" id="msg_card-company-profile"></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- ─── Контакты ─── -->
+          <div class="cs-panel" id="cstab-contacts" style="display:none">
+            <div class="card">
+              <div class="cfg-title-row">
+                <h3 class="cfg-title">📞 Контактные номера</h3>
+                <button class="btn s-edit-btn" onclick="editTab('contacts')">✏️</button>
+              </div>
+              <div class="contacts-grid">
+                <div class="cfg-field" id="shortNumWrap" style="display:none">
+                  <label>Короткий номер</label>
+                  <input type="text" id="cfg_contact_short" class="form-input" disabled placeholder="1221" inputmode="tel">
+                </div>
+                <div class="cfg-field">
+                  <label>Основной номер</label>
+                  <input type="text" id="cfg_contact_main" class="form-input" disabled placeholder="+998 XX XXX-XX-XX" inputmode="tel">
+                </div>
+              </div>
+            </div>
+            <div class="cfg-actions">
+              <button class="btn btn-primary  s-save-btn"   onclick="saveTab('contacts')" style="display:none;">💾 Сохранить</button>
+              <button class="btn btn-ghost    s-cancel-btn" onclick="cancelTab('contacts')" style="display:none;">Отмена</button>
+              <span class="s-msg" id="msg_contacts"></span>
+            </div>
+          </div>
+
+          <!-- ─── Соцсети и Telegram компании ─── -->
+          <div class="cs-panel" id="cstab-social" style="display:none">
+            <div class="card" id="card-company-social">
+              <div class="cfg-title-row">
+                <h3 class="cfg-title">📱 Соцсети и Telegram</h3>
+                <button class="btn s-edit-btn" onclick="editCard('card-company-social')">✏️</button>
+              </div>
+              <div class="contacts-grid">
+                <div class="cfg-field">
+                  <label>WhatsApp (номер без +)</label>
+                  <input type="text" id="cfg_whatsapp" class="form-input" disabled placeholder="998882001221" inputmode="tel">
+                </div>
+                <div class="cfg-field">
+                  <label>Instagram</label>
+                  <input type="url" id="cfg_instagram" class="form-input" disabled placeholder="https://instagram.com/...">
+                </div>
+              </div>
+              <div style="margin-top:12px">
+                <div class="tg-group-card">
+                  <div class="tg-group-head"><span class="tg-group-icon">💬</span>
+                    <div><div class="tg-group-title">Группа компании</div><div class="tg-group-desc">Клиентская группа Telegram</div></div>
+                  </div>
+                  <div class="tg-group-inputs">
+                    <div style="margin-bottom:6px"><input type="url" id="cfg_tg_group_link" class="form-input" disabled placeholder="https://t.me/..."></div>
+                    <div class="tg-id-row">
+                      <input type="text" id="cfg_tg_group_id" class="form-input" disabled placeholder="-100..." inputmode="numeric" style="font-family:monospace">
+                      <button class="btn btn-ghost btn-sm" type="button" onclick="tgCheckId('cfg_tg_group_id','tgn_cfg_group')">🔍</button>
+                    </div>
+                    <span class="tg-chat-name" id="tgn_cfg_group"></span>
+                  </div>
+                </div>
+                <div class="tg-group-card">
+                  <div class="tg-group-head"><span class="tg-group-icon">📢</span>
+                    <div><div class="tg-group-title">Канал компании</div><div class="tg-group-desc">Официальный канал Telegram</div></div>
+                  </div>
+                  <div class="tg-group-inputs">
+                    <div style="margin-bottom:6px"><input type="url" id="cfg_tg_channel_link" class="form-input" disabled placeholder="https://t.me/..."></div>
+                    <div class="tg-id-row">
+                      <input type="text" id="cfg_tg_channel_id" class="form-input" disabled placeholder="-100..." inputmode="numeric" style="font-family:monospace">
+                      <button class="btn btn-ghost btn-sm" type="button" onclick="tgCheckId('cfg_tg_channel_id','tgn_cfg_channel')">🔍</button>
+                    </div>
+                    <span class="tg-chat-name" id="tgn_cfg_channel"></span>
+                  </div>
+                </div>
+                <div class="tg-group-card">
+                  <div class="tg-group-head"><span class="tg-group-icon">👤</span>
+                    <div><div class="tg-group-title">Telegram Администратора</div><div class="tg-group-desc">Личный аккаунт для связи</div></div>
+                  </div>
+                  <div class="tg-group-inputs">
+                    <div style="margin-bottom:6px"><input type="url" id="cfg_tg_admin_link" class="form-input" disabled placeholder="https://t.me/username"></div>
+                    <div class="tg-id-row">
+                      <input type="text" id="cfg_tg_admin_id" class="form-input" disabled placeholder="123456789" inputmode="numeric" style="font-family:monospace">
+                      <button class="btn btn-ghost btn-sm" type="button" onclick="tgCheckId('cfg_tg_admin_id','tgn_cfg_admin')">🔍</button>
+                    </div>
+                    <span class="tg-chat-name" id="tgn_cfg_admin"></span>
+                  </div>
+                </div>
+              </div>
+              <div class="cfg-actions">
+                <button class="btn btn-primary s-save-btn"   onclick="saveCompanySocial()" style="display:none;">💾 Сохранить</button>
+                <button class="btn btn-ghost   s-cancel-btn" onclick="cancelCard('card-company-social',['whatsapp','instagram','tg_group_link','tg_group_id','tg_channel_link','tg_channel_id','tg_admin_link','tg_admin_id'])" style="display:none;">Отмена</button>
+                <span class="s-msg" id="msg_card-company-social"></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- ─── Филиалы ─── -->
+          <div class="cs-panel" id="cstab-branches" style="display:none">
+            <div id="branchContactsContainer"></div>
+            <button class="btn btn-primary" onclick="openAddBranchModal()" style="margin-top:12px">+ Добавить филиал</button>
           </div>
 
         </div>
@@ -7912,7 +7931,8 @@ function _activatePage(page) {
   if (page === 'clients')     adminLoadClients();
   if (page === 'contacts')    adminLoadContacts();
   if (page === 'site-users')  adminLoadSiteUsers();
-  if (page === 'siteconfig')  { loadSiteSettings(); renderBranchContactCards(); loadBranches().then(() => renderBranchContactCards()); _loadCompanySocial(); }
+  if (page === 'siteconfig')  loadSiteSettings();
+  if (page === 'company-settings') { _loadCompanyProfile(); loadSiteSettings(); _loadCompanySocial(); renderBranchContactCards(); loadBranches().then(() => renderBranchContactCards()); }
   if (page === 'tg-bot')      loadSiteSettings();
   if (page === 'tg-messages') loadTgSettings();
   if (page === 'tg-clients')  loadTgClients();
@@ -10650,8 +10670,6 @@ function switchStab(btn) {
   const tab = btn.dataset.stab;
   const panel = document.getElementById('stab-' + tab);
   if (panel) panel.style.display = '';
-  if (tab === 'profile') { _loadCompanyProfile(); }
-  if (tab === 'contacts') { renderBranchContactCards(); _loadCompanySocial(); }
   if (tab === 'agents') {
     loadAgentCommissionSettings();
     // Инициализировать выбор года
@@ -10668,6 +10686,19 @@ function switchStab(btn) {
     loadAllCommissions();
   }
   if (tab === 'receipt') _updateReceiptPreview();
+}
+
+function switchCompanyStab(btn) {
+  document.querySelectorAll('.cs-tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.cs-panel').forEach(p => p.style.display = 'none');
+  btn.classList.add('active');
+  const tab = btn.dataset.cstab;
+  const panel = document.getElementById('cstab-' + tab);
+  if (panel) panel.style.display = '';
+  if (tab === 'profile')  _loadCompanyProfile();
+  if (tab === 'contacts') loadSiteSettings();
+  if (tab === 'social')   _loadCompanySocial();
+  if (tab === 'branches') { renderBranchContactCards(); loadBranches().then(() => renderBranchContactCards()); }
 }
 
 function togglePwd(id, btn) {
@@ -19215,6 +19246,7 @@ function confirmBranchLoc() {
       <span class="nav-icon">⚙️</span><span>Система</span><span class="mob-drawer-group-arrow">▸</span>
     </div>
     <div class="mob-drawer-sub" style="display:none;">
+      <div class="mob-drawer-sub-item" data-page="company-settings" onclick="switchSubPage(this);closeMobDrawer()">🏢 Настройки компании</div>
       <div class="mob-drawer-sub-item" data-page="siteconfig"     onclick="switchSubPage(this);closeMobDrawer()">⚙️ Настройки сайта</div>
       <div class="mob-drawer-sub-item" data-page="role-perms"     onclick="switchSubPage(this);closeMobDrawer()">🔐 Роли и доступы</div>
       <div class="mob-drawer-sub-item" data-page="db-maintenance" onclick="switchSubPage(this);closeMobDrawer()">🗄️ Обслуживание БД</div>
