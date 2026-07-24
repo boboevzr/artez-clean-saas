@@ -2938,41 +2938,9 @@
   <div class="hero-orb hero-orb-3"></div>
   <div class="wrap hero-grid">
 
-    <!-- CAROUSEL -->
-    <div class="carousel" id="carousel">
-      <div class="carousel-track" id="carouselTrack">
-
-        <div class="slide">
-          <img src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?q=80&w=1400&auto=format&fit=crop" alt="Чистка ковра на дому" data-i18n-alt="alt.slide1">
-          <div class="slide-content">
-            <span class="slide-eyebrow" data-i18n="hero.slide1.eyebrow">Услуга на дому</span>
-            <h1 data-i18n="hero.slide1.title">Чистим ковры у вас дома</h1>
-            <p data-i18n="hero.slide1.text">Приедем со своим оборудованием, почистим ковёр прямо в квартире — без вывоза и ожидания.</p>
-            <a href="#calc" class="btn btn-amber" data-i18n="hero.slide1.btn">Рассчитать стоимость</a>
-          </div>
-        </div>
-
-        <div class="slide">
-          <img src="https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?q=80&w=1400&auto=format&fit=crop" alt="Бесплатный вывоз и доставка" data-i18n-alt="alt.slide2">
-          <div class="slide-content">
-            <span class="slide-eyebrow" data-i18n="hero.slide2.eyebrow">Без хлопот</span>
-            <h1 data-i18n="hero.slide2.title">Вывоз и доставка — бесплатно</h1>
-            <p data-i18n="hero.slide2.text">Заберём ковры, диваны и шторы, почистим в мастерской и привезём обратно — вы ничего не платите за логистику.</p>
-            <a href="#services" class="btn btn-amber" data-i18n="hero.slide2.btn">Смотреть услуги</a>
-          </div>
-        </div>
-
-        <div class="slide">
-          <img src="https://images.unsplash.com/photo-1567016432779-094069958ea5?q=80&w=1400&auto=format&fit=crop" alt="Химчистка мягкой мебели" data-i18n-alt="alt.slide3">
-          <div class="slide-content">
-            <span class="slide-eyebrow" data-i18n="hero.slide3.eyebrow">Мягкая мебель</span>
-            <h1 data-i18n="hero.slide3.title">Диваны, кресла, матрасы — как новые</h1>
-            <p data-i18n="hero.slide3.text">Глубокая чистка обивки от пятен, пыли и запахов с использованием профессиональной химии.</p>
-            <a href="#calc" class="btn btn-amber" data-i18n="hero.slide3.btn">Узнать цену</a>
-          </div>
-        </div>
-
-      </div>
+    <!-- CAROUSEL (слайды загружаются динамически из /api/site-slides) -->
+    <div class="carousel" id="carousel" style="display:none">
+      <div class="carousel-track" id="carouselTrack"></div>
 
       <div class="carousel-arrows">
         <button id="prevSlide" aria-label="Предыдущий слайд" data-i18n-aria="hero.prevSlide">‹</button>
@@ -3030,27 +2998,10 @@
   </div>
 </section>
 
-<!-- STATS STRIP -->
-<div class="stats-strip">
+<!-- STATS STRIP (карточки загружаются динамически из /api/site-stats) -->
+<div class="stats-strip" id="statsStrip" style="display:none">
   <div class="wrap">
-    <div class="stats-grid">
-      <div class="stat-item reveal reveal-d1">
-        <span class="stat-num" data-count="500"><span>500</span>+</span>
-        <div class="stat-lbl">клиентов в год</div>
-      </div>
-      <div class="stat-item reveal reveal-d2">
-        <span class="stat-num"><span>3</span> года</span>
-        <div class="stat-lbl">на рынке</div>
-      </div>
-      <div class="stat-item reveal reveal-d3">
-        <span class="stat-num">2 <span>📍</span></span>
-        <div class="stat-lbl">города: Навои и Зарафшан</div>
-      </div>
-      <div class="stat-item reveal reveal-d4">
-        <span class="stat-num" style="font-size:22px;padding-top:4px">Бесплатно</span>
-        <div class="stat-lbl">вывоз и доставка</div>
-      </div>
-    </div>
+    <div class="stats-grid" id="statsGrid"></div>
   </div>
 </div>
 
@@ -3801,16 +3752,7 @@
       'brand.tagline': 'Химчистка ковров, мебели, матрасов и штор',
       'nav.services': 'Услуги', 'nav.calc': 'Калькулятор', 'nav.cabinet': 'Личный кабинет',
       'nav.contacts': 'Контакты', 'nav.login': 'Войти', 'nav.orderBtn': 'Оставить заявку',
-      'hero.prevSlide': 'Предыдущий слайд', 'hero.nextSlide': 'Следующий слайд',
-      'hero.slide1.eyebrow': 'Услуга на дому', 'hero.slide1.title': 'Чистим ковры у вас дома',
-      'hero.slide1.text': 'Приедем со своим оборудованием, почистим ковёр прямо в квартире — без вывоза и ожидания.',
-      'hero.slide1.btn': 'Рассчитать стоимость',
-      'hero.slide2.eyebrow': 'Без хлопот', 'hero.slide2.title': 'Вывоз и доставка — бесплатно',
-      'hero.slide2.text': 'Заберём ковры, диваны и шторы, почистим в мастерской и привезём обратно — вы ничего не платите за логистику.',
-      'hero.slide2.btn': 'Смотреть услуги',
-      'hero.slide3.eyebrow': 'Мягкая мебель', 'hero.slide3.title': 'Диваны, кресла, матрасы — как новые',
-      'hero.slide3.text': 'Глубокая чистка обивки от пятен, пыли и запахов с использованием профессиональной химии.',
-      'hero.slide3.btn': 'Узнать цену',
+      'hero.prevSlide': 'Предыдущий слайд', 'hero.nextSlide': 'Следующий слайд', 'hero.slideBtn': 'Рассчитать стоимость',
       'calc.title': 'Рассчитайте стоимость услуги',
       'calc.sub': 'Теперь вам не нужно звонить, чтобы узнать цену за чистку ваших вещей.',
       'calc.serviceLabel': 'Услуга', 'calc.typeLabel': 'Тип услуги', 'calc.areaLabel': 'Площадь',
@@ -3826,7 +3768,6 @@
       'type.standard': '🧺 Стандартный', 'type.express': '⚡ Быстрый',
       'type.standard.name': 'Стандартный', 'type.express.name': 'Быстрый',
       'unit.sum': 'сум', 'unit.m2': 'м²',
-      'alt.slide1': 'Чистка ковра на дому', 'alt.slide2': 'Бесплатный вывоз и доставка', 'alt.slide3': 'Химчистка мягкой мебели',
       'services.eyebrow': 'Прайс-лист ARTEZ', 'services.title': 'Услуги и цены',
       'services.sub': 'Стоимость указана за 1 м². Точная сумма пересчитывается в калькуляторе автоматически.',
       'services.priceUnit': 'сум / м²',
@@ -4017,16 +3958,7 @@
       'brand.tagline': "Gilam, mebel, matras va pardalarni tozalash",
       'nav.services': 'Xizmatlar', 'nav.calc': 'Kalkulyator', 'nav.cabinet': 'Shaxsiy kabinet',
       'nav.contacts': 'Aloqa', 'nav.login': 'Kirish', 'nav.orderBtn': 'Buyurtma qoldirish',
-      'hero.prevSlide': 'Oldingi slayd', 'hero.nextSlide': 'Keyingi slayd',
-      'hero.slide1.eyebrow': 'Uyga xizmat', 'hero.slide1.title': "Gilamlarni uyingizda tozalaymiz",
-      'hero.slide1.text': "Biz o'z asbob-uskunalarimiz bilan kelamiz va gilamni uyingizda tozalaymiz — olib ketish va kutishsiz.",
-      'hero.slide1.btn': "Narxni hisoblash",
-      'hero.slide2.eyebrow': 'Tashvishsiz', 'hero.slide2.title': "Olib ketish va yetkazib berish — bepul",
-      'hero.slide2.text': "Gilam, divan va pardalarni olib ketamiz, ustaxonada tozalaymiz va qaytarib olib kelamiz — logistika uchun hech narsa to'lamaysiz.",
-      'hero.slide2.btn': "Xizmatlarni ko'rish",
-      'hero.slide3.eyebrow': 'Yumshoq mebel', 'hero.slide3.title': "Divan, kreslo, matras — yangidek",
-      'hero.slide3.text': "Mato qoplamasini dog', chang va hidlardan professional kimyoviy vositalar bilan chuqur tozalaymiz.",
-      'hero.slide3.btn': "Narxni bilish",
+      'hero.prevSlide': 'Oldingi slayd', 'hero.nextSlide': 'Keyingi slayd', 'hero.slideBtn': 'Narxni hisoblash',
       'calc.title': 'Xizmat narxini hisoblang',
       'calc.sub': "Endi buyumlaringizni tozalash narxini bilish uchun qo'ng'iroq qilishingiz shart emas.",
       'calc.serviceLabel': 'Xizmat', 'calc.typeLabel': 'Xizmat turi', 'calc.areaLabel': 'Maydon',
@@ -4042,7 +3974,6 @@
       'type.standard': '🧺 Standart', 'type.express': '⚡ Tezkor',
       'type.standard.name': 'Standart', 'type.express.name': 'Tezkor',
       'unit.sum': "so'm", 'unit.m2': 'm²',
-      'alt.slide1': 'Gilamni uyda tozalash', 'alt.slide2': "Bepul olib ketish va yetkazib berish", 'alt.slide3': "Yumshoq mebelni kimyoviy tozalash",
       'services.eyebrow': 'ARTEZ narxlar ro\'yxati', 'services.title': 'Xizmatlar va narxlar',
       'services.sub': "Narx 1 m² uchun ko'rsatilgan. Aniq summa kalkulyatorda avtomatik hisoblanadi.",
       'services.priceUnit': "so'm / m²",
@@ -4265,25 +4196,52 @@
   // Повторно применяем переводы после полной загрузки DOM (дравер идёт после тега script)
   window.addEventListener('DOMContentLoaded', applyI18n);
 
-  // ===== CAROUSEL =====
+  // ===== CAROUSEL (данные из /api/site-slides) =====
   const track = document.getElementById('carouselTrack');
-  const slides = track.querySelectorAll('.slide');
   const dotsWrap = document.getElementById('carouselDots');
+  const carouselEl = document.getElementById('carousel');
   let current = 0;
   let autoTimer;
 
-  slides.forEach((_, i) => {
-    const dot = document.createElement('button');
-    if (i === 0) dot.classList.add('active');
-    dot.addEventListener('click', () => goTo(i));
-    dotsWrap.appendChild(dot);
-  });
-  const dots = dotsWrap.querySelectorAll('button');
+  function _slideField(s, field) {
+    return (lang === 'uz' && s[field + '_uz']) ? s[field + '_uz'] : (s[field + '_ru'] || s[field + '_uz'] || '');
+  }
+
+  function renderCarousel(slidesData) {
+    const list = slidesData || [];
+    if (!list.length) { carouselEl.style.display = 'none'; return; }
+    carouselEl.style.display = '';
+    track.innerHTML = list.map(s => {
+      const eyebrow = _slideField(s, 'eyebrow');
+      return `
+      <div class="slide">
+        <img src="${_escHtml(s.image_url)}" alt="${_escHtml(_slideField(s, 'title'))}">
+        <div class="slide-content">
+          ${eyebrow ? `<span class="slide-eyebrow">${_escHtml(eyebrow)}</span>` : ''}
+          <h1>${_escHtml(_slideField(s, 'title'))}</h1>
+          <p>${_escHtml(_slideField(s, 'text'))}</p>
+          <a href="#calc" class="btn btn-amber">${_escHtml(t('hero.slideBtn'))}</a>
+        </div>
+      </div>`;
+    }).join('');
+    dotsWrap.innerHTML = '';
+    list.forEach((_, i) => {
+      const dot = document.createElement('button');
+      if (i === 0) dot.classList.add('active');
+      dot.addEventListener('click', () => goTo(i));
+      dotsWrap.appendChild(dot);
+    });
+    current = 0;
+    track.style.transform = 'translateX(0%)';
+    restartAuto();
+  }
 
   function goTo(index){
-    current = (index + slides.length) % slides.length;
+    const slideEls = track.querySelectorAll('.slide');
+    if (!slideEls.length) return;
+    current = (index + slideEls.length) % slideEls.length;
     track.style.transform = `translateX(-${current * 100}%)`;
-    dots.forEach((d, i) => d.classList.toggle('active', i === current));
+    dotsWrap.querySelectorAll('button').forEach((d, i) => d.classList.toggle('active', i === current));
     restartAuto();
   }
 
@@ -4292,9 +4250,51 @@
 
   function restartAuto(){
     clearInterval(autoTimer);
+    const slideEls = track.querySelectorAll('.slide');
+    if (slideEls.length <= 1) return;
     autoTimer = setInterval(() => goTo(current + 1), 6000);
   }
-  restartAuto();
+
+  (async function loadCarousel(){
+    try {
+      const r = await fetch(`${API_BASE}/site-slides?company_slug=${encodeURIComponent(window.APP_COMPANY_SLUG||'')}`);
+      const d = await r.json();
+      renderCarousel(d.ok ? d.slides : []);
+    } catch(e) { renderCarousel([]); }
+  })();
+
+  // ===== STATS STRIP (данные из /api/site-stats) =====
+  function _statLabel(s) {
+    return (lang === 'uz' && s.label_uz) ? s.label_uz : (s.label_ru || s.label_uz || '');
+  }
+
+  function renderStats(statsData) {
+    const grid = document.getElementById('statsGrid');
+    const strip = document.getElementById('statsStrip');
+    const filled = (statsData || []).filter(s => (s.value || '').trim() || (s.label_ru || '').trim() || (s.label_uz || '').trim());
+    if (!filled.length) { strip.style.display = 'none'; return; }
+    strip.style.display = '';
+    grid.innerHTML = filled.map((s, i) => {
+      const m = String(s.value || '').match(/^(\d+)(.*)$/);
+      const numHtml = m
+        ? `<span data-count="${_escHtml(m[1])}"><span>0</span></span>${_escHtml(m[2])}`
+        : _escHtml(s.value || '');
+      return `
+      <div class="stat-item reveal reveal-d${i+1}">
+        <span class="stat-num">${numHtml}</span>
+        <div class="stat-lbl">${_escHtml(_statLabel(s))}</div>
+      </div>`;
+    }).join('');
+    document.querySelectorAll('#statsGrid .stat-item').forEach(el => _statsIO.observe(el));
+  }
+
+  (async function loadStats(){
+    try {
+      const r = await fetch(`${API_BASE}/site-stats?company_slug=${encodeURIComponent(window.APP_COMPANY_SLUG||'')}`);
+      const d = await r.json();
+      renderStats(d.ok ? d.stats : []);
+    } catch(e) { renderStats([]); }
+  })();
 
   // ===== CALCULATOR =====
   // ===== API =====
@@ -6354,31 +6354,29 @@
   })();
 
   // ===== ANIMATED COUNTER FOR STATS =====
-  (function() {
-    function animateCounter(el, target, duration = 1200) {
-      let start = 0;
-      const step = timestamp => {
-        if (!start) start = timestamp;
-        const progress = Math.min((timestamp - start) / duration, 1);
-        const eased = 1 - Math.pow(1 - progress, 3);
-        el.textContent = Math.round(eased * target);
-        if (progress < 1) requestAnimationFrame(step);
-      };
-      requestAnimationFrame(step);
-    }
-    const io = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if (!e.isIntersecting) return;
-        const numEl = e.target.querySelector('[data-count]');
-        if (numEl && numEl.dataset.count) {
-          const target = parseInt(numEl.dataset.count);
-          animateCounter(numEl.querySelector('span') || numEl, target);
-        }
-        io.unobserve(e.target);
-      });
-    }, { threshold: .5 });
-    document.querySelectorAll('.stat-item').forEach(el => io.observe(el));
-  })();
+  function _animateCounter(el, target, duration = 1200) {
+    let start = 0;
+    const step = timestamp => {
+      if (!start) start = timestamp;
+      const progress = Math.min((timestamp - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      el.textContent = Math.round(eased * target);
+      if (progress < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
+  const _statsIO = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      const numEl = e.target.querySelector('[data-count]');
+      if (numEl && numEl.dataset.count) {
+        const target = parseInt(numEl.dataset.count);
+        _animateCounter(numEl.querySelector('span') || numEl, target);
+      }
+      _statsIO.unobserve(e.target);
+    });
+  }, { threshold: .5 });
+  document.querySelectorAll('.stat-item').forEach(el => _statsIO.observe(el));
 
   // ── Плавный скролл по якорям с отступом под шапку ──
   document.querySelectorAll('a[href^="#"]').forEach(link => {
