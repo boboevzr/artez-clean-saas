@@ -6098,7 +6098,7 @@
     if (!list || !list.length) { section.style.display = 'none'; return; }
     section.style.display = '';
     wrap.innerHTML = list.map((f, i) => `
-      <div class="faq-item reveal">
+      <div class="faq-item">
         <button class="faq-q" onclick="toggleFaq(this)">
           <span>${_escHtml(_faqField(f, 'question'))}</span>
           <span class="faq-icon">+</span>
