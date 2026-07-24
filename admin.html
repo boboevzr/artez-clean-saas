@@ -2716,10 +2716,10 @@
           <button class="s-tab"        data-stab="sheets"     onclick="switchStab(this)" data-i18n="cfg.tab.sheets">📊 Google Sheets</button>
           <button class="s-tab"        data-stab="agents"     onclick="switchStab(this)" data-i18n="cfg.tab.agents">🤝 Агенты</button>
           <button class="s-tab"        data-stab="receipt"    onclick="switchStab(this)" data-i18n="cfg.tab.receipt">🧾 Чек</button>
-          <button class="s-tab"        data-stab="slides"     onclick="switchStab(this)">🖼️ Слайдер</button>
-          <button class="s-tab"        data-stab="stats"      onclick="switchStab(this)">📊 Статистика</button>
-          <button class="s-tab"        data-stab="reviews"    onclick="switchStab(this)">⭐ Отзывы</button>
-          <button class="s-tab"        data-stab="faq"        onclick="switchStab(this)">❓ FAQ</button>
+          <button class="s-tab"        data-stab="slides"     onclick="switchStab(this)" data-i18n="cfg.tab.slides">🖼️ Слайдер</button>
+          <button class="s-tab"        data-stab="stats"      onclick="switchStab(this)" data-i18n="cfg.tab.stats">📊 Статистика</button>
+          <button class="s-tab"        data-stab="reviews"    onclick="switchStab(this)" data-i18n="cfg.tab.reviews">⭐ Отзывы</button>
+          <button class="s-tab"        data-stab="faq"        onclick="switchStab(this)" data-i18n="cfg.tab.faq">❓ FAQ</button>
         </div>
 
         <div style="max-width:660px;">
@@ -2976,11 +2976,11 @@
           <div class="s-panel" id="stab-slides" style="display:none;">
             <div class="card">
               <div class="cfg-title-row">
-                <h3 class="cfg-title">🖼️ Слайдер на главной странице</h3>
+                <h3 class="cfg-title" data-i18n="slides.title">🖼️ Слайдер на главной странице</h3>
               </div>
-              <p class="cfg-hint">До 5 слайдов. Показываются на сайте в автослайдере на самом верху страницы.</p>
+              <p class="cfg-hint" data-i18n="slides.hint">До 5 слайдов. Показываются на сайте в автослайдере на самом верху страницы.</p>
               <div id="slidesList" style="margin-top:10px"></div>
-              <button class="btn btn-primary" id="slidesAddBtn" onclick="openSlideModal()" style="margin-top:12px">+ Добавить слайд</button>
+              <button class="btn btn-primary" id="slidesAddBtn" onclick="openSlideModal()" style="margin-top:12px" data-i18n="slides.btn.add">+ Добавить слайд</button>
             </div>
           </div>
 
@@ -2988,12 +2988,12 @@
           <div class="s-panel" id="stab-stats" style="display:none;">
             <div class="card">
               <div class="cfg-title-row">
-                <h3 class="cfg-title">📊 Статистика (блок после слайдера)</h3>
+                <h3 class="cfg-title" data-i18n="stats.title">📊 Статистика (блок после слайдера)</h3>
               </div>
-              <p class="cfg-hint">Ровно 4 карточки. Значение — то, что показывается крупно (например «500+», «3», «Бесплатно»), подпись — пояснение под ним.</p>
+              <p class="cfg-hint" data-i18n="stats.hint">Ровно 4 карточки. Значение — то, что показывается крупно (например «500+», «3», «Бесплатно»), подпись — пояснение под ним.</p>
               <div id="statsList" style="margin-top:10px"></div>
               <div class="cfg-actions">
-                <button class="btn btn-primary" onclick="saveAllSiteStats()">💾 Сохранить статистику</button>
+                <button class="btn btn-primary" onclick="saveAllSiteStats()" data-i18n="stats.btn.save">💾 Сохранить статистику</button>
                 <span class="s-msg" id="msg_stats"></span>
               </div>
             </div>
@@ -3003,11 +3003,11 @@
           <div class="s-panel" id="stab-reviews" style="display:none;">
             <div class="card">
               <div class="cfg-title-row">
-                <h3 class="cfg-title">⭐ Отзывы клиентов</h3>
+                <h3 class="cfg-title" data-i18n="reviews.title">⭐ Отзывы клиентов</h3>
               </div>
-              <p class="cfg-hint">Показываются в блоке отзывов на главной странице.</p>
+              <p class="cfg-hint" data-i18n="reviews.hint">Показываются в блоке отзывов на главной странице.</p>
               <div id="reviewsList" style="margin-top:10px"></div>
-              <button class="btn btn-primary" onclick="openReviewModal()" style="margin-top:12px">+ Добавить отзыв</button>
+              <button class="btn btn-primary" onclick="openReviewModal()" style="margin-top:12px" data-i18n="reviews.btn.add">+ Добавить отзыв</button>
             </div>
           </div>
 
@@ -3015,11 +3015,11 @@
           <div class="s-panel" id="stab-faq" style="display:none;">
             <div class="card">
               <div class="cfg-title-row">
-                <h3 class="cfg-title">❓ Часто задаваемые вопросы</h3>
+                <h3 class="cfg-title" data-i18n="faq.admin.title">❓ Часто задаваемые вопросы</h3>
               </div>
-              <p class="cfg-hint">Показываются в блоке FAQ на главной странице.</p>
+              <p class="cfg-hint" data-i18n="faq.admin.hint">Показываются в блоке FAQ на главной странице.</p>
               <div id="faqList" style="margin-top:10px"></div>
-              <button class="btn btn-primary" onclick="openFaqModal()" style="margin-top:12px">+ Добавить вопрос</button>
+              <button class="btn btn-primary" onclick="openFaqModal()" style="margin-top:12px" data-i18n="faq.btn.add">+ Добавить вопрос</button>
             </div>
           </div>
 
@@ -3030,22 +3030,22 @@
       <div id="modalReviewForm" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:2000;align-items:center;justify-content:center">
         <div class="card" style="max-width:480px;width:92%;max-height:88vh;overflow-y:auto">
           <h3 style="margin:0 0 14px;font-size:16px;font-weight:700" id="reviewModalTitle">Новый отзыв</h3>
-          <div class="form-group"><label class="form-label">Имя автора</label><input class="form-input" id="rv_author" placeholder="Малика Р."></div>
+          <div class="form-group"><label class="form-label" data-i18n="review.f.author">Имя автора</label><input class="form-input" id="rv_author" placeholder="Малика Р."></div>
           <div class="form-group">
-            <label class="form-label">Оценка</label>
+            <label class="form-label" data-i18n="review.f.rating">Оценка</label>
             <select class="form-input" id="rv_rating">
               <option value="5">⭐⭐⭐⭐⭐ (5)</option>
               <option value="4">⭐⭐⭐⭐ (4)</option>
               <option value="3">⭐⭐⭐ (3)</option>
             </select>
           </div>
-          <div class="form-group"><label class="form-label">Текст отзыва (RU)</label><textarea class="form-input" id="rv_text_ru" rows="3"></textarea></div>
-          <div class="form-group"><label class="form-label">Текст отзыва (UZ)</label><textarea class="form-input" id="rv_text_uz" rows="3"></textarea></div>
-          <div class="form-group"><label class="form-label">Город/подпись (RU)</label><input class="form-input" id="rv_city_ru" placeholder="г. Навои"></div>
-          <div class="form-group"><label class="form-label">Город/подпись (UZ)</label><input class="form-input" id="rv_city_uz" placeholder="Navoiy"></div>
+          <div class="form-group"><label class="form-label" data-i18n="review.f.text.ru">Текст отзыва (RU)</label><textarea class="form-input" id="rv_text_ru" rows="3"></textarea></div>
+          <div class="form-group"><label class="form-label" data-i18n="review.f.text.uz">Текст отзыва (UZ)</label><textarea class="form-input" id="rv_text_uz" rows="3"></textarea></div>
+          <div class="form-group"><label class="form-label" data-i18n="review.f.city.ru">Город/подпись (RU)</label><input class="form-input" id="rv_city_ru" placeholder="г. Навои"></div>
+          <div class="form-group"><label class="form-label" data-i18n="review.f.city.uz">Город/подпись (UZ)</label><input class="form-input" id="rv_city_uz" placeholder="Navoiy"></div>
           <div style="display:flex;gap:8px;margin-top:14px">
-            <button class="btn btn-primary" style="flex:1" onclick="saveReviewForm()">💾 Сохранить</button>
-            <button class="btn btn-ghost" onclick="closeReviewModal()">Отмена</button>
+            <button class="btn btn-primary" style="flex:1" onclick="saveReviewForm()" data-i18n="btn.save">💾 Сохранить</button>
+            <button class="btn btn-ghost" onclick="closeReviewModal()" data-i18n="btn.cancel">Отмена</button>
           </div>
         </div>
       </div>
@@ -3054,13 +3054,13 @@
       <div id="modalFaqForm" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:2000;align-items:center;justify-content:center">
         <div class="card" style="max-width:480px;width:92%;max-height:88vh;overflow-y:auto">
           <h3 style="margin:0 0 14px;font-size:16px;font-weight:700" id="faqModalTitle">Новый вопрос</h3>
-          <div class="form-group"><label class="form-label">Вопрос (RU)</label><input class="form-input" id="fq_question_ru" placeholder="Сколько времени занимает чистка?"></div>
-          <div class="form-group"><label class="form-label">Вопрос (UZ)</label><input class="form-input" id="fq_question_uz" placeholder="Tozalash qancha vaqt oladi?"></div>
-          <div class="form-group"><label class="form-label">Ответ (RU)</label><textarea class="form-input" id="fq_answer_ru" rows="3"></textarea></div>
-          <div class="form-group"><label class="form-label">Ответ (UZ)</label><textarea class="form-input" id="fq_answer_uz" rows="3"></textarea></div>
+          <div class="form-group"><label class="form-label" data-i18n="faq.f.question.ru">Вопрос (RU)</label><input class="form-input" id="fq_question_ru" placeholder="Сколько времени занимает чистка?"></div>
+          <div class="form-group"><label class="form-label" data-i18n="faq.f.question.uz">Вопрос (UZ)</label><input class="form-input" id="fq_question_uz" placeholder="Tozalash qancha vaqt oladi?"></div>
+          <div class="form-group"><label class="form-label" data-i18n="faq.f.answer.ru">Ответ (RU)</label><textarea class="form-input" id="fq_answer_ru" rows="3"></textarea></div>
+          <div class="form-group"><label class="form-label" data-i18n="faq.f.answer.uz">Ответ (UZ)</label><textarea class="form-input" id="fq_answer_uz" rows="3"></textarea></div>
           <div style="display:flex;gap:8px;margin-top:14px">
-            <button class="btn btn-primary" style="flex:1" onclick="saveFaqForm()">💾 Сохранить</button>
-            <button class="btn btn-ghost" onclick="closeFaqModal()">Отмена</button>
+            <button class="btn btn-primary" style="flex:1" onclick="saveFaqForm()" data-i18n="btn.save">💾 Сохранить</button>
+            <button class="btn btn-ghost" onclick="closeFaqModal()" data-i18n="btn.cancel">Отмена</button>
           </div>
         </div>
       </div>
@@ -3070,20 +3070,20 @@
         <div class="card" style="max-width:480px;width:92%;max-height:88vh;overflow-y:auto">
           <h3 style="margin:0 0 14px;font-size:16px;font-weight:700" id="slideModalTitle">Новый слайд</h3>
           <div class="form-group">
-            <label class="form-label">Фото *</label>
+            <label class="form-label" data-i18n="slide.f.photo">Фото *</label>
             <input type="file" id="sl_file" accept="image/*">
-            <div style="font-size:11px;color:var(--text2);margin-top:4px">JPG/PNG, до 1.5 МБ, широкий формат (баннер)</div>
+            <div style="font-size:11px;color:var(--text2);margin-top:4px" data-i18n="slide.f.photo.hint">JPG/PNG, до 1.5 МБ, широкий формат (баннер)</div>
             <img id="sl_preview" style="display:none;max-width:100%;border-radius:8px;margin-top:8px">
           </div>
-          <div class="form-group"><label class="form-label">Эйеброу (RU)</label><input class="form-input" id="sl_eyebrow_ru" placeholder="Услуга на дому"></div>
-          <div class="form-group"><label class="form-label">Эйеброу (UZ)</label><input class="form-input" id="sl_eyebrow_uz" placeholder="Uyga xizmat"></div>
-          <div class="form-group"><label class="form-label">Заголовок (RU)</label><input class="form-input" id="sl_title_ru" placeholder="Чистим ковры у вас дома"></div>
-          <div class="form-group"><label class="form-label">Заголовок (UZ)</label><input class="form-input" id="sl_title_uz" placeholder="Gilamlarni uyingizda tozalaymiz"></div>
-          <div class="form-group"><label class="form-label">Описание (RU)</label><textarea class="form-input" id="sl_text_ru" rows="2"></textarea></div>
-          <div class="form-group"><label class="form-label">Описание (UZ)</label><textarea class="form-input" id="sl_text_uz" rows="2"></textarea></div>
+          <div class="form-group"><label class="form-label" data-i18n="slide.f.eyebrow.ru">Эйеброу (RU)</label><input class="form-input" id="sl_eyebrow_ru" placeholder="Услуга на дому"></div>
+          <div class="form-group"><label class="form-label" data-i18n="slide.f.eyebrow.uz">Эйеброу (UZ)</label><input class="form-input" id="sl_eyebrow_uz" placeholder="Uyga xizmat"></div>
+          <div class="form-group"><label class="form-label" data-i18n="slide.f.title.ru">Заголовок (RU)</label><input class="form-input" id="sl_title_ru" placeholder="Чистим ковры у вас дома"></div>
+          <div class="form-group"><label class="form-label" data-i18n="slide.f.title.uz">Заголовок (UZ)</label><input class="form-input" id="sl_title_uz" placeholder="Gilamlarni uyingizda tozalaymiz"></div>
+          <div class="form-group"><label class="form-label" data-i18n="slide.f.text.ru">Описание (RU)</label><textarea class="form-input" id="sl_text_ru" rows="2"></textarea></div>
+          <div class="form-group"><label class="form-label" data-i18n="slide.f.text.uz">Описание (UZ)</label><textarea class="form-input" id="sl_text_uz" rows="2"></textarea></div>
           <div style="display:flex;gap:8px;margin-top:14px">
-            <button class="btn btn-primary" style="flex:1" onclick="saveSlideForm()" id="slideSaveBtn">💾 Сохранить</button>
-            <button class="btn btn-ghost" onclick="closeSlideModal()">Отмена</button>
+            <button class="btn btn-primary" style="flex:1" onclick="saveSlideForm()" id="slideSaveBtn" data-i18n="btn.save">💾 Сохранить</button>
+            <button class="btn btn-ghost" onclick="closeSlideModal()" data-i18n="btn.cancel">Отмена</button>
           </div>
         </div>
       </div>
@@ -3094,10 +3094,10 @@
 
         <!-- Под-вкладки -->
         <div style="display:flex;gap:6px;flex-wrap:nowrap;overflow-x:auto;margin-bottom:20px;padding-bottom:4px;-webkit-overflow-scrolling:touch;scrollbar-width:none;">
-          <button class="cs-tab active" data-cstab="profile"  onclick="switchCompanyStab(this)">🏢 Профиль</button>
-          <button class="cs-tab"        data-cstab="contacts" onclick="switchCompanyStab(this)">📞 Контакты</button>
-          <button class="cs-tab"        data-cstab="social"   onclick="switchCompanyStab(this)">📱 Соцсети</button>
-          <button class="cs-tab"        data-cstab="branches" onclick="switchCompanyStab(this)">🏢 Филиалы</button>
+          <button class="cs-tab active" data-cstab="profile"  onclick="switchCompanyStab(this)" data-i18n="cs.tab.profile">🏢 Профиль</button>
+          <button class="cs-tab"        data-cstab="contacts" onclick="switchCompanyStab(this)" data-i18n="cs.tab.contacts">📞 Контакты</button>
+          <button class="cs-tab"        data-cstab="social"   onclick="switchCompanyStab(this)" data-i18n="cs.tab.social">📱 Соцсети</button>
+          <button class="cs-tab"        data-cstab="branches" onclick="switchCompanyStab(this)" data-i18n="cs.tab.branches">🏢 Филиалы</button>
         </div>
 
         <div style="max-width:660px;">
@@ -3106,7 +3106,7 @@
           <div class="cs-panel" id="cstab-profile">
             <div class="card" id="card-company-profile">
               <div class="cfg-title-row">
-                <h3 class="cfg-title">🏢 Профиль компании</h3>
+                <h3 class="cfg-title" data-i18n="cs.profile.title">🏢 Профиль компании</h3>
                 <button class="btn s-edit-btn" onclick="editCard('card-company-profile')">✏️</button>
               </div>
               <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px">
@@ -3114,44 +3114,44 @@
                 <div id="cp_logo_placeholder" style="width:64px;height:64px;border-radius:12px;background:var(--bg2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:24px;color:var(--text2)">🏢</div>
                 <div>
                   <input type="file" id="cp_logo_file" accept="image/*" style="display:none" onchange="uploadCompanyLogo(this)">
-                  <button class="btn btn-ghost btn-sm" type="button" onclick="document.getElementById('cp_logo_file').click()">🖼️ Загрузить лого</button>
-                  <div style="font-size:11px;color:var(--text2);margin-top:4px">PNG/JPG, до 400 КБ</div>
+                  <button class="btn btn-ghost btn-sm" type="button" onclick="document.getElementById('cp_logo_file').click()" data-i18n="cs.profile.upload.logo">🖼️ Загрузить лого</button>
+                  <div style="font-size:11px;color:var(--text2);margin-top:4px" data-i18n="cs.profile.logo.hint">PNG/JPG, до 400 КБ</div>
                 </div>
               </div>
               <div class="contacts-grid">
                 <div class="cfg-field">
-                  <label>Название компании</label>
+                  <label data-i18n="cs.profile.name">Название компании</label>
                   <input type="text" id="cfg_company_name" class="form-input" disabled placeholder="Cleano">
                 </div>
                 <div class="cfg-field">
-                  <label>Slug (используется при входе сотрудников)</label>
+                  <label data-i18n="cs.profile.slug">Slug (используется при входе сотрудников)</label>
                   <input type="text" id="cfg_company_slug" class="form-input" disabled placeholder="my-company">
-                  <div style="font-size:11px;color:var(--text2);margin-top:4px">⚠️ При смене slug всем сотрудникам нужно будет ввести новый slug при следующем входе</div>
+                  <div style="font-size:11px;color:var(--text2);margin-top:4px" data-i18n="cs.profile.slug.warn">⚠️ При смене slug всем сотрудникам нужно будет ввести новый slug при следующем входе</div>
                 </div>
               </div>
               <div class="cfg-actions">
-                <button class="btn btn-primary  s-save-btn"   onclick="saveCompanyProfile()" style="display:none;">💾 Сохранить</button>
-                <button class="btn btn-ghost    s-cancel-btn" onclick="cancelCard('card-company-profile', ['company_name','company_slug'])" style="display:none;">Отмена</button>
+                <button class="btn btn-primary  s-save-btn"   onclick="saveCompanyProfile()" style="display:none;" data-i18n="btn.save">💾 Сохранить</button>
+                <button class="btn btn-ghost    s-cancel-btn" onclick="cancelCard('card-company-profile', ['company_name','company_slug'])" style="display:none;" data-i18n="btn.cancel">Отмена</button>
                 <span class="s-msg" id="msg_card-company-profile"></span>
               </div>
             </div>
 
             <div class="card" id="card-footer-about" style="margin-top:20px">
               <div class="cfg-title-row">
-                <h3 class="cfg-title">📝 О компании (текст в футере сайта)</h3>
+                <h3 class="cfg-title" data-i18n="cs.about.title">📝 О компании (текст в футере сайта)</h3>
                 <button class="btn s-edit-btn" onclick="editCard('card-footer-about')">✏️</button>
               </div>
               <div class="cfg-field" style="margin-bottom:12px">
-                <label>Текст (RU)</label>
+                <label data-i18n="cs.about.text.ru">Текст (RU)</label>
                 <textarea class="form-input" id="cfg_footer_about_ru" disabled rows="2" placeholder="Химчистка ковров, мягкой мебели на дому..."></textarea>
               </div>
               <div class="cfg-field">
-                <label>Текст (UZ)</label>
+                <label data-i18n="cs.about.text.uz">Текст (UZ)</label>
                 <textarea class="form-input" id="cfg_footer_about_uz" disabled rows="2" placeholder="Uyga gilam, yumshoq mebelni tozalash xizmati..."></textarea>
               </div>
               <div class="cfg-actions">
-                <button class="btn btn-primary  s-save-btn"   onclick="saveCard('card-footer-about', ['footer_about_ru','footer_about_uz'])" style="display:none;">💾 Сохранить</button>
-                <button class="btn btn-ghost    s-cancel-btn" onclick="cancelCard('card-footer-about', ['footer_about_ru','footer_about_uz'])" style="display:none;">Отмена</button>
+                <button class="btn btn-primary  s-save-btn"   onclick="saveCard('card-footer-about', ['footer_about_ru','footer_about_uz'])" style="display:none;" data-i18n="btn.save">💾 Сохранить</button>
+                <button class="btn btn-ghost    s-cancel-btn" onclick="cancelCard('card-footer-about', ['footer_about_ru','footer_about_uz'])" style="display:none;" data-i18n="btn.cancel">Отмена</button>
                 <span class="s-msg" id="msg_card-footer-about"></span>
               </div>
             </div>
@@ -3161,27 +3161,27 @@
           <div class="cs-panel" id="cstab-contacts" style="display:none">
             <div class="card">
               <div class="cfg-title-row">
-                <h3 class="cfg-title">📞 Контактные номера</h3>
+                <h3 class="cfg-title" data-i18n="cs.contacts.title">📞 Контактные номера</h3>
                 <button class="btn s-edit-btn" onclick="editTab('contacts')">✏️</button>
               </div>
               <div class="contacts-grid">
                 <div class="cfg-field" id="shortNumWrap" style="display:none">
-                  <label>Короткий номер</label>
+                  <label data-i18n="cs.contacts.short">Короткий номер</label>
                   <input type="text" id="cfg_contact_short" class="form-input" disabled placeholder="1221" inputmode="tel">
                 </div>
                 <div class="cfg-field">
-                  <label>Основной номер</label>
+                  <label data-i18n="cs.contacts.main">Основной номер</label>
                   <input type="text" id="cfg_contact_main" class="form-input" disabled placeholder="+998 XX XXX-XX-XX" inputmode="tel">
                 </div>
                 <div class="cfg-field">
-                  <label>Email для клиентов</label>
+                  <label data-i18n="cs.contacts.email">Email для клиентов</label>
                   <input type="email" id="cfg_contact_email" class="form-input" disabled placeholder="info@example.com">
                 </div>
               </div>
             </div>
             <div class="cfg-actions">
-              <button class="btn btn-primary  s-save-btn"   onclick="saveTab('contacts')" style="display:none;">💾 Сохранить</button>
-              <button class="btn btn-ghost    s-cancel-btn" onclick="cancelTab('contacts')" style="display:none;">Отмена</button>
+              <button class="btn btn-primary  s-save-btn"   onclick="saveTab('contacts')" style="display:none;" data-i18n="btn.save">💾 Сохранить</button>
+              <button class="btn btn-ghost    s-cancel-btn" onclick="cancelTab('contacts')" style="display:none;" data-i18n="btn.cancel">Отмена</button>
               <span class="s-msg" id="msg_contacts"></span>
             </div>
           </div>
@@ -3190,23 +3190,23 @@
           <div class="cs-panel" id="cstab-social" style="display:none">
             <div class="card" id="card-company-social">
               <div class="cfg-title-row">
-                <h3 class="cfg-title">📱 Соцсети и Telegram</h3>
+                <h3 class="cfg-title" data-i18n="cs.social.title">📱 Соцсети и Telegram</h3>
                 <button class="btn s-edit-btn" onclick="editCard('card-company-social')">✏️</button>
               </div>
               <div class="contacts-grid">
                 <div class="cfg-field">
-                  <label>WhatsApp (номер без +)</label>
+                  <label data-i18n="cs.social.whatsapp">WhatsApp (номер без +)</label>
                   <input type="text" id="cfg_whatsapp" class="form-input" disabled placeholder="998882001221" inputmode="tel">
                 </div>
                 <div class="cfg-field">
-                  <label>Instagram</label>
+                  <label data-i18n="cs.social.instagram">Instagram</label>
                   <input type="url" id="cfg_instagram" class="form-input" disabled placeholder="https://instagram.com/...">
                 </div>
               </div>
               <div style="margin-top:12px">
                 <div class="tg-group-card">
                   <div class="tg-group-head"><span class="tg-group-icon">💬</span>
-                    <div><div class="tg-group-title">Группа компании</div><div class="tg-group-desc">Клиентская группа Telegram</div></div>
+                    <div><div class="tg-group-title" data-i18n="cs.social.group.title">Группа компании</div><div class="tg-group-desc" data-i18n="cs.social.group.desc">Клиентская группа Telegram</div></div>
                   </div>
                   <div class="tg-group-inputs">
                     <div style="margin-bottom:6px"><input type="url" id="cfg_tg_group_link" class="form-input" disabled placeholder="https://t.me/..."></div>
@@ -3219,7 +3219,7 @@
                 </div>
                 <div class="tg-group-card">
                   <div class="tg-group-head"><span class="tg-group-icon">📢</span>
-                    <div><div class="tg-group-title">Канал компании</div><div class="tg-group-desc">Официальный канал Telegram</div></div>
+                    <div><div class="tg-group-title" data-i18n="cs.social.channel.title">Канал компании</div><div class="tg-group-desc" data-i18n="cs.social.channel.desc">Официальный канал Telegram</div></div>
                   </div>
                   <div class="tg-group-inputs">
                     <div style="margin-bottom:6px"><input type="url" id="cfg_tg_channel_link" class="form-input" disabled placeholder="https://t.me/..."></div>
@@ -3232,7 +3232,7 @@
                 </div>
                 <div class="tg-group-card">
                   <div class="tg-group-head"><span class="tg-group-icon">👤</span>
-                    <div><div class="tg-group-title">Telegram Администратора</div><div class="tg-group-desc">Личный аккаунт для связи</div></div>
+                    <div><div class="tg-group-title" data-i18n="cs.social.admin.title">Telegram Администратора</div><div class="tg-group-desc" data-i18n="cs.social.admin.desc">Личный аккаунт для связи</div></div>
                   </div>
                   <div class="tg-group-inputs">
                     <div style="margin-bottom:6px"><input type="url" id="cfg_tg_admin_link" class="form-input" disabled placeholder="https://t.me/username"></div>
@@ -3245,8 +3245,8 @@
                 </div>
               </div>
               <div class="cfg-actions">
-                <button class="btn btn-primary s-save-btn"   onclick="saveCompanySocial()" style="display:none;">💾 Сохранить</button>
-                <button class="btn btn-ghost   s-cancel-btn" onclick="cancelCard('card-company-social',['whatsapp','instagram','tg_group_link','tg_group_id','tg_channel_link','tg_channel_id','tg_admin_link','tg_admin_id'])" style="display:none;">Отмена</button>
+                <button class="btn btn-primary s-save-btn"   onclick="saveCompanySocial()" style="display:none;" data-i18n="btn.save">💾 Сохранить</button>
+                <button class="btn btn-ghost   s-cancel-btn" onclick="cancelCard('card-company-social',['whatsapp','instagram','tg_group_link','tg_group_id','tg_channel_link','tg_channel_id','tg_admin_link','tg_admin_id'])" style="display:none;" data-i18n="btn.cancel">Отмена</button>
                 <span class="s-msg" id="msg_card-company-social"></span>
               </div>
             </div>
@@ -3255,7 +3255,7 @@
           <!-- ─── Филиалы ─── -->
           <div class="cs-panel" id="cstab-branches" style="display:none">
             <div id="branchContactsContainer"></div>
-            <button class="btn btn-primary" onclick="openAddBranchModal()" style="margin-top:12px">+ Добавить филиал</button>
+            <button class="btn btn-primary" onclick="openAddBranchModal()" style="margin-top:12px" data-i18n="cs.branches.add">+ Добавить филиал</button>
           </div>
 
         </div>
@@ -5499,40 +5499,40 @@
   <div class="modal-box" style="max-width:680px;max-height:92vh;overflow-y:auto">
     <div class="modal-title" id="bfModalTitle">Филиал</div>
     <div class="bf-tab-bar">
-      <button class="bf-tab-btn active" id="bfTabBtnMain" onclick="bfTab('main')">📋 Основные данные</button>
-      <button class="bf-tab-btn"        id="bfTabBtnTg"   onclick="bfTab('tg')">📱 Telegram</button>
+      <button class="bf-tab-btn active" id="bfTabBtnMain" onclick="bfTab('main')" data-i18n="bf.tab.main">📋 Основные данные</button>
+      <button class="bf-tab-btn"        id="bfTabBtnTg"   onclick="bfTab('tg')" data-i18n="bf.tab.tg">📱 Telegram</button>
     </div>
 
     <div id="bfTabMain">
-    <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--text2);margin:0 0 8px">Основное</div>
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--text2);margin:0 0 8px" data-i18n="bf.section.main">Основное</div>
     <div class="form-grid">
-      <div class="form-group"><label class="form-label">Название (RU) *</label><input class="form-input" id="bf_name_ru" placeholder="Зарафшан"></div>
-      <div class="form-group"><label class="form-label">Название (UZ)</label><input class="form-input" id="bf_name_uz" placeholder="Zarafshon"></div>
-      <div class="form-group span-full" id="bfSlugRow"><label class="form-label">Slug * (латиница, уникальный)</label><input class="form-input" id="bf_slug" placeholder="zarafshan"></div>
+      <div class="form-group"><label class="form-label" data-i18n="bf.name.ru">Название (RU) *</label><input class="form-input" id="bf_name_ru" placeholder="Зарафшан"></div>
+      <div class="form-group"><label class="form-label" data-i18n="bf.name.uz">Название (UZ)</label><input class="form-input" id="bf_name_uz" placeholder="Zarafshon"></div>
+      <div class="form-group span-full" id="bfSlugRow"><label class="form-label" data-i18n="bf.slug">Slug * (латиница, уникальный)</label><input class="form-input" id="bf_slug" placeholder="zarafshan"></div>
     </div>
 
-    <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--text2);margin:14px 0 8px">📍 Местоположение</div>
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--text2);margin:14px 0 8px" data-i18n="cs.branches.location">📍 Местоположение</div>
     <div class="form-grid">
       <div class="form-group">
-        <label class="form-label">Центр города / района</label>
+        <label class="form-label" data-i18n="bf.city.center">Центр города / района</label>
         <div style="display:flex;gap:8px;align-items:center">
           <input class="form-input" id="bf_city_coords" placeholder="41.5714, 64.1953" style="font-family:monospace;flex:1" inputmode="decimal">
-          <button class="btn btn-ghost btn-sm" onclick="bfOpenMap('city')" style="white-space:nowrap">📍 Карта</button>
+          <button class="btn btn-ghost btn-sm" onclick="bfOpenMap('city')" style="white-space:nowrap" data-i18n="bf.map">📍 Карта</button>
         </div>
       </div>
       <div class="form-group">
-        <label class="form-label">Координаты цеха</label>
+        <label class="form-label" data-i18n="cs.branches.workshop.coords">Координаты цеха</label>
         <div style="display:flex;gap:8px;align-items:center">
           <input class="form-input" id="bf_workshop_coords" placeholder="41.5714, 64.1953" style="font-family:monospace;flex:1" inputmode="decimal">
-          <button class="btn btn-ghost btn-sm" onclick="bfOpenMap('workshop')" style="white-space:nowrap">📍 Карта</button>
+          <button class="btn btn-ghost btn-sm" onclick="bfOpenMap('workshop')" style="white-space:nowrap" data-i18n="bf.map">📍 Карта</button>
         </div>
       </div>
     </div>
 
-    <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--text2);margin:14px 0 8px">📞 Телефоны</div>
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--text2);margin:14px 0 8px" data-i18n="bf.section.phones">📞 Телефоны</div>
     <div class="form-grid">
-      <div class="form-group"><label class="form-label">Номер 1</label><input class="form-input" id="bf_phone1" placeholder="+998 88 000-00-00" inputmode="tel"></div>
-      <div class="form-group"><label class="form-label">Номер 2</label><input class="form-input" id="bf_phone2" placeholder="+998 ..."></div>
+      <div class="form-group"><label class="form-label" data-i18n="cs.branches.phone1">Номер 1</label><input class="form-input" id="bf_phone1" placeholder="+998 88 000-00-00" inputmode="tel"></div>
+      <div class="form-group"><label class="form-label" data-i18n="cs.branches.phone2">Номер 2</label><input class="form-input" id="bf_phone2" placeholder="+998 ..."></div>
     </div>
 
 
@@ -5542,7 +5542,7 @@
       <div class="tg-group-card">
         <div class="tg-group-head">
           <span class="tg-group-icon">🧑‍💼</span>
-          <div><div class="tg-group-title">Группа лидов</div><div class="tg-group-desc">Новые заявки из CRM</div></div>
+          <div><div class="tg-group-title" data-i18n="cs.branches.tg.leads">Группа лидов</div><div class="tg-group-desc" data-i18n="cs.branches.tg.leads.desc">Новые заявки из CRM</div></div>
         </div>
         <div class="tg-group-inputs">
           <div class="tg-id-row">
@@ -5555,7 +5555,7 @@
       <div class="tg-group-card">
         <div class="tg-group-head">
           <span class="tg-group-icon">📦</span>
-          <div><div class="tg-group-title">Группа заказов</div><div class="tg-group-desc">Приём и статусы заказов</div></div>
+          <div><div class="tg-group-title" data-i18n="cs.branches.tg.orders">Группа заказов</div><div class="tg-group-desc" data-i18n="cs.branches.tg.orders.desc">Приём и статусы заказов</div></div>
         </div>
         <div class="tg-group-inputs">
           <div class="tg-id-row">
@@ -5568,7 +5568,7 @@
       <div class="tg-group-card">
         <div class="tg-group-head">
           <span class="tg-group-icon">🚗</span>
-          <div><div class="tg-group-title">Группа водителей</div><div class="tg-group-desc">Маршруты и доставка</div></div>
+          <div><div class="tg-group-title" data-i18n="cs.branches.tg.drivers">Группа водителей</div><div class="tg-group-desc" data-i18n="cs.branches.tg.drivers.desc">Маршруты и доставка</div></div>
         </div>
         <div class="tg-group-inputs">
           <div class="tg-id-row">
@@ -5581,7 +5581,7 @@
       <div class="tg-group-card">
         <div class="tg-group-head">
           <span class="tg-group-icon">📢</span>
-          <div><div class="tg-group-title">Канал доставки</div><div class="tg-group-desc">Список маршрутов для водителей</div></div>
+          <div><div class="tg-group-title" data-i18n="cs.branches.tg.delivery">Канал доставки</div><div class="tg-group-desc" data-i18n="cs.branches.tg.delivery.desc">Список маршрутов для водителей</div></div>
         </div>
         <div class="tg-group-inputs">
           <div class="tg-id-row">
@@ -5591,7 +5591,7 @@
           <span class="tg-chat-name" id="tgn_dchannel_bf"></span>
         </div>
       </div>
-      <div style="margin-top:10px;padding:10px 14px;background:var(--bg-secondary);border-radius:10px;font-size:12px;color:var(--text2);line-height:1.6">
+      <div style="margin-top:10px;padding:10px 14px;background:var(--bg-secondary);border-radius:10px;font-size:12px;color:var(--text2);line-height:1.6" data-i18n="bf.tg.hint">
         ℹ️ Добавьте бота в группу/канал как участника, введите ID и нажмите 🔍 для проверки.
       </div>
     </div><!-- end bfTabTg -->
@@ -5606,9 +5606,9 @@
 <!-- MAP PICKER для филиала -->
 <div id="nbMapModal" style="display:none;position:fixed;inset:0;z-index:10001;background:#000;flex-direction:column">
   <div style="display:flex;align-items:center;gap:12px;padding:10px 16px;background:#111;color:#fff;flex-shrink:0">
-    <span id="nbMapTitle" style="flex:1;font-weight:700">Выбрать на карте</span>
-    <span style="font-size:12px;color:#aaa">Нажмите на карту чтобы поставить метку</span>
-    <button onclick="nbMapDone()" style="background:#f5a623;color:#000;border:none;padding:8px 18px;border-radius:8px;font-weight:700;cursor:pointer">✅ Готово</button>
+    <span id="nbMapTitle" style="flex:1;font-weight:700" data-i18n="bf.map.title">Выбрать на карте</span>
+    <span style="font-size:12px;color:#aaa" data-i18n="bf.map.hint">Нажмите на карту чтобы поставить метку</span>
+    <button onclick="nbMapDone()" style="background:#f5a623;color:#000;border:none;padding:8px 18px;border-radius:8px;font-weight:700;cursor:pointer" data-i18n="bf.map.done">✅ Готово</button>
     <button onclick="nbMapClose()" style="background:#333;color:#fff;border:none;padding:8px 14px;border-radius:8px;cursor:pointer">✕</button>
   </div>
   <div id="nbMapContainer" style="flex:1"></div>
@@ -5816,6 +5816,8 @@ function _toggleAdminLang() {
     'sms-pricing': () => smsPricingLoad(),
     'salary-calc': () => salCalcLoad(),
     timesheet: () => loadTimesheet(),
+    siteconfig: () => { loadSiteSlides(); loadSiteStatsAdmin(); loadSiteReviews(); loadSiteFaq(); },
+    'company-settings': () => { renderBranchContactCards(); },
   };
   if (_rerender[page]) _rerender[page]();
 }
@@ -5842,6 +5844,7 @@ const _adminNavTr = {
     units:'📏 Единицы измерения', 'expenses-admin':'🧾 Расходы',
     'chat-templates':'💬 Шаблоны чата',
     'grp.sys':'Система', siteconfig:'⚙️ Настройки сайта',
+    'company-settings':'🏢 Настройки компании',
     'role-perms':'🔐 Роли и доступы', 'db-maintenance':'🗄️ Обслуживание БД',
     temp:'🗑️ Чистка БД',
   },
@@ -5867,6 +5870,7 @@ const _adminNavTr = {
     units:'📏 Oʻlchov birliklari', 'expenses-admin':'🧾 Xarajatlar',
     'chat-templates':'💬 Chat shablonlari',
     'grp.sys':'Tizim', siteconfig:'⚙️ Sayt sozlamalari',
+    'company-settings':'🏢 Kompaniya sozlamalari',
     'role-perms':'🔐 Rollar va ruxsatlar', 'db-maintenance':'🗄️ MB xizmati',
     temp:'🗑️ MB tozalash',
   },
@@ -5921,6 +5925,68 @@ const _adminI18n = {
     'cfg.tab.contacts':'📞 Контакты','cfg.tab.staff':'👤 Сотрудники',
     'cfg.tab.sms':'📨 SMS (Eskiz)','cfg.tab.sheets':'📊 Google Sheets',
     'cfg.tab.agents':'🤝 Агенты','cfg.tab.receipt':'🧾 Чек',
+    'cfg.tab.slides':'🖼️ Слайдер','cfg.tab.stats':'📊 Статистика',
+    'cfg.tab.reviews':'⭐ Отзывы','cfg.tab.faq':'❓ FAQ',
+    'slides.title':'🖼️ Слайдер на главной странице',
+    'slides.hint':'До 5 слайдов. Показываются на сайте в автослайдере на самом верху страницы.',
+    'slides.btn.add':'+ Добавить слайд','slides.empty':'Слайдов пока нет.',
+    'slide.f.photo':'Фото *','slide.f.photo.hint':'JPG/PNG, до 1.5 МБ, широкий формат (баннер)',
+    'slide.f.eyebrow.ru':'Эйеброу (RU)','slide.f.eyebrow.uz':'Эйеброу (UZ)',
+    'slide.f.title.ru':'Заголовок (RU)','slide.f.title.uz':'Заголовок (UZ)',
+    'slide.f.text.ru':'Описание (RU)','slide.f.text.uz':'Описание (UZ)',
+    'slide.modal.new':'Новый слайд','slide.modal.edit':'Редактировать слайд',
+    'stats.title':'📊 Статистика (блок после слайдера)',
+    'stats.hint':'Ровно 4 карточки. Значение — то, что показывается крупно (например «500+», «3», «Бесплатно»), подпись — пояснение под ним.',
+    'stats.btn.save':'💾 Сохранить статистику',
+    'stats.card':'Карточка','stats.f.value.ru':'Значение (RU)','stats.f.value.uz':'Значение (UZ)',
+    'stats.f.label.ru':'Подпись (RU)','stats.f.label.uz':'Подпись (UZ)',
+    'reviews.title':'⭐ Отзывы клиентов',
+    'reviews.hint':'Показываются в блоке отзывов на главной странице.',
+    'reviews.btn.add':'+ Добавить отзыв','reviews.empty':'Отзывов пока нет.',
+    'review.f.author':'Имя автора','review.f.rating':'Оценка',
+    'review.f.text.ru':'Текст отзыва (RU)','review.f.text.uz':'Текст отзыва (UZ)',
+    'review.f.city.ru':'Город/подпись (RU)','review.f.city.uz':'Город/подпись (UZ)',
+    'review.modal.new':'Новый отзыв','review.modal.edit':'Редактировать отзыв',
+    'faq.admin.title':'❓ Часто задаваемые вопросы',
+    'faq.admin.hint':'Показываются в блоке FAQ на главной странице.',
+    'faq.btn.add':'+ Добавить вопрос','faq.empty':'Вопросов пока нет.',
+    'faq.f.question.ru':'Вопрос (RU)','faq.f.question.uz':'Вопрос (UZ)',
+    'faq.f.answer.ru':'Ответ (RU)','faq.f.answer.uz':'Ответ (UZ)',
+    'faq.modal.new':'Новый вопрос','faq.modal.edit':'Редактировать вопрос',
+    'cs.tab.profile':'🏢 Профиль','cs.tab.contacts':'📞 Контакты',
+    'cs.tab.social':'📱 Соцсети','cs.tab.branches':'🏢 Филиалы',
+    'cs.profile.title':'🏢 Профиль компании','cs.profile.upload.logo':'🖼️ Загрузить лого',
+    'cs.profile.logo.hint':'PNG/JPG, до 400 КБ','cs.profile.name':'Название компании',
+    'cs.profile.slug':'Slug (используется при входе сотрудников)',
+    'cs.profile.slug.warn':'⚠️ При смене slug всем сотрудникам нужно будет ввести новый slug при следующем входе',
+    'cs.about.title':'📝 О компании (текст в футере сайта)',
+    'cs.about.text.ru':'Текст (RU)','cs.about.text.uz':'Текст (UZ)',
+    'cs.contacts.title':'📞 Контактные номера','cs.contacts.short':'Короткий номер',
+    'cs.contacts.main':'Основной номер','cs.contacts.email':'Email для клиентов',
+    'cs.social.title':'📱 Соцсети и Telegram','cs.social.whatsapp':'WhatsApp (номер без +)',
+    'cs.social.instagram':'Instagram',
+    'cs.social.group.title':'Группа компании','cs.social.group.desc':'Клиентская группа Telegram',
+    'cs.social.channel.title':'Канал компании','cs.social.channel.desc':'Официальный канал Telegram',
+    'cs.social.admin.title':'Telegram Администратора','cs.social.admin.desc':'Личный аккаунт для связи',
+    'cs.branches.add':'+ Добавить филиал','cs.branches.edit':'Редактировать',
+    'cs.branches.location':'Местоположение','cs.branches.city.center':'Центр города',
+    'cs.branches.workshop.coords':'Координаты цеха',
+    'cs.branches.phone1':'Номер 1','cs.branches.phone2':'Номер 2',
+    'cs.branches.tg.groups':'Telegram — группы и каналы',
+    'cs.branches.tg.leads':'Группа лидов','cs.branches.tg.leads.desc':'Новые заявки из CRM',
+    'cs.branches.tg.orders':'Группа заказов','cs.branches.tg.orders.desc':'Приём и статусы заказов',
+    'cs.branches.tg.drivers':'Группа водителей','cs.branches.tg.drivers.desc':'Маршруты и доставка',
+    'cs.branches.tg.delivery':'Канал доставки','cs.branches.tg.delivery.desc':'Список маршрутов для водителей',
+    'cs.branches.empty':'Нет филиалов. Добавьте первый.',
+    'cs.branches.modal.add':'Добавить филиал','cs.branches.modal.edit':'Редактировать филиал',
+    'cs.branches.modal.create':'➕ Создать',
+    'bf.tab.main':'📋 Основные данные','bf.tab.tg':'📱 Telegram',
+    'bf.section.main':'Основное','bf.name.ru':'Название (RU) *','bf.name.uz':'Название (UZ)',
+    'bf.slug':'Slug * (латиница, уникальный)','bf.city.center':'Центр города / района',
+    'bf.map':'📍 Карта','bf.section.phones':'📞 Телефоны',
+    'bf.tg.hint':'ℹ️ Добавьте бота в группу/канал как участника, введите ID и нажмите 🔍 для проверки.',
+    'bf.map.title':'Выбрать на карте','bf.map.hint':'Нажмите на карту чтобы поставить метку',
+    'bf.map.done':'✅ Готово',
     'promo.btn.add':'+ Новая акция','promo.empty':'Акций пока нет',
     'th.code':'Код','th.discount':'Скидка','th.period':'Период',
     'th.toggle':'Вкл/Выкл','th.shows':'Показов / Использ.',
@@ -6337,6 +6403,68 @@ const _adminI18n = {
     'cfg.tab.contacts':'📞 Kontaktlar','cfg.tab.staff':'👤 Xodimlar',
     'cfg.tab.sms':'📨 SMS (Eskiz)','cfg.tab.sheets':'📊 Google Sheets',
     'cfg.tab.agents':'🤝 Agentlar','cfg.tab.receipt':'🧾 Chek',
+    'cfg.tab.slides':'🖼️ Slayder','cfg.tab.stats':'📊 Statistika',
+    'cfg.tab.reviews':'⭐ Sharhlar','cfg.tab.faq':'❓ FAQ',
+    'slides.title':'🖼️ Bosh sahifadagi slayder',
+    'slides.hint':"5 tagacha slayd. Saytda, sahifaning eng tepasidagi avtoslayderda ko'rsatiladi.",
+    'slides.btn.add':'+ Slayd qo\'shish','slides.empty':"Hozircha slaydlar yo'q.",
+    'slide.f.photo':'Rasm *','slide.f.photo.hint':"JPG/PNG, 1.5 MB gacha, keng format (banner)",
+    'slide.f.eyebrow.ru':'Eyebrow (RU)','slide.f.eyebrow.uz':'Eyebrow (UZ)',
+    'slide.f.title.ru':'Sarlavha (RU)','slide.f.title.uz':'Sarlavha (UZ)',
+    'slide.f.text.ru':'Tavsif (RU)','slide.f.text.uz':'Tavsif (UZ)',
+    'slide.modal.new':'Yangi slayd','slide.modal.edit':'Slaydni tahrirlash',
+    'stats.title':'📊 Statistika (slayderdan keyingi blok)',
+    'stats.hint':"Aynan 4 ta karta. Qiymat — yirik ko'rsatiladigan raqam (masalan «500+», «3», «Bepul»), izoh — uning ostidagi tushuntirish.",
+    'stats.btn.save':'💾 Statistikani saqlash',
+    'stats.card':'Karta','stats.f.value.ru':'Qiymat (RU)','stats.f.value.uz':'Qiymat (UZ)',
+    'stats.f.label.ru':'Izoh (RU)','stats.f.label.uz':'Izoh (UZ)',
+    'reviews.title':'⭐ Mijozlar sharhlari',
+    'reviews.hint':"Bosh sahifadagi sharhlar blokida ko'rsatiladi.",
+    'reviews.btn.add':'+ Sharh qo\'shish','reviews.empty':"Hozircha sharhlar yo'q.",
+    'review.f.author':'Muallif ismi','review.f.rating':'Baho',
+    'review.f.text.ru':'Sharh matni (RU)','review.f.text.uz':'Sharh matni (UZ)',
+    'review.f.city.ru':'Shahar/imzo (RU)','review.f.city.uz':'Shahar/imzo (UZ)',
+    'review.modal.new':'Yangi sharh','review.modal.edit':'Sharhni tahrirlash',
+    'faq.admin.title':"❓ Ko'p so'raladigan savollar",
+    'faq.admin.hint':"Bosh sahifadagi FAQ blokida ko'rsatiladi.",
+    'faq.btn.add':'+ Savol qo\'shish','faq.empty':"Hozircha savollar yo'q.",
+    'faq.f.question.ru':'Savol (RU)','faq.f.question.uz':'Savol (UZ)',
+    'faq.f.answer.ru':'Javob (RU)','faq.f.answer.uz':'Javob (UZ)',
+    'faq.modal.new':'Yangi savol','faq.modal.edit':'Savolni tahrirlash',
+    'cs.tab.profile':'🏢 Profil','cs.tab.contacts':'📞 Kontaktlar',
+    'cs.tab.social':'📱 Ijtimoiy tarmoqlar','cs.tab.branches':'🏢 Filiallar',
+    'cs.profile.title':'🏢 Kompaniya profili','cs.profile.upload.logo':'🖼️ Logotip yuklash',
+    'cs.profile.logo.hint':'PNG/JPG, 400 KB gacha','cs.profile.name':'Kompaniya nomi',
+    'cs.profile.slug':'Slug (xodimlar kirishda ishlatadi)',
+    'cs.profile.slug.warn':"⚠️ Slug o'zgartirilsa, barcha xodimlar keyingi kirishda yangi slugni kiritishi kerak bo'ladi",
+    'cs.about.title':"📝 Kompaniya haqida (sayt footer matni)",
+    'cs.about.text.ru':'Matn (RU)','cs.about.text.uz':'Matn (UZ)',
+    'cs.contacts.title':'📞 Aloqa raqamlari','cs.contacts.short':'Qisqa raqam',
+    'cs.contacts.main':'Asosiy raqam','cs.contacts.email':'Mijozlar uchun email',
+    'cs.social.title':'📱 Ijtimoiy tarmoqlar va Telegram','cs.social.whatsapp':"WhatsApp (+siz raqam)",
+    'cs.social.instagram':'Instagram',
+    'cs.social.group.title':'Kompaniya guruhi','cs.social.group.desc':'Mijozlar uchun Telegram guruhi',
+    'cs.social.channel.title':'Kompaniya kanali','cs.social.channel.desc':'Rasmiy Telegram kanali',
+    'cs.social.admin.title':'Administrator Telegrami','cs.social.admin.desc':"Aloqa uchun shaxsiy akkaunt",
+    'cs.branches.add':"+ Filial qo'shish",'cs.branches.edit':'Tahrirlash',
+    'cs.branches.location':'Joylashuv','cs.branches.city.center':'Shahar markazi',
+    'cs.branches.workshop.coords':'Sex koordinatalari',
+    'cs.branches.phone1':'1-raqam','cs.branches.phone2':'2-raqam',
+    'cs.branches.tg.groups':'Telegram — guruhlar va kanallar',
+    'cs.branches.tg.leads':'Lidlar guruhi','cs.branches.tg.leads.desc':"CRM'dan yangi arizalar",
+    'cs.branches.tg.orders':'Buyurtmalar guruhi','cs.branches.tg.orders.desc':'Qabul va buyurtma holatlari',
+    'cs.branches.tg.drivers':'Haydovchilar guruhi','cs.branches.tg.drivers.desc':'Marshrut va yetkazib berish',
+    'cs.branches.tg.delivery':'Yetkazib berish kanali','cs.branches.tg.delivery.desc':"Haydovchilar uchun marshrutlar ro'yxati",
+    'cs.branches.empty':"Filiallar yo'q. Birinchisini qo'shing.",
+    'cs.branches.modal.add':"Filial qo'shish",'cs.branches.modal.edit':'Filialni tahrirlash',
+    'cs.branches.modal.create':"➕ Yaratish",
+    'bf.tab.main':"📋 Asosiy ma'lumotlar",'bf.tab.tg':'📱 Telegram',
+    'bf.section.main':'Asosiy','bf.name.ru':'Nomi (RU) *','bf.name.uz':'Nomi (UZ)',
+    'bf.slug':"Slug * (lotin harflarida, noyob)",'bf.city.center':'Shahar/tuman markazi',
+    'bf.map':'📍 Xarita','bf.section.phones':'📞 Telefonlar',
+    'bf.tg.hint':"ℹ️ Botni guruh/kanalga a'zo sifatida qo'shing, ID ni kiriting va tekshirish uchun 🔍 tugmasini bosing.",
+    'bf.map.title':'Xaritadan tanlang','bf.map.hint':"Belgi qo'yish uchun xaritaga bosing",
+    'bf.map.done':'✅ Tayyor',
     'promo.btn.add':'+ Yangi aksiya','promo.empty':'Aksiyalar yo\'q',
     'th.code':'Kod','th.discount':'Chegirma','th.period':'Davr',
     'th.toggle':'Yoq/Oʻchir','th.shows':'Koʻrsatildi / Ishlatildi',
@@ -6738,7 +6866,7 @@ function _applyAdminI18n() {
     positions:'🎯 Должности',timesheet:'📅 Табель',
     workon:'✅ WorkOn — Посещаемость','salary-calc':'💰 Расчёт зарплат',
     'agent-monitoring':'📊 Мониторинг сотрудников',
-    siteconfig:'⚙️ Настройки сайта','tg-bot':'📱 Telegram · Настройки бота',
+    siteconfig:'⚙️ Настройки сайта','company-settings':'🏢 Настройки компании','tg-bot':'📱 Telegram · Настройки бота',
     'tg-messages':'📱 Telegram · Уведомления','tg-clients':'📱 Telegram · Клиенты',
     'tg-vars':'⚙️ Переменные проекта','db-maintenance':'🗄️ Обслуживание БД',
     promotions:'🎉 Акции',plans:'📋 План работы',
@@ -6760,7 +6888,7 @@ function _applyAdminI18n() {
     positions:'🎯 Lavozimlar',timesheet:'📅 Jadval',
     workon:'✅ WorkOn — Davomat','salary-calc':'💰 Maosh hisobi',
     'agent-monitoring':'📊 Xodimlar monitoringi',
-    siteconfig:'⚙️ Sayt sozlamalari','tg-bot':'📱 Telegram · Bot sozlamalari',
+    siteconfig:'⚙️ Sayt sozlamalari','company-settings':'🏢 Kompaniya sozlamalari','tg-bot':'📱 Telegram · Bot sozlamalari',
     'tg-messages':'📱 Telegram · Xabarnomalar','tg-clients':'📱 Telegram · Mijozlar',
     'tg-vars':'⚙️ Loyiha oʻzgaruvchilari','db-maintenance':'🗄️ MB xizmati',
     promotions:'🎉 Aksiyalar',plans:'📋 Ish rejasi',
@@ -7150,25 +7278,25 @@ function renderBranchContactCards() {
     <div class="card" style="margin-bottom:12px">
       <div class="cfg-title-row">
         <h3 class="cfg-title">${_esc(b.name_ru)}${b.name_uz ? ' / ' + _esc(b.name_uz) : ''} <span style="font-size:12px;font-weight:400;color:var(--text2)">(${_esc(b.slug)})</span></h3>
-        <button class="btn btn-ghost" onclick="editBranchCard(${b.id})" title="Редактировать">✏️ Редактировать</button>
-        ${canDel ? `<button class="btn btn-ghost" onclick="deleteBranch(${b.id})" style="color:var(--danger)" title="Удалить">🗑️</button>` : ''}
+        <button class="btn btn-ghost" onclick="editBranchCard(${b.id})" title="${_t('cs.branches.edit')}">✏️ ${_t('cs.branches.edit')}</button>
+        ${canDel ? `<button class="btn btn-ghost" onclick="deleteBranch(${b.id})" style="color:var(--danger)" title="${_t('btn.delete')}">🗑️</button>` : ''}
       </div>
-      ${_brSectionLabel('📍 Местоположение')}
+      ${_brSectionLabel('📍 ' + _t('cs.branches.location'))}
       <div class="contacts-grid">
-        ${_brRowMono('Центр города', coords)}
-        ${_brRowMono('Координаты цеха', wcoords)}
-        ${_brRow('Номер 1', ph1)}
-        ${_brRow('Номер 2', ph2)}
+        ${_brRowMono(_t('cs.branches.city.center'), coords)}
+        ${_brRowMono(_t('cs.branches.workshop.coords'), wcoords)}
+        ${_brRow(_t('cs.branches.phone1'), ph1)}
+        ${_brRow(_t('cs.branches.phone2'), ph2)}
       </div>
-      ${_brSectionLabel('📱 Telegram — группы и каналы')}
+      ${_brSectionLabel('📱 ' + _t('cs.branches.tg.groups'))}
       <div style="margin-top:8px">
-        ${_brTgCard('🧑‍💼', 'Группа лидов',    'Новые заявки из CRM',           b.tg_leads_group_id)}
-        ${_brTgCard('📦',  'Группа заказов',   'Приём и статусы заказов',        b.tg_orders_channel_id)}
-        ${_brTgCard('🚗',  'Группа водителей', 'Маршруты и доставка',            b.tg_delivery_group_id)}
-        ${_brTgCard('📢',  'Канал доставки',   'Список маршрутов для водителей', b.tg_delivery_channel_id)}
+        ${_brTgCard('🧑‍💼', _t('cs.branches.tg.leads'),    _t('cs.branches.tg.leads.desc'),    b.tg_leads_group_id)}
+        ${_brTgCard('📦',  _t('cs.branches.tg.orders'),   _t('cs.branches.tg.orders.desc'),   b.tg_orders_channel_id)}
+        ${_brTgCard('🚗',  _t('cs.branches.tg.drivers'),  _t('cs.branches.tg.drivers.desc'),  b.tg_delivery_group_id)}
+        ${_brTgCard('📢',  _t('cs.branches.tg.delivery'), _t('cs.branches.tg.delivery.desc'), b.tg_delivery_channel_id)}
       </div>
     </div>`;
-  }).join('') || '<p style="color:var(--text2)">Нет филиалов. Добавьте первый.</p>';
+  }).join('') || `<p style="color:var(--text2)">${_t('cs.branches.empty')}</p>`;
 }
 
 // ── Telegram chat-info lookup ────────────────────────────────────────────
@@ -7210,9 +7338,9 @@ function editBranchCard(id) {
 function _bfOpenForm(mode, b) {
   _bfMode = mode;
   _bfBranchId = b?.id || null;
-  document.getElementById('bfModalTitle').textContent = mode === 'add' ? 'Добавить филиал' : 'Редактировать филиал';
+  document.getElementById('bfModalTitle').textContent = mode === 'add' ? _t('cs.branches.modal.add') : _t('cs.branches.modal.edit');
   document.getElementById('bfSlugRow').style.display = mode === 'add' ? '' : 'none';
-  document.getElementById('bfSaveBtn').textContent = mode === 'add' ? '➕ Создать' : '💾 Сохранить';
+  document.getElementById('bfSaveBtn').textContent = mode === 'add' ? _t('cs.branches.modal.create') : _t('btn.save');
   const set = (id, v) => { const el = document.getElementById(id); if (el) el.value = v || ''; };
   ['tgn_leads_bf','tgn_orders_bf','tgn_delivery_bf','tgn_dchannel_bf'].forEach(id => {
     const el = document.getElementById(id);
@@ -7431,7 +7559,7 @@ function renderSlidesList() {
       <button class="btn btn-ghost btn-sm" onclick="openSlideModal(${s.id})">✏️</button>
       <button class="btn btn-ghost btn-sm" style="color:var(--danger)" onclick="deleteSlide(${s.id})">🗑️</button>
     </div>
-  `).join('') || '<p style="color:var(--text2)">Слайдов пока нет.</p>';
+  `).join('') || `<p style="color:var(--text2)">${_t('slides.empty')}</p>`;
   const addBtn = document.getElementById('slidesAddBtn');
   if (addBtn) addBtn.style.display = _slides.length >= MAX_SLIDES ? 'none' : '';
 }
@@ -7439,7 +7567,7 @@ function renderSlidesList() {
 function openSlideModal(id) {
   _slideEditId = id || null;
   const s = id ? _slides.find(x => x.id === id) : null;
-  document.getElementById('slideModalTitle').textContent = id ? 'Редактировать слайд' : 'Новый слайд';
+  document.getElementById('slideModalTitle').textContent = id ? _t('slide.modal.edit') : _t('slide.modal.new');
   document.getElementById('sl_file').value = '';
   document.getElementById('sl_file').required = !id;
   document.getElementById('sl_preview').style.display = s ? '' : 'none';
@@ -7528,22 +7656,22 @@ function renderStatsList() {
   if (!wrap) return;
   wrap.innerHTML = _statsRows.map((s, i) => `
     <div class="card" style="margin-bottom:10px">
-      <div style="font-size:12px;color:var(--text2);margin-bottom:8px">Карточка ${i + 1}</div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:8px">${_t('stats.card')} ${i + 1}</div>
       <div class="contacts-grid">
         <div class="cfg-field">
-          <label>Значение (RU)</label>
+          <label>${_t('stats.f.value.ru')}</label>
           <input type="text" class="form-input" id="stat_value_ru_${s.id}" value="${_esc(s.value_ru)}" placeholder="Бесплатно">
         </div>
         <div class="cfg-field">
-          <label>Значение (UZ)</label>
+          <label>${_t('stats.f.value.uz')}</label>
           <input type="text" class="form-input" id="stat_value_uz_${s.id}" value="${_esc(s.value_uz)}" placeholder="Bepul">
         </div>
         <div class="cfg-field">
-          <label>Подпись (RU)</label>
+          <label>${_t('stats.f.label.ru')}</label>
           <input type="text" class="form-input" id="stat_label_ru_${s.id}" value="${_esc(s.label_ru)}" placeholder="клиентов в год">
         </div>
         <div class="cfg-field">
-          <label>Подпись (UZ)</label>
+          <label>${_t('stats.f.label.uz')}</label>
           <input type="text" class="form-input" id="stat_label_uz_${s.id}" value="${_esc(s.label_uz)}" placeholder="yiliga mijozlar">
         </div>
       </div>
@@ -7599,13 +7727,13 @@ function renderReviewsList() {
         </div>
       </div>
     </div>
-  `).join('') || '<p style="color:var(--text2)">Отзывов пока нет.</p>';
+  `).join('') || `<p style="color:var(--text2)">${_t('reviews.empty')}</p>`;
 }
 
 function openReviewModal(id) {
   _reviewEditId = id || null;
   const rv = id ? _reviews.find(x => x.id === id) : null;
-  document.getElementById('reviewModalTitle').textContent = id ? 'Редактировать отзыв' : 'Новый отзыв';
+  document.getElementById('reviewModalTitle').textContent = id ? _t('review.modal.edit') : _t('review.modal.new');
   document.getElementById('rv_author').value = rv?.author_name || '';
   document.getElementById('rv_rating').value = String(rv?.rating || 5);
   document.getElementById('rv_text_ru').value = rv?.text_ru || '';
@@ -7681,13 +7809,13 @@ function renderFaqList() {
         </div>
       </div>
     </div>
-  `).join('') || '<p style="color:var(--text2)">Вопросов пока нет.</p>';
+  `).join('') || `<p style="color:var(--text2)">${_t('faq.empty')}</p>`;
 }
 
 function openFaqModal(id) {
   _faqEditId = id || null;
   const f = id ? _faqItems.find(x => x.id === id) : null;
-  document.getElementById('faqModalTitle').textContent = id ? 'Редактировать вопрос' : 'Новый вопрос';
+  document.getElementById('faqModalTitle').textContent = id ? _t('faq.modal.edit') : _t('faq.modal.new');
   document.getElementById('fq_question_ru').value = f?.question_ru || '';
   document.getElementById('fq_question_uz').value = f?.question_uz || '';
   document.getElementById('fq_answer_ru').value = f?.answer_ru || '';
