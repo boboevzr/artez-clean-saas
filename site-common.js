@@ -930,8 +930,25 @@
       }
 
       if (paletteColors) {
-        const root = document.documentElement.style;
-        Object.keys(paletteColors).forEach(k => root.setProperty('--' + k, paletteColors[k]));
+        // Часть переменных (--sand/--sand-card/--ink/--ink-soft/--line/--teal-deep/--teal)
+        // переопределяется правилом [data-theme="dark"] в базовых стилях — для контраста
+        // тёмной темы. Если задать их через documentElement.style (inline), это правило
+        // перебивается независимо от темы (inline всегда сильнее селектора), и тёмная тема
+        // ломается. Поэтому применяем через <style>: тёмная тема управляет этими цветами
+        // как раньше, палитра красит их только в светлой теме; акцентные цвета
+        // (--teal-soft/--amber/--amber-deep) не участвуют в тёмной теме — красим их всегда.
+        const DARK_MANAGED = ['sand','sand-card','ink','ink-soft','line','teal-deep','teal'];
+        const always = [], lightOnly = [];
+        Object.keys(paletteColors).forEach(k => {
+          (DARK_MANAGED.includes(k) ? lightOnly : always).push(`--${k}: ${paletteColors[k]};`);
+        });
+        let css = '';
+        if (always.length) css += `:root{ ${always.join(' ')} }\n`;
+        if (lightOnly.length) css += `:root:not([data-theme="dark"]){ ${lightOnly.join(' ')} }\n`;
+        const styleEl = document.createElement('style');
+        styleEl.id = 'sitePaletteOverride';
+        styleEl.textContent = css;
+        document.head.appendChild(styleEl);
       }
       if (templateKey && templateKey !== 'template-01') {
         const link = document.createElement('link');
