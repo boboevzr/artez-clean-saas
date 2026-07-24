@@ -2716,6 +2716,8 @@
           <button class="s-tab"        data-stab="sheets"     onclick="switchStab(this)" data-i18n="cfg.tab.sheets">📊 Google Sheets</button>
           <button class="s-tab"        data-stab="agents"     onclick="switchStab(this)" data-i18n="cfg.tab.agents">🤝 Агенты</button>
           <button class="s-tab"        data-stab="receipt"    onclick="switchStab(this)" data-i18n="cfg.tab.receipt">🧾 Чек</button>
+          <button class="s-tab"        data-stab="slides"     onclick="switchStab(this)">🖼️ Слайдер</button>
+          <button class="s-tab"        data-stab="stats"      onclick="switchStab(this)">📊 Статистика</button>
         </div>
 
         <div style="max-width:660px;">
@@ -2895,6 +2897,56 @@
             </div>
           </div>
 
+          <!-- ─── Слайдер главной страницы ─── -->
+          <div class="s-panel" id="stab-slides" style="display:none;">
+            <div class="card">
+              <div class="cfg-title-row">
+                <h3 class="cfg-title">🖼️ Слайдер на главной странице</h3>
+              </div>
+              <p class="cfg-hint">До 5 слайдов. Показываются на сайте в автослайдере на самом верху страницы.</p>
+              <div id="slidesList" style="margin-top:10px"></div>
+              <button class="btn btn-primary" id="slidesAddBtn" onclick="openSlideModal()" style="margin-top:12px">+ Добавить слайд</button>
+            </div>
+          </div>
+
+          <!-- ─── Статистика главной страницы ─── -->
+          <div class="s-panel" id="stab-stats" style="display:none;">
+            <div class="card">
+              <div class="cfg-title-row">
+                <h3 class="cfg-title">📊 Статистика (блок после слайдера)</h3>
+              </div>
+              <p class="cfg-hint">Ровно 4 карточки. Значение — то, что показывается крупно (например «500+», «3», «Бесплатно»), подпись — пояснение под ним.</p>
+              <div id="statsList" style="margin-top:10px"></div>
+              <div class="cfg-actions">
+                <button class="btn btn-primary" onclick="saveAllSiteStats()">💾 Сохранить статистику</button>
+                <span class="s-msg" id="msg_stats"></span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Модалка: слайд автослайдера -->
+      <div id="modalSlideForm" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:2000;align-items:center;justify-content:center">
+        <div class="card" style="max-width:480px;width:92%;max-height:88vh;overflow-y:auto">
+          <h3 style="margin:0 0 14px;font-size:16px;font-weight:700" id="slideModalTitle">Новый слайд</h3>
+          <div class="form-group">
+            <label class="form-label">Фото *</label>
+            <input type="file" id="sl_file" accept="image/*">
+            <div style="font-size:11px;color:var(--text2);margin-top:4px">JPG/PNG, до 1.5 МБ, широкий формат (баннер)</div>
+            <img id="sl_preview" style="display:none;max-width:100%;border-radius:8px;margin-top:8px">
+          </div>
+          <div class="form-group"><label class="form-label">Эйеброу (RU)</label><input class="form-input" id="sl_eyebrow_ru" placeholder="Услуга на дому"></div>
+          <div class="form-group"><label class="form-label">Эйеброу (UZ)</label><input class="form-input" id="sl_eyebrow_uz" placeholder="Uyga xizmat"></div>
+          <div class="form-group"><label class="form-label">Заголовок (RU)</label><input class="form-input" id="sl_title_ru" placeholder="Чистим ковры у вас дома"></div>
+          <div class="form-group"><label class="form-label">Заголовок (UZ)</label><input class="form-input" id="sl_title_uz" placeholder="Gilamlarni uyingizda tozalaymiz"></div>
+          <div class="form-group"><label class="form-label">Описание (RU)</label><textarea class="form-input" id="sl_text_ru" rows="2"></textarea></div>
+          <div class="form-group"><label class="form-label">Описание (UZ)</label><textarea class="form-input" id="sl_text_uz" rows="2"></textarea></div>
+          <div style="display:flex;gap:8px;margin-top:14px">
+            <button class="btn btn-primary" style="flex:1" onclick="saveSlideForm()" id="slideSaveBtn">💾 Сохранить</button>
+            <button class="btn btn-ghost" onclick="closeSlideModal()">Отмена</button>
+          </div>
         </div>
       </div>
 
@@ -7191,6 +7243,166 @@ function closeBranchLimitModal() {
   document.getElementById('modalBranchLimit').style.display = 'none';
 }
 
+// ── СЛАЙДЕР ГЛАВНОЙ СТРАНИЦЫ ────────────────────────────────────────────────
+const MAX_SLIDES = 5;
+let _slides = [];
+let _slideEditId = null;
+
+async function loadSiteSlides() {
+  try {
+    const r = await apiGet('/admin/site-slides');
+    _slides = (r?.ok && r.slides) || [];
+  } catch(e) { _slides = []; }
+  renderSlidesList();
+}
+
+function renderSlidesList() {
+  const wrap = document.getElementById('slidesList');
+  if (!wrap) return;
+  wrap.innerHTML = _slides.map(s => `
+    <div class="card" style="margin-bottom:10px;display:flex;gap:12px;align-items:center">
+      <img src="${_esc(s.image_url)}" style="width:90px;height:60px;object-fit:cover;border-radius:8px;flex-shrink:0;background:var(--bg2)">
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:700;font-size:14px">${_esc(s.title_ru || '(без заголовка)')}</div>
+        <div style="font-size:12px;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${_esc(s.eyebrow_ru || '')}</div>
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="openSlideModal(${s.id})">✏️</button>
+      <button class="btn btn-ghost btn-sm" style="color:var(--danger)" onclick="deleteSlide(${s.id})">🗑️</button>
+    </div>
+  `).join('') || '<p style="color:var(--text2)">Слайдов пока нет.</p>';
+  const addBtn = document.getElementById('slidesAddBtn');
+  if (addBtn) addBtn.style.display = _slides.length >= MAX_SLIDES ? 'none' : '';
+}
+
+function openSlideModal(id) {
+  _slideEditId = id || null;
+  const s = id ? _slides.find(x => x.id === id) : null;
+  document.getElementById('slideModalTitle').textContent = id ? 'Редактировать слайд' : 'Новый слайд';
+  document.getElementById('sl_file').value = '';
+  document.getElementById('sl_file').required = !id;
+  document.getElementById('sl_preview').style.display = s ? '' : 'none';
+  document.getElementById('sl_preview').src = s ? s.image_url : '';
+  document.getElementById('sl_eyebrow_ru').value = s?.eyebrow_ru || '';
+  document.getElementById('sl_eyebrow_uz').value = s?.eyebrow_uz || '';
+  document.getElementById('sl_title_ru').value = s?.title_ru || '';
+  document.getElementById('sl_title_uz').value = s?.title_uz || '';
+  document.getElementById('sl_text_ru').value = s?.text_ru || '';
+  document.getElementById('sl_text_uz').value = s?.text_uz || '';
+  document.getElementById('modalSlideForm').style.display = 'flex';
+}
+
+function closeSlideModal() {
+  document.getElementById('modalSlideForm').style.display = 'none';
+}
+
+async function saveSlideForm() {
+  const g = id => document.getElementById(id)?.value?.trim() || '';
+  const btn = document.getElementById('slideSaveBtn');
+  const file = document.getElementById('sl_file').files[0];
+  const textFields = {
+    eyebrow_ru: g('sl_eyebrow_ru'), eyebrow_uz: g('sl_eyebrow_uz'),
+    title_ru: g('sl_title_ru'), title_uz: g('sl_title_uz'),
+    text_ru: g('sl_text_ru'), text_uz: g('sl_text_uz'),
+  };
+  btn.disabled = true;
+  try {
+    if (_slideEditId) {
+      const r = await apiPut(`/admin/site-slides/${_slideEditId}`, { ...textFields, sort_order: 0 });
+      if (!r?.ok) { showToast(r?.detail || 'Ошибка', 'error'); return; }
+      if (file) {
+        const fd = new FormData(); fd.append('file', file);
+        const r2 = await apiFetch(`${API_BASE}/admin/site-slides/${_slideEditId}/image`, { method: 'POST', body: fd }).then(res => res.json());
+        if (!r2?.ok) { showToast(r2?.detail || 'Ошибка загрузки фото', 'error'); return; }
+      }
+    } else {
+      if (!file) { showToast('Выберите фото', 'error'); return; }
+      const fd = new FormData();
+      fd.append('file', file);
+      Object.entries(textFields).forEach(([k, v]) => fd.append(k, v));
+      fd.append('sort_order', String(_slides.length));
+      const r = await apiFetch(`${API_BASE}/admin/site-slides`, { method: 'POST', body: fd }).then(res => res.json());
+      if (!r?.ok) { showToast(r?.detail || 'Ошибка', 'error'); return; }
+    }
+    closeSlideModal();
+    await loadSiteSlides();
+    showToast('Слайд сохранён');
+  } catch(e) {
+    if (e.message !== '401') showToast('Ошибка: ' + e.message, 'error');
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+async function deleteSlide(id) {
+  if (!confirm('Удалить слайд?')) return;
+  try {
+    const r = await apiDelete(`/admin/site-slides/${id}`);
+    if (r?.ok) { await loadSiteSlides(); showToast('Слайд удалён'); }
+    else showToast(r?.detail || 'Ошибка', 'error');
+  } catch(e) {
+    if (e.message !== '401') showToast('Ошибка: ' + e.message, 'error');
+  }
+}
+
+document.getElementById('sl_file')?.addEventListener('change', function() {
+  const f = this.files[0];
+  const prev = document.getElementById('sl_preview');
+  if (f) { prev.src = URL.createObjectURL(f); prev.style.display = ''; }
+});
+
+// ── СТАТИСТИКА ГЛАВНОЙ СТРАНИЦЫ ──────────────────────────────────────────────
+let _statsRows = [];
+
+async function loadSiteStatsAdmin() {
+  try {
+    const r = await apiGet('/admin/site-stats');
+    _statsRows = (r?.ok && r.stats) || [];
+  } catch(e) { _statsRows = []; }
+  renderStatsList();
+}
+
+function renderStatsList() {
+  const wrap = document.getElementById('statsList');
+  if (!wrap) return;
+  wrap.innerHTML = _statsRows.map((s, i) => `
+    <div class="card" style="margin-bottom:10px">
+      <div style="font-size:12px;color:var(--text2);margin-bottom:8px">Карточка ${i + 1}</div>
+      <div class="contacts-grid">
+        <div class="cfg-field">
+          <label>Значение</label>
+          <input type="text" class="form-input" id="stat_value_${s.id}" value="${_esc(s.value)}" placeholder="500+">
+        </div>
+        <div class="cfg-field">
+          <label>Подпись (RU)</label>
+          <input type="text" class="form-input" id="stat_label_ru_${s.id}" value="${_esc(s.label_ru)}" placeholder="клиентов в год">
+        </div>
+        <div class="cfg-field">
+          <label>Подпись (UZ)</label>
+          <input type="text" class="form-input" id="stat_label_uz_${s.id}" value="${_esc(s.label_uz)}" placeholder="yiliga mijozlar">
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function saveAllSiteStats() {
+  const msg = document.getElementById('msg_stats');
+  msg.style.display = 'none';
+  try {
+    for (const s of _statsRows) {
+      const value = document.getElementById(`stat_value_${s.id}`)?.value?.trim() || '';
+      const label_ru = document.getElementById(`stat_label_ru_${s.id}`)?.value?.trim() || '';
+      const label_uz = document.getElementById(`stat_label_uz_${s.id}`)?.value?.trim() || '';
+      await apiPut(`/admin/site-stats/${s.id}`, { value, label_ru, label_uz, sort_order: s.sort_order });
+    }
+    msg.textContent = '✓ Сохранено';
+    msg.style.display = '';
+    setTimeout(() => msg.style.display = 'none', 3000);
+  } catch(e) {
+    if (e.message !== '401') showToast('Ошибка: ' + e.message, 'error');
+  }
+}
+
 // ── Map picker (unified, with geolocation fallback) ───────────────────────
 let _mapPickerCb = null;
 
@@ -7931,7 +8143,7 @@ function _activatePage(page) {
   if (page === 'clients')     adminLoadClients();
   if (page === 'contacts')    adminLoadContacts();
   if (page === 'site-users')  adminLoadSiteUsers();
-  if (page === 'siteconfig')  loadSiteSettings();
+  if (page === 'siteconfig')  { loadSiteSettings(); staffMgmtLoad(); }
   if (page === 'company-settings') { _loadCompanyProfile(); loadSiteSettings(); _loadCompanySocial(); renderBranchContactCards(); loadBranches().then(() => renderBranchContactCards()); }
   if (page === 'tg-bot')      loadSiteSettings();
   if (page === 'tg-messages') loadTgSettings();
@@ -10686,6 +10898,8 @@ function switchStab(btn) {
     loadAllCommissions();
   }
   if (tab === 'receipt') _updateReceiptPreview();
+  if (tab === 'slides')  loadSiteSlides();
+  if (tab === 'stats')   loadSiteStatsAdmin();
 }
 
 function switchCompanyStab(btn) {
