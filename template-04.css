@@ -1,0 +1,52 @@
+/* ============================================================
+   ШАБЛОН 04 — «Карточки»
+   Каждая секция — отдельная плавающая карточка на нейтральном
+   фоне страницы (дашборд-стиль). Подключается поверх базовых
+   стилей index.html (та же разметка, тот же JS).
+   ============================================================ */
+
+:root{
+  --radius:    22px;
+  --radius-sm: 14px;
+  --shadow:    0 20px 50px -18px rgba(20,30,28,.18);
+}
+
+body{ background: var(--line); }
+[data-theme="dark"] body{ background:#10201d; }
+
+.section,
+.hero-section,
+.ba-section,
+.reviews-section,
+.cabinet-section{
+  background: var(--sand-card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  margin: 20px auto;
+  max-width: 1360px;
+  overflow:hidden;
+}
+.hero-section{ animation:none; }
+.section-dark{ background: linear-gradient(180deg, #0E2D2A 0%, #112926 100%); }
+
+/* Инлайновый background="var(--sand)" у некоторых секций перебивает карточный фон — выравниваем. */
+#hiw, #faq{ background: var(--sand-card) !important; }
+
+.stats-strip{ border-radius: var(--radius); margin:20px auto; max-width:1360px; box-shadow:var(--shadow); }
+
+/* ── Шапка остаётся на всю ширину (не карточкой) — якорь страницы ── */
+.topbar{ box-shadow: 0 2px 16px rgba(0,0,0,.15); }
+
+/* ── Карточки услуг: мягче тень, крупнее скругление ── */
+.service-card{ border-radius: var(--radius-sm); box-shadow: 0 10px 30px -14px rgba(20,30,28,.15); }
+.service-card:hover{ box-shadow: 0 18px 44px -14px rgba(20,30,28,.25); }
+.service-icon{ border-radius: 16px; }
+
+.calc-card{ border-radius: var(--radius-sm); }
+
+@media (max-width: 640px){
+  .section, .hero-section, .ba-section, .reviews-section, .cabinet-section, .stats-strip{
+    margin: 12px 10px;
+    border-radius: var(--radius-sm);
+  }
+}

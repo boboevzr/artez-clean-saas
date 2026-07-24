@@ -1498,6 +1498,7 @@
         </div>
         <div class="nav-group-items" id="ng-items-sys" style="display:none;">
           <div class="nav-sub-item" data-page="company-settings" onclick="switchSubPage(this)">🏢 Настройки компании</div>
+          <div class="nav-sub-item" data-page="site-design"     onclick="switchSubPage(this)">🎨 Дизайн сайта</div>
           <div class="nav-sub-item" data-page="siteconfig"     onclick="switchSubPage(this)">⚙️ Настройки сайта</div>
           <div class="nav-sub-item" data-page="role-perms"     onclick="switchSubPage(this)">🔐 Роли и доступы</div>
           <div class="nav-sub-item" data-page="db-maintenance" onclick="switchSubPage(this)">🗄️ Обслуживание БД</div>
@@ -3579,6 +3580,32 @@
             <tbody id="promoTbody"></tbody>
           </table>
           <div id="promoEmpty" style="display:none" class="loader" data-i18n="promo.empty">Акций пока нет</div>
+        </div>
+      </div>
+
+      <!-- ДИЗАЙН САЙТА -->
+      <div class="page" id="page-site-design">
+        <div class="section-header"><h2 data-i18n="design.title">🎨 Дизайн сайта</h2></div>
+        <p style="color:var(--text2);font-size:13px;margin:-10px 0 20px" data-i18n="design.hint">Выберите шаблон вёрстки и цветовую палитру для вашего публичного сайта. Изменения применяются сразу после сохранения.</p>
+
+        <h3 style="margin:0 0 12px;font-size:15px;font-weight:700" data-i18n="design.templates">Шаблон</h3>
+        <div id="designTemplatesGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin-bottom:24px"></div>
+
+        <h3 style="margin:0 0 12px;font-size:15px;font-weight:700" data-i18n="design.palettes">Палитра</h3>
+        <div id="designPalettesGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin-bottom:24px"></div>
+
+        <div class="card" style="margin-bottom:20px">
+          <div class="cfg-title-row">
+            <h3 class="cfg-title" data-i18n="design.preview">👁 Предпросмотр</h3>
+          </div>
+          <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;height:520px">
+            <iframe id="designPreviewFrame" style="width:100%;height:100%;border:none" loading="lazy"></iframe>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-primary" onclick="designSave()" data-i18n="design.save">💾 Сохранить</button>
+          <span id="designSaveMsg" style="align-self:center;font-size:13px;color:var(--text2)"></span>
         </div>
       </div>
 
@@ -5812,6 +5839,7 @@ function _toggleAdminLang() {
     timesheet: () => loadTimesheet(),
     siteconfig: () => { loadSiteSlides(); loadSiteStatsAdmin(); loadSiteReviews(); loadSiteFaq(); },
     'company-settings': () => { renderBranchContactCards(); },
+    'site-design': () => designLoad(),
   };
   if (_rerender[page]) _rerender[page]();
 }
@@ -5838,7 +5866,7 @@ const _adminNavTr = {
     units:'📏 Единицы измерения', 'expenses-admin':'🧾 Расходы',
     'chat-templates':'💬 Шаблоны чата',
     'grp.sys':'Система', siteconfig:'⚙️ Настройки сайта',
-    'company-settings':'🏢 Настройки компании',
+    'company-settings':'🏢 Настройки компании', 'site-design':'🎨 Дизайн сайта',
     'role-perms':'🔐 Роли и доступы', 'db-maintenance':'🗄️ Обслуживание БД',
     temp:'🗑️ Чистка БД',
   },
@@ -5864,7 +5892,7 @@ const _adminNavTr = {
     units:'📏 Oʻlchov birliklari', 'expenses-admin':'🧾 Xarajatlar',
     'chat-templates':'💬 Chat shablonlari',
     'grp.sys':'Tizim', siteconfig:'⚙️ Sayt sozlamalari',
-    'company-settings':'🏢 Kompaniya sozlamalari',
+    'company-settings':'🏢 Kompaniya sozlamalari', 'site-design':'🎨 Sayt dizayni',
     'role-perms':'🔐 Rollar va ruxsatlar', 'db-maintenance':'🗄️ MB xizmati',
     temp:'🗑️ MB tozalash',
   },
@@ -5981,6 +6009,9 @@ const _adminI18n = {
     'bf.tg.hint':'ℹ️ Добавьте бота в группу/канал как участника, введите ID и нажмите 🔍 для проверки.',
     'bf.map.title':'Выбрать на карте','bf.map.hint':'Нажмите на карту чтобы поставить метку',
     'bf.map.done':'✅ Готово',
+    'design.title':'🎨 Дизайн сайта','design.hint':'Выберите шаблон вёрстки и цветовую палитру для вашего публичного сайта. Изменения применяются сразу после сохранения.',
+    'design.templates':'Шаблон','design.palettes':'Палитра','design.preview':'👁 Предпросмотр','design.save':'💾 Сохранить',
+    'design.selected':'✓ Выбран','design.none':'Нет доступных вариантов','design.saved':'Сохранено ✓','design.err':'Ошибка сохранения',
     'tariff.available':'Доступные тарифы','tariff.support':'💬 Поддержка',
     'tariff.limit.title':'Достигнут лимит филиалов','tariff.limit.msg':'На вашем тарифе достигнут лимит филиалов.',
     'tariff.limit.goto':'📈 Перейти к тарифам','tariff.limit.ok':'Понятно',
@@ -6488,6 +6519,9 @@ const _adminI18n = {
     'bf.tg.hint':"ℹ️ Botni guruh/kanalga a'zo sifatida qo'shing, ID ni kiriting va tekshirish uchun 🔍 tugmasini bosing.",
     'bf.map.title':'Xaritadan tanlang','bf.map.hint':"Belgi qo'yish uchun xaritaga bosing",
     'bf.map.done':'✅ Tayyor',
+    'design.title':'🎨 Sayt dizayni','design.hint':'Ommaviy saytingiz uchun shablon va rang palitrasini tanlang. O‘zgarishlar saqlangandan so‘ng darhol qo‘llaniladi.',
+    'design.templates':'Shablon','design.palettes':'Palitra','design.preview':'👁 Ko‘rib chiqish','design.save':'💾 Saqlash',
+    'design.selected':'✓ Tanlandi','design.none':'Mavjud variantlar yo‘q','design.saved':'Saqlandi ✓','design.err':'Saqlashda xatolik',
     'tariff.available':'Mavjud tariflar','tariff.support':'💬 Yordam',
     'tariff.limit.title':'Filial limitiga yetdingiz','tariff.limit.msg':'Sizning tarifingizda filial limitiga yetildi.',
     'tariff.limit.goto':'📈 Tariflarga o\'tish','tariff.limit.ok':'Tushunarli',
@@ -6918,7 +6952,7 @@ function _applyAdminI18n() {
     positions:'🎯 Должности',timesheet:'📅 Табель',
     workon:'✅ WorkOn — Посещаемость','salary-calc':'💰 Расчёт зарплат',
     'agent-monitoring':'📊 Мониторинг сотрудников',
-    siteconfig:'⚙️ Настройки сайта','company-settings':'🏢 Настройки компании','tg-bot':'📱 Telegram · Настройки бота',
+    siteconfig:'⚙️ Настройки сайта','company-settings':'🏢 Настройки компании','site-design':'🎨 Дизайн сайта','tg-bot':'📱 Telegram · Настройки бота',
     'tg-messages':'📱 Telegram · Уведомления','tg-clients':'📱 Telegram · Клиенты',
     'tg-vars':'⚙️ Переменные проекта','db-maintenance':'🗄️ Обслуживание БД',
     promotions:'🎉 Акции',plans:'📋 План работы',tariff:'💳 Мой тариф',
@@ -6940,7 +6974,7 @@ function _applyAdminI18n() {
     positions:'🎯 Lavozimlar',timesheet:'📅 Jadval',
     workon:'✅ WorkOn — Davomat','salary-calc':'💰 Maosh hisobi',
     'agent-monitoring':'📊 Xodimlar monitoringi',
-    siteconfig:'⚙️ Sayt sozlamalari','company-settings':'🏢 Kompaniya sozlamalari','tg-bot':'📱 Telegram · Bot sozlamalari',
+    siteconfig:'⚙️ Sayt sozlamalari','company-settings':'🏢 Kompaniya sozlamalari','site-design':'🎨 Sayt dizayni','tg-bot':'📱 Telegram · Bot sozlamalari',
     'tg-messages':'📱 Telegram · Xabarnomalar','tg-clients':'📱 Telegram · Mijozlar',
     'tg-vars':'⚙️ Loyiha oʻzgaruvchilari','db-maintenance':'🗄️ MB xizmati',
     promotions:'🎉 Aksiyalar',plans:'📋 Ish rejasi',tariff:"💳 Mening tarifim",
@@ -7487,6 +7521,86 @@ async function loadSupportContact() {
     const r = await apiGet('/company/support-contact');
     if (r?.ok) _supportContact = { telegram: r.telegram || '', phone: r.phone || '' };
   } catch(e) {}
+}
+
+// ── ДИЗАЙН САЙТА ──────────────────────────────────────────────────────────
+let _designTemplates = [];
+let _designPalettes = [];
+let _designSelTemplate = null;
+let _designSelPalette = null;
+
+async function designLoad() {
+  try {
+    const r = await apiGet('/admin/company/site-design');
+    if (!r?.ok) return;
+    _designTemplates = r.templates || [];
+    _designPalettes = r.palettes || [];
+    _designSelTemplate = r.site_template_key;
+    _designSelPalette = r.site_palette_key;
+    renderDesignTemplates();
+    renderDesignPalettes();
+    designUpdatePreview();
+  } catch (e) {}
+}
+
+function renderDesignTemplates() {
+  const grid = document.getElementById('designTemplatesGrid');
+  if (!grid) return;
+  grid.innerHTML = _designTemplates.map(t => {
+    const active = t.key === _designSelTemplate;
+    return `
+    <div class="card" style="cursor:pointer;text-align:center;${active ? 'border-color:var(--accent);border-width:2px' : ''}" onclick="designSelectTemplate('${t.key}')">
+      <div style="font-size:28px;margin-bottom:6px">🖼️</div>
+      <div style="font-weight:700;font-size:14px">${_esc(t.name_ru)}</div>
+      ${active ? `<div style="margin-top:6px;font-size:12px;color:var(--accent);font-weight:700" data-i18n="design.selected">✓ Выбран</div>` : ''}
+    </div>`;
+  }).join('') || `<p style="color:var(--text2)" data-i18n="design.none">Нет доступных шаблонов</p>`;
+}
+
+function renderDesignPalettes() {
+  const grid = document.getElementById('designPalettesGrid');
+  if (!grid) return;
+  grid.innerHTML = _designPalettes.map(p => {
+    const active = p.key === _designSelPalette;
+    const c = p.colors || {};
+    const swatch = ['teal','amber','sand','ink'].map(k => `<span style="display:inline-block;width:18px;height:18px;border-radius:50%;background:${c[k]||'#ccc'};border:1px solid rgba(0,0,0,.1)"></span>`).join('');
+    return `
+    <div class="card" style="cursor:pointer;text-align:center;${active ? 'border-color:var(--accent);border-width:2px' : ''}" onclick="designSelectPalette('${p.key}')">
+      <div style="display:flex;gap:4px;justify-content:center;margin-bottom:8px">${swatch}</div>
+      <div style="font-weight:700;font-size:14px">${_esc(p.name_ru)}</div>
+      ${active ? `<div style="margin-top:6px;font-size:12px;color:var(--accent);font-weight:700" data-i18n="design.selected">✓ Выбран</div>` : ''}
+    </div>`;
+  }).join('') || `<p style="color:var(--text2)" data-i18n="design.none">Нет доступных палитр</p>`;
+}
+
+function designSelectTemplate(key) {
+  _designSelTemplate = key;
+  renderDesignTemplates();
+  designUpdatePreview();
+}
+
+function designSelectPalette(key) {
+  _designSelPalette = key;
+  renderDesignPalettes();
+  designUpdatePreview();
+}
+
+function designUpdatePreview() {
+  const frame = document.getElementById('designPreviewFrame');
+  if (!frame || !_designSelTemplate || !_designSelPalette) return;
+  const slug = localStorage.getItem('admin_company_slug') || '';
+  frame.src = `index.html?company_slug=${encodeURIComponent(slug)}&preview_template=${encodeURIComponent(_designSelTemplate)}&preview_palette=${encodeURIComponent(_designSelPalette)}`;
+}
+
+async function designSave() {
+  const msg = document.getElementById('designSaveMsg');
+  if (!_designSelTemplate || !_designSelPalette) return;
+  try {
+    const r = await apiPut('/admin/company/site-design', { site_template_key: _designSelTemplate, site_palette_key: _designSelPalette });
+    if (msg) { msg.textContent = r?.ok ? _t('design.saved') : _t('design.err'); msg.style.color = r?.ok ? 'var(--success,#16a34a)' : 'var(--danger,#dc2626)'; }
+  } catch (e) {
+    if (msg) { msg.textContent = _t('design.err'); msg.style.color = 'var(--danger,#dc2626)'; }
+  }
 }
 
 async function loadTariffPage() {
@@ -19959,6 +20073,7 @@ function confirmBranchLoc() {
     </div>
     <div class="mob-drawer-sub" style="display:none;">
       <div class="mob-drawer-sub-item" data-page="company-settings" onclick="switchSubPage(this);closeMobDrawer()">🏢 Настройки компании</div>
+      <div class="mob-drawer-sub-item" data-page="site-design"     onclick="switchSubPage(this);closeMobDrawer()">🎨 Дизайн сайта</div>
       <div class="mob-drawer-sub-item" data-page="siteconfig"     onclick="switchSubPage(this);closeMobDrawer()">⚙️ Настройки сайта</div>
       <div class="mob-drawer-sub-item" data-page="role-perms"     onclick="switchSubPage(this);closeMobDrawer()">🔐 Роли и доступы</div>
       <div class="mob-drawer-sub-item" data-page="db-maintenance" onclick="switchSubPage(this);closeMobDrawer()">🗄️ Обслуживание БД</div>

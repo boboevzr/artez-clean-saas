@@ -1,0 +1,77 @@
+/* ============================================================
+   ШАБЛОН 02 — «Минимал»
+   Светлая шапка, плоские карточки без свечения, чуть меньше
+   скруглений, спокойная типографика. Подключается поверх
+   базовых стилей index.html (та же разметка, тот же JS) —
+   переопределяет только внешний вид.
+   ============================================================ */
+
+:root{
+  --radius:      10px;
+  --radius-sm:   8px;
+  --shadow:      0 8px 24px -10px rgba(20,30,28,.12);
+  --glow-teal:   none;
+  --glow-amber:  none;
+}
+
+body{ font-family:"Inter", system-ui, sans-serif; }
+
+/* ── Шапка: светлая вместо тёмной ── */
+.topbar{
+  background: var(--sand-card);
+  backdrop-filter:none; -webkit-backdrop-filter:none;
+  color: var(--ink);
+  border-bottom: 1px solid var(--line);
+  box-shadow: none;
+}
+.logo-title{
+  background: none; -webkit-text-fill-color: var(--ink); color:var(--ink);
+}
+.logo-tagline{ color: var(--ink-soft); }
+nav.nav-links{ color: var(--ink-soft); }
+nav.nav-links a:hover{ color: var(--ink); }
+.lang-switch{ background:var(--sand); border-color:var(--line); }
+.lang-switch button{ color:var(--ink-soft); }
+.btn-ghost{
+  background:var(--sand); color:var(--ink); border-color:var(--line);
+  backdrop-filter:none;
+}
+.btn-ghost:hover{ background:#fff; border-color:var(--teal-soft); }
+.burger-btn{ background:var(--sand); border-color:var(--line); }
+.burger-btn span{ background:var(--ink-soft); }
+.mobile-nav a{ color:var(--ink-soft); border-color:var(--line); }
+
+/* ── Кнопки: без анимации-«блика», прямее углы ── */
+.btn{ border-radius: var(--radius-sm); }
+.btn-amber::before{ display:none; }
+.btn-amber{ box-shadow:0 4px 14px rgba(232,168,60,.25); }
+.btn-amber:hover{ box-shadow:0 6px 18px rgba(232,168,60,.35); transform:none; }
+
+/* ── Hero: спокойный, без градиентной анимации и орбов ── */
+.hero-section{
+  background: var(--sand);
+  animation:none;
+}
+.hero-orb{ display:none; }
+.calc-card{
+  background:#fff;
+  backdrop-filter:none; -webkit-backdrop-filter:none;
+  border:1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+.calc-card h2{ color:var(--ink); }
+.calc-card .calc-sub{ color:var(--ink-soft); }
+
+/* ── Карточки услуг: плоские, без наплыва/свечения при hover ── */
+.service-card{
+  box-shadow:none;
+  transition: border-color .2s ease;
+}
+.service-card:hover{
+  transform:none;
+  box-shadow:none;
+  border-color: var(--teal-soft);
+}
+.service-icon{ border-radius: var(--radius-sm); }
+
+.section-head .eyebrow::before{ border-radius:1px; }

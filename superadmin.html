@@ -226,6 +226,9 @@
       <div class="nav-item" data-page="sa-site-faq" onclick="showPage('sa-site-faq',this)">
         <span class="icon">❓</span> FAQ (шаблон)
       </div>
+      <div class="nav-item" data-page="sa-site-design" onclick="showPage('sa-site-design',this)">
+        <span class="icon">🎨</span> Каталог шаблонов
+      </div>
       <div class="nav-item" data-page="settings" onclick="showPage('settings',this)">
         <span class="icon">⚙️</span> Настройки
       </div>
@@ -514,6 +517,34 @@
         <div id="saFaqList" style="max-width:760px"></div>
       </div>
 
+      <!-- PAGE: Site design catalog (templates + palettes) -->
+      <div class="page" id="page-sa-site-design">
+        <div class="section-header">
+          <div class="page-title" style="margin:0">🎨 Каталог шаблонов</div>
+          <button class="btn btn-primary btn-sm" onclick="saOpenSiteTemplateModal()">+ Шаблон</button>
+        </div>
+        <p style="font-size:13px;color:var(--text2);margin-bottom:12px">Шаблоны вёрстки и цветовые палитры для публичного сайта компаний — admin каждой компании выбирает из активных вариантов на странице «Дизайн сайта».</p>
+        <div class="table-wrap" style="margin-bottom:24px">
+          <table>
+            <thead><tr><th>#</th><th>Ключ</th><th>Название (RU)</th><th>Название (UZ)</th><th>Вкл.</th><th>Сорт.</th><th></th></tr></thead>
+            <tbody id="saSiteTemplateTable"></tbody>
+          </table>
+          <div id="saSiteTemplateEmpty" style="display:none;padding:20px;text-align:center;color:var(--text2)">Нет шаблонов</div>
+        </div>
+
+        <div class="section-header">
+          <div class="page-title" style="margin:0;font-size:16px">Палитры</div>
+          <button class="btn btn-primary btn-sm" onclick="saOpenSitePaletteModal()">+ Палитра</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>#</th><th>Ключ</th><th>Название (RU)</th><th>Цвета</th><th>Вкл.</th><th>Сорт.</th><th></th></tr></thead>
+            <tbody id="saSitePaletteTable"></tbody>
+          </table>
+          <div id="saSitePaletteEmpty" style="display:none;padding:20px;text-align:center;color:var(--text2)">Нет палитр</div>
+        </div>
+      </div>
+
       <!-- PAGE: Maintenance -->
       <div class="page" id="page-maintenance">
         <div class="page-title">🧹 Чистка базы данных</div>
@@ -712,6 +743,45 @@
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="closeModal('saFaqModal')">Отмена</button>
       <button class="btn btn-primary" onclick="saveSaFaq()">💾 Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Site design template -->
+<div class="modal-bg" id="modalSaSiteTemplate">
+  <div class="modal" style="width:420px">
+    <h3 id="saSiteTemplateModalTitle">Добавить шаблон</h3>
+    <input type="hidden" id="sa_stpl_edit_id">
+    <div class="field"><label>Ключ (латиница, напр. template-05) *</label><input class="form-input" id="sa_stpl_key" placeholder="template-05" autocomplete="off"></div>
+    <div class="field"><label>Название (RU) *</label><input class="form-input" id="sa_stpl_name_ru" placeholder="Классика" autocomplete="off"></div>
+    <div class="field"><label>Название (UZ) *</label><input class="form-input" id="sa_stpl_name_uz" placeholder="Klassik" autocomplete="off"></div>
+    <div class="field"><label>Сортировка</label><input class="form-input" type="number" id="sa_stpl_sort" value="0"></div>
+    <div class="field" style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="sa_stpl_active" checked style="width:auto"><label style="margin:0">Активен</label></div>
+    <div class="modal-err" id="saSiteTemplateErr"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modalSaSiteTemplate')">Отмена</button>
+      <button class="btn btn-primary" onclick="saSaveSiteTemplate()">💾 Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Site design palette -->
+<div class="modal-bg" id="modalSaSitePalette">
+  <div class="modal" style="width:460px">
+    <h3 id="saSitePaletteModalTitle">Добавить палитру</h3>
+    <input type="hidden" id="sa_spal_edit_id">
+    <div class="field"><label>Ключ (латиница, напр. ocean-blue) *</label><input class="form-input" id="sa_spal_key" placeholder="ocean-blue" autocomplete="off"></div>
+    <div class="field"><label>Название (RU) *</label><input class="form-input" id="sa_spal_name_ru" placeholder="Океан" autocomplete="off"></div>
+    <div class="field"><label>Название (UZ) *</label><input class="form-input" id="sa_spal_name_uz" placeholder="Okean" autocomplete="off"></div>
+    <div class="field">
+      <label>Цвета</label>
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:6px" id="sa_spal_colors_grid"></div>
+    </div>
+    <div class="field" style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="sa_spal_active" checked style="width:auto"><label style="margin:0">Активна</label></div>
+    <div class="modal-err" id="saSitePaletteErr"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modalSaSitePalette')">Отмена</button>
+      <button class="btn btn-primary" onclick="saSaveSitePalette()">💾 Сохранить</button>
     </div>
   </div>
 </div>
@@ -1336,6 +1406,7 @@ function showPage(name, navEl) {
   if (name === 'sa-site-stats') loadSaStats();
   if (name === 'sa-site-reviews') loadSaReviews();
   if (name === 'sa-site-faq') loadSaFaq();
+  if (name === 'sa-site-design') { saRenderSiteTemplates(); saRenderSitePalettes(); }
 }
 
 // ── AUTH ──────────────────────────────────────────────
@@ -2614,6 +2685,143 @@ async function saDeleteSvc(key) {
 
 // ── CATALOG: UNITS ─────────────────────────────────────
 let _catalogUnits = [];
+
+// ── КАТАЛОГ ШАБЛОНОВ И ПАЛИТР (дизайн сайта) ─────────────────────────────
+const SA_PALETTE_COLOR_KEYS = ['teal-deep','teal','teal-soft','sand','sand-card','amber','amber-deep','ink','ink-soft','line'];
+let _saSiteTemplates = [];
+let _saSitePalettes = [];
+
+async function saRenderSiteTemplates() {
+  try {
+    const d = await api('/saas/site-templates');
+    _saSiteTemplates = d.templates || [];
+  } catch(e) { alert(e.message); return; }
+  const tbody = document.getElementById('saSiteTemplateTable');
+  const empty = document.getElementById('saSiteTemplateEmpty');
+  if (!_saSiteTemplates.length) { tbody.innerHTML = ''; empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+  tbody.innerHTML = _saSiteTemplates.map((t, i) => `<tr>
+    <td>${i + 1}</td>
+    <td><code>${escHtml(t.key)}</code></td>
+    <td><strong>${escHtml(t.name_ru)}</strong></td>
+    <td>${escHtml(t.name_uz)}</td>
+    <td>${t.active ? '✅' : '—'}</td>
+    <td>${t.sort_order}</td>
+    <td style="white-space:nowrap">
+      <button class="btn btn-ghost btn-sm" onclick="saOpenSiteTemplateModal(${t.id})">✏️</button>
+      <button class="btn btn-ghost btn-sm" onclick="saDeleteSiteTemplate(${t.id})" style="color:var(--red)">🗑️</button>
+    </td>
+  </tr>`).join('');
+}
+
+function saOpenSiteTemplateModal(id = null) {
+  document.getElementById('saSiteTemplateModalTitle').textContent = id ? 'Редактировать шаблон' : 'Добавить шаблон';
+  document.getElementById('sa_stpl_edit_id').value = id || '';
+  document.getElementById('saSiteTemplateErr').textContent = '';
+  const t = id ? _saSiteTemplates.find(x => x.id === id) : null;
+  document.getElementById('sa_stpl_key').value = t?.key || '';
+  document.getElementById('sa_stpl_key').disabled = !!id;
+  document.getElementById('sa_stpl_name_ru').value = t?.name_ru || '';
+  document.getElementById('sa_stpl_name_uz').value = t?.name_uz || '';
+  document.getElementById('sa_stpl_sort').value = t?.sort_order ?? 0;
+  document.getElementById('sa_stpl_active').checked = t ? !!t.active : true;
+  openModal('modalSaSiteTemplate');
+}
+
+async function saSaveSiteTemplate() {
+  const id = parseInt(document.getElementById('sa_stpl_edit_id').value) || null;
+  const key = document.getElementById('sa_stpl_key').value.trim();
+  const name_ru = document.getElementById('sa_stpl_name_ru').value.trim();
+  const name_uz = document.getElementById('sa_stpl_name_uz').value.trim();
+  const sort_order = parseInt(document.getElementById('sa_stpl_sort').value) || 0;
+  const active = document.getElementById('sa_stpl_active').checked;
+  if (!key || !name_ru || !name_uz) { document.getElementById('saSiteTemplateErr').textContent = 'Заполните ключ и названия'; return; }
+  try {
+    if (id) await api(`/saas/site-templates/${id}`, 'PATCH', { name_ru, name_uz, sort_order, active });
+    else    await api('/saas/site-templates', 'POST', { key, name_ru, name_uz, sort_order });
+    closeModal('modalSaSiteTemplate');
+    await saRenderSiteTemplates();
+  } catch(e) { document.getElementById('saSiteTemplateErr').textContent = e.message; }
+}
+
+async function saDeleteSiteTemplate(id) {
+  if (!confirm('Удалить шаблон из каталога? Компании, у которых он выбран, продолжат его использовать, но переключить его в admin будет уже нельзя — только выбрать другой из оставшихся.')) return;
+  try { await api(`/saas/site-templates/${id}`, 'DELETE'); await saRenderSiteTemplates(); }
+  catch(e) { alert(e.message); }
+}
+
+async function saRenderSitePalettes() {
+  try {
+    const d = await api('/saas/site-palettes');
+    _saSitePalettes = d.palettes || [];
+  } catch(e) { alert(e.message); return; }
+  const tbody = document.getElementById('saSitePaletteTable');
+  const empty = document.getElementById('saSitePaletteEmpty');
+  if (!_saSitePalettes.length) { tbody.innerHTML = ''; empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+  tbody.innerHTML = _saSitePalettes.map((p, i) => {
+    const c = p.colors || {};
+    const swatch = ['teal','amber','sand','ink'].map(k => `<span style="display:inline-block;width:16px;height:16px;border-radius:50%;background:${c[k]||'#ccc'};border:1px solid rgba(0,0,0,.15)"></span>`).join(' ');
+    return `<tr>
+    <td>${i + 1}</td>
+    <td><code>${escHtml(p.key)}</code></td>
+    <td><strong>${escHtml(p.name_ru)}</strong></td>
+    <td>${swatch}</td>
+    <td>${p.active ? '✅' : '—'}</td>
+    <td>${p.sort_order}</td>
+    <td style="white-space:nowrap">
+      <button class="btn btn-ghost btn-sm" onclick="saOpenSitePaletteModal(${p.id})">✏️</button>
+      <button class="btn btn-ghost btn-sm" onclick="saDeleteSitePalette(${p.id})" style="color:var(--red)">🗑️</button>
+    </td>
+  </tr>`;
+  }).join('');
+}
+
+function _saRenderPaletteColorInputs(colors) {
+  const grid = document.getElementById('sa_spal_colors_grid');
+  grid.innerHTML = SA_PALETTE_COLOR_KEYS.map(k => `
+    <div style="text-align:center">
+      <input type="color" id="sa_spal_c_${k}" value="${(colors && colors[k]) || '#cccccc'}" style="width:100%;height:32px;padding:0;border:1px solid var(--border);border-radius:6px;cursor:pointer">
+      <div style="font-size:10px;color:var(--text2);margin-top:2px">${k}</div>
+    </div>`).join('');
+}
+
+function saOpenSitePaletteModal(id = null) {
+  document.getElementById('saSitePaletteModalTitle').textContent = id ? 'Редактировать палитру' : 'Добавить палитру';
+  document.getElementById('sa_spal_edit_id').value = id || '';
+  document.getElementById('saSitePaletteErr').textContent = '';
+  const p = id ? _saSitePalettes.find(x => x.id === id) : null;
+  document.getElementById('sa_spal_key').value = p?.key || '';
+  document.getElementById('sa_spal_key').disabled = !!id;
+  document.getElementById('sa_spal_name_ru').value = p?.name_ru || '';
+  document.getElementById('sa_spal_name_uz').value = p?.name_uz || '';
+  document.getElementById('sa_spal_active').checked = p ? !!p.active : true;
+  _saRenderPaletteColorInputs(p?.colors);
+  openModal('modalSaSitePalette');
+}
+
+async function saSaveSitePalette() {
+  const id = parseInt(document.getElementById('sa_spal_edit_id').value) || null;
+  const key = document.getElementById('sa_spal_key').value.trim();
+  const name_ru = document.getElementById('sa_spal_name_ru').value.trim();
+  const name_uz = document.getElementById('sa_spal_name_uz').value.trim();
+  const active = document.getElementById('sa_spal_active').checked;
+  const colors = {};
+  SA_PALETTE_COLOR_KEYS.forEach(k => { colors[k] = document.getElementById(`sa_spal_c_${k}`).value; });
+  if (!key || !name_ru || !name_uz) { document.getElementById('saSitePaletteErr').textContent = 'Заполните ключ и названия'; return; }
+  try {
+    if (id) await api(`/saas/site-palettes/${id}`, 'PATCH', { name_ru, name_uz, colors, active });
+    else    await api('/saas/site-palettes', 'POST', { key, name_ru, name_uz, colors });
+    closeModal('modalSaSitePalette');
+    await saRenderSitePalettes();
+  } catch(e) { document.getElementById('saSitePaletteErr').textContent = e.message; }
+}
+
+async function saDeleteSitePalette(id) {
+  if (!confirm('Удалить палитру из каталога? Компании, у которых она выбрана, продолжат её использовать, но переключить её в admin будет уже нельзя — только выбрать другую из оставшихся.')) return;
+  try { await api(`/saas/site-palettes/${id}`, 'DELETE'); await saRenderSitePalettes(); }
+  catch(e) { alert(e.message); }
+}
 
 async function loadCatalogUnits() {
   try {
