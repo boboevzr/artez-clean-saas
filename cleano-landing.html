@@ -1,135 +1,201 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="uz" id="htmlRoot">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cleano — платформа автоматизации химчисток и прачечных</title>
-<meta name="description" content="Cleano — SaaS-платформа для химчисток и прачечных: приём заказов, маршруты водителей, касса, зарплата, SMS/Telegram-уведомления, сайт для ваших клиентов. Демо-доступ на 14 дней.">
-<meta name="theme-color" content="#0f1117">
+<title>Cleano — kimyoviy tozalash va kirxonalar uchun platforma</title>
+<meta name="description" id="metaDesc" content="Cleano — kimyoviy tozalash va kirxonalar uchun SaaS-platforma: buyurtmalar, marshrutlar, kassa, SMS/Telegram, o'z saytingiz. 14 kun bepul.">
+<meta name="theme-color" content="#0B1210">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg:       #0f1117;
-    --surface:  #1a1d27;
-    --surface2: #222536;
-    --border:   #2e3250;
-    --accent:   #f5a623;
-    --accent2:  #e8952a;
-    --text:     #e8eaf0;
-    --text2:    #9ca3af;
-    --teal:     #2CC6B3;
-    --radius:   14px;
+    --ink:        #0B1210;
+    --surface:    #121B19;
+    --surface2:   #1A2624;
+    --line:       #24332F;
+    --teal-deep:  #114A40;
+    --teal:       #2FBFA8;
+    --teal-soft:  #7BE0D0;
+    --amber:      #E3A73B;
+    --amber-deep: #B9822A;
+    --paper:      #F4EFE2;
+    --text:       #EDF3F1;
+    --text2:      #8FA39C;
+    --radius:     18px;
+    --radius-sm:  12px;
+    --shadow:     0 24px 60px -20px rgba(0,0,0,.55);
+    font-family: "Inter", system-ui, sans-serif;
   }
-  @media (prefers-color-scheme: light) {
-    :root {
-      --bg:       #f4f5f8;
-      --surface:  #ffffff;
-      --surface2: #eef0f5;
-      --border:   #dde1ea;
-      --text:     #16181f;
-      --text2:    #5a6270;
-    }
+  :root[data-theme="light"] {
+    --ink:        #F3F1EA;
+    --surface:    #FFFFFF;
+    --surface2:   #ECE7DA;
+    --line:       #DDD6C4;
+    --teal-deep:  #E4F5F1;
+    --teal:       #157A6C;
+    --teal-soft:  #0E5951;
+    --amber:      #B9822A;
+    --amber-deep: #96681E;
+    --paper:      #FFFFFF;
+    --text:       #16211D;
+    --text2:      #5B6B65;
+    --shadow:     0 20px 50px -18px rgba(20,40,35,.18);
   }
 
-  html, body { background: var(--bg); color: var(--text); font-family: "Inter", system-ui, sans-serif; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+  html, body { background: var(--ink); color: var(--text); line-height: 1.5; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
   a { color: inherit; }
-  img, svg { display: block; }
-  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+  img, svg, video { display: block; max-width: 100%; }
+  .wrap { max-width: 1140px; margin: 0 auto; padding: 0 24px; }
+  ::selection { background: var(--teal); color: #04120F; }
+  :focus-visible { outline: 2px solid var(--teal-soft); outline-offset: 3px; border-radius: 4px; }
+
+  h1, h2, h3 { font-family: "Sora", system-ui, sans-serif; letter-spacing: -.01em; }
+  .mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
 
   /* ===== HEADER ===== */
-  header {
-    position: sticky; top: 0; z-index: 100;
-    background: rgba(15,17,23,.85);
-    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
-    border-bottom: 1px solid var(--border);
-  }
-  @media (prefers-color-scheme: light) { header { background: rgba(244,245,248,.9); } }
-  header .wrap { display: flex; align-items: center; justify-content: space-between; padding: 16px 24px; }
-  .logo { display: flex; align-items: center; gap: 10px; font-family: "Sora", system-ui, sans-serif; font-weight: 800; font-size: 20px; letter-spacing: .01em; }
-  .logo svg { width: 32px; height: 32px; }
-  .nav-links { display: flex; gap: 28px; font-size: 14.5px; font-weight: 500; color: var(--text2); }
+  header { position: sticky; top: 0; z-index: 200; background: color-mix(in srgb, var(--ink) 82%, transparent); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid var(--line); }
+  header .wrap { display: flex; align-items: center; gap: 20px; padding: 14px 24px; }
+  .logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 19px; margin-right: auto; }
+  .logo svg { width: 30px; height: 30px; flex-shrink: 0; }
+  .nav-links { display: flex; gap: 26px; font-size: 14px; font-weight: 500; color: var(--text2); }
+  .nav-links a { transition: color .15s; }
   .nav-links a:hover { color: var(--text); }
-  @media (max-width: 720px) { .nav-links { display: none; } }
-  .btn {
-    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-    font-family: "Sora", system-ui, sans-serif; font-weight: 700; font-size: 14.5px;
-    border-radius: 999px; padding: 11px 22px; border: 1px solid transparent; cursor: pointer;
-    text-decoration: none; transition: transform .15s ease, box-shadow .2s ease;
+  @media (max-width: 860px) { .nav-links { display: none; } }
+
+  .icon-btn { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface2); color: var(--text2); cursor: pointer; font-size: 16px; transition: color .15s, border-color .15s; }
+  .icon-btn:hover { color: var(--text); border-color: var(--teal); }
+
+  .lang-switch { display: flex; align-items: center; background: var(--surface2); border: 1px solid var(--line); border-radius: 999px; padding: 3px; gap: 2px; }
+  .lang-switch button { font-family: "Sora", sans-serif; font-weight: 700; font-size: 12px; letter-spacing: .02em; border: none; background: transparent; color: var(--text2); padding: 6px 12px; border-radius: 999px; cursor: pointer; transition: background .15s, color .15s; }
+  .lang-switch button.active { background: linear-gradient(135deg, var(--amber) 0%, var(--amber-deep) 100%); color: #1A0E00; }
+
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: "Sora", sans-serif; font-weight: 700; font-size: 14.5px; border-radius: 999px; padding: 12px 24px; border: 1px solid transparent; cursor: pointer; text-decoration: none; transition: transform .18s cubic-bezier(.34,1.56,.64,1), box-shadow .2s ease, border-color .15s; white-space: nowrap; }
+  .btn-accent { background: linear-gradient(135deg, var(--amber) 0%, var(--amber-deep) 100%); color: #1A0E00; box-shadow: 0 6px 24px -6px rgba(227,167,59,.5); }
+  .btn-accent:hover { transform: translateY(-2px); box-shadow: 0 10px 30px -6px rgba(227,167,59,.65); }
+  .btn-ghost { background: transparent; color: var(--text); border-color: var(--line); }
+  .btn-ghost:hover { border-color: var(--teal); color: var(--teal-soft); }
+  :root[data-theme="light"] .btn-ghost:hover { color: var(--teal); }
+
+  /* ===== AMBIENT STEAM ===== */
+  .steam-layer { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+  .steam { position: absolute; bottom: -10%; border-radius: 50%; filter: blur(50px); opacity: .35; background: radial-gradient(circle, var(--teal) 0%, transparent 70%); animation: steamRise 16s ease-in-in infinite; }
+  :root[data-theme="light"] .steam { opacity: .18; }
+  .steam-a { width: 320px; height: 480px; left: 6%; animation-duration: 18s; }
+  .steam-b { width: 260px; height: 400px; left: 38%; animation-duration: 22s; animation-delay: -6s; opacity: .22; }
+  .steam-c { width: 300px; height: 460px; left: 74%; animation-duration: 20s; animation-delay: -11s; }
+  @keyframes steamRise {
+    0%   { transform: translateY(0) translateX(0) scale(1); }
+    50%  { transform: translateY(-60%) translateX(30px) scale(1.15); }
+    100% { transform: translateY(-120%) translateX(-20px) scale(.9); }
   }
-  .btn-accent { background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%); color: #1A0E00; box-shadow: 0 4px 20px rgba(245,166,35,.35); }
-  .btn-accent:hover { transform: translateY(-1px); box-shadow: 0 6px 26px rgba(245,166,35,.5); }
-  .btn-ghost { background: var(--surface2); color: var(--text); border-color: var(--border); }
-  .btn-ghost:hover { border-color: var(--teal); }
+  @media (prefers-reduced-motion: reduce) { .steam { animation: none; } }
 
   /* ===== HERO ===== */
-  .hero { padding: 88px 0 64px; position: relative; overflow: hidden; }
-  .hero-glow {
-    position: absolute; top: -180px; right: -120px; width: 520px; height: 520px; border-radius: 50%;
-    background: radial-gradient(circle, rgba(44,198,179,.16) 0%, transparent 70%); pointer-events: none;
+  .hero { position: relative; padding: 76px 0 96px; overflow: hidden; }
+  .hero-inner { position: relative; z-index: 2; display: grid; grid-template-columns: 1.05fr .95fr; gap: 40px; align-items: center; }
+  @media (max-width: 900px) { .hero-inner { grid-template-columns: 1fr; } }
+  .eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--teal-soft); margin-bottom: 20px; }
+  :root[data-theme="light"] .eyebrow { color: var(--teal); }
+  .eyebrow::before { content: ''; width: 20px; height: 2px; background: currentColor; border-radius: 2px; }
+  h1.headline { font-size: clamp(30px, 4.6vw, 48px); font-weight: 800; line-height: 1.1; margin-bottom: 20px; opacity: 0; transform: translateY(16px); animation: riseIn .7s .1s cubic-bezier(.16,1,.3,1) forwards; }
+  h1.headline em { font-style: normal; background: linear-gradient(120deg, var(--teal-soft) 10%, var(--teal) 90%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+  :root[data-theme="light"] h1.headline em { background: linear-gradient(120deg, var(--teal) 10%, var(--teal-soft) 90%); -webkit-background-clip: text; background-clip: text; }
+  .lead { font-size: 16.5px; color: var(--text2); max-width: 520px; margin-bottom: 30px; opacity: 0; transform: translateY(14px); animation: riseIn .7s .25s cubic-bezier(.16,1,.3,1) forwards; }
+  .hero-ctas { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 18px; opacity: 0; transform: translateY(14px); animation: riseIn .7s .4s cubic-bezier(.16,1,.3,1) forwards; }
+  .trial-note { font-size: 13px; color: var(--text2); opacity: 0; animation: fadeIn .6s .6s forwards; }
+  .trial-note b { color: var(--text); font-family: "JetBrains Mono", monospace; }
+  @keyframes riseIn { to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeIn { to { opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) {
+    h1.headline, .lead, .hero-ctas, .trial-note { animation: none !important; opacity: 1 !important; transform: none !important; }
   }
-  .eyebrow {
-    display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700;
-    letter-spacing: .14em; text-transform: uppercase; color: var(--teal); margin-bottom: 18px;
+
+  /* ===== HANGING TAG VIDEO ===== */
+  .tag-stage { position: relative; min-height: 300px; display: flex; align-items: flex-start; justify-content: center; }
+  @media (max-width: 900px) { .tag-stage { min-height: 0; margin-top: 8px; } }
+  .hang-tag {
+    position: relative; width: min(320px, 88vw); background: var(--paper); border-radius: 16px;
+    padding: 20px 16px 16px; box-shadow: var(--shadow);
+    transform: translateY(-140px) rotate(-10deg); opacity: 0;
+    animation: tagDrop 1s .5s cubic-bezier(.22,1.4,.4,1) forwards, tagSway 6s 1.6s ease-in-out infinite;
   }
-  .eyebrow::before { content: ''; width: 18px; height: 2px; background: var(--teal); border-radius: 2px; }
-  h1 { font-family: "Sora", system-ui, sans-serif; font-size: clamp(32px, 5vw, 54px); font-weight: 800; letter-spacing: -.02em; max-width: 760px; margin-bottom: 20px; }
-  h1 span { background: linear-gradient(135deg, var(--teal) 0%, #6fe0d0 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
-  .hero p.lead { font-size: 17px; color: var(--text2); max-width: 560px; margin-bottom: 34px; }
-  .hero-ctas { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 20px; }
-  .trial-note { font-size: 13px; color: var(--text2); }
-  .trial-note b { color: var(--text); }
+  @media (prefers-reduced-motion: reduce) { .hang-tag { animation: tagDrop 1s .3s ease forwards; } }
+  @keyframes tagDrop { to { transform: translateY(0) rotate(-3deg); opacity: 1; } }
+  @keyframes tagSway { 0%,100% { transform: rotate(-3deg); } 50% { transform: rotate(2deg); } }
+  .hang-tag::before {
+    content: ''; position: absolute; top: -9px; left: 50%; transform: translateX(-50%);
+    width: 22px; height: 22px; border-radius: 50%; background: var(--ink); border: 3px solid var(--paper);
+  }
+  .hang-tag::after {
+    content: ''; position: absolute; top: -46px; left: 50%; width: 2px; height: 40px;
+    background: linear-gradient(var(--text2), transparent); opacity: .5;
+  }
+  .tag-string-pin { position: absolute; top: -52px; left: 50%; transform: translateX(-50%); width: 8px; height: 8px; border-radius: 50%; background: var(--amber); box-shadow: 0 0 0 3px color-mix(in srgb, var(--amber) 30%, transparent); }
+  .tag-video-frame { position: relative; aspect-ratio: 16/9; border-radius: 10px; overflow: hidden; background: var(--surface); border: 1px solid var(--line); }
+  .tag-video-frame video, .tag-video-frame .fallback { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .tag-video-frame .fallback { display: none; flex-direction: column; align-items: center; justify-content: center; gap: 8px; background: linear-gradient(135deg, var(--teal-deep) 0%, var(--surface2) 100%); color: var(--text2); font-size: 12.5px; text-align: center; padding: 12px; }
+  .tag-video-frame .fallback .play-ico { width: 40px; height: 40px; border-radius: 50%; background: color-mix(in srgb, var(--teal) 25%, transparent); display: flex; align-items: center; justify-content: center; color: var(--teal-soft); font-size: 16px; }
+  .tag-close { position: absolute; top: -10px; right: -10px; width: 26px; height: 26px; border-radius: 50%; background: var(--surface2); border: 1px solid var(--line); color: var(--text2); font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: color .15s, transform .15s; z-index: 3; }
+  .tag-close:hover { color: var(--text); transform: scale(1.08); }
+  .tag-cap { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; padding: 0 2px; }
+  .tag-cap span:first-child { font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: #4A5650; }
+  .tag-cap .tag-no { font-size: 10.5px; color: #8A9490; }
+  .hang-tag.hidden { display: none; }
+  @media (max-width: 900px) { .hang-tag { width: min(280px, 84vw); } }
 
-  /* ===== LOGOS / TRUST STRIP ===== */
-  .trust-strip { border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 22px 0; }
-  .trust-strip .wrap { display: flex; gap: 40px; flex-wrap: wrap; justify-content: center; font-size: 13px; color: var(--text2); }
-  .trust-strip strong { color: var(--text); }
+  /* ===== TRUST STRIP ===== */
+  .trust-strip { position: relative; z-index: 1; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 20px 0; }
+  .trust-strip .wrap { display: flex; gap: 36px; flex-wrap: wrap; justify-content: center; font-size: 13px; color: var(--text2); }
+  .trust-strip b { color: var(--text); font-family: "JetBrains Mono", monospace; font-weight: 700; }
 
-  /* ===== FEATURES ===== */
-  .section { padding: 76px 0; }
-  .section-head { text-align: center; max-width: 620px; margin: 0 auto 44px; }
-  .section-head h2 { font-family: "Sora", system-ui, sans-serif; font-size: clamp(26px, 3.2vw, 36px); font-weight: 800; margin-bottom: 12px; }
+  /* ===== SECTIONS ===== */
+  .section { padding: 88px 0; }
+  .section-alt { background: var(--surface); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .section-head { text-align: center; max-width: 600px; margin: 0 auto 48px; }
+  .section-head h2 { font-size: clamp(26px, 3.2vw, 36px); font-weight: 800; margin-bottom: 12px; }
   .section-head p { color: var(--text2); font-size: 15px; }
+
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity .6s cubic-bezier(.16,1,.3,1), transform .6s cubic-bezier(.16,1,.3,1); }
+  .reveal.in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } }
 
   .feat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
   @media (max-width: 900px) { .feat-grid { grid-template-columns: repeat(2, 1fr); } }
   @media (max-width: 600px) { .feat-grid { grid-template-columns: 1fr; } }
-  .feat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 26px 22px; }
-  .feat-icon { width: 46px; height: 46px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 16px; background: rgba(44,198,179,.12); }
+  .feat-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 26px 22px; transition: transform .25s cubic-bezier(.16,1,.3,1), border-color .25s, box-shadow .25s; }
+  .section-alt .feat-card { background: var(--ink); }
+  .feat-card:hover { transform: translateY(-5px); border-color: var(--teal); box-shadow: 0 16px 40px -18px color-mix(in srgb, var(--teal) 60%, transparent); }
+  .feat-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 21px; margin-bottom: 16px; background: color-mix(in srgb, var(--teal) 16%, transparent); }
   .feat-card h3 { font-size: 15.5px; font-weight: 700; margin-bottom: 8px; }
   .feat-card p { font-size: 13.5px; color: var(--text2); line-height: 1.6; }
 
-  /* ===== HOW IT WORKS ===== */
-  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
-  @media (max-width: 760px) { .steps { grid-template-columns: 1fr; } }
-  .step { text-align: center; padding: 0 12px; }
-  .step-num {
-    width: 44px; height: 44px; border-radius: 50%; margin: 0 auto 16px;
-    display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 17px;
-    background: var(--surface2); border: 1px solid var(--border); color: var(--teal);
-  }
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; position: relative; }
+  @media (max-width: 760px) { .steps { grid-template-columns: 1fr; gap: 36px; } }
+  .step { text-align: center; padding: 0 8px; }
+  .step-no { font-family: "JetBrains Mono", monospace; font-weight: 700; font-size: 13px; color: var(--teal); margin-bottom: 12px; letter-spacing: .04em; }
   .step h3 { font-size: 15.5px; font-weight: 700; margin-bottom: 8px; }
   .step p { font-size: 13.5px; color: var(--text2); line-height: 1.6; }
 
-  /* ===== PRICING TEASER ===== */
-  .pricing-card {
-    background: linear-gradient(135deg, rgba(44,198,179,.10) 0%, rgba(245,166,35,.06) 100%);
-    border: 1px solid var(--border); border-radius: 20px; padding: 40px; text-align: center; max-width: 640px; margin: 0 auto;
-  }
-  .pricing-card .badge {
-    display: inline-block; background: var(--accent); color: #1A0E00; font-weight: 800; font-size: 12.5px;
-    padding: 6px 16px; border-radius: 999px; margin-bottom: 18px;
-  }
-  .pricing-card h3 { font-family: "Sora", system-ui, sans-serif; font-size: 26px; font-weight: 800; margin-bottom: 10px; }
-  .pricing-card p { color: var(--text2); font-size: 14.5px; margin-bottom: 26px; }
+  /* ===== TICKET PRICING CARD ===== */
+  .ticket { position: relative; max-width: 620px; margin: 0 auto; background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 44px 40px; text-align: center; }
+  .ticket::before, .ticket::after { content: ''; position: absolute; top: 50%; width: 28px; height: 28px; border-radius: 50%; background: var(--ink); transform: translateY(-50%); }
+  .ticket::before { left: -14px; }
+  .ticket::after { right: -14px; }
+  .ticket .perf { position: absolute; top: 50%; left: 20px; right: 20px; border-top: 2px dashed var(--line); }
+  .ticket .badge { display: inline-block; background: linear-gradient(135deg, var(--amber) 0%, var(--amber-deep) 100%); color: #1A0E00; font-family: "JetBrains Mono", monospace; font-weight: 700; font-size: 12.5px; padding: 7px 16px; border-radius: 999px; margin-bottom: 20px; }
+  .ticket h3 { font-size: 25px; font-weight: 800; margin-bottom: 12px; }
+  .ticket p { color: var(--text2); font-size: 14.5px; margin-bottom: 28px; line-height: 1.6; }
 
-  /* ===== CTA / CONTACT ===== */
-  .cta-section { text-align: center; }
-  .cta-box { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; padding: 56px 32px; }
-  .cta-box h2 { font-family: "Sora", system-ui, sans-serif; font-size: clamp(24px, 3.4vw, 32px); font-weight: 800; margin-bottom: 14px; }
+  .cta-box { text-align: center; background: var(--surface); border: 1px solid var(--line); border-radius: 24px; padding: 60px 32px; }
+  .cta-box h2 { font-size: clamp(24px, 3.4vw, 32px); font-weight: 800; margin-bottom: 14px; }
   .cta-box p { color: var(--text2); font-size: 15px; max-width: 480px; margin: 0 auto 28px; }
 
-  footer { border-top: 1px solid var(--border); padding: 32px 0; text-align: center; color: var(--text2); font-size: 13px; }
+  footer { border-top: 1px solid var(--line); padding: 32px 0; text-align: center; color: var(--text2); font-size: 13px; }
+  footer .wrap { display: flex; flex-direction: column; gap: 4px; }
 </style>
 </head>
 <body>
@@ -150,128 +216,242 @@
       Cleano
     </div>
     <nav class="nav-links">
-      <a href="#features">Возможности</a>
-      <a href="#how">Как это работает</a>
-      <a href="#pricing">Тарифы</a>
+      <a href="#features" data-i18n="nav.features">Imkoniyatlar</a>
+      <a href="#how" data-i18n="nav.how">Qanday ishlaydi</a>
+      <a href="#pricing" data-i18n="nav.pricing">Tariflar</a>
     </nav>
-    <a class="btn btn-accent" href="#cta">Попробовать бесплатно</a>
+    <button class="icon-btn" id="themeToggle" aria-label="Mavzuni almashtirish">🌙</button>
+    <div class="lang-switch" id="langSwitch">
+      <button type="button" data-lang-btn="ru">RU</button>
+      <button type="button" data-lang-btn="uz">UZ</button>
+    </div>
+    <a class="btn btn-accent" href="#cta" data-i18n="nav.tryFree" style="display:none" id="navCta">Bepul sinab ko'ring</a>
   </div>
 </header>
 
 <section class="hero">
-  <div class="hero-glow"></div>
-  <div class="wrap">
-    <div class="eyebrow">SaaS-платформа для химчисток и прачечных</div>
-    <h1>Управляйте химчисткой или прачечной <span>из одного окна</span></h1>
-    <p class="lead">Приём заказов, маршруты водителей, касса и зарплата, SMS и Telegram-уведомления клиентам, свой сайт для приёма заявок — всё в одной системе, без разработчиков и серверов.</p>
-    <div class="hero-ctas">
-      <a class="btn btn-accent" href="#cta">Начать бесплатный период</a>
-      <a class="btn btn-ghost" href="#how">Как это работает</a>
+  <div class="steam-layer">
+    <div class="steam steam-a"></div>
+    <div class="steam steam-b"></div>
+    <div class="steam steam-c"></div>
+  </div>
+  <div class="wrap hero-inner">
+    <div>
+      <div class="eyebrow" data-i18n="hero.eyebrow">Kimyoviy tozalash va kirxonalar uchun SaaS-platforma</div>
+      <h1 class="headline"><span data-i18n="hero.h1a">Kimyoviy tozalash yoki kirxonangizni</span> <em data-i18n="hero.h1b">bitta oynadan boshqaring</em></h1>
+      <p class="lead" data-i18n="hero.lead">Buyurtmalarni qabul qilish, haydovchilar marshruti, kassa va maosh, mijozlarga SMS va Telegram xabarnomalari, ariza qabul qilish uchun o'z saytingiz — hammasi bitta tizimda, dasturchi va serversiz.</p>
+      <div class="hero-ctas">
+        <a class="btn btn-accent" href="#cta" data-i18n="hero.ctaStart">Bepul davrni boshlash</a>
+        <a class="btn btn-ghost" href="#how" data-i18n="hero.ctaHow">Qanday ishlaydi</a>
+      </div>
+      <div class="trial-note"><span data-i18n="hero.trial"><b>14 kun</b> bepul · karta kerak emas · ro'yxatdan o'tgach darhol o'z admin-panel va sayt</span></div>
     </div>
-    <div class="trial-note">Бесплатно <b>14 дней</b> · без привязки карты · своя админ-панель и сайт сразу после регистрации</div>
+    <div class="tag-stage">
+      <div class="hang-tag" id="hangTag">
+        <button class="tag-close" id="tagClose" aria-label="Yopish">✕</button>
+        <div class="tag-string-pin"></div>
+        <div class="tag-video-frame">
+          <video id="demoVideo" autoplay muted loop playsinline poster="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='180'%3E%3Crect width='320' height='180' fill='%23122622'/%3E%3C/svg%3E">
+            <source src="demo-video.mp4" type="video/mp4">
+          </video>
+          <div class="fallback" id="videoFallback">
+            <div class="play-ico">▶</div>
+            <span data-i18n="video.soon">Video tez orada</span>
+          </div>
+        </div>
+        <div class="tag-cap">
+          <span data-i18n="video.caption">Cleano qanday ko'rinadi</span>
+          <span class="tag-no mono">№ 0001</span>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
 <div class="trust-strip">
   <div class="wrap">
-    <span><strong>Мультиязычность</strong> — RU/UZ из коробки</span>
-    <span><strong>Свой сайт</strong> для клиентов на выбор из готовых шаблонов</span>
-    <span><strong>Telegram-бот</strong> для заказов и уведомлений</span>
+    <span data-i18n="trust.i18n"><b>RU/UZ</b> — ko'p tillilik tayyor holda</span>
+    <span data-i18n="trust.site">Tayyor shablonlardan mijozlar uchun o'z saytingiz</span>
+    <span data-i18n="trust.bot">Buyurtma va xabarnomalar uchun <b>Telegram-bot</b></span>
   </div>
 </div>
 
 <section class="section" id="features">
   <div class="wrap">
-    <div class="section-head">
-      <h2>Всё, что нужно для работы</h2>
-      <p>Один продукт вместо десятка разрозненных таблиц, чатов и звонков.</p>
+    <div class="section-head reveal">
+      <h2 data-i18n="features.title">Ishlash uchun kerak bo'lgan hammasi</h2>
+      <p data-i18n="features.sub">O'nlab tarqoq jadval, chat va qo'ng'iroqlar o'rniga bitta mahsulot.</p>
     </div>
     <div class="feat-grid">
-      <div class="feat-card">
-        <div class="feat-icon">📋</div>
-        <h3>Приём и учёт заказов</h3>
-        <p>Калькулятор стоимости, статусы от приёма до доставки, фото/видео вещей, история по каждому заказу.</p>
-      </div>
-      <div class="feat-card">
-        <div class="feat-icon">🚚</div>
-        <h3>Маршруты и водители</h3>
-        <p>Формирование маршрутов доставки, статусы остановок, работа водителя прямо с телефона.</p>
-      </div>
-      <div class="feat-card">
-        <div class="feat-icon">💰</div>
-        <h3>Касса и зарплата</h3>
-        <p>Приём оплат, инкассация, расчёт зарплат по сотрудникам — оклад, процент или смешанная схема.</p>
-      </div>
-      <div class="feat-card">
-        <div class="feat-icon">💬</div>
-        <h3>SMS и Telegram</h3>
-        <p>Автоматические уведомления клиентам о статусе заказа, рассылки и напоминания, чат прямо на сайте.</p>
-      </div>
-      <div class="feat-card">
-        <div class="feat-icon">🌐</div>
-        <h3>Свой сайт</h3>
-        <p>Публичный сайт для приёма заявок — выбор шаблона дизайна и цветовой палитры под ваш бренд.</p>
-      </div>
-      <div class="feat-card">
-        <div class="feat-icon">👥</div>
-        <h3>Роли и доступы</h3>
-        <p>Администратор, менеджер, водитель, мойщик, упаковщик — у каждого свой интерфейс и права.</p>
-      </div>
+      <div class="feat-card reveal"><div class="feat-icon">📋</div><h3 data-i18n="feat1.title">Buyurtmalarni qabul qilish va hisobga olish</h3><p data-i18n="feat1.desc">Narx kalkulyatori, qabuldan yetkazib berishgacha bo'lgan holatlar, buyumlar foto/video, har bir buyurtma tarixi.</p></div>
+      <div class="feat-card reveal"><div class="feat-icon">🚚</div><h3 data-i18n="feat2.title">Marshrutlar va haydovchilar</h3><p data-i18n="feat2.desc">Yetkazib berish marshrutlarini tuzish, to'xtash holatlari, haydovchi ishi to'g'ridan-to'g'ri telefondan.</p></div>
+      <div class="feat-card reveal"><div class="feat-icon">💰</div><h3 data-i18n="feat3.title">Kassa va maosh</h3><p data-i18n="feat3.desc">To'lovlarni qabul qilish, inkassatsiya, xodimlar maoshini hisoblash — oklad, foiz yoki aralash sxema.</p></div>
+      <div class="feat-card reveal"><div class="feat-icon">💬</div><h3 data-i18n="feat4.title">SMS va Telegram</h3><p data-i18n="feat4.desc">Mijozlarga buyurtma holati haqida avtomatik xabarnomalar, xabar tarqatish va eslatmalar, saytda chat.</p></div>
+      <div class="feat-card reveal"><div class="feat-icon">🌐</div><h3 data-i18n="feat5.title">O'z saytingiz</h3><p data-i18n="feat5.desc">Ariza qabul qilish uchun ochiq sayt — brendingizga mos dizayn shabloni va rang palitrasini tanlang.</p></div>
+      <div class="feat-card reveal"><div class="feat-icon">👥</div><h3 data-i18n="feat6.title">Rollar va ruxsatlar</h3><p data-i18n="feat6.desc">Administrator, menejer, haydovchi, yuvuvchi, qadoqlovchi — har birining o'z interfeysi va huquqlari bor.</p></div>
     </div>
   </div>
 </section>
 
-<section class="section" id="how" style="background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+<section class="section section-alt" id="how">
   <div class="wrap">
-    <div class="section-head">
-      <h2>Как начать</h2>
-      <p>От регистрации до первого заказа — без ожидания и настройки сервера.</p>
+    <div class="section-head reveal">
+      <h2 data-i18n="how.title">Qanday boshlash kerak</h2>
+      <p data-i18n="how.sub">Ro'yxatdan o'tishdan birinchi buyurtmagacha — kutish va server sozlashsiz.</p>
     </div>
     <div class="steps">
-      <div class="step">
-        <div class="step-num">1</div>
-        <h3>Регистрируетесь</h3>
-        <p>Название компании, контакты — и через минуту у вас готовая админ-панель и сайт.</p>
-      </div>
-      <div class="step">
-        <div class="step-num">2</div>
-        <h3>Настраиваете под себя</h3>
-        <p>Услуги и цены, филиалы, сотрудники, дизайн сайта — всё редактируется самостоятельно.</p>
-      </div>
-      <div class="step">
-        <div class="step-num">3</div>
-        <h3>Принимаете заказы</h3>
-        <p>Клиенты оформляют заявки на сайте или по телефону — вы ведёте их от приёма до доставки.</p>
-      </div>
+      <div class="step reveal"><div class="step-no mono">№ 01</div><h3 data-i18n="step1.title">Ro'yxatdan o'tasiz</h3><p data-i18n="step1.desc">Kompaniya nomi, kontaktlar — va bir daqiqada tayyor admin-panel va sayt sizniki.</p></div>
+      <div class="step reveal"><div class="step-no mono">№ 02</div><h3 data-i18n="step2.title">O'zingizga moslaysiz</h3><p data-i18n="step2.desc">Xizmatlar va narxlar, filiallar, xodimlar, sayt dizayni — hammasini o'zingiz tahrirlaysiz.</p></div>
+      <div class="step reveal"><div class="step-no mono">№ 03</div><h3 data-i18n="step3.title">Buyurtmalarni qabul qilasiz</h3><p data-i18n="step3.desc">Mijozlar saytda yoki telefon orqali ariza beradi — siz ularni qabuldan yetkazib berishgacha kuzatasiz.</p></div>
     </div>
   </div>
 </section>
 
 <section class="section" id="pricing">
   <div class="wrap">
-    <div class="pricing-card">
-      <span class="badge">14 ДНЕЙ БЕСПЛАТНО</span>
-      <h3>Начните без риска</h3>
-      <p>Полный доступ ко всем функциям на 14 дней. После пробного периода — гибкие тарифы под размер вашего бизнеса, без скрытых платежей.</p>
-      <a class="btn btn-accent" href="#cta">Попробовать сейчас</a>
+    <div class="ticket reveal">
+      <div class="perf"></div>
+      <span class="badge mono" data-i18n="pricing.badge">14 KUN BEPUL</span>
+      <h3 data-i18n="pricing.title">Xavfsiz boshlang</h3>
+      <p data-i18n="pricing.desc">14 kun davomida barcha funksiyalarga to'liq kirish. Sinov davridan so'ng — biznesingiz hajmiga mos moslashuvchan tariflar, yashirin to'lovlarsiz.</p>
+      <a class="btn btn-accent" href="#cta" data-i18n="pricing.cta">Hozir sinab ko'ring</a>
     </div>
   </div>
 </section>
 
-<section class="section cta-section" id="cta">
+<section class="section" id="cta">
   <div class="wrap">
-    <div class="cta-box">
-      <h2>Готовы попробовать Cleano?</h2>
-      <p>Онлайн-регистрация с автоматическим созданием демо-версии совсем скоро появится прямо на этой странице. Пока — оставьте заявку, и мы подключим вашу компанию вручную в течение дня.</p>
-      <a class="btn btn-accent" href="https://t.me/cleano_uz" target="_blank" rel="noopener">Написать в Telegram</a>
+    <div class="cta-box reveal">
+      <h2 data-i18n="cta.title">Cleano'ni sinab ko'rishga tayyormisiz?</h2>
+      <p data-i18n="cta.desc">Demo-versiyani avtomatik yaratadigan onlayn ro'yxatdan o'tish tez orada shu sahifada paydo bo'ladi. Hozircha — ariza qoldiring, biz kompaniyangizni bir kun ichida qo'lda ulaymiz.</p>
+      <a class="btn btn-accent" href="https://t.me/cleano_uz" target="_blank" rel="noopener" data-i18n="cta.telegram">Telegram orqali yozish</a>
     </div>
   </div>
 </section>
 
 <footer>
-  <div class="wrap">© <span id="year"></span> Cleano — платформа автоматизации химчисток и прачечных</div>
+  <div class="wrap">
+    <div>© <span id="year"></span> Cleano</div>
+    <div data-i18n="footer.tagline">kimyoviy tozalash va kirxonalarni avtomatlashtirish platformasi</div>
+  </div>
 </footer>
 
-<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+<script>
+(function(){
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // ── I18N ──
+  var I18N = {
+    ru: {
+      'nav.features':'Возможности','nav.how':'Как это работает','nav.pricing':'Тарифы','nav.tryFree':'Попробовать бесплатно',
+      'hero.eyebrow':'SaaS-платформа для химчисток и прачечных',
+      'hero.h1a':'Управляйте химчисткой или прачечной','hero.h1b':'из одного окна',
+      'hero.lead':'Приём заказов, маршруты водителей, касса и зарплата, SMS и Telegram-уведомления клиентам, свой сайт для приёма заявок — всё в одной системе, без разработчиков и серверов.',
+      'hero.ctaStart':'Начать бесплатный период','hero.ctaHow':'Как это работает',
+      'hero.trial':'<b>14 дней</b> бесплатно · без привязки карты · своя админ-панель и сайт сразу после регистрации',
+      'trust.i18n':'<b>RU/UZ</b> — мультиязычность из коробки','trust.site':'Свой сайт для клиентов на выбор из готовых шаблонов','trust.bot':'<b>Telegram-бот</b> для заказов и уведомлений',
+      'features.title':'Всё, что нужно для работы','features.sub':'Один продукт вместо десятка разрозненных таблиц, чатов и звонков.',
+      'feat1.title':'Приём и учёт заказов','feat1.desc':'Калькулятор стоимости, статусы от приёма до доставки, фото/видео вещей, история по каждому заказу.',
+      'feat2.title':'Маршруты и водители','feat2.desc':'Формирование маршрутов доставки, статусы остановок, работа водителя прямо с телефона.',
+      'feat3.title':'Касса и зарплата','feat3.desc':'Приём оплат, инкассация, расчёт зарплат по сотрудникам — оклад, процент или смешанная схема.',
+      'feat4.title':'SMS и Telegram','feat4.desc':'Автоматические уведомления клиентам о статусе заказа, рассылки и напоминания, чат прямо на сайте.',
+      'feat5.title':'Свой сайт','feat5.desc':'Публичный сайт для приёма заявок — выбор шаблона дизайна и цветовой палитры под ваш бренд.',
+      'feat6.title':'Роли и доступы','feat6.desc':'Администратор, менеджер, водитель, мойщик, упаковщик — у каждого свой интерфейс и права.',
+      'how.title':'Как начать','how.sub':'От регистрации до первого заказа — без ожидания и настройки сервера.',
+      'step1.title':'Регистрируетесь','step1.desc':'Название компании, контакты — и через минуту у вас готовая админ-панель и сайт.',
+      'step2.title':'Настраиваете под себя','step2.desc':'Услуги и цены, филиалы, сотрудники, дизайн сайта — всё редактируется самостоятельно.',
+      'step3.title':'Принимаете заказы','step3.desc':'Клиенты оформляют заявки на сайте или по телефону — вы ведёте их от приёма до доставки.',
+      'pricing.badge':'14 ДНЕЙ БЕСПЛАТНО','pricing.title':'Начните без риска',
+      'pricing.desc':'Полный доступ ко всем функциям на 14 дней. После пробного периода — гибкие тарифы под размер вашего бизнеса, без скрытых платежей.',
+      'pricing.cta':'Попробовать сейчас',
+      'cta.title':'Готовы попробовать Cleano?',
+      'cta.desc':'Онлайн-регистрация с автоматическим созданием демо-версии совсем скоро появится прямо на этой странице. Пока — оставьте заявку, и мы подключим вашу компанию вручную в течение дня.',
+      'cta.telegram':'Написать в Telegram',
+      'footer.tagline':'платформа автоматизации химчисток и прачечных',
+      'video.caption':'Как выглядит Cleano','video.soon':'Видео скоро',
+    },
+    uz: {
+      'nav.features':'Imkoniyatlar','nav.how':'Qanday ishlaydi','nav.pricing':'Tariflar','nav.tryFree':"Bepul sinab ko'ring",
+      'hero.eyebrow':'Kimyoviy tozalash va kirxonalar uchun SaaS-platforma',
+      'hero.h1a':'Kimyoviy tozalash yoki kirxonangizni','hero.h1b':'bitta oynadan boshqaring',
+      'hero.lead':"Buyurtmalarni qabul qilish, haydovchilar marshruti, kassa va maosh, mijozlarga SMS va Telegram xabarnomalari, ariza qabul qilish uchun o'z saytingiz — hammasi bitta tizimda, dasturchi va serversiz.",
+      'hero.ctaStart':'Bepul davrni boshlash','hero.ctaHow':'Qanday ishlaydi',
+      'hero.trial':"<b>14 kun</b> bepul · karta kerak emas · ro'yxatdan o'tgach darhol o'z admin-panel va sayt",
+      'trust.i18n':"<b>RU/UZ</b> — ko'p tillilik tayyor holda",'trust.site':"Tayyor shablonlardan mijozlar uchun o'z saytingiz",'trust.bot':"Buyurtma va xabarnomalar uchun <b>Telegram-bot</b>",
+      'features.title':"Ishlash uchun kerak bo'lgan hammasi",'features.sub':"O'nlab tarqoq jadval, chat va qo'ng'iroqlar o'rniga bitta mahsulot.",
+      'feat1.title':'Buyurtmalarni qabul qilish va hisobga olish','feat1.desc':"Narx kalkulyatori, qabuldan yetkazib berishgacha bo'lgan holatlar, buyumlar foto/video, har bir buyurtma tarixi.",
+      'feat2.title':'Marshrutlar va haydovchilar','feat2.desc':"Yetkazib berish marshrutlarini tuzish, to'xtash holatlari, haydovchi ishi to'g'ridan-to'g'ri telefondan.",
+      'feat3.title':'Kassa va maosh','feat3.desc':"To'lovlarni qabul qilish, inkassatsiya, xodimlar maoshini hisoblash — oklad, foiz yoki aralash sxema.",
+      'feat4.title':'SMS va Telegram','feat4.desc':'Mijozlarga buyurtma holati haqida avtomatik xabarnomalar, xabar tarqatish va eslatmalar, saytda chat.',
+      'feat5.title':"O'z saytingiz",'feat5.desc':"Ariza qabul qilish uchun ochiq sayt — brendingizga mos dizayn shabloni va rang palitrasini tanlang.",
+      'feat6.title':'Rollar va ruxsatlar','feat6.desc':"Administrator, menejer, haydovchi, yuvuvchi, qadoqlovchi — har birining o'z interfeysi va huquqlari bor.",
+      'how.title':'Qanday boshlash kerak','how.sub':"Ro'yxatdan o'tishdan birinchi buyurtmagacha — kutish va server sozlashsiz.",
+      'step1.title':"Ro'yxatdan o'tasiz",'step1.desc':"Kompaniya nomi, kontaktlar — va bir daqiqada tayyor admin-panel va sayt sizniki.",
+      'step2.title':"O'zingizga moslaysiz",'step2.desc':"Xizmatlar va narxlar, filiallar, xodimlar, sayt dizayni — hammasini o'zingiz tahrirlaysiz.",
+      'step3.title':'Buyurtmalarni qabul qilasiz','step3.desc':"Mijozlar saytda yoki telefon orqali ariza beradi — siz ularni qabuldan yetkazib berishgacha kuzatasiz.",
+      'pricing.badge':'14 KUN BEPUL','pricing.title':'Xavfsiz boshlang',
+      'pricing.desc':"14 kun davomida barcha funksiyalarga to'liq kirish. Sinov davridan so'ng — biznesingiz hajmiga mos moslashuvchan tariflar, yashirin to'lovlarsiz.",
+      'pricing.cta':'Hozir sinab ko\'ring',
+      'cta.title':"Cleano'ni sinab ko'rishga tayyormisiz?",
+      'cta.desc':"Demo-versiyani avtomatik yaratadigan onlayn ro'yxatdan o'tish tez orada shu sahifada paydo bo'ladi. Hozircha — ariza qoldiring, biz kompaniyangizni bir kun ichida qo'lda ulaymiz.",
+      'cta.telegram':'Telegram orqali yozish',
+      'footer.tagline':'kimyoviy tozalash va kirxonalarni avtomatlashtirish platformasi',
+      'video.caption':"Cleano qanday ko'rinadi",'video.soon':'Video tez orada',
+    }
+  };
+  var lang = localStorage.getItem('cleano_lang') || 'uz';
+  function applyI18n(){
+    document.documentElement.lang = lang;
+    document.querySelectorAll('[data-i18n]').forEach(function(el){
+      var key = el.getAttribute('data-i18n');
+      var val = (I18N[lang] && I18N[lang][key]) || (I18N.uz[key]) || '';
+      if (val) el.innerHTML = val;
+    });
+    document.querySelectorAll('#langSwitch [data-lang-btn]').forEach(function(b){
+      b.classList.toggle('active', b.dataset.langBtn === lang);
+    });
+    var navCta = document.getElementById('navCta');
+    if (navCta) navCta.style.display = window.innerWidth > 860 ? 'inline-flex' : 'none';
+  }
+  function setLang(l){ lang = l; localStorage.setItem('cleano_lang', l); applyI18n(); }
+  document.querySelectorAll('#langSwitch [data-lang-btn]').forEach(function(b){
+    b.addEventListener('click', function(){ setLang(b.dataset.langBtn); });
+  });
+  applyI18n();
+
+  // ── THEME ──
+  var theme = localStorage.getItem('cleano_theme') || 'dark';
+  function applyTheme(t){
+    document.documentElement.setAttribute('data-theme', t);
+    var btn = document.getElementById('themeToggle');
+    if (btn) btn.textContent = t === 'dark' ? '☀️' : '🌙';
+  }
+  applyTheme(theme);
+  document.getElementById('themeToggle').addEventListener('click', function(){
+    theme = theme === 'dark' ? 'light' : 'dark';
+    localStorage.setItem('cleano_theme', theme);
+    applyTheme(theme);
+  });
+
+  // ── VIDEO fallback ──
+  var video = document.getElementById('demoVideo');
+  var fallback = document.getElementById('videoFallback');
+  video.addEventListener('error', function(){ video.style.display='none'; fallback.style.display='flex'; }, true);
+  setTimeout(function(){
+    if (video.readyState === 0) { video.style.display='none'; fallback.style.display='flex'; }
+  }, 2500);
+
+  // ── Close hanging tag ──
+  document.getElementById('tagClose').addEventListener('click', function(){
+    document.getElementById('hangTag').classList.add('hidden');
+  });
+
+  // ── Scroll reveal ──
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: .15 });
+  document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+})();
+</script>
 </body>
 </html>
