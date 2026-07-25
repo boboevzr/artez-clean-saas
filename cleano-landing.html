@@ -307,6 +307,9 @@
   .pv-btn, .pv-open-btn { font: inherit; font-size: 13px; font-weight: 700; font-family: "Sora", sans-serif; padding: 9px 16px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--text); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; }
   .pv-btn:hover, .pv-open-btn:hover { border-color: var(--teal); color: var(--teal-soft); }
   .pv-panel { margin-top: 2px; }
+  .pv-bot-chip { display: inline-flex; align-items: center; gap: 6px; margin: 2px 0 8px; padding: 7px 14px; border-radius: 999px; border: 1px dashed var(--line); background: var(--surface2); color: var(--teal-soft); font-family: "JetBrains Mono", monospace; font-size: 13px; font-weight: 700; cursor: pointer; }
+  .pv-bot-chip:hover { border-color: var(--teal); }
+  .pv-bot-chip.copied { border-color: var(--teal); color: var(--teal); }
   .pv-status { font-size: 12.5px; margin-top: 8px; min-height: 0; }
   .pv-status.err { color: #F48080; }
   .pv-status.ok { color: var(--teal-soft); }
@@ -656,6 +659,10 @@
 
     <div class="pv-panel" id="pvTg" style="display:none">
       <p class="f-hint" data-i18n="reg.pv.tgHint">Botni oching, "Ulashish" tugmasini bosing, so'ng "Tekshirish" tugmasini bosing.</p>
+      <button type="button" class="pv-bot-chip" id="pvBotUsernameChip" title="Nusxalash">
+        <span id="pvBotUsernameText"></span>
+      </button>
+      <p class="f-hint" data-i18n="reg.pv.tgFindHint">Bot ochilmasa: nomni nusxalab, Telegram qidiruviga joylashtiring.</p>
       <div class="pv-btns">
         <a class="btn btn-ghost pv-open-btn" id="pvTgOpenBtn" target="_blank" rel="noopener" data-i18n="reg.pv.openBot">Botni ochish</a>
         <button type="button" class="btn btn-ghost pv-open-btn" id="pvTgCheckBtn" data-i18n="reg.pv.check">Tekshirish</button>
@@ -729,6 +736,8 @@
       'reg.pv.viaTg':'Через Telegram','reg.pv.viaSms':'По SMS',
       'reg.pv.modalTitle':'Подтверждение номера',
       'reg.pv.tgHint':'Откройте бота, нажмите «Поделиться номером», затем нажмите «Проверить».',
+      'reg.pv.tgFindHint':'Если бот не открылся: скопируйте имя и вставьте в поиск Telegram.',
+      'reg.pv.usernameCopied':'✓ Скопировано',
       'reg.pv.openBot':'Открыть бота','reg.pv.check':'Проверить','reg.pv.sendSms':'Получить код',
       'reg.pv.confirm':'Подтвердить','reg.pv.resend':'Отправить код повторно','reg.pv.verified':'Номер подтверждён',
       'reg.pv.err.notVerified':'Ещё не подтверждено — поделитесь номером в боте и попробуйте снова',
@@ -785,6 +794,8 @@
       'reg.pv.viaTg':'Telegram orqali','reg.pv.viaSms':'SMS orqali',
       'reg.pv.modalTitle':'Raqamni tasdiqlash',
       'reg.pv.tgHint':'Botni oching, "Ulashish" tugmasini bosing, so\'ng "Tekshirish" tugmasini bosing.',
+      'reg.pv.tgFindHint':"Bot ochilmasa: nomni nusxalab, Telegram qidiruviga joylashtiring.",
+      'reg.pv.usernameCopied':'✓ Nusxalandi',
       'reg.pv.openBot':'Botni ochish','reg.pv.check':'Tekshirish','reg.pv.sendSms':'Kod olish',
       'reg.pv.confirm':'Tasdiqlash','reg.pv.resend':'Kodni qayta yuborish','reg.pv.verified':'Raqam tasdiqlangan',
       'reg.pv.err.notVerified':"Hali tasdiqlanmadi — botda raqamni ulashing va qayta urinib ko'ring",
@@ -925,7 +936,7 @@
       var d = await r.json();
       var s = (d && d.settings) || {};
       var items = contactItems(s);
-      CLEANO_BOT_USERNAME = s.cleano_bot_username || '';
+      CLEANO_BOT_USERNAME = (s.cleano_bot_username || '').trim().replace(/^@/, '').replace(/^https?:\/\/t\.me\//i, '');
 
       // Подвал — только круглые кнопки-иконки, без подписей
       var fc = document.getElementById('footerContacts');
@@ -1143,7 +1154,27 @@
   document.getElementById('pvChooseTg').addEventListener('click', function(){
     if (!CLEANO_BOT_USERNAME) { showPvStep('tg'); document.getElementById('pvTgStatus').className = 'pv-status err'; document.getElementById('pvTgStatus').textContent = tr('reg.pv.err.noBotConfigured'); return; }
     document.getElementById('pvTgOpenBtn').href = 'https://t.me/' + CLEANO_BOT_USERNAME;
+    document.getElementById('pvBotUsernameText').textContent = '@' + CLEANO_BOT_USERNAME;
     showPvStep('tg');
+  });
+
+  document.getElementById('pvBotUsernameChip').addEventListener('click', function(){
+    var chip = this;
+    var text = '@' + CLEANO_BOT_USERNAME;
+    var done = function(){
+      chip.classList.add('copied');
+      document.getElementById('pvBotUsernameText').textContent = tr('reg.pv.usernameCopied');
+      setTimeout(function(){ chip.classList.remove('copied'); document.getElementById('pvBotUsernameText').textContent = text; }, 1500);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done).catch(function(){});
+    } else {
+      var ta = document.createElement('textarea');
+      ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); done(); } catch(e){}
+      document.body.removeChild(ta);
+    }
   });
 
   document.getElementById('pvTgCheckBtn').addEventListener('click', async function(){
