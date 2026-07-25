@@ -219,6 +219,9 @@
   /* ===== FLOATING CONTACT BUTTON + MODAL CARD ===== */
   .float-btn { position: fixed; right: 20px; bottom: 20px; z-index: 300; width: 56px; height: 56px; border-radius: 50%; border: none; background: linear-gradient(135deg, var(--amber) 0%, var(--amber-deep) 100%); color: #1A0E00; font-size: 22px; cursor: pointer; box-shadow: 0 10px 30px -8px rgba(227,167,59,.55); transition: transform .2s cubic-bezier(.34,1.56,.64,1); }
   .float-btn:hover { transform: scale(1.08) rotate(-4deg); }
+  .scroll-top-btn { position: fixed; right: 20px; bottom: 88px; z-index: 300; width: 48px; height: 48px; border-radius: 50%; border: 1px solid var(--line); background: var(--surface2); color: var(--text); font-size: 20px; cursor: pointer; box-shadow: 0 8px 24px -8px rgba(0,0,0,.4); opacity: 0; pointer-events: none; transform: translateY(8px); transition: opacity .25s ease, transform .25s ease, border-color .15s, color .15s; }
+  .scroll-top-btn.show { opacity: 1; pointer-events: auto; transform: translateY(0); }
+  .scroll-top-btn:hover { border-color: var(--teal); color: var(--teal-soft); }
 
   .float-overlay { position: fixed; inset: 0; z-index: 350; background: rgba(0,0,0,0); backdrop-filter: blur(0px); display: none; align-items: flex-end; justify-content: flex-end; padding: 0 20px 90px; transition: background .3s, backdrop-filter .3s; }
   .float-overlay.open { display: flex; background: rgba(4,10,8,.45); backdrop-filter: blur(6px); }
@@ -365,7 +368,7 @@
       <a href="#how" data-i18n="nav.how">Qanday ishlaydi</a>
       <a href="#pricing" data-i18n="nav.pricing">Tariflar</a>
     </nav>
-    <a class="btn btn-ghost" href="admin.html?fresh=1" data-i18n="nav.login">Kirish</a>
+    <a class="btn btn-ghost" href="admin.html?fresh=1" target="_blank" rel="noopener" data-i18n="nav.login">Kirish</a>
     <button class="icon-btn" id="themeToggle" aria-label="Mavzuni almashtirish">🌙</button>
     <div class="lang-switch" id="langSwitch">
       <button type="button" data-lang-btn="ru">RU</button>
@@ -504,6 +507,7 @@
 </footer>
 
 <!-- ══════ Floating contact button + modal card ══════ -->
+<button class="scroll-top-btn" id="scrollTopBtn" aria-label="Yuqoriga">↑</button>
 <button class="float-btn" id="floatBtn" aria-label="Aloqa">💬</button>
 <div class="float-overlay" id="floatOverlay">
   <div class="float-card" id="floatCard" onclick="event.stopPropagation()">
@@ -961,6 +965,15 @@
       }
     } catch (e) {}
   })();
+
+  // ── Кнопка "наверх" ──
+  var scrollTopBtn = document.getElementById('scrollTopBtn');
+  window.addEventListener('scroll', function(){
+    scrollTopBtn.classList.toggle('show', window.scrollY > 480);
+  });
+  scrollTopBtn.addEventListener('click', function(){
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
 
   // ── Плавающая кнопка контактов (модалка-карточка) ──
   var floatOverlay = document.getElementById('floatOverlay');
