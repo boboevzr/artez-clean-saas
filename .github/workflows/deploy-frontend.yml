@@ -25,6 +25,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-22.04
+    environment: ${{ github.event.inputs.subdomain || 'artez-prod' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
