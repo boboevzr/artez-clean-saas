@@ -61,6 +61,9 @@
   /* CARD */
   .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 16px; }
   .card-title { font-size: 13px; font-weight: 700; margin-bottom: 14px; color: var(--text2); text-transform: uppercase; letter-spacing: .04em; }
+  #page-settings input[readonly] { background: var(--surface2); color: var(--text2); cursor: default; }
+  .card-title-row { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .card-title-row .card-title { margin-bottom: 0; flex: 1; }
 
   /* TABLE */
   .table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 20px; }
@@ -266,63 +269,79 @@
         <div class="page-title">⚙️ Глобальные настройки</div>
 
         <div class="card" style="max-width:560px">
-          <div class="card-title">🗺 Яндекс Карты</div>
+          <div class="card-title-row">
+            <div class="card-title">🗺 Яндекс Карты</div>
+            <button class="btn btn-ghost btn-sm" id="gs_pencil_ymaps" onclick="gsUnlockCard('ymaps')" title="Редактировать">✏️</button>
+          </div>
           <div class="field">
             <label>API ключ (общий для всех компаний)</label>
             <div style="display:flex;gap:8px">
-              <input id="gs_ymaps_key" type="password" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" style="flex:1">
+              <input id="gs_ymaps_key" type="password" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" style="flex:1" readonly>
               <button class="btn btn-ghost btn-sm" onclick="toggleGsKey()" tabindex="-1">👁</button>
             </div>
           </div>
           <div style="display:flex;align-items:center;gap:12px">
-            <button class="btn btn-primary btn-sm" onclick="saveGlobalSettings()">💾 Сохранить</button>
+            <button class="btn btn-primary btn-sm" id="gs_savebtn_ymaps" style="display:none" onclick="saveGlobalSettings()">💾 Сохранить</button>
+            <button class="btn btn-ghost btn-sm" id="gs_cancelbtn_ymaps" style="display:none" onclick="gsCancelCard('ymaps')">Отмена</button>
             <span id="gs_msg" class="save-msg" style="display:none">✓ Сохранено</span>
           </div>
         </div>
 
         <div class="card" style="max-width:560px;margin-top:16px">
-          <div class="card-title">💬 Контакты поддержки (для всех компаний)</div>
+          <div class="card-title-row">
+            <div class="card-title">💬 Контакты поддержки (для всех компаний)</div>
+            <button class="btn btn-ghost btn-sm" id="gs_pencil_support" onclick="gsUnlockCard('support')" title="Редактировать">✏️</button>
+          </div>
           <div class="field">
             <label>Telegram (ссылка)</label>
-            <input id="gs_support_tg" type="text" placeholder="https://t.me/username">
+            <input id="gs_support_tg" type="text" placeholder="https://t.me/username" readonly>
           </div>
           <div class="field">
             <label>Телефон</label>
-            <input id="gs_support_phone" type="text" placeholder="+998 90 123-45-67">
+            <input id="gs_support_phone" type="text" placeholder="+998 90 123-45-67" readonly>
           </div>
           <div style="display:flex;align-items:center;gap:12px">
-            <button class="btn btn-primary btn-sm" onclick="saveSupportContact()">💾 Сохранить</button>
+            <button class="btn btn-primary btn-sm" id="gs_savebtn_support" style="display:none" onclick="saveSupportContact()">💾 Сохранить</button>
+            <button class="btn btn-ghost btn-sm" id="gs_cancelbtn_support" style="display:none" onclick="gsCancelCard('support')">Отмена</button>
             <span id="gs_support_msg" class="save-msg" style="display:none">✓ Сохранено</span>
           </div>
         </div>
 
         <div class="card" style="max-width:560px;margin-top:16px">
-          <div class="card-title">🏢 Контакты и офис Cleano (сайт cleano.uz)</div>
-          <p style="font-size:12px;color:var(--text2);margin-bottom:12px">Показывается в подвале и плавающей кнопке контактов на лендинге cleano.uz.</p>
-          <div class="field"><label>Телефон</label><input id="gs_cleano_phone" type="text" placeholder="+998 90 123-45-67"></div>
-          <div class="field"><label>Telegram (ссылка)</label><input id="gs_cleano_tg" type="text" placeholder="https://t.me/cleano_uz"></div>
-          <div class="field"><label>Instagram (ссылка)</label><input id="gs_cleano_ig" type="text" placeholder="https://instagram.com/cleano.uz"></div>
-          <div class="field"><label>Facebook (ссылка)</label><input id="gs_cleano_fb" type="text" placeholder="https://facebook.com/cleano.uz"></div>
-          <div class="field"><label>WhatsApp (ссылка wa.me)</label><input id="gs_cleano_wa" type="text" placeholder="https://wa.me/998901234567"></div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-            <div class="field"><label>Широта офиса (lat)</label><input id="gs_cleano_lat" type="text" placeholder="41.311081"></div>
-            <div class="field"><label>Долгота офиса (lng)</label><input id="gs_cleano_lng" type="text" placeholder="69.240562"></div>
+          <div class="card-title-row">
+            <div class="card-title">🏢 Контакты и офис Cleano (сайт cleano.uz)</div>
+            <button class="btn btn-ghost btn-sm" id="gs_pencil_cleano" onclick="gsUnlockCard('cleano')" title="Редактировать">✏️</button>
           </div>
-          <button class="btn btn-ghost btn-sm" style="margin-bottom:14px" onclick="openCoordMap('cleano')">📍 Выбрать на карте</button>
-          <div class="field"><label>Адрес офиса (текст)</label><input id="gs_cleano_addr" type="text" placeholder="г. Ташкент, ул. ..."></div>
+          <p style="font-size:12px;color:var(--text2);margin-bottom:12px">Показывается в подвале и плавающей кнопке контактов на лендинге cleano.uz.</p>
+          <div class="field"><label>Телефон</label><input id="gs_cleano_phone" type="text" placeholder="+998 90 123-45-67" readonly></div>
+          <div class="field"><label>Telegram (ссылка)</label><input id="gs_cleano_tg" type="text" placeholder="https://t.me/cleano_uz" readonly></div>
+          <div class="field"><label>Instagram (ссылка)</label><input id="gs_cleano_ig" type="text" placeholder="https://instagram.com/cleano.uz" readonly></div>
+          <div class="field"><label>Facebook (ссылка)</label><input id="gs_cleano_fb" type="text" placeholder="https://facebook.com/cleano.uz" readonly></div>
+          <div class="field"><label>WhatsApp (ссылка wa.me)</label><input id="gs_cleano_wa" type="text" placeholder="https://wa.me/998901234567" readonly></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div class="field"><label>Широта офиса (lat)</label><input id="gs_cleano_lat" type="text" placeholder="41.311081" readonly></div>
+            <div class="field"><label>Долгота офиса (lng)</label><input id="gs_cleano_lng" type="text" placeholder="69.240562" readonly></div>
+          </div>
+          <button class="btn btn-ghost btn-sm" id="gs_cleano_mapbtn" style="margin-bottom:14px;display:none" onclick="openCoordMap('cleano')">📍 Выбрать на карте</button>
+          <div class="field"><label>Адрес офиса (текст)</label><input id="gs_cleano_addr" type="text" placeholder="г. Ташкент, ул. ..." readonly></div>
           <div style="display:flex;align-items:center;gap:12px">
-            <button class="btn btn-primary btn-sm" onclick="saveCleanoContacts()">💾 Сохранить</button>
+            <button class="btn btn-primary btn-sm" id="gs_savebtn_cleano" style="display:none" onclick="saveCleanoContacts()">💾 Сохранить</button>
+            <button class="btn btn-ghost btn-sm" id="gs_cancelbtn_cleano" style="display:none" onclick="gsCancelCard('cleano')">Отмена</button>
             <span id="gs_cleano_msg" class="save-msg" style="display:none">✓ Сохранено</span>
           </div>
         </div>
 
         <div class="card" style="max-width:560px;margin-top:16px">
-          <div class="card-title">🤖 Telegram-бот Cleano (подтверждение телефона при регистрации)</div>
+          <div class="card-title-row">
+            <div class="card-title">🤖 Telegram-бот Cleano (подтверждение телефона при регистрации)</div>
+            <button class="btn btn-ghost btn-sm" id="gs_pencil_cleanobot" onclick="gsUnlockCard('cleanobot')" title="Редактировать">✏️</button>
+          </div>
           <p style="font-size:12px;color:var(--text2);margin-bottom:12px">Отдельный бот от бота клиентов ARTEZ. Используется только для подтверждения номера телефона при самостоятельной регистрации компании на cleano.uz. При сохранении токена webhook подключается автоматически.</p>
-          <div class="field"><label>Токен бота (от @BotFather)</label><input id="gs_cleano_bot_token" type="text" placeholder="123456789:AAExampleTokenHere" autocomplete="off"></div>
-          <div class="field"><label>Username бота (без @)</label><input id="gs_cleano_bot_username" type="text" placeholder="cleano_uz_bot"></div>
+          <div class="field"><label>Токен бота (от @BotFather)</label><input id="gs_cleano_bot_token" type="text" placeholder="123456789:AAExampleTokenHere" autocomplete="off" readonly></div>
+          <div class="field"><label>Username бота (без @)</label><input id="gs_cleano_bot_username" type="text" placeholder="cleano_uz_bot" readonly></div>
           <div style="display:flex;align-items:center;gap:12px">
-            <button class="btn btn-primary btn-sm" onclick="saveCleanoBot()">💾 Сохранить и подключить</button>
+            <button class="btn btn-primary btn-sm" id="gs_savebtn_cleanobot" style="display:none" onclick="saveCleanoBot()">💾 Сохранить и подключить</button>
+            <button class="btn btn-ghost btn-sm" id="gs_cancelbtn_cleanobot" style="display:none" onclick="gsCancelCard('cleanobot')">Отмена</button>
             <span id="gs_cleano_bot_msg" class="save-msg" style="display:none">✓ Сохранено</span>
           </div>
           <div id="gs_cleano_bot_webhook_status" style="font-size:12px;margin-top:8px"></div>
@@ -1481,7 +1500,59 @@ async function showMain() {
   await loadCompanies();
 }
 
-// ── GLOBAL SETTINGS ───────────────────────────────────
+// ── GLOBAL SETTINGS: блокировка полей до нажатия ✏️ (защита от случайного изменения) ──
+const GS_CARD_FIELDS = {
+  ymaps:     ['gs_ymaps_key'],
+  support:   ['gs_support_tg', 'gs_support_phone'],
+  cleano:    ['gs_cleano_phone', 'gs_cleano_tg', 'gs_cleano_ig', 'gs_cleano_fb', 'gs_cleano_wa', 'gs_cleano_lat', 'gs_cleano_lng', 'gs_cleano_addr'],
+  cleanobot: ['gs_cleano_bot_token', 'gs_cleano_bot_username'],
+};
+
+function gsLockCard(card) {
+  (GS_CARD_FIELDS[card] || []).forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.setAttribute('readonly', '');
+  });
+  const pencil = document.getElementById('gs_pencil_' + card);
+  const save   = document.getElementById('gs_savebtn_' + card);
+  const cancel = document.getElementById('gs_cancelbtn_' + card);
+  if (pencil) pencil.style.display = '';
+  if (save)   save.style.display = 'none';
+  if (cancel) cancel.style.display = 'none';
+  if (card === 'cleano') {
+    const mapBtn = document.getElementById('gs_cleano_mapbtn');
+    if (mapBtn) mapBtn.style.display = 'none';
+  }
+}
+
+function gsUnlockCard(card) {
+  const ids = GS_CARD_FIELDS[card] || [];
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.dataset.orig = el.value; el.removeAttribute('readonly'); }
+  });
+  const pencil = document.getElementById('gs_pencil_' + card);
+  const save   = document.getElementById('gs_savebtn_' + card);
+  const cancel = document.getElementById('gs_cancelbtn_' + card);
+  if (pencil) pencil.style.display = 'none';
+  if (save)   save.style.display = '';
+  if (cancel) cancel.style.display = '';
+  if (card === 'cleano') {
+    const mapBtn = document.getElementById('gs_cleano_mapbtn');
+    if (mapBtn) mapBtn.style.display = '';
+  }
+  const first = document.getElementById(ids[0]);
+  if (first) first.focus();
+}
+
+function gsCancelCard(card) {
+  (GS_CARD_FIELDS[card] || []).forEach(id => {
+    const el = document.getElementById(id);
+    if (el && el.dataset.orig !== undefined) el.value = el.dataset.orig;
+  });
+  gsLockCard(card);
+}
+
 async function loadGlobalSettings() {
   try {
     const d = await api('/saas/global-settings');
@@ -1497,6 +1568,9 @@ async function loadGlobalSettings() {
     document.getElementById('gs_cleano_addr').value  = s.cleano_office_address || '';
     document.getElementById('gs_cleano_bot_token').value    = s.cleano_bot_token || '';
     document.getElementById('gs_cleano_bot_username').value = s.cleano_bot_username || '';
+    gsLockCard('ymaps');
+    gsLockCard('cleano');
+    gsLockCard('cleanobot');
   } catch(e) {}
 }
 
@@ -1516,6 +1590,7 @@ async function saveCleanoContacts() {
     });
     msg.style.display = '';
     setTimeout(() => msg.style.display = 'none', 3000);
+    gsLockCard('cleano');
   } catch(e) { alert(e.message); }
 }
 
@@ -1540,6 +1615,7 @@ async function saveCleanoBot() {
         statusEl.textContent = '✗ Webhook не подключён: ' + (d.webhook.description || d.webhook.error || 'ошибка');
       }
     }
+    gsLockCard('cleanobot');
   } catch(e) { alert(e.message); }
 }
 
@@ -1556,6 +1632,7 @@ async function saveGlobalSettings() {
     await api('/saas/global-settings', 'PUT', { yandex_maps_key: key });
     msg.style.display = '';
     setTimeout(() => msg.style.display = 'none', 3000);
+    gsLockCard('ymaps');
   } catch(e) { alert(e.message); }
 }
 
@@ -1564,6 +1641,7 @@ async function loadSupportContact() {
     const d = await api('/saas/support-contact');
     document.getElementById('gs_support_tg').value = d.telegram || '';
     document.getElementById('gs_support_phone').value = d.phone || '';
+    gsLockCard('support');
   } catch(e) {}
 }
 
@@ -1576,6 +1654,7 @@ async function saveSupportContact() {
     await api('/saas/support-contact', 'PUT', { telegram, phone });
     msg.style.display = '';
     setTimeout(() => msg.style.display = 'none', 3000);
+    gsLockCard('support');
   } catch(e) { alert(e.message); }
 }
 
