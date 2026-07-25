@@ -619,7 +619,8 @@
             <div style="margin-bottom:10px"><span data-i18n="reg.doneSlug">Manzil:</span> <b id="doneSlug" class="mono"></b></div>
             <table class="cred-table" id="credTable"></table>
           </div>
-          <div class="f-hint" style="margin-bottom:18px" data-i18n="reg.credWarn">⚠️ Login va parol (admindan tashqari) rol nomi bilan bir xil. Birinchi kirishdan so'ng parollarni almashtiring.</div>
+          <div class="f-hint" style="margin-bottom:14px" data-i18n="reg.credWarn">⚠️ Login va parol (admindan tashqari) rol nomi bilan bir xil. Birinchi kirishdan so'ng parollarni almashtiring.</div>
+          <button type="button" class="btn btn-ghost" id="copyCredsBtn" style="width:100%;margin-bottom:10px" data-i18n="reg.copyCreds">📋 Nusxalash (saqlab qo'yish uchun)</button>
           <a class="btn btn-accent" id="goAdminBtn" href="#" target="_blank" style="width:100%" data-i18n="reg.goAdmin">Admin-panelga kirish</a>
         </div>
       </div>
@@ -716,6 +717,7 @@
       'reg.doneTitle':'Готово!','reg.doneText':'Компания создана. Используйте данные ниже, чтобы войти.',
       'reg.credWarn':'⚠️ Логин и пароль (кроме админа) совпадают с названием роли. Смените пароли после первого входа.',
       'reg.doneSlug':'Адрес:','reg.doneLogin':'Логин:','reg.goAdmin':'Войти в админ-панель',
+      'reg.copyCreds':'📋 Скопировать (чтобы сохранить)','reg.copyCredsDone':'✓ Скопировано',
       'reg.err.password':'Пароли не совпадают','reg.err.generic':'Не удалось зарегистрировать — попробуйте ещё раз',
       'reg.err.dupName':'Компания с таким названием уже зарегистрирована','reg.err.dupSlug':'Этот адрес уже занят',
       'reg.err.dupPhone':'Этот телефон уже зарегистрирован','reg.err.dupEmail':'Этот email уже зарегистрирован',
@@ -771,6 +773,7 @@
       'reg.doneTitle':'Tayyor!','reg.doneText':"Kompaniyangiz yaratildi. Quyidagi login/parollardan foydalanib kiring.",
       'reg.credWarn':"⚠️ Login va parol (admindan tashqari) rol nomi bilan bir xil. Birinchi kirishdan so'ng parollarni almashtiring.",
       'reg.doneSlug':'Manzil:','reg.doneLogin':'Login:','reg.goAdmin':'Admin-panelga kirish',
+      'reg.copyCreds':"📋 Nusxalash (saqlab qo'yish uchun)",'reg.copyCredsDone':'✓ Nusxalandi',
       'reg.err.password':"Parollar mos kelmadi",'reg.err.generic':"Ro'yxatdan o'tkazib bo'lmadi — qayta urinib ko'ring",
       'reg.err.dupName':"Bu nomdagi kompaniya allaqachon ro'yxatdan o'tgan",'reg.err.dupSlug':'Bu manzil band',
       'reg.err.dupPhone':"Bu telefon raqami allaqachon ro'yxatdan o'tgan",'reg.err.dupEmail':"Bu email allaqachon ro'yxatdan o'tgan",
@@ -859,16 +862,48 @@
     ru: { admin:'👑 Админ', manager:'🧑‍💼 Менеджер', callcenter:'📞 Колл-центр', driver:'🚗 Водитель', packer:'📦 Упаковщик', logistics:'🚚 Логистика', washer:'🫧 Мойщик' },
     uz: { admin:'👑 Admin', manager:'🧑‍💼 Menejer', callcenter:'📞 Kol-markaz', driver:'🚗 Haydovchi', packer:'📦 Qadoqlovchi', logistics:'🚚 Logistika', washer:'🫧 Yuvuvchi' },
   };
+  // admin.html доступен только этим ролям (см. ADMIN_ROLES в admin.html); остальные — только staff.html.
+  var ADMIN_HTML_ROLES = ['admin', 'manager', 'callcenter'];
+  var _lastCreds = [];
   function renderCredTable(creds){
+    _lastCreds = creds || [];
     var t = document.getElementById('credTable');
     if (!t) return;
     var rl = ROLE_LABEL[lang] || ROLE_LABEL.uz;
-    var thLabel = lang === 'ru' ? ['Роль','Логин','Пароль'] : ['Rol','Login','Parol'];
-    t.innerHTML = '<tr><th>' + thLabel[0] + '</th><th>' + thLabel[1] + '</th><th>' + thLabel[2] + '</th></tr>' +
+    var thLabel = lang === 'ru' ? ['Роль','Логин','Пароль','Доступ'] : ['Rol','Login','Parol','Kirish'];
+    var accessLabel = function(role){
+      return ADMIN_HTML_ROLES.indexOf(role) !== -1
+        ? (lang === 'ru' ? 'admin-panel' : 'admin-panel')
+        : (lang === 'ru' ? 'staff-sayt' : 'staff-sayt');
+    };
+    t.innerHTML = '<tr><th>' + thLabel[0] + '</th><th>' + thLabel[1] + '</th><th>' + thLabel[2] + '</th><th>' + thLabel[3] + '</th></tr>' +
       creds.map(function(c){
-        return '<tr><td>' + (rl[c.role] || c.role) + '</td><td class="mono">' + c.login + '</td><td class="mono">' + c.password + '</td></tr>';
+        return '<tr><td>' + (rl[c.role] || c.role) + '</td><td class="mono">' + c.login + '</td><td class="mono">' + c.password + '</td><td class="mono">' + accessLabel(c.role) + '</td></tr>';
       }).join('');
   }
+
+  document.getElementById('copyCredsBtn').addEventListener('click', function(){
+    var rl = ROLE_LABEL[lang] || ROLE_LABEL.uz;
+    var slug = document.getElementById('doneSlug').textContent;
+    var lines = ['Cleano — ' + slug, ''];
+    _lastCreds.forEach(function(c){
+      var access = ADMIN_HTML_ROLES.indexOf(c.role) !== -1 ? 'admin-panel' : 'staff-sayt';
+      lines.push((rl[c.role] || c.role) + ' — ' + c.login + ' / ' + c.password + ' (' + access + ')');
+    });
+    var text = lines.join('\n');
+    var btn = this;
+    var origText = btn.textContent;
+    navigator.clipboard.writeText(text).then(function(){
+      btn.textContent = tr('reg.copyCredsDone');
+      setTimeout(function(){ btn.textContent = origText; }, 2000);
+    }).catch(function(){
+      var ta = document.createElement('textarea');
+      ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); btn.textContent = tr('reg.copyCredsDone'); setTimeout(function(){ btn.textContent = origText; }, 2000); } catch(e){}
+      document.body.removeChild(ta);
+    });
+  });
 
   function contactItems(s){
     var items = [];
@@ -953,6 +988,9 @@
   var openBtn = document.getElementById('openRegisterBtn');
   if (openBtn) openBtn.addEventListener('click', openReg);
   document.getElementById('regCloseBtn').addEventListener('click', closeReg);
+  // admin.html открывается в новой вкладке (target="_blank") — страницу регистрации в текущей закрываем,
+  // чтобы за фоном осталась обычная главная cleano.uz, а не экран "Готово!".
+  document.getElementById('goAdminBtn').addEventListener('click', closeReg);
   document.addEventListener('keydown', function(e){
     if (e.key !== 'Escape') return;
     var pvModal = document.getElementById('pvModalOverlay');
