@@ -1104,8 +1104,22 @@
     pvSmsPanel.style.display = step === 'sms' ? '' : 'none';
     pvVerifiedEl.style.display = step === 'verified' ? '' : 'none';
   }
+  // Сбрасывает статусы/код/таймер резенда — оставшиеся от прошлой попытки, чтобы при
+  // повторном открытии модалки не было видно чужой старой ошибки/статуса.
+  function clearPvStatuses(){
+    clearTimeout(pvSmsResendTimer);
+    var tgStatus = document.getElementById('pvTgStatus');
+    var smsStatus = document.getElementById('pvSmsStatus');
+    tgStatus.textContent = ''; tgStatus.className = 'pv-status';
+    smsStatus.textContent = ''; smsStatus.className = 'pv-status';
+    document.getElementById('pvSmsCodeRow').style.display = 'none';
+    document.getElementById('pvSmsResend').style.display = 'none';
+    document.getElementById('pvSmsCode').value = '';
+  }
+
   function openPvModal(){
     document.getElementById('pvModalPhone').textContent = pvPhoneInput.value.trim();
+    clearPvStatuses();
     showPvStep('picker');
     pvModalOverlay.classList.add('open');
   }
@@ -1118,14 +1132,9 @@
   function resetPhoneVerify(){
     pvVerified = false;
     pvVerifiedFor = null;
-    clearTimeout(pvSmsResendTimer);
     closePvModal();
     showPvStep('picker');
-    document.getElementById('pvTgStatus').textContent = '';
-    document.getElementById('pvSmsStatus').textContent = '';
-    document.getElementById('pvSmsCodeRow').style.display = 'none';
-    document.getElementById('pvSmsResend').style.display = 'none';
-    document.getElementById('pvSmsCode').value = '';
+    clearPvStatuses();
   }
 
   // Открытие модалки подтверждения — только при нажатии "Зарегистрироваться",
