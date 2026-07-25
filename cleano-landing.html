@@ -561,14 +561,14 @@
           <form id="regForm">
             <div class="f-field">
               <label data-i18n="reg.companyName">Kompaniya nomi</label>
-              <input type="text" id="regCompanyName" required maxlength="120">
+              <input type="text" id="regCompanyName" name="organization" autocomplete="organization" required maxlength="120">
               <div class="f-check" id="regCompanyNameCheck"></div>
             </div>
             <div class="f-field">
               <label data-i18n="reg.slug">Manzil saytda (slug)</label>
               <div class="slug-row">
                 <span class="slug-prefix">cleano.uz/</span>
-                <input type="text" id="regSlug" required pattern="[a-z0-9\-]{3,50}" maxlength="50" placeholder="my-company">
+                <input type="text" id="regSlug" name="reg-slug" autocomplete="off" required pattern="[a-z0-9\-]{3,50}" maxlength="50" placeholder="my-company">
               </div>
               <div class="f-hint" data-i18n="reg.slugHint">Faqat lotin harflari, raqamlar va tire, 3–50 belgi</div>
               <div class="f-check" id="regSlugCheck"></div>
@@ -576,16 +576,16 @@
             <div class="f-row">
               <div class="f-field">
                 <label data-i18n="reg.contactName">Ismingiz</label>
-                <input type="text" id="regContactName" required maxlength="120">
+                <input type="text" id="regContactName" name="name" autocomplete="name" required maxlength="120">
               </div>
               <div class="f-field">
                 <label data-i18n="reg.phone">Telefon</label>
-                <input type="tel" id="regPhone" required placeholder="+998 90 123-45-67">
+                <input type="tel" id="regPhone" name="tel" autocomplete="tel" required placeholder="+998 90 123-45-67" pattern="\+?[0-9\s\-]{9,17}" title="Masalan: +998 90 123-45-67">
                 <div class="f-check" id="regPhoneCheck"></div>
               </div>
             </div>
 
-            <div class="phone-verify" id="pvBlock">
+            <div class="phone-verify" id="pvBlock" style="display:none">
               <div class="pv-picker" id="pvPicker">
                 <span class="pv-label" data-i18n="reg.pv.choose">Raqamni tasdiqlang:</span>
                 <div class="pv-btns">
@@ -606,17 +606,17 @@
 
             <div class="f-field">
               <label data-i18n="reg.email">Email <span class="opt" data-i18n="reg.optional">(ixtiyoriy)</span></label>
-              <input type="email" id="regEmail" maxlength="160">
+              <input type="email" id="regEmail" name="email" autocomplete="email" maxlength="160">
               <div class="f-check" id="regEmailCheck"></div>
             </div>
             <div class="f-row">
               <div class="f-field">
                 <label data-i18n="reg.password">Parol</label>
-                <input type="password" id="regPassword" required minlength="6">
+                <input type="password" id="regPassword" name="new-password" autocomplete="new-password" required minlength="6">
               </div>
               <div class="f-field">
                 <label data-i18n="reg.password2">Parolni takrorlang</label>
-                <input type="password" id="regPassword2" required minlength="6">
+                <input type="password" id="regPassword2" name="new-password2" autocomplete="new-password" required minlength="6">
               </div>
             </div>
             <label class="f-consent">
@@ -1041,6 +1041,7 @@
     pvVerified = false;
     pvVerifiedFor = null;
     clearTimeout(pvSmsResendTimer);
+    document.getElementById('pvBlock').style.display = 'none';
     pvPicker.style.display = '';
     pvTgPanel.style.display = 'none';
     pvVerifiedEl.style.display = 'none';
@@ -1052,6 +1053,14 @@
     document.getElementById('pvSmsCode').value = '';
   }
 
+  // Показ пикера подтверждения — вызывается только при нажатии "Зарегистрироваться",
+  // если номер ещё не подтверждён (по просьбе пользователя: сначала заполняется вся форма).
+  function requestPhoneVerify(){
+    var block = document.getElementById('pvBlock');
+    block.style.display = '';
+    block.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
   function showPhoneVerified(){
     pvVerified = true;
     pvVerifiedFor = pvPhoneInput.value.trim();
@@ -1059,6 +1068,8 @@
     pvTgPanel.style.display = 'none';
     pvVerifiedEl.style.display = '';
     closeSmsModal();
+    // Продолжаем регистрацию автоматически — пользователь уже нажимал "Зарегистрироваться" раньше.
+    regForm.requestSubmit();
   }
 
   // Если номер меняют после подтверждения — сбрасываем подтверждение
@@ -1160,13 +1171,16 @@
       errEl.textContent = (I18N[lang]||I18N.uz)['reg.err.generic'];
       return;
     }
-    if (!pvVerified || pvVerifiedFor !== pvPhoneInput.value.trim()) {
-      errEl.textContent = tr('reg.err.needVerify');
-      return;
-    }
     var pw1 = document.getElementById('regPassword').value;
     var pw2 = document.getElementById('regPassword2').value;
     if (pw1 !== pw2) { errEl.textContent = (I18N[lang]||I18N.uz)['reg.err.password']; return; }
+    // Подтверждение телефона запрашиваем только теперь, после нажатия "Зарегистрироваться",
+    // а не заранее — форма к этому моменту уже заполнена и провалидирована.
+    if (!pvVerified || pvVerifiedFor !== pvPhoneInput.value.trim()) {
+      requestPhoneVerify();
+      errEl.textContent = tr('reg.err.needVerify');
+      return;
+    }
     var btn = document.getElementById('regSubmitBtn');
     btn.disabled = true;
     var originalText = btn.textContent;
