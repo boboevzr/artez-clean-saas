@@ -8545,6 +8545,14 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   }
   if (adminToken) { showAdmin(); return; }
+  // ?fresh=1 — ссылка "Войти" с cleano.uz: неизвестно, чья это компания и авторизован ли
+  // вообще посетитель, поэтому сбрасываем ранее кэшированный slug и всегда показываем
+  // экран ввода slug, а не логин/пароль от компании, которая была открыта тут раньше.
+  if (new URLSearchParams(location.search).get('fresh') === '1') {
+    localStorage.removeItem('admin_company_slug');
+    localStorage.removeItem('admin_company_name');
+    history.replaceState({}, '', location.pathname);
+  }
   // ?company_slug=... в URL (напр. ссылка "Войти в админ-панель" после регистрации на cleano.uz)
   // предзаполняет slug, чтобы сразу попасть на экран логина/пароля.
   const qsSlug = new URLSearchParams(location.search).get('company_slug');
