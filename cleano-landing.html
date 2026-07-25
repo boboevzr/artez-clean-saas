@@ -294,6 +294,11 @@
   .success-ico { width: 56px; height: 56px; border-radius: 50%; background: color-mix(in srgb, var(--teal) 18%, transparent); color: var(--teal-soft); font-size: 26px; display: flex; align-items: center; justify-content: center; margin: 0 auto 18px; }
   :root[data-theme="light"] .success-ico { color: var(--teal); }
   .success-box { background: var(--surface2); border-radius: 12px; padding: 16px; margin-bottom: 22px; font-size: 13.5px; text-align: left; display: flex; flex-direction: column; gap: 6px; }
+  .cred-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .cred-table th { text-align: left; color: var(--text2); font-weight: 600; padding: 5px 6px; border-bottom: 1px solid var(--line); }
+  .cred-table td { padding: 6px 6px; border-bottom: 1px solid var(--line); }
+  .cred-table tr:last-child td { border-bottom: none; }
+  .cred-table .mono { font-family: "JetBrains Mono", monospace; }
 </style>
 </head>
 <body>
@@ -497,7 +502,7 @@
         </div>
         <h2 class="reg-headline" data-i18n="reg.brandTitle">Kimyoviy tozalash biznesingizni <em>raqamlashtiring</em></h2>
         <ul class="reg-ticket">
-          <li><span data-i18n="reg.perk1">Bepul davr</span><b>14 kun</b></li>
+          <li><span data-i18n="reg.perk1">Bepul davr</span><b data-i18n="reg.perk1v">14 kun</b></li>
           <li><span data-i18n="reg.perk2">Bank kartasi</span><b data-i18n="reg.perk2v">kerak emas</b></li>
           <li><span data-i18n="reg.perk3">Admin-panel</span><b data-i18n="reg.perk3v">darhol tayyor</b></li>
           <li><span data-i18n="reg.perk4">Mijozlar uchun sayt</span><b data-i18n="reg.perk4v">avtomatik</b></li>
@@ -556,11 +561,12 @@
         <div id="regSuccessView" style="display:none;text-align:center">
           <div class="success-ico">✓</div>
           <h3 data-i18n="reg.doneTitle">Tayyor!</h3>
-          <p class="modal-sub" data-i18n="reg.doneText">Kompaniyangiz yaratildi. Admin-panelga kirish uchun login va parolingizni ishlating.</p>
-          <div class="success-box">
-            <div><span data-i18n="reg.doneSlug">Manzil:</span> <b id="doneSlug" class="mono"></b></div>
-            <div><span data-i18n="reg.doneLogin">Login:</span> <b class="mono">admin</b></div>
+          <p class="modal-sub" data-i18n="reg.doneText">Kompaniyangiz yaratildi. Quyidagi login/parollardan foydalanib kiring.</p>
+          <div class="success-box" style="text-align:left">
+            <div style="margin-bottom:10px"><span data-i18n="reg.doneSlug">Manzil:</span> <b id="doneSlug" class="mono"></b></div>
+            <table class="cred-table" id="credTable"></table>
           </div>
+          <div class="f-hint" style="margin-bottom:18px" data-i18n="reg.credWarn">⚠️ Login va parol (admindan tashqari) rol nomi bilan bir xil. Birinchi kirishdan so'ng parollarni almashtiring.</div>
           <a class="btn btn-accent" id="goAdminBtn" href="#" target="_blank" style="width:100%" data-i18n="reg.goAdmin">Admin-panelga kirish</a>
         </div>
       </div>
@@ -605,12 +611,13 @@
       'video.caption':'Как выглядит Cleano','video.soon':'Видео скоро',
       'reg.title':'Регистрация компании','reg.sub':'14 дней бесплатно, без привязки карты.',
       'reg.back':'Назад','reg.brandTitle':'Переведите химчистку <em>в цифровой формат</em>',
-      'reg.perk1':'Бесплатный период','reg.perk2':'Банковская карта','reg.perk2v':'не нужна',
+      'reg.perk1':'Бесплатный период','reg.perk1v':'14 дней','reg.perk2':'Банковская карта','reg.perk2v':'не нужна',
       'reg.perk3':'Админ-панель','reg.perk3v':'готова сразу','reg.perk4':'Сайт для клиентов','reg.perk4v':'автоматически',
       'reg.companyName':'Название компании','reg.slug':'Адрес на сайте','reg.slugHint':'Только латинские буквы, цифры и дефис, 3–50 символов',
       'reg.contactName':'Ваше имя','reg.phone':'Телефон','reg.email':'Email','reg.optional':'(необязательно)',
       'reg.password':'Пароль','reg.password2':'Повторите пароль','reg.submit':'Зарегистрироваться',
-      'reg.doneTitle':'Готово!','reg.doneText':'Компания создана. Используйте логин и пароль, чтобы войти в админ-панель.',
+      'reg.doneTitle':'Готово!','reg.doneText':'Компания создана. Используйте данные ниже, чтобы войти.',
+      'reg.credWarn':'⚠️ Логин и пароль (кроме админа) совпадают с названием роли. Смените пароли после первого входа.',
       'reg.doneSlug':'Адрес:','reg.doneLogin':'Логин:','reg.goAdmin':'Войти в админ-панель',
       'reg.err.password':'Пароли не совпадают','reg.err.generic':'Не удалось зарегистрировать — попробуйте ещё раз',
       'contact.address':'Адрес офиса','contact.title':'Свяжитесь с нами','contact.sub':'Звоните или пишите — на связи',
@@ -645,10 +652,14 @@
       'footer.tagline':'kimyoviy tozalash va kirxonalarni avtomatlashtirish platformasi',
       'video.caption':"Cleano qanday ko'rinadi",'video.soon':'Video tez orada',
       'reg.title':"Kompaniyani ro'yxatdan o'tkazish",'reg.sub':"14 kun bepul, karta kerak emas.",
+      'reg.back':'Orqaga','reg.brandTitle':"Kimyoviy tozalash biznesingizni <em>raqamlashtiring</em>",
+      'reg.perk1':'Bepul davr','reg.perk1v':'14 kun','reg.perk2':'Bank kartasi','reg.perk2v':'kerak emas',
+      'reg.perk3':'Admin-panel','reg.perk3v':'darhol tayyor','reg.perk4':'Mijozlar uchun sayt','reg.perk4v':'avtomatik',
       'reg.companyName':'Kompaniya nomi','reg.slug':'Manzil saytda (slug)','reg.slugHint':"Faqat lotin harflari, raqamlar va tire, 3–50 belgi",
       'reg.contactName':'Ismingiz','reg.phone':'Telefon','reg.email':'Email','reg.optional':'(ixtiyoriy)',
       'reg.password':'Parol','reg.password2':'Parolni takrorlang','reg.submit':"Ro'yxatdan o'tish",
-      'reg.doneTitle':'Tayyor!','reg.doneText':"Kompaniyangiz yaratildi. Admin-panelga kirish uchun login va parolingizni ishlating.",
+      'reg.doneTitle':'Tayyor!','reg.doneText':"Kompaniyangiz yaratildi. Quyidagi login/parollardan foydalanib kiring.",
+      'reg.credWarn':"⚠️ Login va parol (admindan tashqari) rol nomi bilan bir xil. Birinchi kirishdan so'ng parollarni almashtiring.",
       'reg.doneSlug':'Manzil:','reg.doneLogin':'Login:','reg.goAdmin':'Admin-panelga kirish',
       'reg.err.password':"Parollar mos kelmadi",'reg.err.generic':"Ro'yxatdan o'tkazib bo'lmadi — qayta urinib ko'ring",
       'contact.address':'Ofis manzili','contact.title':"Biz bilan bog'laning",'contact.sub':"Qo'ng'iroq qiling yoki yozing",
@@ -720,6 +731,21 @@
   };
   var BRAND_COLOR = { phone: 'var(--teal)', telegram: '#29A9EA', instagram: '#C1367A', facebook: '#1877F2', whatsapp: '#25D366' };
   var BRAND_LABEL = { telegram: 'Telegram', instagram: 'Instagram', facebook: 'Facebook', whatsapp: 'WhatsApp' };
+
+  var ROLE_LABEL = {
+    ru: { admin:'👑 Админ', manager:'🧑‍💼 Менеджер', callcenter:'📞 Колл-центр', driver:'🚗 Водитель', packer:'📦 Упаковщик', logistics:'🚚 Логистика', washer:'🫧 Мойщик' },
+    uz: { admin:'👑 Admin', manager:'🧑‍💼 Menejer', callcenter:'📞 Kol-markaz', driver:'🚗 Haydovchi', packer:'📦 Qadoqlovchi', logistics:'🚚 Logistika', washer:'🫧 Yuvuvchi' },
+  };
+  function renderCredTable(creds){
+    var t = document.getElementById('credTable');
+    if (!t) return;
+    var rl = ROLE_LABEL[lang] || ROLE_LABEL.uz;
+    var thLabel = lang === 'ru' ? ['Роль','Логин','Пароль'] : ['Rol','Login','Parol'];
+    t.innerHTML = '<tr><th>' + thLabel[0] + '</th><th>' + thLabel[1] + '</th><th>' + thLabel[2] + '</th></tr>' +
+      creds.map(function(c){
+        return '<tr><td>' + (rl[c.role] || c.role) + '</td><td class="mono">' + c.login + '</td><td class="mono">' + c.password + '</td></tr>';
+      }).join('');
+  }
 
   function contactItems(s){
     var items = [];
@@ -840,6 +866,7 @@
       document.getElementById('regSuccessView').style.display = 'block';
       document.getElementById('doneSlug').textContent = data.slug;
       document.getElementById('goAdminBtn').href = 'admin.html?company_slug=' + encodeURIComponent(data.slug);
+      renderCredTable(data.credentials || []);
     } catch (err) {
       errEl.textContent = err.message || (I18N[lang]||I18N.uz)['reg.err.generic'];
     } finally {
