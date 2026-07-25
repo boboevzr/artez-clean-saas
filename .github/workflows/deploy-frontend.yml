@@ -63,6 +63,12 @@ jobs:
             exit 1
           fi
 
+      - name: Swap in platform landing page (cleano.uz only)
+        if: github.event.inputs.subdomain == 'cleano'
+        run: |
+          echo "Замена index.html на лендинг платформы cleano-landing.html"
+          cp cleano-landing.html index.html
+
       - name: Set FTP credentials and path
         id: cfg
         run: |
