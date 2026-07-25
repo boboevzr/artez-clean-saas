@@ -80,6 +80,14 @@
   .btn-ghost { background: transparent; color: var(--text); border-color: var(--line); }
   .btn-ghost:hover { border-color: var(--teal); color: var(--teal-soft); }
   :root[data-theme="light"] .btn-ghost:hover { color: var(--teal); }
+  .btn-copy-highlight { background: color-mix(in srgb, var(--teal) 16%, transparent); border-color: var(--teal); color: var(--teal-soft); animation: copyGlow 2.2s ease-in-out infinite; }
+  .btn-copy-highlight:hover { background: color-mix(in srgb, var(--teal) 26%, transparent); color: var(--teal-soft); }
+  :root[data-theme="light"] .btn-copy-highlight { color: var(--teal); }
+  @keyframes copyGlow {
+    0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--teal) 45%, transparent); }
+    50%      { box-shadow: 0 0 0 9px color-mix(in srgb, var(--teal) 0%, transparent); }
+  }
+  @media (prefers-reduced-motion: reduce) { .btn-copy-highlight { animation: none; } }
 
   /* ===== AMBIENT STEAM ===== */
   .steam-layer { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
@@ -627,7 +635,7 @@
             <table class="cred-table" id="credTable"></table>
           </div>
           <div class="f-hint" style="margin-bottom:14px" data-i18n="reg.credWarn">⚠️ Login va parol (admindan tashqari) rol nomi bilan bir xil. Birinchi kirishdan so'ng parollarni almashtiring.</div>
-          <button type="button" class="btn btn-ghost" id="copyCredsBtn" style="width:100%;margin-bottom:10px" data-i18n="reg.copyCreds">📋 Nusxalash (saqlab qo'yish uchun)</button>
+          <button type="button" class="btn btn-copy-highlight" id="copyCredsBtn" style="width:100%;margin-bottom:10px" data-i18n="reg.copyCreds">📋 Nusxalash (saqlab qo'yish uchun)</button>
           <a class="btn btn-accent" id="goAdminBtn" href="#" target="_blank" style="width:100%" data-i18n="reg.goAdmin">Admin-panelga kirish</a>
         </div>
       </div>
