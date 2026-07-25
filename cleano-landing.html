@@ -296,9 +296,11 @@
   .f-consent a { color: var(--teal-soft); text-decoration: underline; }
   .f-consent a:hover { color: var(--teal); }
 
-  .phone-verify { background: var(--surface2); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; margin: -2px 0 14px; }
-  .pv-label { display: block; font-size: 12.5px; font-weight: 600; color: var(--text2); margin-bottom: 10px; }
-  .pv-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+  .pv-btns { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+  .pv-btns-col { flex-direction: column; }
+  .pv-btn-icon { width: 100%; justify-content: flex-start; gap: 12px; padding: 13px 18px; }
+  .pv-btn-ico { --brand: var(--teal); width: 26px; height: 26px; flex-shrink: 0; color: var(--brand); display: inline-flex; }
+  .pv-btn-ico svg { width: 100%; height: 100%; }
   .pv-btn, .pv-open-btn { font: inherit; font-size: 13px; font-weight: 700; font-family: "Sora", sans-serif; padding: 9px 16px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--text); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; }
   .pv-btn:hover, .pv-open-btn:hover { border-color: var(--teal); color: var(--teal-soft); }
   .pv-panel { margin-top: 2px; }
@@ -585,25 +587,6 @@
               </div>
             </div>
 
-            <div class="phone-verify" id="pvBlock" style="display:none">
-              <div class="pv-picker" id="pvPicker">
-                <span class="pv-label" data-i18n="reg.pv.choose">Raqamni tasdiqlang:</span>
-                <div class="pv-btns">
-                  <button type="button" class="pv-btn" id="pvChooseTg" data-i18n="reg.pv.viaTg">✈️ Telegram orqali</button>
-                  <button type="button" class="pv-btn" id="pvChooseSms" data-i18n="reg.pv.viaSms">💬 SMS orqali</button>
-                </div>
-              </div>
-              <div class="pv-panel" id="pvTg" style="display:none">
-                <p class="f-hint" data-i18n="reg.pv.tgHint">Botni oching, "Ulashish" tugmasini bosing, so'ng "Tekshirish" tugmasini bosing.</p>
-                <div class="pv-btns">
-                  <a class="btn btn-ghost pv-open-btn" id="pvTgOpenBtn" target="_blank" rel="noopener" data-i18n="reg.pv.openBot">Botni ochish</a>
-                  <button type="button" class="btn btn-ghost pv-open-btn" id="pvTgCheckBtn" data-i18n="reg.pv.check">Tekshirish</button>
-                </div>
-                <div class="pv-status" id="pvTgStatus"></div>
-              </div>
-              <div class="pv-verified" id="pvVerified" style="display:none">✅ <span data-i18n="reg.pv.verified">Raqam tasdiqlangan</span></div>
-            </div>
-
             <div class="f-field">
               <label data-i18n="reg.email">Email <span class="opt" data-i18n="reg.optional">(ixtiyoriy)</span></label>
               <input type="email" id="regEmail" name="email" autocomplete="email" maxlength="160">
@@ -645,19 +628,46 @@
   </div>
 </div>
 
-<!-- Модалка подтверждения SMS-кода — закрывается ТОЛЬКО явной кнопкой, клик по фону и потеря фокуса её не закрывают -->
-<div class="sms-modal-overlay" id="smsModalOverlay">
+<!-- Модалка подтверждения телефона (выбор способа + Telegram + SMS-код) — закрывается ТОЛЬКО явной кнопкой/Escape,
+     клик по фону и потеря фокуса её не закрывают. Одна модалка на все шаги, чтобы не открывалась вторая поверх первой. -->
+<div class="sms-modal-overlay" id="pvModalOverlay">
   <div class="sms-modal" onclick="event.stopPropagation()">
-    <button type="button" class="sms-modal-close" id="smsModalCloseBtn" aria-label="Close">✕</button>
-    <div class="sms-modal-ico">💬</div>
-    <h3 data-i18n="reg.pv.smsModalTitle">SMS kodini tasdiqlash</h3>
-    <p class="modal-sub" id="smsModalPhone"></p>
-    <div class="pv-sms-code" id="pvSmsCodeRow" style="display:none">
-      <input type="text" id="pvSmsCode" maxlength="6" inputmode="numeric" placeholder="000000">
-      <button type="button" class="btn btn-accent pv-open-btn" id="pvSmsConfirmBtn" data-i18n="reg.pv.confirm">Tasdiqlash</button>
+    <button type="button" class="sms-modal-close" id="pvModalCloseBtn" aria-label="Close">✕</button>
+    <h3 data-i18n="reg.pv.modalTitle">Raqamni tasdiqlash</h3>
+    <p class="modal-sub" id="pvModalPhone"></p>
+
+    <div class="pv-picker" id="pvPicker">
+      <div class="pv-btns pv-btns-col">
+        <button type="button" class="pv-btn pv-btn-icon" id="pvChooseTg">
+          <span class="pv-btn-ico" style="--brand:#29A9EA"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M21.05 3.76L2.42 11.13c-1.2.49-1.18 1.16-.22 1.45l4.78 1.49 1.84 5.6c.22.6.36.85.72.85.28 0 .4-.13.56-.28l2.05-1.99 4.25 3.14c.78.44 1.35.21 1.54-.72l2.8-13.16c.28-1.16-.44-1.68-1.19-1.35zM8.02 13.6l8.98-5.68c.43-.26.82-.12.5.17l-7.28 6.57-.28 3.1z"/></svg></span>
+          <span data-i18n="reg.pv.viaTg">Telegram orqali</span>
+        </button>
+        <button type="button" class="pv-btn pv-btn-icon" id="pvChooseSms">
+          <span class="pv-btn-ico" style="--brand:var(--teal)"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M4 4h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H8l-4 4V6a2 2 0 0 1 2-2z"/></svg></span>
+          <span data-i18n="reg.pv.viaSms">SMS orqali</span>
+        </button>
+      </div>
     </div>
-    <div class="pv-status" id="pvSmsStatus"></div>
-    <a href="#" id="pvSmsResend" class="pv-resend" style="display:none" data-i18n="reg.pv.resend">Kodni qayta yuborish</a>
+
+    <div class="pv-panel" id="pvTg" style="display:none">
+      <p class="f-hint" data-i18n="reg.pv.tgHint">Botni oching, "Ulashish" tugmasini bosing, so'ng "Tekshirish" tugmasini bosing.</p>
+      <div class="pv-btns">
+        <a class="btn btn-ghost pv-open-btn" id="pvTgOpenBtn" target="_blank" rel="noopener" data-i18n="reg.pv.openBot">Botni ochish</a>
+        <button type="button" class="btn btn-ghost pv-open-btn" id="pvTgCheckBtn" data-i18n="reg.pv.check">Tekshirish</button>
+      </div>
+      <div class="pv-status" id="pvTgStatus"></div>
+    </div>
+
+    <div class="pv-panel" id="pvSmsPanel" style="display:none">
+      <div class="pv-sms-code" id="pvSmsCodeRow" style="display:none">
+        <input type="text" id="pvSmsCode" maxlength="6" inputmode="numeric" placeholder="000000">
+        <button type="button" class="btn btn-accent pv-open-btn" id="pvSmsConfirmBtn" data-i18n="reg.pv.confirm">Tasdiqlash</button>
+      </div>
+      <div class="pv-status" id="pvSmsStatus"></div>
+      <a href="#" id="pvSmsResend" class="pv-resend" style="display:none" data-i18n="reg.pv.resend">Kodni qayta yuborish</a>
+    </div>
+
+    <div class="pv-verified" id="pvVerified" style="display:none">✅ <span data-i18n="reg.pv.verified">Raqam tasdiqlangan</span></div>
   </div>
 </div>
 
@@ -710,13 +720,12 @@
       'reg.err.dupName':'Компания с таким названием уже зарегистрирована','reg.err.dupSlug':'Этот адрес уже занят',
       'reg.err.dupPhone':'Этот телефон уже зарегистрирован','reg.err.dupEmail':'Этот email уже зарегистрирован',
       'reg.consent':'Я ознакомлен(а) с <a href="cleano-terms.html" target="_blank">Условиями использования</a> и <a href="cleano-privacy.html" target="_blank">Политикой конфиденциальности</a> и согласен(на) с ними',
-      'reg.pv.choose':'Подтвердите номер:','reg.pv.viaTg':'✈️ Через Telegram','reg.pv.viaSms':'💬 По SMS',
-      'reg.pv.smsModalTitle':'Подтверждение SMS-кода',
+      'reg.pv.viaTg':'Через Telegram','reg.pv.viaSms':'По SMS',
+      'reg.pv.modalTitle':'Подтверждение номера',
       'reg.pv.tgHint':'Откройте бота, нажмите «Поделиться номером», затем нажмите «Проверить».',
       'reg.pv.openBot':'Открыть бота','reg.pv.check':'Проверить','reg.pv.sendSms':'Получить код',
       'reg.pv.confirm':'Подтвердить','reg.pv.resend':'Отправить код повторно','reg.pv.verified':'Номер подтверждён',
       'reg.pv.err.notVerified':'Ещё не подтверждено — поделитесь номером в боте и попробуйте снова',
-      'reg.pv.err.needPhone':'Сначала введите номер телефона выше',
       'reg.pv.err.noBotConfigured':'Telegram-бот пока не настроен, используйте SMS',
       'reg.pv.err.wrongCode':'Неверный или просроченный код','reg.pv.sent':'Код отправлен',
       'reg.err.needVerify':'Подтвердите номер телефона перед регистрацией',
@@ -766,13 +775,12 @@
       'reg.err.dupName':"Bu nomdagi kompaniya allaqachon ro'yxatdan o'tgan",'reg.err.dupSlug':'Bu manzil band',
       'reg.err.dupPhone':"Bu telefon raqami allaqachon ro'yxatdan o'tgan",'reg.err.dupEmail':"Bu email allaqachon ro'yxatdan o'tgan",
       'reg.consent':'Men <a href="cleano-terms.html" target="_blank">Foydalanish shartlari</a> va <a href="cleano-privacy.html" target="_blank">Maxfiylik siyosati</a> bilan tanishdim va roziman',
-      'reg.pv.choose':'Raqamni tasdiqlang:','reg.pv.viaTg':'✈️ Telegram orqali','reg.pv.viaSms':'💬 SMS orqali',
-      'reg.pv.smsModalTitle':'SMS kodini tasdiqlash',
+      'reg.pv.viaTg':'Telegram orqali','reg.pv.viaSms':'SMS orqali',
+      'reg.pv.modalTitle':'Raqamni tasdiqlash',
       'reg.pv.tgHint':'Botni oching, "Ulashish" tugmasini bosing, so\'ng "Tekshirish" tugmasini bosing.',
       'reg.pv.openBot':'Botni ochish','reg.pv.check':'Tekshirish','reg.pv.sendSms':'Kod olish',
       'reg.pv.confirm':'Tasdiqlash','reg.pv.resend':'Kodni qayta yuborish','reg.pv.verified':'Raqam tasdiqlangan',
       'reg.pv.err.notVerified':"Hali tasdiqlanmadi — botda raqamni ulashing va qayta urinib ko'ring",
-      'reg.pv.err.needPhone':'Avval yuqorida telefon raqamini kiriting',
       'reg.pv.err.noBotConfigured':"Telegram-bot hali sozlanmagan, SMS dan foydalaning",
       'reg.pv.err.wrongCode':"Noto'g'ri yoki muddati o'tgan kod",'reg.pv.sent':'Kod yuborildi',
       'reg.err.needVerify':"Ro'yxatdan o'tishdan oldin telefon raqamini tasdiqlang",
@@ -947,8 +955,8 @@
   document.getElementById('regCloseBtn').addEventListener('click', closeReg);
   document.addEventListener('keydown', function(e){
     if (e.key !== 'Escape') return;
-    var smsModal = document.getElementById('smsModalOverlay');
-    if (smsModal && smsModal.classList.contains('open')) return; // модалку SMS-кода закрывает свой обработчик
+    var pvModal = document.getElementById('pvModalOverlay');
+    if (pvModal && pvModal.classList.contains('open')) return; // модалку подтверждения телефона закрывает свой обработчик
     if (regOverlay.classList.contains('open')) closeReg();
   });
 
@@ -1012,40 +1020,45 @@
     });
   });
 
-  // ── Подтверждение номера телефона: Telegram (поделиться контактом) или SMS ──
+  // ── Подтверждение номера телефона: Telegram (поделиться контактом) или SMS — единая модалка ──
   var pvPhoneInput   = document.getElementById('regPhone');
   var pvPicker       = document.getElementById('pvPicker');
   var pvTgPanel      = document.getElementById('pvTg');
+  var pvSmsPanel     = document.getElementById('pvSmsPanel');
   var pvVerifiedEl   = document.getElementById('pvVerified');
-  var smsModalOverlay = document.getElementById('smsModalOverlay');
+  var pvModalOverlay = document.getElementById('pvModalOverlay');
   var pvVerified     = false;
   var pvVerifiedFor  = null;
   var pvSmsResendTimer = null;
 
   function tr(key){ return (I18N[lang]||I18N.uz)[key] || ''; }
 
-  // Модалка SMS-кода — full-screen-подобный оверлей поверх страницы регистрации,
-  // закрывается ТОЛЬКО крестиком/Escape (тот же принцип, что и у самой reg-page,
-  // после того как обычная модалка регистрации ранее закрывалась случайно).
-  function openSmsModal(){
-    document.getElementById('smsModalPhone').textContent = pvPhoneInput.value.trim();
-    smsModalOverlay.classList.add('open');
+  // Модалка подтверждения телефона — закрывается ТОЛЬКО крестиком/Escape,
+  // клик по фону и потеря фокуса её не закрывают (после раннего бага со случайным закрытием
+  // обычной модалки регистрации этот принцип теперь применяется везде).
+  function showPvStep(step){
+    pvPicker.style.display  = step === 'picker' ? '' : 'none';
+    pvTgPanel.style.display = step === 'tg' ? '' : 'none';
+    pvSmsPanel.style.display = step === 'sms' ? '' : 'none';
+    pvVerifiedEl.style.display = step === 'verified' ? '' : 'none';
   }
-  function closeSmsModal(){ smsModalOverlay.classList.remove('open'); }
-  document.getElementById('smsModalCloseBtn').addEventListener('click', closeSmsModal);
+  function openPvModal(){
+    document.getElementById('pvModalPhone').textContent = pvPhoneInput.value.trim();
+    showPvStep('picker');
+    pvModalOverlay.classList.add('open');
+  }
+  function closePvModal(){ pvModalOverlay.classList.remove('open'); }
+  document.getElementById('pvModalCloseBtn').addEventListener('click', closePvModal);
   document.addEventListener('keydown', function(e){
-    if (e.key === 'Escape' && smsModalOverlay.classList.contains('open')) closeSmsModal();
+    if (e.key === 'Escape' && pvModalOverlay.classList.contains('open')) closePvModal();
   });
 
   function resetPhoneVerify(){
     pvVerified = false;
     pvVerifiedFor = null;
     clearTimeout(pvSmsResendTimer);
-    document.getElementById('pvBlock').style.display = 'none';
-    pvPicker.style.display = '';
-    pvTgPanel.style.display = 'none';
-    pvVerifiedEl.style.display = 'none';
-    closeSmsModal();
+    closePvModal();
+    showPvStep('picker');
     document.getElementById('pvTgStatus').textContent = '';
     document.getElementById('pvSmsStatus').textContent = '';
     document.getElementById('pvSmsCodeRow').style.display = 'none';
@@ -1053,23 +1066,22 @@
     document.getElementById('pvSmsCode').value = '';
   }
 
-  // Показ пикера подтверждения — вызывается только при нажатии "Зарегистрироваться",
+  // Открытие модалки подтверждения — только при нажатии "Зарегистрироваться",
   // если номер ещё не подтверждён (по просьбе пользователя: сначала заполняется вся форма).
   function requestPhoneVerify(){
-    var block = document.getElementById('pvBlock');
-    block.style.display = '';
-    block.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    openPvModal();
   }
 
   function showPhoneVerified(){
     pvVerified = true;
     pvVerifiedFor = pvPhoneInput.value.trim();
-    pvPicker.style.display = 'none';
-    pvTgPanel.style.display = 'none';
-    pvVerifiedEl.style.display = '';
-    closeSmsModal();
-    // Продолжаем регистрацию автоматически — пользователь уже нажимал "Зарегистрироваться" раньше.
-    regForm.requestSubmit();
+    showPvStep('verified');
+    // Даём увидеть галочку, затем закрываем модалку и продолжаем регистрацию автоматически —
+    // пользователь уже нажимал "Зарегистрироваться" раньше.
+    setTimeout(function(){
+      closePvModal();
+      regForm.requestSubmit();
+    }, 600);
   }
 
   // Если номер меняют после подтверждения — сбрасываем подтверждение
@@ -1078,11 +1090,9 @@
   });
 
   document.getElementById('pvChooseTg').addEventListener('click', function(){
-    if (!pvPhoneInput.value.trim()) { document.getElementById('pvTgStatus').className = 'pv-status err'; document.getElementById('pvTgStatus').textContent = tr('reg.pv.err.needPhone'); return; }
-    if (!CLEANO_BOT_USERNAME) { document.getElementById('pvTgStatus').className = 'pv-status err'; document.getElementById('pvTgStatus').textContent = tr('reg.pv.err.noBotConfigured'); return; }
+    if (!CLEANO_BOT_USERNAME) { showPvStep('tg'); document.getElementById('pvTgStatus').className = 'pv-status err'; document.getElementById('pvTgStatus').textContent = tr('reg.pv.err.noBotConfigured'); return; }
     document.getElementById('pvTgOpenBtn').href = 'https://t.me/' + CLEANO_BOT_USERNAME;
-    pvPicker.style.display = 'none';
-    pvTgPanel.style.display = '';
+    showPvStep('tg');
   });
 
   document.getElementById('pvTgCheckBtn').addEventListener('click', async function(){
@@ -1105,8 +1115,7 @@
   });
 
   document.getElementById('pvChooseSms').addEventListener('click', function(){
-    if (!pvPhoneInput.value.trim()) { document.getElementById('pvTgStatus').className = 'pv-status err'; document.getElementById('pvTgStatus').textContent = tr('reg.pv.err.needPhone'); return; }
-    openSmsModal();
+    showPvStep('sms');
     sendPvSms();
   });
 
