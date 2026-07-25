@@ -308,6 +308,7 @@
             <div class="field"><label>Широта офиса (lat)</label><input id="gs_cleano_lat" type="text" placeholder="41.311081"></div>
             <div class="field"><label>Долгота офиса (lng)</label><input id="gs_cleano_lng" type="text" placeholder="69.240562"></div>
           </div>
+          <button class="btn btn-ghost btn-sm" style="margin-bottom:14px" onclick="openCoordMap('cleano')">📍 Выбрать на карте</button>
           <div class="field"><label>Адрес офиса (текст)</label><input id="gs_cleano_addr" type="text" placeholder="г. Ташкент, ул. ..."></div>
           <div style="display:flex;align-items:center;gap:12px">
             <button class="btn btn-primary btn-sm" onclick="saveCleanoContacts()">💾 Сохранить</button>
@@ -2093,11 +2094,20 @@ let _ymapsLoaded = false;
 
 function openCoordMap(type) {
   _coordMapType = type;
-  document.getElementById('coordMapTitle').textContent = type === 'city' ? '📍 Центр города / района' : '📍 Координаты цеха';
+  document.getElementById('coordMapTitle').textContent =
+    type === 'city' ? '📍 Центр города / района' :
+    type === 'cleano' ? '📍 Офис Cleano' : '📍 Координаты цеха';
 
-  const inputId = type === 'city' ? 'be_city_coords' : 'be_workshop_coords';
-  const currentVal = document.getElementById(inputId).value.trim();
-  const parts = currentVal.split(',').map(s => parseFloat(s.trim()));
+  let parts;
+  if (type === 'cleano') {
+    const lat = parseFloat(document.getElementById('gs_cleano_lat').value.trim());
+    const lng = parseFloat(document.getElementById('gs_cleano_lng').value.trim());
+    parts = [lat, lng];
+  } else {
+    const inputId = type === 'city' ? 'be_city_coords' : 'be_workshop_coords';
+    const currentVal = document.getElementById(inputId).value.trim();
+    parts = currentVal.split(',').map(s => parseFloat(s.trim()));
+  }
   const hasCoords = parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1]);
 
   openModal('modalCoordMap');
@@ -2162,8 +2172,13 @@ function _loadYmapsScript(cb) {
 function applyCoordMap() {
   if (!_coordYmarker) { alert('Кликните на карту чтобы выбрать точку'); return; }
   const coords = _coordYmarker.geometry.getCoordinates();
-  const inputId = _coordMapType === 'city' ? 'be_city_coords' : 'be_workshop_coords';
-  document.getElementById(inputId).value = `${coords[0].toFixed(6)}, ${coords[1].toFixed(6)}`;
+  if (_coordMapType === 'cleano') {
+    document.getElementById('gs_cleano_lat').value = coords[0].toFixed(6);
+    document.getElementById('gs_cleano_lng').value = coords[1].toFixed(6);
+  } else {
+    const inputId = _coordMapType === 'city' ? 'be_city_coords' : 'be_workshop_coords';
+    document.getElementById(inputId).value = `${coords[0].toFixed(6)}, ${coords[1].toFixed(6)}`;
+  }
   closeModal('modalCoordMap');
   if (_coordYmap) { _coordYmap.destroy(); _coordYmap = null; _coordYmarker = null; }
 }

@@ -203,21 +203,45 @@
   .footer-contacts { display: flex; flex-direction: column; }
   .footer-logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 18px; margin-bottom: 18px; }
   .footer-logo svg { width: 28px; height: 28px; }
-  .footer-links { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px 20px; margin-bottom: auto; }
-  .footer-link { display: flex; align-items: center; gap: 9px; font-size: 13.5px; color: var(--text2); padding: 8px 0; transition: color .15s; }
-  .footer-link:hover { color: var(--teal-soft); }
-  :root[data-theme="light"] .footer-link:hover { color: var(--teal); }
-  .footer-link .ico { width: 28px; height: 28px; border-radius: 8px; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+  .footer-links { display: flex; gap: 12px; margin-bottom: auto; }
+  .icon-social { width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--surface2); color: var(--brand, var(--text2)); transition: transform .18s cubic-bezier(.34,1.56,.64,1), background .18s, color .18s; }
+  .icon-social svg { width: 19px; height: 19px; }
+  .icon-social:hover { transform: translateY(-3px); background: var(--brand, var(--surface2)); color: #fff; }
   .footer-bottom { border-top: 1px solid var(--line); margin-top: 24px; padding-top: 18px; font-size: 12.5px; color: var(--text2); display: flex; gap: 6px; flex-wrap: wrap; justify-content: space-between; }
 
-  /* ===== FLOATING CONTACT BUTTON ===== */
-  .float-contact-wrap { position: fixed; right: 20px; bottom: 20px; z-index: 300; display: flex; flex-direction: column; align-items: flex-end; gap: 12px; }
-  .float-btn { width: 56px; height: 56px; border-radius: 50%; border: none; background: linear-gradient(135deg, var(--amber) 0%, var(--amber-deep) 100%); color: #1A0E00; font-size: 22px; cursor: pointer; box-shadow: 0 10px 30px -8px rgba(227,167,59,.55); transition: transform .2s cubic-bezier(.34,1.56,.64,1); }
+  /* ===== FLOATING CONTACT BUTTON + MODAL CARD ===== */
+  .float-btn { position: fixed; right: 20px; bottom: 20px; z-index: 300; width: 56px; height: 56px; border-radius: 50%; border: none; background: linear-gradient(135deg, var(--amber) 0%, var(--amber-deep) 100%); color: #1A0E00; font-size: 22px; cursor: pointer; box-shadow: 0 10px 30px -8px rgba(227,167,59,.55); transition: transform .2s cubic-bezier(.34,1.56,.64,1); }
   .float-btn:hover { transform: scale(1.08) rotate(-4deg); }
-  .float-panel { display: none; width: 240px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 14px; box-shadow: var(--shadow); }
-  .float-panel.open { display: block; animation: riseIn .25s ease forwards; }
-  .float-panel .footer-link { padding: 7px 4px; border-radius: 8px; }
-  .float-panel .footer-link:hover { background: var(--surface2); }
+
+  .float-overlay { position: fixed; inset: 0; z-index: 350; background: rgba(0,0,0,0); backdrop-filter: blur(0px); display: none; align-items: flex-end; justify-content: flex-end; padding: 0 20px 90px; transition: background .3s, backdrop-filter .3s; }
+  .float-overlay.open { display: flex; background: rgba(4,10,8,.45); backdrop-filter: blur(6px); }
+  @media (max-width: 480px) { .float-overlay { align-items: flex-end; justify-content: center; padding: 0 16px 90px; } }
+
+  .float-card { width: 320px; max-width: 92vw; background: var(--surface); border-radius: 22px; overflow: hidden; box-shadow: 0 32px 80px -16px rgba(0,0,0,.4); animation: cardSlideUp .4s cubic-bezier(.34,1.4,.64,1) both; }
+  @keyframes cardSlideUp { from { opacity: 0; transform: translateY(24px) scale(.97); } to { opacity: 1; transform: none; } }
+
+  .fc-head { position: relative; overflow: hidden; padding: 22px 20px 18px; background: linear-gradient(135deg, var(--teal-deep) 0%, #12433B 60%, var(--teal) 100%); }
+  :root[data-theme="light"] .fc-head { background: linear-gradient(135deg, #0E3D37 0%, #1A6058 60%, var(--teal) 100%); }
+  .fc-head::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 80% 20%, rgba(123,224,208,.35) 0%, transparent 60%); }
+  .fc-head-title { position: relative; font-weight: 800; font-size: 17px; color: #fff; }
+  .fc-head-sub { position: relative; font-size: 12px; color: rgba(255,255,255,.7); margin-top: 3px; }
+  .fc-close { position: absolute; top: 14px; right: 14px; width: 28px; height: 28px; border-radius: 50%; background: rgba(255,255,255,.15); border: none; color: #fff; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .2s; }
+  .fc-close:hover { background: rgba(255,255,255,.28); }
+
+  .fc-phone { display: flex; align-items: center; gap: 12px; margin: -14px 16px 0; position: relative; background: var(--surface); border-radius: 14px; padding: 12px 14px; box-shadow: 0 8px 24px -8px rgba(0,0,0,.3); text-decoration: none; }
+  .fc-phone-ico { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--teal-soft), var(--teal)); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; color: #fff; }
+  .fc-phone-ico svg { width: 17px; height: 17px; }
+  .fc-phone-num { font-weight: 800; font-size: 15px; color: var(--text); line-height: 1.1; }
+  .fc-phone-label { font-size: 11px; color: var(--text2); font-weight: 600; margin-top: 1px; }
+
+  .fc-body { padding: 16px 16px 18px; display: flex; flex-direction: column; gap: 6px; }
+  .fc-link { display: flex; align-items: center; gap: 11px; padding: 10px 8px; border-radius: 10px; font-size: 13.5px; color: var(--text); text-decoration: none; transition: background .15s; }
+  .fc-phone { text-decoration: none; }
+  .fc-link:hover { background: var(--surface2); }
+  .fc-link .ico { width: 32px; height: 32px; border-radius: 9px; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; color: var(--brand, var(--text)); }
+  .fc-link .ico svg { width: 16px; height: 16px; }
+  .fc-addr { font-size: 12px; color: var(--text2); padding: 8px 8px 0; border-top: 1px solid var(--line); margin-top: 6px; display: flex; gap: 8px; }
+  .fc-empty { font-size: 13px; color: var(--text2); padding: 6px 8px; }
 
   /* ===== MODAL (registration) ===== */
   .modal-overlay { position: fixed; inset: 0; z-index: 400; background: rgba(4,10,8,.6); backdrop-filter: blur(6px); display: none; align-items: center; justify-content: center; padding: 20px; }
@@ -403,10 +427,24 @@
   </div>
 </footer>
 
-<!-- ══════ Floating contact button ══════ -->
-<div class="float-contact-wrap">
-  <div class="float-panel" id="floatPanel"></div>
-  <button class="float-btn" id="floatBtn" aria-label="Aloqa">💬</button>
+<!-- ══════ Floating contact button + modal card ══════ -->
+<button class="float-btn" id="floatBtn" aria-label="Aloqa">💬</button>
+<div class="float-overlay" id="floatOverlay">
+  <div class="float-card" id="floatCard" onclick="event.stopPropagation()">
+    <div class="fc-head">
+      <button class="fc-close" id="floatCloseBtn" aria-label="Yopish">✕</button>
+      <div class="fc-head-title" data-i18n="contact.title">Biz bilan bog'laning</div>
+      <div class="fc-head-sub" data-i18n="contact.sub">Qo'ng'iroq qiling yoki yozing</div>
+    </div>
+    <a class="fc-phone" id="fcPhone" style="display:none" href="#">
+      <div class="fc-phone-ico" id="fcPhoneIco"></div>
+      <div>
+        <div class="fc-phone-num" id="fcPhoneNum"></div>
+        <div class="fc-phone-label" data-i18n="contact.callUs">Qo'ng'iroq qiling</div>
+      </div>
+    </a>
+    <div class="fc-body" id="floatPanelLinks"></div>
+  </div>
 </div>
 
 <!-- ══════ Registration modal ══════ -->
@@ -513,7 +551,8 @@
       'reg.doneTitle':'Готово!','reg.doneText':'Компания создана. Используйте логин и пароль, чтобы войти в админ-панель.',
       'reg.doneSlug':'Адрес:','reg.doneLogin':'Логин:','reg.goAdmin':'Войти в админ-панель',
       'reg.err.password':'Пароли не совпадают','reg.err.generic':'Не удалось зарегистрировать — попробуйте ещё раз',
-      'contact.address':'Адрес офиса',
+      'contact.address':'Адрес офиса','contact.title':'Свяжитесь с нами','contact.sub':'Звоните или пишите — на связи',
+      'contact.callUs':'Позвонить','contact.none':'Контакты пока не заполнены',
     },
     uz: {
       'nav.features':'Imkoniyatlar','nav.how':'Qanday ishlaydi','nav.pricing':'Tariflar','nav.tryFree':"Bepul sinab ko'ring",
@@ -550,7 +589,8 @@
       'reg.doneTitle':'Tayyor!','reg.doneText':"Kompaniyangiz yaratildi. Admin-panelga kirish uchun login va parolingizni ishlating.",
       'reg.doneSlug':'Manzil:','reg.doneLogin':'Login:','reg.goAdmin':'Admin-panelga kirish',
       'reg.err.password':"Parollar mos kelmadi",'reg.err.generic':"Ro'yxatdan o'tkazib bo'lmadi — qayta urinib ko'ring",
-      'contact.address':'Ofis manzili',
+      'contact.address':'Ofis manzili','contact.title':"Biz bilan bog'laning",'contact.sub':"Qo'ng'iroq qiling yoki yozing",
+      'contact.callUs':"Qo'ng'iroq qilish",'contact.none':"Kontaktlar hali kiritilmagan",
     }
   };
   var lang = localStorage.getItem('cleano_lang') || 'uz';
@@ -609,16 +649,23 @@
   // ── Публичные контакты Cleano (подвал + плавающая кнопка + карта) ──
   var API_BASE = (window.APP_API_URL || 'https://web-production-eef2a.up.railway.app') + '/api';
 
-  function contactLinksHtml(s){
+  var BRAND_ICON = {
+    phone: '<svg viewBox="0 0 24 24"><path fill="currentColor" d="M6.6 10.8c1.4 2.8 3.8 5.2 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3.1.7-.2 1L6.6 10.8z"/></svg>',
+    telegram: '<svg viewBox="0 0 24 24"><path fill="currentColor" d="M21.05 3.76L2.42 11.13c-1.2.49-1.18 1.16-.22 1.45l4.78 1.49 1.84 5.6c.22.6.36.85.72.85.28 0 .4-.13.56-.28l2.05-1.99 4.25 3.14c.78.44 1.35.21 1.54-.72l2.8-13.16c.28-1.16-.44-1.68-1.19-1.35zM8.02 13.6l8.98-5.68c.43-.26.82-.12.5.17l-7.28 6.57-.28 3.1z"/></svg>',
+    instagram: '<svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="5.5" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.8"/><circle cx="17.3" cy="6.7" r="1.1" fill="currentColor"/></svg>',
+    facebook: '<svg viewBox="0 0 24 24"><path fill="currentColor" d="M14 9h2V6.5h-2c-2.2 0-3.5 1.4-3.5 3.6V12H8.5v2.5H11V21h2.5v-6.5h2l.4-2.5h-2.4v-1.7c0-.7.3-1.3 1.5-1.3z"/></svg>',
+    whatsapp: '<svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12c0 1.82.48 3.53 1.32 5.01L2 22l5.14-1.28C8.58 21.53 10.24 22 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm4.24 12.13c-.24-.12-1.42-.7-1.64-.78-.22-.08-.38-.12-.54.12-.16.24-.62.78-.76.94-.14.16-.28.18-.52.06-.24-.12-1-.37-1.9-1.17-.7-.62-1.18-1.39-1.32-1.63-.14-.24-.01-.37.11-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.2-.47-.4-.4-.54-.41h-.46c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2s.86 2.32.98 2.48c.12.16 1.7 2.6 4.12 3.64.58.25 1.03.4 1.38.51.58.18 1.11.16 1.53.1.47-.07 1.42-.58 1.62-1.14.2-.56.2-1.04.14-1.14-.06-.1-.22-.16-.46-.28z"/></svg>',
+  };
+  var BRAND_COLOR = { phone: 'var(--teal)', telegram: '#29A9EA', instagram: '#C1367A', facebook: '#1877F2', whatsapp: '#25D366' };
+  var BRAND_LABEL = { telegram: 'Telegram', instagram: 'Instagram', facebook: 'Facebook', whatsapp: 'WhatsApp' };
+
+  function contactItems(s){
     var items = [];
-    if (s.cleano_phone)     items.push(['📞', s.cleano_phone, 'tel:' + s.cleano_phone.replace(/[^\d+]/g,'')]);
-    if (s.cleano_telegram)  items.push(['✈️', 'Telegram', s.cleano_telegram]);
-    if (s.cleano_instagram) items.push(['📷', 'Instagram', s.cleano_instagram]);
-    if (s.cleano_facebook)  items.push(['📘', 'Facebook', s.cleano_facebook]);
-    if (s.cleano_whatsapp)  items.push(['💬', 'WhatsApp', s.cleano_whatsapp]);
-    return items.map(function(it){
-      return '<a class="footer-link" href="' + it[2] + '" target="_blank" rel="noopener"><span class="ico">' + it[0] + '</span>' + it[1] + '</a>';
-    }).join('');
+    if (s.cleano_telegram)  items.push(['telegram',  s.cleano_telegram]);
+    if (s.cleano_instagram) items.push(['instagram', s.cleano_instagram]);
+    if (s.cleano_facebook)  items.push(['facebook',  s.cleano_facebook]);
+    if (s.cleano_whatsapp)  items.push(['whatsapp',  s.cleano_whatsapp]);
+    return items;
   }
 
   (async function loadPublicSettings(){
@@ -627,16 +674,30 @@
       if (!r.ok) return;
       var d = await r.json();
       var s = (d && d.settings) || {};
+      var items = contactItems(s);
 
-      var linksHtml = contactLinksHtml(s);
+      // Подвал — только круглые кнопки-иконки, без подписей
       var fc = document.getElementById('footerContacts');
-      if (fc) fc.innerHTML = linksHtml || '';
-      var fp = document.getElementById('floatPanel');
-      if (fp) {
-        var addrHtml = s.cleano_office_address
-          ? '<div class="footer-link"><span class="ico">📍</span>' + s.cleano_office_address + '</div>' : '';
-        fp.innerHTML = linksHtml + addrHtml;
+      if (fc) {
+        fc.innerHTML = items.map(function(it){
+          return '<a class="icon-social" style="--brand:' + BRAND_COLOR[it[0]] + '" href="' + it[1] + '" target="_blank" rel="noopener" aria-label="' + BRAND_LABEL[it[0]] + '" title="' + BRAND_LABEL[it[0]] + '">' + BRAND_ICON[it[0]] + '</a>';
+        }).join('');
       }
+
+      // Модалка плавающей кнопки — телефон отдельно + иконки с подписями + адрес
+      var phoneEl = document.getElementById('fcPhone');
+      if (s.cleano_phone) {
+        phoneEl.style.display = 'flex';
+        phoneEl.href = 'tel:' + s.cleano_phone.replace(/[^\d+]/g,'');
+        document.getElementById('fcPhoneNum').textContent = s.cleano_phone;
+        document.getElementById('fcPhoneIco').innerHTML = BRAND_ICON.phone;
+      }
+      var linksHtml = items.map(function(it){
+        return '<a class="fc-link" href="' + it[1] + '" target="_blank" rel="noopener"><span class="ico" style="--brand:' + BRAND_COLOR[it[0]] + '">' + BRAND_ICON[it[0]] + '</span>' + BRAND_LABEL[it[0]] + '</a>';
+      }).join('');
+      var addrHtml = s.cleano_office_address ? '<div class="fc-addr">📍 ' + s.cleano_office_address + '</div>' : '';
+      var fp = document.getElementById('floatPanelLinks');
+      if (fp) fp.innerHTML = (linksHtml || '<div class="fc-empty" data-i18n="contact.none">Ma\'lumot hali kiritilmagan</div>') + addrHtml;
 
       var lat = parseFloat(s.cleano_office_lat), lng = parseFloat(s.cleano_office_lng);
       var mapFrame = document.getElementById('officeMap');
@@ -648,15 +709,14 @@
     } catch (e) {}
   })();
 
-  // ── Плавающая кнопка контактов ──
+  // ── Плавающая кнопка контактов (модалка-карточка) ──
+  var floatOverlay = document.getElementById('floatOverlay');
   var floatBtn = document.getElementById('floatBtn');
-  var floatPanel = document.getElementById('floatPanel');
-  if (floatBtn) {
-    floatBtn.addEventListener('click', function(){
-      floatPanel.classList.toggle('open');
-      floatBtn.textContent = floatPanel.classList.contains('open') ? '✕' : '💬';
-    });
-  }
+  function openFloat(){ floatOverlay.classList.add('open'); }
+  function closeFloat(){ floatOverlay.classList.remove('open'); }
+  if (floatBtn) floatBtn.addEventListener('click', openFloat);
+  document.getElementById('floatCloseBtn').addEventListener('click', closeFloat);
+  floatOverlay.addEventListener('click', function(e){ if (e.target === floatOverlay) closeFloat(); });
 
   // ── Модалка регистрации ──
   var regOverlay = document.getElementById('regOverlay');
