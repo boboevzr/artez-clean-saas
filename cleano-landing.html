@@ -546,7 +546,6 @@
               <div class="f-field">
                 <label data-i18n="reg.contactName">Ismingiz</label>
                 <input type="text" id="regContactName" required maxlength="120">
-                <div class="f-check" id="regContactNameCheck"></div>
               </div>
               <div class="f-field">
                 <label data-i18n="reg.phone">Telefon</label>
@@ -642,8 +641,7 @@
       'reg.doneSlug':'Адрес:','reg.doneLogin':'Логин:','reg.goAdmin':'Войти в админ-панель',
       'reg.err.password':'Пароли не совпадают','reg.err.generic':'Не удалось зарегистрировать — попробуйте ещё раз',
       'reg.err.dupName':'Компания с таким названием уже зарегистрирована','reg.err.dupSlug':'Этот адрес уже занят',
-      'reg.err.dupContact':'Это имя уже используется в другой регистрации','reg.err.dupPhone':'Этот телефон уже зарегистрирован',
-      'reg.err.dupEmail':'Этот email уже зарегистрирован',
+      'reg.err.dupPhone':'Этот телефон уже зарегистрирован','reg.err.dupEmail':'Этот email уже зарегистрирован',
       'reg.consent':'Я ознакомлен(а) с <a href="cleano-terms.html" target="_blank">Условиями использования</a> и <a href="cleano-privacy.html" target="_blank">Политикой конфиденциальности</a> и согласен(на) с ними',
       'contact.address':'Адрес офиса','contact.title':'Свяжитесь с нами','contact.sub':'Звоните или пишите — на связи',
       'contact.callUs':'Позвонить','contact.none':'Контакты пока не заполнены',
@@ -689,8 +687,7 @@
       'reg.doneSlug':'Manzil:','reg.doneLogin':'Login:','reg.goAdmin':'Admin-panelga kirish',
       'reg.err.password':"Parollar mos kelmadi",'reg.err.generic':"Ro'yxatdan o'tkazib bo'lmadi — qayta urinib ko'ring",
       'reg.err.dupName':"Bu nomdagi kompaniya allaqachon ro'yxatdan o'tgan",'reg.err.dupSlug':'Bu manzil band',
-      'reg.err.dupContact':"Bu ism boshqa ro'yxatdan o'tishda ishlatilgan",'reg.err.dupPhone':"Bu telefon raqami allaqachon ro'yxatdan o'tgan",
-      'reg.err.dupEmail':"Bu email allaqachon ro'yxatdan o'tgan",
+      'reg.err.dupPhone':"Bu telefon raqami allaqachon ro'yxatdan o'tgan",'reg.err.dupEmail':"Bu email allaqachon ro'yxatdan o'tgan",
       'reg.consent':'Men <a href="cleano-terms.html" target="_blank">Foydalanish shartlari</a> va <a href="cleano-privacy.html" target="_blank">Maxfiylik siyosati</a> bilan tanishdim va roziman',
       'contact.address':'Ofis manzili','contact.title':"Biz bilan bog'laning",'contact.sub':"Qo'ng'iroq qiling yoki yozing",
       'contact.callUs':"Qo'ng'iroq qilish",'contact.none':"Kontaktlar hali kiritilmagan",
@@ -876,9 +873,9 @@
   slugInput.addEventListener('input', function(){ slugTouched = true; });
 
   // ── Живая проверка на дубликаты (name/slug/contact_name/phone/email) ──
-  var DUP_FIELDS = ['regCompanyName', 'regSlug', 'regContactName', 'regPhone', 'regEmail'];
-  var DUP_API_FIELD = { regCompanyName: 'company_name', regSlug: 'slug', regContactName: 'contact_name', regPhone: 'phone', regEmail: 'email' };
-  var DUP_MSG_KEY = { regCompanyName: 'reg.err.dupName', regSlug: 'reg.err.dupSlug', regContactName: 'reg.err.dupContact', regPhone: 'reg.err.dupPhone', regEmail: 'reg.err.dupEmail' };
+  var DUP_FIELDS = ['regCompanyName', 'regSlug', 'regPhone', 'regEmail'];
+  var DUP_API_FIELD = { regCompanyName: 'company_name', regSlug: 'slug', regPhone: 'phone', regEmail: 'email' };
+  var DUP_MSG_KEY = { regCompanyName: 'reg.err.dupName', regSlug: 'reg.err.dupSlug', regPhone: 'reg.err.dupPhone', regEmail: 'reg.err.dupEmail' };
   var dupState = {};
   var dupTimers = {};
 
