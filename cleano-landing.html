@@ -282,9 +282,12 @@
   .f-field label .opt { font-weight: 400; color: var(--text2); opacity: .7; }
   .f-field input { width: 100%; font: inherit; font-size: 14px; padding: 11px 13px; border-radius: 10px; border: 1.5px solid var(--line); background: var(--ink); color: var(--text); transition: border-color .15s; }
   .f-field input:focus { outline: none; border-color: var(--teal); }
+  .f-field input.dup { border-color: #F48080; }
   .f-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   @media (max-width: 420px) { .f-row { grid-template-columns: 1fr; } }
   .f-hint { font-size: 11.5px; color: var(--text2); margin-top: 5px; }
+  .f-check { font-size: 11.5px; color: #F48080; margin-top: 5px; min-height: 0; display: none; }
+  .f-check.show { display: block; }
   .f-error { font-size: 13px; color: #F48080; margin-bottom: 12px; min-height: 0; }
   .slug-row { display: flex; align-items: center; border: 1.5px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--ink); }
   .slug-row:focus-within { border-color: var(--teal); }
@@ -521,6 +524,7 @@
             <div class="f-field">
               <label data-i18n="reg.companyName">Kompaniya nomi</label>
               <input type="text" id="regCompanyName" required maxlength="120">
+              <div class="f-check" id="regCompanyNameCheck"></div>
             </div>
             <div class="f-field">
               <label data-i18n="reg.slug">Manzil saytda (slug)</label>
@@ -529,20 +533,24 @@
                 <input type="text" id="regSlug" required pattern="[a-z0-9\-]{3,50}" maxlength="50" placeholder="my-company">
               </div>
               <div class="f-hint" data-i18n="reg.slugHint">Faqat lotin harflari, raqamlar va tire, 3–50 belgi</div>
+              <div class="f-check" id="regSlugCheck"></div>
             </div>
             <div class="f-row">
               <div class="f-field">
                 <label data-i18n="reg.contactName">Ismingiz</label>
                 <input type="text" id="regContactName" required maxlength="120">
+                <div class="f-check" id="regContactNameCheck"></div>
               </div>
               <div class="f-field">
                 <label data-i18n="reg.phone">Telefon</label>
                 <input type="tel" id="regPhone" required placeholder="+998 90 123-45-67">
+                <div class="f-check" id="regPhoneCheck"></div>
               </div>
             </div>
             <div class="f-field">
               <label data-i18n="reg.email">Email <span class="opt" data-i18n="reg.optional">(ixtiyoriy)</span></label>
               <input type="email" id="regEmail" maxlength="160">
+              <div class="f-check" id="regEmailCheck"></div>
             </div>
             <div class="f-row">
               <div class="f-field">
@@ -621,6 +629,9 @@
       'reg.credWarn':'⚠️ Логин и пароль (кроме админа) совпадают с названием роли. Смените пароли после первого входа.',
       'reg.doneSlug':'Адрес:','reg.doneLogin':'Логин:','reg.goAdmin':'Войти в админ-панель',
       'reg.err.password':'Пароли не совпадают','reg.err.generic':'Не удалось зарегистрировать — попробуйте ещё раз',
+      'reg.err.dupName':'Компания с таким названием уже зарегистрирована','reg.err.dupSlug':'Этот адрес уже занят',
+      'reg.err.dupContact':'Это имя уже используется в другой регистрации','reg.err.dupPhone':'Этот телефон уже зарегистрирован',
+      'reg.err.dupEmail':'Этот email уже зарегистрирован',
       'contact.address':'Адрес офиса','contact.title':'Свяжитесь с нами','contact.sub':'Звоните или пишите — на связи',
       'contact.callUs':'Позвонить','contact.none':'Контакты пока не заполнены',
     },
@@ -663,6 +674,9 @@
       'reg.credWarn':"⚠️ Login va parol (admindan tashqari) rol nomi bilan bir xil. Birinchi kirishdan so'ng parollarni almashtiring.",
       'reg.doneSlug':'Manzil:','reg.doneLogin':'Login:','reg.goAdmin':'Admin-panelga kirish',
       'reg.err.password':"Parollar mos kelmadi",'reg.err.generic':"Ro'yxatdan o'tkazib bo'lmadi — qayta urinib ko'ring",
+      'reg.err.dupName':"Bu nomdagi kompaniya allaqachon ro'yxatdan o'tgan",'reg.err.dupSlug':'Bu manzil band',
+      'reg.err.dupContact':"Bu ism boshqa ro'yxatdan o'tishda ishlatilgan",'reg.err.dupPhone':"Bu telefon raqami allaqachon ro'yxatdan o'tgan",
+      'reg.err.dupEmail':"Bu email allaqachon ro'yxatdan o'tgan",
       'contact.address':'Ofis manzili','contact.title':"Biz bilan bog'laning",'contact.sub':"Qo'ng'iroq qiling yoki yozing",
       'contact.callUs':"Qo'ng'iroq qilish",'contact.none':"Kontaktlar hali kiritilmagan",
     }
@@ -815,7 +829,16 @@
 
   // ── Страница регистрации (full-screen, НЕ модалка — не закрывается случайным кликом/потерей фокуса) ──
   var regOverlay = document.getElementById('regOverlay');
-  function openReg(){ regOverlay.classList.add('open'); document.body.style.overflow = 'hidden'; }
+  var regForm = document.getElementById('regForm');
+  function resetRegForm(){
+    regForm.reset();
+    document.getElementById('regError').textContent = '';
+    DUP_FIELDS.forEach(function(f){ setDupState(f, false); });
+    slugTouched = false;
+    document.getElementById('regFormView').style.display = '';
+    document.getElementById('regSuccessView').style.display = 'none';
+  }
+  function openReg(){ resetRegForm(); regOverlay.classList.add('open'); document.body.style.overflow = 'hidden'; }
   function closeReg(){ regOverlay.classList.remove('open'); document.body.style.overflow = ''; }
   var openBtn = document.getElementById('openRegisterBtn');
   if (openBtn) openBtn.addEventListener('click', openReg);
@@ -837,10 +860,59 @@
   });
   slugInput.addEventListener('input', function(){ slugTouched = true; });
 
+  // ── Живая проверка на дубликаты (name/slug/contact_name/phone/email) ──
+  var DUP_FIELDS = ['regCompanyName', 'regSlug', 'regContactName', 'regPhone', 'regEmail'];
+  var DUP_API_FIELD = { regCompanyName: 'company_name', regSlug: 'slug', regContactName: 'contact_name', regPhone: 'phone', regEmail: 'email' };
+  var DUP_MSG_KEY = { regCompanyName: 'reg.err.dupName', regSlug: 'reg.err.dupSlug', regContactName: 'reg.err.dupContact', regPhone: 'reg.err.dupPhone', regEmail: 'reg.err.dupEmail' };
+  var dupState = {};
+  var dupTimers = {};
+
+  function setDupState(fieldId, isDup){
+    dupState[fieldId] = isDup;
+    var input = document.getElementById(fieldId);
+    var msgEl = document.getElementById(fieldId + 'Check');
+    if (input) input.classList.toggle('dup', !!isDup);
+    if (msgEl) {
+      msgEl.classList.toggle('show', !!isDup);
+      msgEl.textContent = isDup ? ((I18N[lang]||I18N.uz)[DUP_MSG_KEY[fieldId]] || '') : '';
+    }
+  }
+
+  function checkDuplicate(fieldId){
+    var input = document.getElementById(fieldId);
+    var value = input.value.trim();
+    if (!value || (fieldId === 'regEmail' && !value)) { setDupState(fieldId, false); return; }
+    var apiField = DUP_API_FIELD[fieldId];
+    fetch(API_BASE + '/saas/check-availability?field=' + encodeURIComponent(apiField) + '&value=' + encodeURIComponent(value))
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        if (input.value.trim() !== value) return; // значение уже изменилось — ответ устарел
+        setDupState(fieldId, !!data.exists);
+      })
+      .catch(function(){});
+  }
+
+  DUP_FIELDS.forEach(function(fieldId){
+    var input = document.getElementById(fieldId);
+    input.addEventListener('input', function(){
+      clearTimeout(dupTimers[fieldId]);
+      setDupState(fieldId, false);
+      dupTimers[fieldId] = setTimeout(function(){ checkDuplicate(fieldId); }, 500);
+    });
+    input.addEventListener('blur', function(){
+      clearTimeout(dupTimers[fieldId]);
+      checkDuplicate(fieldId);
+    });
+  });
+
   document.getElementById('regForm').addEventListener('submit', async function(e){
     e.preventDefault();
     var errEl = document.getElementById('regError');
     errEl.textContent = '';
+    if (DUP_FIELDS.some(function(f){ return dupState[f]; })) {
+      errEl.textContent = (I18N[lang]||I18N.uz)['reg.err.generic'];
+      return;
+    }
     var pw1 = document.getElementById('regPassword').value;
     var pw2 = document.getElementById('regPassword2').value;
     if (pw1 !== pw2) { errEl.textContent = (I18N[lang]||I18N.uz)['reg.err.password']; return; }
