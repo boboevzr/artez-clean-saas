@@ -691,6 +691,17 @@
   </div>
 </div>
 
+<!-- Модалка "Регистрация успешна" — напоминание скопировать логины/пароли, показывается сразу при успехе -->
+<div class="sms-modal-overlay" id="successModalOverlay">
+  <div class="sms-modal" onclick="event.stopPropagation()">
+    <button type="button" class="sms-modal-close" id="successModalCloseBtn" aria-label="Close">✕</button>
+    <div class="sms-modal-ico">🎉</div>
+    <h3 data-i18n="reg.successModal.title">Ro'yxatdan o'tish muvaffaqiyatli!</h3>
+    <p class="modal-sub" data-i18n="reg.successModal.text">Pastda login/parollar jadvali ko'rsatilgan — ularni albatta nusxalab, xavfsiz joyga saqlab qo'ying.</p>
+    <button type="button" class="btn btn-accent" id="successModalOkBtn" style="width:100%" data-i18n="reg.successModal.ok">Tushunarli</button>
+  </div>
+</div>
+
 <script>
 (function(){
   document.getElementById('year').textContent = new Date().getFullYear();
@@ -734,6 +745,9 @@
       'reg.contactName':'Ваше имя','reg.phone':'Телефон','reg.email':'Email','reg.optional':'(необязательно)',
       'reg.password':'Пароль','reg.password2':'Повторите пароль','reg.submit':'Зарегистрироваться',
       'reg.doneTitle':'Готово!','reg.doneText':'Компания создана. Используйте данные ниже, чтобы войти.',
+      'reg.successModal.title':'Регистрация прошла успешно! 🎉',
+      'reg.successModal.text':'Ниже — таблица логинов и паролей. Обязательно скопируйте её и сохраните в надёжном месте.',
+      'reg.successModal.ok':'Понятно',
       'reg.credWarn':'⚠️ Логин и пароль (кроме админа) совпадают с названием роли. Смените пароли после первого входа.',
       'reg.doneSlug':'Адрес:','reg.doneLogin':'Логин:','reg.goAdmin':'Войти в админ-панель',
       'reg.copyCreds':'📋 Скопировать (чтобы сохранить)','reg.copyCredsDone':'✓ Скопировано',
@@ -792,6 +806,9 @@
       'reg.contactName':'Ismingiz','reg.phone':'Telefon','reg.email':'Email','reg.optional':'(ixtiyoriy)',
       'reg.password':'Parol','reg.password2':'Parolni takrorlang','reg.submit':"Ro'yxatdan o'tish",
       'reg.doneTitle':'Tayyor!','reg.doneText':"Kompaniyangiz yaratildi. Quyidagi login/parollardan foydalanib kiring.",
+      'reg.successModal.title':"Ro'yxatdan o'tish muvaffaqiyatli! 🎉",
+      'reg.successModal.text':"Pastda login/parollar jadvali ko'rsatilgan — ularni albatta nusxalab, xavfsiz joyga saqlab qo'ying.",
+      'reg.successModal.ok':'Tushunarli',
       'reg.credWarn':"⚠️ Login va parol (admindan tashqari) rol nomi bilan bir xil. Birinchi kirishdan so'ng parollarni almashtiring.",
       'reg.doneSlug':'Manzil:','reg.doneLogin':'Login:','reg.goAdmin':'Admin-panelga kirish',
       'reg.copyCreds':"📋 Nusxalash (saqlab qo'yish uchun)",'reg.copyCredsDone':'✓ Nusxalandi',
@@ -1013,6 +1030,7 @@
     slugTouched = false;
     document.getElementById('regFormView').style.display = '';
     document.getElementById('regSuccessView').style.display = 'none';
+    document.getElementById('successModalOverlay').classList.remove('open');
     resetPhoneVerify();
   }
   function openReg(){ resetRegForm(); regOverlay.classList.add('open'); document.body.style.overflow = 'hidden'; }
@@ -1023,10 +1041,20 @@
   // admin.html открывается в новой вкладке (target="_blank") — страницу регистрации в текущей закрываем,
   // чтобы за фоном осталась обычная главная cleano.uz, а не экран "Готово!".
   document.getElementById('goAdminBtn').addEventListener('click', closeReg);
+
+  // Модалка "Регистрация успешна" — напоминание скопировать логин/пароль
+  var successModalOverlay = document.getElementById('successModalOverlay');
+  function closeSuccessModal(){ successModalOverlay.classList.remove('open'); }
+  document.getElementById('successModalCloseBtn').addEventListener('click', closeSuccessModal);
+  document.getElementById('successModalOkBtn').addEventListener('click', closeSuccessModal);
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape' && successModalOverlay.classList.contains('open')) closeSuccessModal();
+  });
   document.addEventListener('keydown', function(e){
     if (e.key !== 'Escape') return;
     var pvModal = document.getElementById('pvModalOverlay');
     if (pvModal && pvModal.classList.contains('open')) return; // модалку подтверждения телефона закрывает свой обработчик
+    if (successModalOverlay.classList.contains('open')) return; // модалку успеха закрывает свой обработчик
     if (regOverlay.classList.contains('open')) closeReg();
   });
 
@@ -1313,6 +1341,7 @@
       document.getElementById('doneSlug').textContent = data.slug;
       document.getElementById('goAdminBtn').href = 'admin.html?company_slug=' + encodeURIComponent(data.slug);
       renderCredTable(data.credentials || []);
+      document.getElementById('successModalOverlay').classList.add('open');
     } catch (err) {
       errEl.textContent = err.message || (I18N[lang]||I18N.uz)['reg.err.generic'];
     } finally {
