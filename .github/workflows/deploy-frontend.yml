@@ -69,6 +69,12 @@ jobs:
           echo "Замена index.html на лендинг платформы cleano-landing.html"
           cp cleano-landing.html index.html
 
+      - name: Cache-bust config.js (30-дневный Cache-Control на хостинге игнорирует .htaccess)
+        run: |
+          TS=$(date +%s)
+          find . -maxdepth 1 -name "*.html" -exec sed -i "s/config\.js\"/config.js?v=${TS}\"/g" {} \;
+          echo "config.js references bumped to ?v=${TS}"
+
       - name: Set FTP credentials and path
         id: cfg
         run: |
