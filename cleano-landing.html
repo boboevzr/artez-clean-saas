@@ -295,6 +295,22 @@
   .f-consent input { margin-top: 2px; flex-shrink: 0; accent-color: var(--teal); width: 15px; height: 15px; cursor: pointer; }
   .f-consent a { color: var(--teal-soft); text-decoration: underline; }
   .f-consent a:hover { color: var(--teal); }
+
+  .phone-verify { background: var(--surface2); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; margin: -2px 0 14px; }
+  .pv-label { display: block; font-size: 12.5px; font-weight: 600; color: var(--text2); margin-bottom: 10px; }
+  .pv-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+  .pv-btn, .pv-open-btn { font: inherit; font-size: 13px; font-weight: 700; font-family: "Sora", sans-serif; padding: 9px 16px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--text); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; }
+  .pv-btn:hover, .pv-open-btn:hover { border-color: var(--teal); color: var(--teal-soft); }
+  .pv-panel { margin-top: 2px; }
+  .pv-status { font-size: 12.5px; margin-top: 8px; min-height: 0; }
+  .pv-status.err { color: #F48080; }
+  .pv-status.ok { color: var(--teal-soft); }
+  .pv-sms-code { display: flex; gap: 8px; margin-top: 10px; }
+  .pv-sms-code input { width: 110px; font: inherit; font-size: 15px; letter-spacing: 2px; text-align: center; padding: 9px 10px; border-radius: 10px; border: 1.5px solid var(--line); background: var(--ink); color: var(--text); }
+  .pv-sms-code input:focus { outline: none; border-color: var(--teal); }
+  .pv-resend { display: inline-block; margin-top: 8px; font-size: 12.5px; color: var(--text2); text-decoration: underline; }
+  .pv-resend:hover { color: var(--text); }
+  .pv-verified { font-size: 13.5px; font-weight: 700; color: var(--teal-soft); }
   .slug-row { display: flex; align-items: center; border: 1.5px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--ink); }
   .slug-row:focus-within { border-color: var(--teal); }
   .slug-prefix { padding: 11px 0 11px 13px; color: var(--text2); font-size: 13px; white-space: nowrap; }
@@ -553,6 +569,35 @@
                 <div class="f-check" id="regPhoneCheck"></div>
               </div>
             </div>
+
+            <div class="phone-verify" id="pvBlock">
+              <div class="pv-picker" id="pvPicker">
+                <span class="pv-label" data-i18n="reg.pv.choose">Raqamni tasdiqlang:</span>
+                <div class="pv-btns">
+                  <button type="button" class="pv-btn" id="pvChooseTg" data-i18n="reg.pv.viaTg">✈️ Telegram orqali</button>
+                  <button type="button" class="pv-btn" id="pvChooseSms" data-i18n="reg.pv.viaSms">💬 SMS orqali</button>
+                </div>
+              </div>
+              <div class="pv-panel" id="pvTg" style="display:none">
+                <p class="f-hint" data-i18n="reg.pv.tgHint">Botni oching, "Ulashish" tugmasini bosing, so'ng "Tekshirish" tugmasini bosing.</p>
+                <div class="pv-btns">
+                  <a class="btn btn-ghost pv-open-btn" id="pvTgOpenBtn" target="_blank" rel="noopener" data-i18n="reg.pv.openBot">Botni ochish</a>
+                  <button type="button" class="btn btn-ghost pv-open-btn" id="pvTgCheckBtn" data-i18n="reg.pv.check">Tekshirish</button>
+                </div>
+                <div class="pv-status" id="pvTgStatus"></div>
+              </div>
+              <div class="pv-panel" id="pvSms" style="display:none">
+                <button type="button" class="btn btn-ghost pv-open-btn" id="pvSmsSendBtn" data-i18n="reg.pv.sendSms">Kod olish</button>
+                <div class="pv-sms-code" id="pvSmsCodeRow" style="display:none">
+                  <input type="text" id="pvSmsCode" maxlength="6" inputmode="numeric" placeholder="000000">
+                  <button type="button" class="btn btn-accent pv-open-btn" id="pvSmsConfirmBtn" data-i18n="reg.pv.confirm">Tasdiqlash</button>
+                </div>
+                <div class="pv-status" id="pvSmsStatus"></div>
+                <a href="#" id="pvSmsResend" class="pv-resend" style="display:none" data-i18n="reg.pv.resend">Kodni qayta yuborish</a>
+              </div>
+              <div class="pv-verified" id="pvVerified" style="display:none">✅ <span data-i18n="reg.pv.verified">Raqam tasdiqlangan</span></div>
+            </div>
+
             <div class="f-field">
               <label data-i18n="reg.email">Email <span class="opt" data-i18n="reg.optional">(ixtiyoriy)</span></label>
               <input type="email" id="regEmail" maxlength="160">
@@ -643,6 +688,15 @@
       'reg.err.dupName':'Компания с таким названием уже зарегистрирована','reg.err.dupSlug':'Этот адрес уже занят',
       'reg.err.dupPhone':'Этот телефон уже зарегистрирован','reg.err.dupEmail':'Этот email уже зарегистрирован',
       'reg.consent':'Я ознакомлен(а) с <a href="cleano-terms.html" target="_blank">Условиями использования</a> и <a href="cleano-privacy.html" target="_blank">Политикой конфиденциальности</a> и согласен(на) с ними',
+      'reg.pv.choose':'Подтвердите номер:','reg.pv.viaTg':'✈️ Через Telegram','reg.pv.viaSms':'💬 По SMS',
+      'reg.pv.tgHint':'Откройте бота, нажмите «Поделиться номером», затем нажмите «Проверить».',
+      'reg.pv.openBot':'Открыть бота','reg.pv.check':'Проверить','reg.pv.sendSms':'Получить код',
+      'reg.pv.confirm':'Подтвердить','reg.pv.resend':'Отправить код повторно','reg.pv.verified':'Номер подтверждён',
+      'reg.pv.err.notVerified':'Ещё не подтверждено — поделитесь номером в боте и попробуйте снова',
+      'reg.pv.err.needPhone':'Сначала введите номер телефона выше',
+      'reg.pv.err.noBotConfigured':'Telegram-бот пока не настроен, используйте SMS',
+      'reg.pv.err.wrongCode':'Неверный или просроченный код','reg.pv.sent':'Код отправлен',
+      'reg.err.needVerify':'Подтвердите номер телефона перед регистрацией',
       'contact.address':'Адрес офиса','contact.title':'Свяжитесь с нами','contact.sub':'Звоните или пишите — на связи',
       'contact.callUs':'Позвонить','contact.none':'Контакты пока не заполнены',
     },
@@ -689,6 +743,15 @@
       'reg.err.dupName':"Bu nomdagi kompaniya allaqachon ro'yxatdan o'tgan",'reg.err.dupSlug':'Bu manzil band',
       'reg.err.dupPhone':"Bu telefon raqami allaqachon ro'yxatdan o'tgan",'reg.err.dupEmail':"Bu email allaqachon ro'yxatdan o'tgan",
       'reg.consent':'Men <a href="cleano-terms.html" target="_blank">Foydalanish shartlari</a> va <a href="cleano-privacy.html" target="_blank">Maxfiylik siyosati</a> bilan tanishdim va roziman',
+      'reg.pv.choose':'Raqamni tasdiqlang:','reg.pv.viaTg':'✈️ Telegram orqali','reg.pv.viaSms':'💬 SMS orqali',
+      'reg.pv.tgHint':'Botni oching, "Ulashish" tugmasini bosing, so\'ng "Tekshirish" tugmasini bosing.',
+      'reg.pv.openBot':'Botni ochish','reg.pv.check':'Tekshirish','reg.pv.sendSms':'Kod olish',
+      'reg.pv.confirm':'Tasdiqlash','reg.pv.resend':'Kodni qayta yuborish','reg.pv.verified':'Raqam tasdiqlangan',
+      'reg.pv.err.notVerified':"Hali tasdiqlanmadi — botda raqamni ulashing va qayta urinib ko'ring",
+      'reg.pv.err.needPhone':'Avval yuqorida telefon raqamini kiriting',
+      'reg.pv.err.noBotConfigured':"Telegram-bot hali sozlanmagan, SMS dan foydalaning",
+      'reg.pv.err.wrongCode':"Noto'g'ri yoki muddati o'tgan kod",'reg.pv.sent':'Kod yuborildi',
+      'reg.err.needVerify':"Ro'yxatdan o'tishdan oldin telefon raqamini tasdiqlang",
       'contact.address':'Ofis manzili','contact.title':"Biz bilan bog'laning",'contact.sub':"Qo'ng'iroq qiling yoki yozing",
       'contact.callUs':"Qo'ng'iroq qilish",'contact.none':"Kontaktlar hali kiritilmagan",
     }
@@ -748,6 +811,7 @@
 
   // ── Публичные контакты Cleano (подвал + плавающая кнопка + карта) ──
   var API_BASE = (window.APP_API_URL || 'https://web-production-eef2a.up.railway.app') + '/api';
+  var CLEANO_BOT_USERNAME = '';
 
   var BRAND_ICON = {
     phone: '<svg viewBox="0 0 24 24"><path fill="currentColor" d="M6.6 10.8c1.4 2.8 3.8 5.2 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3.1.7-.2 1L6.6 10.8z"/></svg>',
@@ -790,6 +854,7 @@
       var d = await r.json();
       var s = (d && d.settings) || {};
       var items = contactItems(s);
+      CLEANO_BOT_USERNAME = s.cleano_bot_username || '';
 
       // Подвал — только круглые кнопки-иконки, без подписей
       var fc = document.getElementById('footerContacts');
@@ -849,6 +914,7 @@
     slugTouched = false;
     document.getElementById('regFormView').style.display = '';
     document.getElementById('regSuccessView').style.display = 'none';
+    resetPhoneVerify();
   }
   function openReg(){ resetRegForm(); regOverlay.classList.add('open'); document.body.style.overflow = 'hidden'; }
   function closeReg(){ regOverlay.classList.remove('open'); document.body.style.overflow = ''; }
@@ -917,12 +983,148 @@
     });
   });
 
+  // ── Подтверждение номера телефона: Telegram (поделиться контактом) или SMS ──
+  var pvPhoneInput   = document.getElementById('regPhone');
+  var pvPicker       = document.getElementById('pvPicker');
+  var pvTgPanel      = document.getElementById('pvTg');
+  var pvSmsPanel     = document.getElementById('pvSms');
+  var pvVerifiedEl   = document.getElementById('pvVerified');
+  var pvVerified     = false;
+  var pvVerifiedFor  = null;
+  var pvSmsSent      = false;
+  var pvSmsResendTimer = null;
+
+  function tr(key){ return (I18N[lang]||I18N.uz)[key] || ''; }
+
+  function resetPhoneVerify(){
+    pvVerified = false;
+    pvVerifiedFor = null;
+    pvSmsSent = false;
+    clearTimeout(pvSmsResendTimer);
+    pvPicker.style.display = '';
+    pvTgPanel.style.display = 'none';
+    pvSmsPanel.style.display = 'none';
+    pvVerifiedEl.style.display = 'none';
+    document.getElementById('pvTgStatus').textContent = '';
+    document.getElementById('pvSmsStatus').textContent = '';
+    document.getElementById('pvSmsCodeRow').style.display = 'none';
+    document.getElementById('pvSmsResend').style.display = 'none';
+    document.getElementById('pvSmsCode').value = '';
+  }
+
+  function showPhoneVerified(){
+    pvVerified = true;
+    pvVerifiedFor = pvPhoneInput.value.trim();
+    pvPicker.style.display = 'none';
+    pvTgPanel.style.display = 'none';
+    pvSmsPanel.style.display = 'none';
+    pvVerifiedEl.style.display = '';
+  }
+
+  // Если номер меняют после подтверждения — сбрасываем подтверждение
+  pvPhoneInput.addEventListener('input', function(){
+    if (pvVerified && pvPhoneInput.value.trim() !== pvVerifiedFor) resetPhoneVerify();
+  });
+
+  document.getElementById('pvChooseTg').addEventListener('click', function(){
+    if (!pvPhoneInput.value.trim()) { document.getElementById('pvTgStatus').className = 'pv-status err'; document.getElementById('pvTgStatus').textContent = tr('reg.pv.err.needPhone'); return; }
+    if (!CLEANO_BOT_USERNAME) { document.getElementById('pvTgStatus').className = 'pv-status err'; document.getElementById('pvTgStatus').textContent = tr('reg.pv.err.noBotConfigured'); return; }
+    document.getElementById('pvTgOpenBtn').href = 'https://t.me/' + CLEANO_BOT_USERNAME;
+    pvPicker.style.display = 'none';
+    pvTgPanel.style.display = '';
+  });
+
+  document.getElementById('pvTgCheckBtn').addEventListener('click', async function(){
+    var statusEl = document.getElementById('pvTgStatus');
+    statusEl.className = 'pv-status';
+    statusEl.textContent = '…';
+    try {
+      var r = await fetch(API_BASE + '/saas/phone-verify-status?phone=' + encodeURIComponent(pvPhoneInput.value.trim()));
+      var d = await r.json();
+      if (d.verified) {
+        showPhoneVerified();
+      } else {
+        statusEl.className = 'pv-status err';
+        statusEl.textContent = tr('reg.pv.err.notVerified');
+      }
+    } catch (e) {
+      statusEl.className = 'pv-status err';
+      statusEl.textContent = tr('reg.err.generic');
+    }
+  });
+
+  document.getElementById('pvChooseSms').addEventListener('click', function(){
+    if (!pvPhoneInput.value.trim()) { document.getElementById('pvSmsStatus').className = 'pv-status err'; document.getElementById('pvSmsStatus').textContent = tr('reg.pv.err.needPhone'); return; }
+    pvPicker.style.display = 'none';
+    pvSmsPanel.style.display = '';
+  });
+
+  async function sendPvSms(){
+    var statusEl = document.getElementById('pvSmsStatus');
+    var btn = document.getElementById('pvSmsSendBtn');
+    btn.disabled = true;
+    try {
+      var r = await fetch(API_BASE + '/saas/phone-verify/start-sms', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: pvPhoneInput.value.trim() }),
+      });
+      var d = await r.json();
+      if (!r.ok) throw new Error(d.detail || tr('reg.err.generic'));
+      pvSmsSent = true;
+      document.getElementById('pvSmsCodeRow').style.display = 'flex';
+      statusEl.className = 'pv-status ok';
+      statusEl.textContent = tr('reg.pv.sent');
+      var resend = document.getElementById('pvSmsResend');
+      resend.style.display = '';
+      resend.style.pointerEvents = 'none';
+      resend.style.opacity = '0.5';
+      var secs = 60;
+      var origText = tr('reg.pv.resend');
+      resend.textContent = origText + ' (' + secs + 's)';
+      clearTimeout(pvSmsResendTimer);
+      var tick = function(){
+        secs--;
+        if (secs <= 0) { resend.textContent = origText; resend.style.pointerEvents = ''; resend.style.opacity = ''; }
+        else { resend.textContent = origText + ' (' + secs + 's)'; pvSmsResendTimer = setTimeout(tick, 1000); }
+      };
+      pvSmsResendTimer = setTimeout(tick, 1000);
+    } catch (e) {
+      statusEl.className = 'pv-status err';
+      statusEl.textContent = e.message || tr('reg.err.generic');
+    } finally {
+      btn.disabled = false;
+    }
+  }
+  document.getElementById('pvSmsSendBtn').addEventListener('click', sendPvSms);
+  document.getElementById('pvSmsResend').addEventListener('click', function(e){ e.preventDefault(); if (e.currentTarget.style.pointerEvents !== 'none') sendPvSms(); });
+
+  document.getElementById('pvSmsConfirmBtn').addEventListener('click', async function(){
+    var statusEl = document.getElementById('pvSmsStatus');
+    var code = document.getElementById('pvSmsCode').value.trim();
+    try {
+      var r = await fetch(API_BASE + '/saas/phone-verify/confirm-sms', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: pvPhoneInput.value.trim(), code: code }),
+      });
+      var d = await r.json();
+      if (!r.ok) throw new Error(tr('reg.pv.err.wrongCode') || d.detail);
+      showPhoneVerified();
+    } catch (e) {
+      statusEl.className = 'pv-status err';
+      statusEl.textContent = e.message || tr('reg.pv.err.wrongCode');
+    }
+  });
+
   document.getElementById('regForm').addEventListener('submit', async function(e){
     e.preventDefault();
     var errEl = document.getElementById('regError');
     errEl.textContent = '';
     if (DUP_FIELDS.some(function(f){ return dupState[f]; })) {
       errEl.textContent = (I18N[lang]||I18N.uz)['reg.err.generic'];
+      return;
+    }
+    if (!pvVerified || pvVerifiedFor !== pvPhoneInput.value.trim()) {
+      errEl.textContent = tr('reg.err.needVerify');
       return;
     }
     var pw1 = document.getElementById('regPassword').value;
