@@ -213,6 +213,8 @@
   .icon-social svg { width: 19px; height: 19px; }
   .icon-social:hover { transform: translateY(-3px); background: var(--brand, var(--surface2)); color: #fff; }
   .footer-bottom { grid-column: 1 / -1; border-top: 1px solid var(--line); margin-top: 24px; padding-top: 18px; font-size: 12.5px; color: var(--text2); display: flex; gap: 6px; flex-wrap: wrap; justify-content: space-between; }
+  .footer-legal a { color: var(--text2); text-decoration: underline; }
+  .footer-legal a:hover { color: var(--text); }
 
   /* ===== FLOATING CONTACT BUTTON + MODAL CARD ===== */
   .float-btn { position: fixed; right: 20px; bottom: 20px; z-index: 300; width: 56px; height: 56px; border-radius: 50%; border: none; background: linear-gradient(135deg, var(--amber) 0%, var(--amber-deep) 100%); color: #1A0E00; font-size: 22px; cursor: pointer; box-shadow: 0 10px 30px -8px rgba(227,167,59,.55); transition: transform .2s cubic-bezier(.34,1.56,.64,1); }
@@ -289,6 +291,10 @@
   .f-check { font-size: 11.5px; color: #F48080; margin-top: 5px; min-height: 0; display: none; }
   .f-check.show { display: block; }
   .f-error { font-size: 13px; color: #F48080; margin-bottom: 12px; min-height: 0; }
+  .f-consent { display: flex; align-items: flex-start; gap: 9px; font-size: 12.5px; color: var(--text2); margin: 4px 0 14px; cursor: pointer; line-height: 1.5; }
+  .f-consent input { margin-top: 2px; flex-shrink: 0; accent-color: var(--teal); width: 15px; height: 15px; cursor: pointer; }
+  .f-consent a { color: var(--teal-soft); text-decoration: underline; }
+  .f-consent a:hover { color: var(--teal); }
   .slug-row { display: flex; align-items: center; border: 1.5px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--ink); }
   .slug-row:focus-within { border-color: var(--teal); }
   .slug-prefix { padding: 11px 0 11px 13px; color: var(--text2); font-size: 13px; white-space: nowrap; }
@@ -459,6 +465,7 @@
     <div class="footer-bottom">
       <span>© <span id="year"></span> Cleano</span>
       <span data-i18n="footer.tagline">kimyoviy tozalash va kirxonalarni avtomatlashtirish platformasi</span>
+      <span class="footer-legal"><a href="cleano-terms.html" data-i18n="footer.terms">Foydalanish shartlari</a> · <a href="cleano-privacy.html" data-i18n="footer.privacy">Maxfiylik siyosati</a></span>
     </div>
   </div>
 </footer>
@@ -562,6 +569,10 @@
                 <input type="password" id="regPassword2" required minlength="6">
               </div>
             </div>
+            <label class="f-consent">
+              <input type="checkbox" id="regConsent" required>
+              <span data-i18n="reg.consent">Men <a href="cleano-terms.html" target="_blank">Foydalanish shartlari</a> va <a href="cleano-privacy.html" target="_blank">Maxfiylik siyosati</a> bilan tanishdim va roziman</span>
+            </label>
             <div class="f-error" id="regError"></div>
             <button type="submit" class="btn btn-accent" id="regSubmitBtn" style="width:100%;margin-top:6px" data-i18n="reg.submit">Ro'yxatdan o'tish</button>
           </form>
@@ -617,6 +628,7 @@
       'cta.register':'Зарегистрироваться',
       'cta.telegram':'Написать в Telegram',
       'footer.tagline':'платформа автоматизации химчисток и прачечных',
+      'footer.terms':'Условия использования','footer.privacy':'Политика конфиденциальности',
       'video.caption':'Как выглядит Cleano','video.soon':'Видео скоро',
       'reg.title':'Регистрация компании','reg.sub':'14 дней бесплатно, без привязки карты.',
       'reg.back':'Назад','reg.brandTitle':'Переведите химчистку <em>в цифровой формат</em>',
@@ -632,6 +644,7 @@
       'reg.err.dupName':'Компания с таким названием уже зарегистрирована','reg.err.dupSlug':'Этот адрес уже занят',
       'reg.err.dupContact':'Это имя уже используется в другой регистрации','reg.err.dupPhone':'Этот телефон уже зарегистрирован',
       'reg.err.dupEmail':'Этот email уже зарегистрирован',
+      'reg.consent':'Я ознакомлен(а) с <a href="cleano-terms.html" target="_blank">Условиями использования</a> и <a href="cleano-privacy.html" target="_blank">Политикой конфиденциальности</a> и согласен(на) с ними',
       'contact.address':'Адрес офиса','contact.title':'Свяжитесь с нами','contact.sub':'Звоните или пишите — на связи',
       'contact.callUs':'Позвонить','contact.none':'Контакты пока не заполнены',
     },
@@ -662,6 +675,7 @@
       'cta.register':"Ro'yxatdan o'tish",
       'cta.telegram':'Telegram orqali yozish',
       'footer.tagline':'kimyoviy tozalash va kirxonalarni avtomatlashtirish platformasi',
+      'footer.terms':'Foydalanish shartlari','footer.privacy':'Maxfiylik siyosati',
       'video.caption':"Cleano qanday ko'rinadi",'video.soon':'Video tez orada',
       'reg.title':"Kompaniyani ro'yxatdan o'tkazish",'reg.sub':"14 kun bepul, karta kerak emas.",
       'reg.back':'Orqaga','reg.brandTitle':"Kimyoviy tozalash biznesingizni <em>raqamlashtiring</em>",
@@ -677,6 +691,7 @@
       'reg.err.dupName':"Bu nomdagi kompaniya allaqachon ro'yxatdan o'tgan",'reg.err.dupSlug':'Bu manzil band',
       'reg.err.dupContact':"Bu ism boshqa ro'yxatdan o'tishda ishlatilgan",'reg.err.dupPhone':"Bu telefon raqami allaqachon ro'yxatdan o'tgan",
       'reg.err.dupEmail':"Bu email allaqachon ro'yxatdan o'tgan",
+      'reg.consent':'Men <a href="cleano-terms.html" target="_blank">Foydalanish shartlari</a> va <a href="cleano-privacy.html" target="_blank">Maxfiylik siyosati</a> bilan tanishdim va roziman',
       'contact.address':'Ofis manzili','contact.title':"Biz bilan bog'laning",'contact.sub':"Qo'ng'iroq qiling yoki yozing",
       'contact.callUs':"Qo'ng'iroq qilish",'contact.none':"Kontaktlar hali kiritilmagan",
     }

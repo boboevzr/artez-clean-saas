@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="uz" id="htmlRoot">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="pageTitle">Cleano — Foydalanish shartlari</title>
+<meta name="theme-color" content="#0B1210">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="config.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ink:#0B1210; --surface:#121B19; --surface2:#1A2624; --line:#24332F;
+    --teal-deep:#114A40; --teal:#2FBFA8; --teal-soft:#7BE0D0;
+    --amber:#E3A73B; --amber-deep:#B9822A;
+    --text:#EDF3F1; --text2:#8FA39C;
+    font-family:"Inter",system-ui,sans-serif;
+  }
+  :root[data-theme="light"] {
+    --ink:#F3F1EA; --surface:#FFFFFF; --surface2:#ECE7DA; --line:#DDD6C4;
+    --teal-deep:#E4F5F1; --teal:#157A6C; --teal-soft:#0E5951;
+    --amber:#B9822A; --amber-deep:#96681E;
+    --text:#16211D; --text2:#5B6B65;
+  }
+  html, body { background: var(--ink); color: var(--text); line-height: 1.7; -webkit-font-smoothing: antialiased; min-height: 100vh; }
+  a { color: var(--teal-soft); }
+  a:hover { color: var(--teal); }
+  h1, h2, h3 { font-family: "Sora", system-ui, sans-serif; letter-spacing: -.01em; }
+  .wrap { max-width: 840px; margin: 0 auto; padding: 0 24px; }
+
+  header { position: sticky; top: 0; z-index: 200; background: color-mix(in srgb, var(--ink) 82%, transparent); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid var(--line); }
+  header .bar { display: flex; align-items: center; gap: 16px; padding: 14px 24px; max-width: 840px; margin: 0 auto; }
+  .logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 18px; margin-right: auto; text-decoration: none; color: var(--text); }
+  .logo svg { width: 26px; height: 26px; flex-shrink: 0; }
+  .icon-btn { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface2); color: var(--text2); cursor: pointer; font-size: 16px; }
+  .lang-switch { display: flex; align-items: center; background: var(--surface2); border: 1px solid var(--line); border-radius: 999px; padding: 3px; gap: 2px; }
+  .lang-switch button { border: none; background: transparent; color: var(--text2); font: inherit; font-weight: 700; font-size: 12.5px; padding: 6px 13px; border-radius: 999px; cursor: pointer; font-family: "Sora", sans-serif; }
+  .lang-switch button.active { background: var(--teal); color: #04120F; }
+
+  .page-hero { padding: 48px 24px 32px; text-align: center; border-bottom: 1px solid var(--line); }
+  .page-hero h1 { font-size: clamp(24px, 4vw, 34px); font-weight: 800; margin-bottom: 8px; }
+  .page-hero .date { font-size: 13px; color: var(--text2); }
+
+  .container { padding: 32px 24px 72px; }
+  .section { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 24px 28px; margin-bottom: 16px; }
+  .section-title { font-family: "Sora", sans-serif; font-size: 15px; font-weight: 800; color: var(--teal-soft); margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+  .section-title::before { content: ''; width: 4px; height: 18px; background: linear-gradient(180deg, var(--teal-soft), var(--teal)); border-radius: 4px; flex-shrink: 0; }
+  .section p { margin-bottom: 10px; font-size: 14.5px; color: var(--text2); }
+  .section p:last-child { margin-bottom: 0; }
+  .section ul { list-style: none; margin-bottom: 10px; }
+  .section ul li { font-size: 14.5px; color: var(--text2); margin-bottom: 6px; padding-left: 20px; position: relative; }
+  .section ul li::before { content: '•'; position: absolute; left: 0; color: var(--teal-soft); font-weight: 700; }
+  .section ul li strong, .section p strong { color: var(--text); }
+
+  .callout { background: color-mix(in srgb, var(--teal) 12%, transparent); border: 1px solid color-mix(in srgb, var(--teal) 30%, transparent); border-radius: 10px; padding: 12px 16px; margin: 12px 0; font-size: 14px; color: var(--teal-soft); display: flex; gap: 10px; }
+  .amber-note { background: color-mix(in srgb, var(--amber) 12%, transparent); border: 1px solid color-mix(in srgb, var(--amber) 30%, transparent); border-radius: 10px; padding: 12px 16px; margin: 12px 0; font-size: 14px; color: var(--amber); display: flex; gap: 10px; }
+
+  .contact-card { background: var(--surface2); border: 1px solid var(--line); border-radius: 12px; padding: 16px 20px; margin-top: 14px; display: flex; flex-direction: column; gap: 6px; }
+  .contact-card a { font-weight: 600; font-size: 14.5px; }
+  .contact-card span { font-size: 14px; color: var(--text2); }
+
+  [data-lang] { display: none; }
+  [data-lang].visible { display: block; }
+
+  footer { text-align: center; padding: 24px; font-size: 13px; color: var(--text2); border-top: 1px solid var(--line); }
+
+  @media (max-width: 600px) { .section { padding: 18px 16px; border-radius: 12px; } .page-hero { padding: 32px 16px 24px; } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="bar">
+    <a class="logo" href="index.html">
+      <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs><linearGradient id="tealatop" x1="10%" y1="0%" x2="90%" y2="100%"><stop offset="0%" stop-color="#57C4A4"/><stop offset="100%" stop-color="#0F6E5C"/></linearGradient></defs>
+        <circle cx="100" cy="100" r="68" fill="none" stroke="url(#tealatop)" stroke-width="22" stroke-linecap="round" stroke-dasharray="356 72" transform="rotate(-90 100 100)"/>
+        <circle cx="100" cy="32" r="12" fill="#C79A3D"/>
+      </svg>
+      Cleano
+    </a>
+    <button class="icon-btn" id="themeToggle" aria-label="Toggle theme">🌙</button>
+    <div class="lang-switch" id="langSwitch">
+      <button type="button" data-lang-btn="ru">RU</button>
+      <button type="button" data-lang-btn="uz">UZ</button>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════ РУССКИЙ ═══════════ -->
+<div data-lang="ru">
+  <div class="page-hero">
+    <h1>Условия использования</h1>
+    <div class="date">Последнее обновление: 25 июля 2026 г.</div>
+  </div>
+  <div class="wrap container">
+
+    <div class="section">
+      <div class="section-title">1. О сервисе</div>
+      <p><strong>Cleano</strong> — SaaS-платформа для автоматизации химчисток, прачечных и служб доставки: приём заказов, маршруты водителей, касса, SMS/Telegram-уведомления, собственный сайт для клиентов компании.</p>
+      <p>Сайт <strong>cleano.uz</strong> используется для знакомства с платформой и самостоятельной регистрации компании.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">2. Принятие условий</div>
+      <p>Регистрируя компанию на cleano.uz, вы подтверждаете, что прочитали, поняли и согласны с настоящими Условиями и <a href="cleano-privacy.html">Политикой конфиденциальности</a>.</p>
+      <div class="callout">Если вы не согласны с условиями — не завершайте регистрацию.</div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">3. Регистрация и пробный период</div>
+      <ul>
+        <li>При регистрации предоставляется <strong>14 дней бесплатного доступа</strong> ко всем функциям платформы, банковская карта не требуется.</li>
+        <li>Вы обязаны указывать достоверные данные о компании и контактном лице.</li>
+        <li>Один аккаунт администратора создаётся на компанию; остальные роли (менеджер, водитель, упаковщик и т.д.) добавляются администратором внутри панели.</li>
+      </ul>
+      <div class="amber-note">По окончании пробного периода для продолжения работы потребуется выбрать платный тариф.</div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">4. Тарифы и оплата</div>
+      <p>После пробного периода действуют гибкие тарифы в зависимости от размера бизнеса (количество филиалов и сотрудников). Актуальные тарифы публикуются в панели администратора компании. Мы вправе изменять стоимость тарифов, уведомив об этом заранее.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">5. Права и обязанности</div>
+      <ul>
+        <li>Компания самостоятельно отвечает за действия своих сотрудников внутри созданного ей аккаунта.</li>
+        <li>Запрещается использовать платформу для незаконной деятельности, рассылки спама или попыток нарушить работу сервиса.</li>
+        <li>Мы вправе приостановить доступ к аккаунту при нарушении условий или подозрении на мошенничество.</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <div class="section-title">6. Данные клиентов вашей компании</div>
+      <p>Все данные о заказах, клиентах и сотрудниках, которые вы вносите в систему, принадлежат вашей компании. Cleano выступает технической платформой для их хранения и обработки и не использует эти данные в собственных целях, кроме поддержки работы сервиса. Подробнее — в <a href="cleano-privacy.html">Политике конфиденциальности</a>.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">7. Ограничение ответственности</div>
+      <p>Cleano не несёт ответственности за:</p>
+      <ul>
+        <li>Перерывы в работе, вызванные обстоятельствами непреодолимой силы или сбоями сторонних сервисов (хостинг, SMS, карты).</li>
+        <li>Убытки, возникшие из-за некорректных данных, внесённых пользователями компании.</li>
+        <li>Действия сотрудников компании внутри её аккаунта.</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <div class="section-title">8. Прекращение доступа</div>
+      <p>Вы можете прекратить использование платформы в любой момент, обратившись к нам с просьбой удалить аккаунт компании. Мы вправе заблокировать аккаунт при систематическом нарушении условий, уведомив вас по указанным контактным данным.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">9. Изменение условий</div>
+      <p>Мы вправе изменять настоящие Условия. Актуальная версия всегда доступна на этой странице. Продолжение использования платформы после изменений означает согласие с обновлёнными условиями.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">10. Контакты</div>
+      <div class="contact-card" id="contactCardRu">
+        <span>По всем вопросам обращайтесь:</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════ UZBEKCHA ═══════════ -->
+<div data-lang="uz" class="visible">
+  <div class="page-hero">
+    <h1>Foydalanish shartlari</h1>
+    <div class="date">Oxirgi yangilanish: 2026-yil 25-iyul</div>
+  </div>
+  <div class="wrap container">
+
+    <div class="section">
+      <div class="section-title">1. Xizmat haqida</div>
+      <p><strong>Cleano</strong> — kimyoviy tozalash, kirxona va yetkazib berish xizmatlarini avtomatlashtirish uchun SaaS-platforma: buyurtmalarni qabul qilish, haydovchi marshrutlari, kassa, SMS/Telegram xabarnomalari, kompaniyangiz uchun shaxsiy sayt.</p>
+      <p><strong>cleano.uz</strong> sayti platforma bilan tanishish va kompaniyani mustaqil ro'yxatdan o'tkazish uchun ishlatiladi.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">2. Shartlarni qabul qilish</div>
+      <p>cleano.uz saytida kompaniyani ro'yxatdan o'tkazib, siz ushbu Shartlarni va <a href="cleano-privacy.html">Maxfiylik siyosatini</a> o'qiganingizni, tushunganingizni va qabul qilganingizni tasdiqlaysiz.</p>
+      <div class="callout">Agar shartlarga rozi bo'lmasangiz — ro'yxatdan o'tishni yakunlamang.</div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">3. Ro'yxatdan o'tish va sinov davri</div>
+      <ul>
+        <li>Ro'yxatdan o'tishda platformaning barcha funksiyalariga <strong>14 kunlik bepul kirish</strong> beriladi, bank kartasi talab qilinmaydi.</li>
+        <li>Kompaniya va aloqa shaxsi haqida to'g'ri ma'lumot berish shart.</li>
+        <li>Kompaniya uchun bitta admin akkaunti yaratiladi; qolgan rollar (menejer, haydovchi, qadoqlovchi va h.k.) admin tomonidan panel ichida qo'shiladi.</li>
+      </ul>
+      <div class="amber-note">Sinov davri tugagach, ishni davom ettirish uchun pullik tarifni tanlash kerak bo'ladi.</div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">4. Tariflar va to'lov</div>
+      <p>Sinov davridan so'ng biznes hajmiga (filiallar va xodimlar soni) qarab moslashuvchan tariflar amal qiladi. Joriy tariflar kompaniya admin-panelida e'lon qilinadi. Biz tarif narxlarini oldindan xabar berib o'zgartirish huquqini saqlaymiz.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">5. Huquq va majburiyatlar</div>
+      <ul>
+        <li>Kompaniya o'z akkaunti ichidagi xodimlarining harakatlari uchun mustaqil javobgardir.</li>
+        <li>Platformadan noqonuniy faoliyat, spam yuborish yoki xizmatning ishlashini buzishga urinish uchun foydalanish taqiqlanadi.</li>
+        <li>Shartlar buzilganda yoki firibgarlikka shubha tug'ilganda akkauntga kirishni to'xtatib qo'yish huquqini saqlaymiz.</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <div class="section-title">6. Kompaniyangiz mijozlari ma'lumotlari</div>
+      <p>Tizimga kiritilgan barcha buyurtma, mijoz va xodim ma'lumotlari kompaniyangizga tegishli. Cleano ularni saqlash va qayta ishlash uchun texnik platforma bo'lib xizmat qiladi va bu ma'lumotlardan xizmatni ta'minlashdan tashqari boshqa maqsadlarda foydalanmaydi. Batafsil — <a href="cleano-privacy.html">Maxfiylik siyosatida</a>.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">7. Mas'uliyatni cheklash</div>
+      <p>Cleano quyidagilar uchun mas'ul emas:</p>
+      <ul>
+        <li>Muqarrar kuch holatlari yoki uchinchi tomon xizmatlari (hosting, SMS, xaritalar) nosozligi sabab yuzaga kelgan uzilishlar.</li>
+        <li>Kompaniya foydalanuvchilari tomonidan noto'g'ri kiritilgan ma'lumotlar sababli yetkazilgan zarar.</li>
+        <li>Kompaniya xodimlarining uning akkaunti ichidagi harakatlari.</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <div class="section-title">8. Kirishni to'xtatish</div>
+      <p>Istalgan vaqtda bizga murojaat qilib, kompaniya akkauntini o'chirishni so'rab, platformadan foydalanishni to'xtatishingiz mumkin. Shartlar muntazam buzilganda, sizga ko'rsatilgan aloqa ma'lumotlari orqali xabar berib, akkauntni bloklash huquqini saqlaymiz.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">9. Shartlarni o'zgartirish</div>
+      <p>Biz ushbu Shartlarni o'zgartirish huquqini saqlaymiz. Joriy versiya doimo ushbu sahifada mavjud. O'zgarishlardan keyin platformadan foydalanishni davom ettirish yangilangan shartlarga roziligingizni bildiradi.</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">10. Bog'lanish</div>
+      <div class="contact-card" id="contactCardUz">
+        <span>Barcha savollar bo'yicha murojaat qiling:</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer>© 2026 Cleano</footer>
+
+<script>
+  var lang = localStorage.getItem('cleano_lang') || 'uz';
+  function applyLang(){
+    document.documentElement.lang = lang;
+    document.querySelectorAll('[data-lang]').forEach(function(el){ el.classList.toggle('visible', el.dataset.lang === lang); });
+    document.querySelectorAll('#langSwitch button').forEach(function(b){ b.classList.toggle('active', b.dataset.langBtn === lang); });
+  }
+  document.querySelectorAll('#langSwitch button').forEach(function(b){
+    b.addEventListener('click', function(){ lang = b.dataset.langBtn; localStorage.setItem('cleano_lang', lang); applyLang(); });
+  });
+  applyLang();
+
+  var theme = localStorage.getItem('cleano_theme') || 'dark';
+  function applyTheme(t){
+    document.documentElement.setAttribute('data-theme', t);
+    document.getElementById('themeToggle').textContent = t === 'dark' ? '☀️' : '🌙';
+  }
+  applyTheme(theme);
+  document.getElementById('themeToggle').addEventListener('click', function(){
+    theme = theme === 'dark' ? 'light' : 'dark';
+    localStorage.setItem('cleano_theme', theme);
+    applyTheme(theme);
+  });
+
+  (async function loadContacts(){
+    try {
+      var API_BASE = (window.APP_API_URL || 'https://web-production-eef2a.up.railway.app') + '/api';
+      var r = await fetch(API_BASE + '/saas/public-settings');
+      var s = await r.json();
+      var html = '';
+      if (s.cleano_phone) html += '<a href="tel:' + s.cleano_phone.replace(/\D/g,'') + '">📞 ' + s.cleano_phone + '</a>';
+      if (s.cleano_telegram) html += '<a href="' + s.cleano_telegram + '" target="_blank" rel="noopener">✈️ Telegram</a>';
+      html += '<a href="mailto:info@cleano.uz">✉️ info@cleano.uz</a>';
+      var ru = document.getElementById('contactCardRu');
+      var uz = document.getElementById('contactCardUz');
+      if (ru) ru.innerHTML += html;
+      if (uz) uz.innerHTML += html;
+    } catch (e) {}
+  })();
+</script>
+</body>
+</html>
