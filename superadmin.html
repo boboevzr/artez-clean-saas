@@ -1442,6 +1442,7 @@ function showPage(name, navEl) {
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.getElementById('page-' + name).classList.add('active');
   if (navEl) navEl.classList.add('active');
+  if (name === 'companies') loadCompanies();
   if (name === 'settings') { loadGlobalSettings(); loadSupportContact(); }
   if (name === 'plans') loadPlans();
   if (name === 'maintenance') maintenancePreview();
