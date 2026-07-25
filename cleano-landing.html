@@ -311,6 +311,21 @@
   .pv-resend { display: inline-block; margin-top: 8px; font-size: 12.5px; color: var(--text2); text-decoration: underline; }
   .pv-resend:hover { color: var(--text); }
   .pv-verified { font-size: 13.5px; font-weight: 700; color: var(--teal-soft); }
+
+  /* ===== SMS CODE MODAL — центр экрана, закрывается только явной кнопкой ===== */
+  .sms-modal-overlay { position: fixed; inset: 0; z-index: 500; background: rgba(4,10,8,.72); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity .2s ease; }
+  .sms-modal-overlay.open { opacity: 1; pointer-events: auto; }
+  .sms-modal { position: relative; width: 100%; max-width: 380px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 32px 28px 28px; text-align: center; box-shadow: var(--shadow); transform: translateY(14px) scale(.97); transition: transform .25s cubic-bezier(.34,1.56,.64,1); }
+  .sms-modal-overlay.open .sms-modal { transform: translateY(0) scale(1); }
+  .sms-modal-close { position: absolute; top: 12px; right: 12px; width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--line); background: var(--surface2); color: var(--text2); cursor: pointer; font-size: 15px; display: inline-flex; align-items: center; justify-content: center; }
+  .sms-modal-close:hover { color: var(--text); border-color: var(--teal); }
+  .sms-modal-ico { width: 56px; height: 56px; margin: 0 auto 14px; border-radius: 50%; background: linear-gradient(135deg, var(--teal-deep), var(--surface2)); display: flex; align-items: center; justify-content: center; font-size: 24px; }
+  .sms-modal h3 { font-size: 20px; font-weight: 800; margin-bottom: 6px; }
+  .sms-modal .modal-sub { margin-bottom: 20px; }
+  .sms-modal .pv-sms-code { justify-content: center; }
+  .sms-modal .pv-sms-code input { width: 130px; font-size: 20px; letter-spacing: 6px; text-align: center; }
+  .sms-modal .pv-status { min-height: 18px; }
+  .sms-modal .pv-resend { display: inline-block; margin-top: 4px; }
   .slug-row { display: flex; align-items: center; border: 1.5px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--ink); }
   .slug-row:focus-within { border-color: var(--teal); }
   .slug-prefix { padding: 11px 0 11px 13px; color: var(--text2); font-size: 13px; white-space: nowrap; }
@@ -586,15 +601,6 @@
                 </div>
                 <div class="pv-status" id="pvTgStatus"></div>
               </div>
-              <div class="pv-panel" id="pvSms" style="display:none">
-                <button type="button" class="btn btn-ghost pv-open-btn" id="pvSmsSendBtn" data-i18n="reg.pv.sendSms">Kod olish</button>
-                <div class="pv-sms-code" id="pvSmsCodeRow" style="display:none">
-                  <input type="text" id="pvSmsCode" maxlength="6" inputmode="numeric" placeholder="000000">
-                  <button type="button" class="btn btn-accent pv-open-btn" id="pvSmsConfirmBtn" data-i18n="reg.pv.confirm">Tasdiqlash</button>
-                </div>
-                <div class="pv-status" id="pvSmsStatus"></div>
-                <a href="#" id="pvSmsResend" class="pv-resend" style="display:none" data-i18n="reg.pv.resend">Kodni qayta yuborish</a>
-              </div>
               <div class="pv-verified" id="pvVerified" style="display:none">✅ <span data-i18n="reg.pv.verified">Raqam tasdiqlangan</span></div>
             </div>
 
@@ -636,6 +642,22 @@
       </div>
     </main>
 
+  </div>
+</div>
+
+<!-- Модалка подтверждения SMS-кода — закрывается ТОЛЬКО явной кнопкой, клик по фону и потеря фокуса её не закрывают -->
+<div class="sms-modal-overlay" id="smsModalOverlay">
+  <div class="sms-modal" onclick="event.stopPropagation()">
+    <button type="button" class="sms-modal-close" id="smsModalCloseBtn" aria-label="Close">✕</button>
+    <div class="sms-modal-ico">💬</div>
+    <h3 data-i18n="reg.pv.smsModalTitle">SMS kodini tasdiqlash</h3>
+    <p class="modal-sub" id="smsModalPhone"></p>
+    <div class="pv-sms-code" id="pvSmsCodeRow" style="display:none">
+      <input type="text" id="pvSmsCode" maxlength="6" inputmode="numeric" placeholder="000000">
+      <button type="button" class="btn btn-accent pv-open-btn" id="pvSmsConfirmBtn" data-i18n="reg.pv.confirm">Tasdiqlash</button>
+    </div>
+    <div class="pv-status" id="pvSmsStatus"></div>
+    <a href="#" id="pvSmsResend" class="pv-resend" style="display:none" data-i18n="reg.pv.resend">Kodni qayta yuborish</a>
   </div>
 </div>
 
@@ -689,6 +711,7 @@
       'reg.err.dupPhone':'Этот телефон уже зарегистрирован','reg.err.dupEmail':'Этот email уже зарегистрирован',
       'reg.consent':'Я ознакомлен(а) с <a href="cleano-terms.html" target="_blank">Условиями использования</a> и <a href="cleano-privacy.html" target="_blank">Политикой конфиденциальности</a> и согласен(на) с ними',
       'reg.pv.choose':'Подтвердите номер:','reg.pv.viaTg':'✈️ Через Telegram','reg.pv.viaSms':'💬 По SMS',
+      'reg.pv.smsModalTitle':'Подтверждение SMS-кода',
       'reg.pv.tgHint':'Откройте бота, нажмите «Поделиться номером», затем нажмите «Проверить».',
       'reg.pv.openBot':'Открыть бота','reg.pv.check':'Проверить','reg.pv.sendSms':'Получить код',
       'reg.pv.confirm':'Подтвердить','reg.pv.resend':'Отправить код повторно','reg.pv.verified':'Номер подтверждён',
@@ -744,6 +767,7 @@
       'reg.err.dupPhone':"Bu telefon raqami allaqachon ro'yxatdan o'tgan",'reg.err.dupEmail':"Bu email allaqachon ro'yxatdan o'tgan",
       'reg.consent':'Men <a href="cleano-terms.html" target="_blank">Foydalanish shartlari</a> va <a href="cleano-privacy.html" target="_blank">Maxfiylik siyosati</a> bilan tanishdim va roziman',
       'reg.pv.choose':'Raqamni tasdiqlang:','reg.pv.viaTg':'✈️ Telegram orqali','reg.pv.viaSms':'💬 SMS orqali',
+      'reg.pv.smsModalTitle':'SMS kodini tasdiqlash',
       'reg.pv.tgHint':'Botni oching, "Ulashish" tugmasini bosing, so\'ng "Tekshirish" tugmasini bosing.',
       'reg.pv.openBot':'Botni ochish','reg.pv.check':'Tekshirish','reg.pv.sendSms':'Kod olish',
       'reg.pv.confirm':'Tasdiqlash','reg.pv.resend':'Kodni qayta yuborish','reg.pv.verified':'Raqam tasdiqlangan',
@@ -921,7 +945,12 @@
   var openBtn = document.getElementById('openRegisterBtn');
   if (openBtn) openBtn.addEventListener('click', openReg);
   document.getElementById('regCloseBtn').addEventListener('click', closeReg);
-  document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && regOverlay.classList.contains('open')) closeReg(); });
+  document.addEventListener('keydown', function(e){
+    if (e.key !== 'Escape') return;
+    var smsModal = document.getElementById('smsModalOverlay');
+    if (smsModal && smsModal.classList.contains('open')) return; // модалку SMS-кода закрывает свой обработчик
+    if (regOverlay.classList.contains('open')) closeReg();
+  });
 
   // Автогенерация slug из названия компании (пока поле slug не тронуто вручную)
   var slugTouched = false;
@@ -987,24 +1016,35 @@
   var pvPhoneInput   = document.getElementById('regPhone');
   var pvPicker       = document.getElementById('pvPicker');
   var pvTgPanel      = document.getElementById('pvTg');
-  var pvSmsPanel     = document.getElementById('pvSms');
   var pvVerifiedEl   = document.getElementById('pvVerified');
+  var smsModalOverlay = document.getElementById('smsModalOverlay');
   var pvVerified     = false;
   var pvVerifiedFor  = null;
-  var pvSmsSent      = false;
   var pvSmsResendTimer = null;
 
   function tr(key){ return (I18N[lang]||I18N.uz)[key] || ''; }
 
+  // Модалка SMS-кода — full-screen-подобный оверлей поверх страницы регистрации,
+  // закрывается ТОЛЬКО крестиком/Escape (тот же принцип, что и у самой reg-page,
+  // после того как обычная модалка регистрации ранее закрывалась случайно).
+  function openSmsModal(){
+    document.getElementById('smsModalPhone').textContent = pvPhoneInput.value.trim();
+    smsModalOverlay.classList.add('open');
+  }
+  function closeSmsModal(){ smsModalOverlay.classList.remove('open'); }
+  document.getElementById('smsModalCloseBtn').addEventListener('click', closeSmsModal);
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape' && smsModalOverlay.classList.contains('open')) closeSmsModal();
+  });
+
   function resetPhoneVerify(){
     pvVerified = false;
     pvVerifiedFor = null;
-    pvSmsSent = false;
     clearTimeout(pvSmsResendTimer);
     pvPicker.style.display = '';
     pvTgPanel.style.display = 'none';
-    pvSmsPanel.style.display = 'none';
     pvVerifiedEl.style.display = 'none';
+    closeSmsModal();
     document.getElementById('pvTgStatus').textContent = '';
     document.getElementById('pvSmsStatus').textContent = '';
     document.getElementById('pvSmsCodeRow').style.display = 'none';
@@ -1017,8 +1057,8 @@
     pvVerifiedFor = pvPhoneInput.value.trim();
     pvPicker.style.display = 'none';
     pvTgPanel.style.display = 'none';
-    pvSmsPanel.style.display = 'none';
     pvVerifiedEl.style.display = '';
+    closeSmsModal();
   }
 
   // Если номер меняют после подтверждения — сбрасываем подтверждение
@@ -1054,15 +1094,15 @@
   });
 
   document.getElementById('pvChooseSms').addEventListener('click', function(){
-    if (!pvPhoneInput.value.trim()) { document.getElementById('pvSmsStatus').className = 'pv-status err'; document.getElementById('pvSmsStatus').textContent = tr('reg.pv.err.needPhone'); return; }
-    pvPicker.style.display = 'none';
-    pvSmsPanel.style.display = '';
+    if (!pvPhoneInput.value.trim()) { document.getElementById('pvTgStatus').className = 'pv-status err'; document.getElementById('pvTgStatus').textContent = tr('reg.pv.err.needPhone'); return; }
+    openSmsModal();
+    sendPvSms();
   });
 
   async function sendPvSms(){
     var statusEl = document.getElementById('pvSmsStatus');
-    var btn = document.getElementById('pvSmsSendBtn');
-    btn.disabled = true;
+    statusEl.className = 'pv-status';
+    statusEl.textContent = '…';
     try {
       var r = await fetch(API_BASE + '/saas/phone-verify/start-sms', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -1070,10 +1110,10 @@
       });
       var d = await r.json();
       if (!r.ok) throw new Error(d.detail || tr('reg.err.generic'));
-      pvSmsSent = true;
       document.getElementById('pvSmsCodeRow').style.display = 'flex';
       statusEl.className = 'pv-status ok';
       statusEl.textContent = tr('reg.pv.sent');
+      document.getElementById('pvSmsCode').focus();
       var resend = document.getElementById('pvSmsResend');
       resend.style.display = '';
       resend.style.pointerEvents = 'none';
@@ -1091,11 +1131,8 @@
     } catch (e) {
       statusEl.className = 'pv-status err';
       statusEl.textContent = e.message || tr('reg.err.generic');
-    } finally {
-      btn.disabled = false;
     }
   }
-  document.getElementById('pvSmsSendBtn').addEventListener('click', sendPvSms);
   document.getElementById('pvSmsResend').addEventListener('click', function(e){ e.preventDefault(); if (e.currentTarget.style.pointerEvents !== 'none') sendPvSms(); });
 
   document.getElementById('pvSmsConfirmBtn').addEventListener('click', async function(){
