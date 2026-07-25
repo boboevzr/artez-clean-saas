@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<script src="config.js"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -194,8 +195,55 @@
   .cta-box h2 { font-size: clamp(24px, 3.4vw, 32px); font-weight: 800; margin-bottom: 14px; }
   .cta-box p { color: var(--text2); font-size: 15px; max-width: 480px; margin: 0 auto 28px; }
 
-  footer { border-top: 1px solid var(--line); padding: 32px 0; text-align: center; color: var(--text2); font-size: 13px; }
-  footer .wrap { display: flex; flex-direction: column; gap: 4px; }
+  /* ===== FOOTER ===== */
+  footer { border-top: 1px solid var(--line); padding: 56px 0 28px; background: var(--surface); }
+  .footer-grid { display: grid; grid-template-columns: 1fr 1.1fr; gap: 40px; align-items: stretch; }
+  @media (max-width: 800px) { .footer-grid { grid-template-columns: 1fr; } }
+  .footer-map { min-height: 260px; border-radius: var(--radius-sm); overflow: hidden; border: 1px solid var(--line); }
+  .footer-contacts { display: flex; flex-direction: column; }
+  .footer-logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 18px; margin-bottom: 18px; }
+  .footer-logo svg { width: 28px; height: 28px; }
+  .footer-links { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px 20px; margin-bottom: auto; }
+  .footer-link { display: flex; align-items: center; gap: 9px; font-size: 13.5px; color: var(--text2); padding: 8px 0; transition: color .15s; }
+  .footer-link:hover { color: var(--teal-soft); }
+  :root[data-theme="light"] .footer-link:hover { color: var(--teal); }
+  .footer-link .ico { width: 28px; height: 28px; border-radius: 8px; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+  .footer-bottom { border-top: 1px solid var(--line); margin-top: 24px; padding-top: 18px; font-size: 12.5px; color: var(--text2); display: flex; gap: 6px; flex-wrap: wrap; justify-content: space-between; }
+
+  /* ===== FLOATING CONTACT BUTTON ===== */
+  .float-contact-wrap { position: fixed; right: 20px; bottom: 20px; z-index: 300; display: flex; flex-direction: column; align-items: flex-end; gap: 12px; }
+  .float-btn { width: 56px; height: 56px; border-radius: 50%; border: none; background: linear-gradient(135deg, var(--amber) 0%, var(--amber-deep) 100%); color: #1A0E00; font-size: 22px; cursor: pointer; box-shadow: 0 10px 30px -8px rgba(227,167,59,.55); transition: transform .2s cubic-bezier(.34,1.56,.64,1); }
+  .float-btn:hover { transform: scale(1.08) rotate(-4deg); }
+  .float-panel { display: none; width: 240px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 14px; box-shadow: var(--shadow); }
+  .float-panel.open { display: block; animation: riseIn .25s ease forwards; }
+  .float-panel .footer-link { padding: 7px 4px; border-radius: 8px; }
+  .float-panel .footer-link:hover { background: var(--surface2); }
+
+  /* ===== MODAL (registration) ===== */
+  .modal-overlay { position: fixed; inset: 0; z-index: 400; background: rgba(4,10,8,.6); backdrop-filter: blur(6px); display: none; align-items: center; justify-content: center; padding: 20px; }
+  .modal-overlay.open { display: flex; }
+  .modal-box { position: relative; width: 100%; max-width: 460px; max-height: 90vh; overflow-y: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 34px 30px; box-shadow: var(--shadow); }
+  .modal-box h3 { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+  .modal-sub { color: var(--text2); font-size: 13.5px; margin-bottom: 22px; }
+  .modal-close { position: absolute; top: 16px; right: 16px; width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--line); background: var(--surface2); color: var(--text2); cursor: pointer; font-size: 13px; }
+  .modal-close:hover { color: var(--text); }
+  .f-field { margin-bottom: 14px; }
+  .f-field label { display: block; font-size: 12.5px; font-weight: 600; color: var(--text2); margin-bottom: 6px; }
+  .f-field label .opt { font-weight: 400; color: var(--text2); opacity: .7; }
+  .f-field input { width: 100%; font: inherit; font-size: 14px; padding: 11px 13px; border-radius: 10px; border: 1.5px solid var(--line); background: var(--ink); color: var(--text); transition: border-color .15s; }
+  .f-field input:focus { outline: none; border-color: var(--teal); }
+  .f-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 420px) { .f-row { grid-template-columns: 1fr; } }
+  .f-hint { font-size: 11.5px; color: var(--text2); margin-top: 5px; }
+  .f-error { font-size: 13px; color: #F48080; margin-bottom: 12px; min-height: 0; }
+  .slug-row { display: flex; align-items: center; border: 1.5px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--ink); }
+  .slug-row:focus-within { border-color: var(--teal); }
+  .slug-prefix { padding: 11px 0 11px 13px; color: var(--text2); font-size: 13px; white-space: nowrap; }
+  .slug-row input { border: none; background: transparent; padding: 11px 13px 11px 4px; }
+  .slug-row input:focus { outline: none; }
+  .success-ico { width: 56px; height: 56px; border-radius: 50%; background: color-mix(in srgb, var(--teal) 18%, transparent); color: var(--teal-soft); font-size: 26px; display: flex; align-items: center; justify-content: center; margin: 0 auto 18px; }
+  :root[data-theme="light"] .success-ico { color: var(--teal); }
+  .success-box { background: var(--surface2); border-radius: 12px; padding: 16px; margin-bottom: 22px; font-size: 13.5px; text-align: left; display: flex; flex-direction: column; gap: 6px; }
 </style>
 </head>
 <body>
@@ -323,18 +371,106 @@
   <div class="wrap">
     <div class="cta-box reveal">
       <h2 data-i18n="cta.title">Cleano'ni sinab ko'rishga tayyormisiz?</h2>
-      <p data-i18n="cta.desc">Demo-versiyani avtomatik yaratadigan onlayn ro'yxatdan o'tish tez orada shu sahifada paydo bo'ladi. Hozircha — ariza qoldiring, biz kompaniyangizni bir kun ichida qo'lda ulaymiz.</p>
-      <a class="btn btn-accent" href="https://t.me/cleano_uz" target="_blank" rel="noopener" data-i18n="cta.telegram">Telegram orqali yozish</a>
+      <p data-i18n="cta.desc">Ro'yxatdan o'ting — bir daqiqadan kam vaqt ketadi. 14 kun bepul, karta kerak emas.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <button class="btn btn-accent" id="openRegisterBtn" data-i18n="cta.register">Ro'yxatdan o'tish</button>
+        <a class="btn btn-ghost" href="https://t.me/cleano_uz" target="_blank" rel="noopener" data-i18n="cta.telegram">Telegram orqali yozish</a>
+      </div>
     </div>
   </div>
 </section>
 
 <footer>
-  <div class="wrap">
-    <div>© <span id="year"></span> Cleano</div>
-    <div data-i18n="footer.tagline">kimyoviy tozalash va kirxonalarni avtomatlashtirish platformasi</div>
+  <div class="wrap footer-grid">
+    <div class="footer-map">
+      <iframe id="officeMap" loading="lazy" referrerpolicy="no-referrer-when-downgrade" style="border:0;width:100%;height:100%;border-radius:var(--radius-sm);filter:grayscale(.15) contrast(1.05);" src=""></iframe>
+    </div>
+    <div class="footer-contacts">
+      <div class="footer-logo">
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs><linearGradient id="tealatop2" x1="10%" y1="0%" x2="90%" y2="100%"><stop offset="0%" stop-color="#57C4A4"/><stop offset="100%" stop-color="#0F6E5C"/></linearGradient></defs>
+          <circle cx="100" cy="100" r="68" fill="none" stroke="url(#tealatop2)" stroke-width="22" stroke-linecap="round" stroke-dasharray="356 72" transform="rotate(-90 100 100)"/>
+          <circle cx="100" cy="32" r="12" fill="#C79A3D"/>
+        </svg>
+        Cleano
+      </div>
+      <div class="footer-links" id="footerContacts"></div>
+      <div class="footer-bottom">
+        <span>© <span id="year"></span> Cleano</span>
+        <span data-i18n="footer.tagline">kimyoviy tozalash va kirxonalarni avtomatlashtirish platformasi</span>
+      </div>
+    </div>
   </div>
 </footer>
+
+<!-- ══════ Floating contact button ══════ -->
+<div class="float-contact-wrap">
+  <div class="float-panel" id="floatPanel"></div>
+  <button class="float-btn" id="floatBtn" aria-label="Aloqa">💬</button>
+</div>
+
+<!-- ══════ Registration modal ══════ -->
+<div class="modal-overlay" id="regOverlay">
+  <div class="modal-box" id="regModal">
+    <button class="modal-close" id="regCloseBtn" aria-label="Yopish">✕</button>
+
+    <div id="regFormView">
+      <h3 data-i18n="reg.title">Ro'yxatdan o'tish</h3>
+      <p class="modal-sub" data-i18n="reg.sub">14 kun bepul, karta kerak emas.</p>
+      <form id="regForm">
+        <div class="f-field">
+          <label data-i18n="reg.companyName">Kompaniya nomi</label>
+          <input type="text" id="regCompanyName" required maxlength="120">
+        </div>
+        <div class="f-field">
+          <label data-i18n="reg.slug">Manzil saytda (slug)</label>
+          <div class="slug-row">
+            <span class="slug-prefix">cleano.uz/</span>
+            <input type="text" id="regSlug" required pattern="[a-z0-9\-]{3,50}" maxlength="50" placeholder="my-company">
+          </div>
+          <div class="f-hint" data-i18n="reg.slugHint">Faqat lotin harflari, raqamlar va tire, 3–50 belgi</div>
+        </div>
+        <div class="f-row">
+          <div class="f-field">
+            <label data-i18n="reg.contactName">Ismingiz</label>
+            <input type="text" id="regContactName" required maxlength="120">
+          </div>
+          <div class="f-field">
+            <label data-i18n="reg.phone">Telefon</label>
+            <input type="tel" id="regPhone" required placeholder="+998 90 123-45-67">
+          </div>
+        </div>
+        <div class="f-field">
+          <label data-i18n="reg.email">Email <span class="opt" data-i18n="reg.optional">(ixtiyoriy)</span></label>
+          <input type="email" id="regEmail" maxlength="160">
+        </div>
+        <div class="f-row">
+          <div class="f-field">
+            <label data-i18n="reg.password">Parol</label>
+            <input type="password" id="regPassword" required minlength="6">
+          </div>
+          <div class="f-field">
+            <label data-i18n="reg.password2">Parolni takrorlang</label>
+            <input type="password" id="regPassword2" required minlength="6">
+          </div>
+        </div>
+        <div class="f-error" id="regError"></div>
+        <button type="submit" class="btn btn-accent" id="regSubmitBtn" style="width:100%;margin-top:6px" data-i18n="reg.submit">Ro'yxatdan o'tish</button>
+      </form>
+    </div>
+
+    <div id="regSuccessView" style="display:none;text-align:center">
+      <div class="success-ico">✓</div>
+      <h3 data-i18n="reg.doneTitle">Tayyor!</h3>
+      <p class="modal-sub" data-i18n="reg.doneText">Kompaniyangiz yaratildi. Admin-panelga kirish uchun login va parolingizni ishlating.</p>
+      <div class="success-box">
+        <div><span data-i18n="reg.doneSlug">Manzil:</span> <b id="doneSlug" class="mono"></b></div>
+        <div><span data-i18n="reg.doneLogin">Login:</span> <b class="mono">admin</b></div>
+      </div>
+      <a class="btn btn-accent" id="goAdminBtn" href="#" target="_blank" style="width:100%" data-i18n="reg.goAdmin">Admin-panelga kirish</a>
+    </div>
+  </div>
+</div>
 
 <script>
 (function(){
@@ -365,10 +501,19 @@
       'pricing.desc':'Полный доступ ко всем функциям на 14 дней. После пробного периода — гибкие тарифы под размер вашего бизнеса, без скрытых платежей.',
       'pricing.cta':'Попробовать сейчас',
       'cta.title':'Готовы попробовать Cleano?',
-      'cta.desc':'Онлайн-регистрация с автоматическим созданием демо-версии совсем скоро появится прямо на этой странице. Пока — оставьте заявку, и мы подключим вашу компанию вручную в течение дня.',
+      'cta.desc':'Зарегистрируйтесь — это займёт меньше минуты. 14 дней бесплатно, без привязки карты.',
+      'cta.register':'Зарегистрироваться',
       'cta.telegram':'Написать в Telegram',
       'footer.tagline':'платформа автоматизации химчисток и прачечных',
       'video.caption':'Как выглядит Cleano','video.soon':'Видео скоро',
+      'reg.title':'Регистрация компании','reg.sub':'14 дней бесплатно, без привязки карты.',
+      'reg.companyName':'Название компании','reg.slug':'Адрес на сайте','reg.slugHint':'Только латинские буквы, цифры и дефис, 3–50 символов',
+      'reg.contactName':'Ваше имя','reg.phone':'Телефон','reg.email':'Email','reg.optional':'(необязательно)',
+      'reg.password':'Пароль','reg.password2':'Повторите пароль','reg.submit':'Зарегистрироваться',
+      'reg.doneTitle':'Готово!','reg.doneText':'Компания создана. Используйте логин и пароль, чтобы войти в админ-панель.',
+      'reg.doneSlug':'Адрес:','reg.doneLogin':'Логин:','reg.goAdmin':'Войти в админ-панель',
+      'reg.err.password':'Пароли не совпадают','reg.err.generic':'Не удалось зарегистрировать — попробуйте ещё раз',
+      'contact.address':'Адрес офиса',
     },
     uz: {
       'nav.features':'Imkoniyatlar','nav.how':'Qanday ishlaydi','nav.pricing':'Tariflar','nav.tryFree':"Bepul sinab ko'ring",
@@ -393,10 +538,19 @@
       'pricing.desc':"14 kun davomida barcha funksiyalarga to'liq kirish. Sinov davridan so'ng — biznesingiz hajmiga mos moslashuvchan tariflar, yashirin to'lovlarsiz.",
       'pricing.cta':'Hozir sinab ko\'ring',
       'cta.title':"Cleano'ni sinab ko'rishga tayyormisiz?",
-      'cta.desc':"Demo-versiyani avtomatik yaratadigan onlayn ro'yxatdan o'tish tez orada shu sahifada paydo bo'ladi. Hozircha — ariza qoldiring, biz kompaniyangizni bir kun ichida qo'lda ulaymiz.",
+      'cta.desc':"Ro'yxatdan o'ting — bir daqiqadan kam vaqt ketadi. 14 kun bepul, karta kerak emas.",
+      'cta.register':"Ro'yxatdan o'tish",
       'cta.telegram':'Telegram orqali yozish',
       'footer.tagline':'kimyoviy tozalash va kirxonalarni avtomatlashtirish platformasi',
       'video.caption':"Cleano qanday ko'rinadi",'video.soon':'Video tez orada',
+      'reg.title':"Kompaniyani ro'yxatdan o'tkazish",'reg.sub':"14 kun bepul, karta kerak emas.",
+      'reg.companyName':'Kompaniya nomi','reg.slug':'Manzil saytda (slug)','reg.slugHint':"Faqat lotin harflari, raqamlar va tire, 3–50 belgi",
+      'reg.contactName':'Ismingiz','reg.phone':'Telefon','reg.email':'Email','reg.optional':'(ixtiyoriy)',
+      'reg.password':'Parol','reg.password2':'Parolni takrorlang','reg.submit':"Ro'yxatdan o'tish",
+      'reg.doneTitle':'Tayyor!','reg.doneText':"Kompaniyangiz yaratildi. Admin-panelga kirish uchun login va parolingizni ishlating.",
+      'reg.doneSlug':'Manzil:','reg.doneLogin':'Login:','reg.goAdmin':'Admin-panelga kirish',
+      'reg.err.password':"Parollar mos kelmadi",'reg.err.generic':"Ro'yxatdan o'tkazib bo'lmadi — qayta urinib ko'ring",
+      'contact.address':'Ofis manzili',
     }
   };
   var lang = localStorage.getItem('cleano_lang') || 'uz';
@@ -451,6 +605,120 @@
     entries.forEach(function(e){ if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
   }, { threshold: .15 });
   document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+
+  // ── Публичные контакты Cleano (подвал + плавающая кнопка + карта) ──
+  var API_BASE = (window.APP_API_URL || 'https://web-production-eef2a.up.railway.app') + '/api';
+
+  function contactLinksHtml(s){
+    var items = [];
+    if (s.cleano_phone)     items.push(['📞', s.cleano_phone, 'tel:' + s.cleano_phone.replace(/[^\d+]/g,'')]);
+    if (s.cleano_telegram)  items.push(['✈️', 'Telegram', s.cleano_telegram]);
+    if (s.cleano_instagram) items.push(['📷', 'Instagram', s.cleano_instagram]);
+    if (s.cleano_facebook)  items.push(['📘', 'Facebook', s.cleano_facebook]);
+    if (s.cleano_whatsapp)  items.push(['💬', 'WhatsApp', s.cleano_whatsapp]);
+    return items.map(function(it){
+      return '<a class="footer-link" href="' + it[2] + '" target="_blank" rel="noopener"><span class="ico">' + it[0] + '</span>' + it[1] + '</a>';
+    }).join('');
+  }
+
+  (async function loadPublicSettings(){
+    try {
+      var r = await fetch(API_BASE + '/saas/public-settings');
+      if (!r.ok) return;
+      var d = await r.json();
+      var s = (d && d.settings) || {};
+
+      var linksHtml = contactLinksHtml(s);
+      var fc = document.getElementById('footerContacts');
+      if (fc) fc.innerHTML = linksHtml || '';
+      var fp = document.getElementById('floatPanel');
+      if (fp) {
+        var addrHtml = s.cleano_office_address
+          ? '<div class="footer-link"><span class="ico">📍</span>' + s.cleano_office_address + '</div>' : '';
+        fp.innerHTML = linksHtml + addrHtml;
+      }
+
+      var lat = parseFloat(s.cleano_office_lat), lng = parseFloat(s.cleano_office_lng);
+      var mapFrame = document.getElementById('officeMap');
+      if (mapFrame && !isNaN(lat) && !isNaN(lng)) {
+        mapFrame.src = 'https://www.google.com/maps?q=' + lat + ',' + lng + '&z=15&output=embed';
+      } else if (mapFrame) {
+        mapFrame.closest('.footer-map').style.display = 'none';
+      }
+    } catch (e) {}
+  })();
+
+  // ── Плавающая кнопка контактов ──
+  var floatBtn = document.getElementById('floatBtn');
+  var floatPanel = document.getElementById('floatPanel');
+  if (floatBtn) {
+    floatBtn.addEventListener('click', function(){
+      floatPanel.classList.toggle('open');
+      floatBtn.textContent = floatPanel.classList.contains('open') ? '✕' : '💬';
+    });
+  }
+
+  // ── Модалка регистрации ──
+  var regOverlay = document.getElementById('regOverlay');
+  function openReg(){ regOverlay.classList.add('open'); }
+  function closeReg(){ regOverlay.classList.remove('open'); }
+  var openBtn = document.getElementById('openRegisterBtn');
+  if (openBtn) openBtn.addEventListener('click', openReg);
+  document.getElementById('regCloseBtn').addEventListener('click', closeReg);
+  regOverlay.addEventListener('click', function(e){ if (e.target === regOverlay) closeReg(); });
+
+  // Автогенерация slug из названия компании (пока поле slug не тронуто вручную)
+  var slugTouched = false;
+  var nameInput = document.getElementById('regCompanyName');
+  var slugInput = document.getElementById('regSlug');
+  function slugify(s){
+    return (s || '').toLowerCase()
+      .replace(/[^a-z0-9а-яёʻʼ\s-]/gi, '')
+      .replace(/[а-яё]/g, function(){ return ''; }) // кириллицу не транслитерируем — просто убираем
+      .trim().replace(/\s+/g, '-').replace(/-+/g, '-').slice(0, 50);
+  }
+  nameInput.addEventListener('input', function(){
+    if (!slugTouched) slugInput.value = slugify(nameInput.value);
+  });
+  slugInput.addEventListener('input', function(){ slugTouched = true; });
+
+  document.getElementById('regForm').addEventListener('submit', async function(e){
+    e.preventDefault();
+    var errEl = document.getElementById('regError');
+    errEl.textContent = '';
+    var pw1 = document.getElementById('regPassword').value;
+    var pw2 = document.getElementById('regPassword2').value;
+    if (pw1 !== pw2) { errEl.textContent = (I18N[lang]||I18N.uz)['reg.err.password']; return; }
+    var btn = document.getElementById('regSubmitBtn');
+    btn.disabled = true;
+    var originalText = btn.textContent;
+    btn.textContent = '…';
+    try {
+      var r = await fetch(API_BASE + '/saas/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          company_name: nameInput.value.trim(),
+          slug: slugInput.value.trim(),
+          contact_name: document.getElementById('regContactName').value.trim(),
+          contact_phone: document.getElementById('regPhone').value.trim(),
+          contact_email: document.getElementById('regEmail').value.trim() || null,
+          admin_password: pw1,
+        }),
+      });
+      var data = await r.json();
+      if (!r.ok) throw new Error(data.detail || (I18N[lang]||I18N.uz)['reg.err.generic']);
+      document.getElementById('regFormView').style.display = 'none';
+      document.getElementById('regSuccessView').style.display = 'block';
+      document.getElementById('doneSlug').textContent = data.slug;
+      document.getElementById('goAdminBtn').href = 'admin.html?company_slug=' + encodeURIComponent(data.slug);
+    } catch (err) {
+      errEl.textContent = err.message || (I18N[lang]||I18N.uz)['reg.err.generic'];
+    } finally {
+      btn.disabled = false;
+      btn.textContent = originalText;
+    }
+  });
 })();
 </script>
 </body>

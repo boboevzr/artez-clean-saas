@@ -8541,7 +8541,24 @@ window.addEventListener('DOMContentLoaded', () => {
       return;
     }
   }
-  if (adminToken) { showAdmin(); } else { _showLoginScreen(); }
+  if (adminToken) { showAdmin(); return; }
+  // ?company_slug=... в URL (напр. ссылка "Войти в админ-панель" после регистрации на cleano.uz)
+  // предзаполняет slug, чтобы сразу попасть на экран логина/пароля.
+  const qsSlug = new URLSearchParams(location.search).get('company_slug');
+  if (qsSlug && !localStorage.getItem('admin_company_slug')) {
+    fetch(`${API_BASE}/company/resolve?slug=${encodeURIComponent(qsSlug)}`)
+      .then(res => res.json().then(data => ({ ok: res.ok, data })))
+      .then(({ ok, data }) => {
+        if (ok) {
+          localStorage.setItem('admin_company_slug', data.slug);
+          localStorage.setItem('admin_company_name', data.name);
+        }
+      })
+      .catch(() => {})
+      .finally(_showLoginScreen);
+  } else {
+    _showLoginScreen();
+  }
 });
 
 // ── NAVIGATION ──

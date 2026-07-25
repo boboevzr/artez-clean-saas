@@ -12,7 +12,7 @@ on:
       api_url:
         description: 'API URL для этого клиента'
         required: false
-        default: 'https://artez-api-production.up.railway.app'
+        default: 'https://web-production-eef2a.up.railway.app'
       company_name:
         description: 'Название компании'
         required: false
