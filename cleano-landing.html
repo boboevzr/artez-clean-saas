@@ -411,9 +411,7 @@
         <button class="tag-close" id="tagClose" aria-label="Yopish">✕</button>
         <div class="tag-string-pin"></div>
         <div class="tag-video-frame">
-          <video id="demoVideo" autoplay muted loop playsinline poster="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='180'%3E%3Crect width='320' height='180' fill='%23122622'/%3E%3C/svg%3E">
-            <source src="demo-video.mp4" type="video/mp4">
-          </video>
+          <video id="demoVideo" autoplay muted loop playsinline poster="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='180'%3E%3Crect width='320' height='180' fill='%23122622'/%3E%3C/svg%3E"></video>
           <div class="fallback" id="videoFallback">
             <div class="play-ico">▶</div>
             <span data-i18n="video.soon">Video tez orada</span>
@@ -845,7 +843,11 @@
     var navCta = document.getElementById('navCta');
     if (navCta) navCta.style.display = window.innerWidth > 860 ? 'inline-flex' : 'none';
   }
-  function setLang(l){ lang = l; localStorage.setItem('cleano_lang', l); applyI18n(); }
+  function setLang(l){
+    var langChanged = l !== lang;
+    lang = l; localStorage.setItem('cleano_lang', l); applyI18n();
+    if (langChanged && typeof loadDemoVideo === 'function') loadDemoVideo(lang);
+  }
   document.querySelectorAll('#langSwitch [data-lang-btn]').forEach(function(b){
     b.addEventListener('click', function(){ setLang(b.dataset.langBtn); });
   });
@@ -865,13 +867,24 @@
     applyTheme(theme);
   });
 
-  // ── VIDEO fallback ──
+  // ── VIDEO: своё видео на RU и UZ, проигрывается в зависимости от выбранного языка ──
+  var DEMO_VIDEO_API = (window.APP_API_URL || 'https://web-production-eef2a.up.railway.app') + '/api/cleano/demo-video/';
   var video = document.getElementById('demoVideo');
   var fallback = document.getElementById('videoFallback');
+  var videoLoadTimer = null;
+  function loadDemoVideo(l){
+    clearTimeout(videoLoadTimer);
+    video.style.display = '';
+    fallback.style.display = 'none';
+    video.src = DEMO_VIDEO_API + (l === 'ru' ? 'ru' : 'uz') + '?_=' + Date.now();
+    video.load();
+    video.play().catch(function(){});
+    videoLoadTimer = setTimeout(function(){
+      if (video.readyState === 0) { video.style.display='none'; fallback.style.display='flex'; }
+    }, 3500);
+  }
   video.addEventListener('error', function(){ video.style.display='none'; fallback.style.display='flex'; }, true);
-  setTimeout(function(){
-    if (video.readyState === 0) { video.style.display='none'; fallback.style.display='flex'; }
-  }, 2500);
+  loadDemoVideo(lang);
 
   // ── Close hanging tag ──
   document.getElementById('tagClose').addEventListener('click', function(){
