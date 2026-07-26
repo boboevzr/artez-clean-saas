@@ -25,7 +25,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-22.04
-    environment: ${{ github.event.inputs.subdomain || 'artez-prod' }}
+    environment: ${{ github.event.inputs.subdomain || 'cleano' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -64,7 +64,7 @@ jobs:
           fi
 
       - name: Swap in platform landing page (cleano.uz only)
-        if: github.event.inputs.subdomain == 'cleano'
+        if: github.event.inputs.subdomain == 'cleano' || github.event_name == 'push'
         run: |
           echo "Замена index.html на лендинг платформы cleano-landing.html"
           cp cleano-landing.html index.html
