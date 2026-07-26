@@ -1275,13 +1275,37 @@
     .adg-alpha-row button { font-size:11px; min-width:20px; padding:2px 3px; }
   }
 
+  /* PWA: баннер "Добавить на главный экран" (тот же паттерн, что в staff.html) */
+  #pwaBanner{position:fixed;bottom:0;left:0;right:0;z-index:7500;background:#1a1a2e;color:#fff;padding:14px 18px calc(env(safe-area-inset-bottom,0px)+14px);display:flex;align-items:flex-start;gap:12px;box-shadow:0 -4px 24px rgba(0,0,0,.3);transform:translateY(110%);transition:transform .35s cubic-bezier(.4,0,.2,1)}
+  #pwaBanner.show{transform:translateY(0)}
+  #pwaBanner .pwa-icon{font-size:32px;flex-shrink:0;line-height:1}
+  #pwaBanner .pwa-text{flex:1;min-width:0}
+  #pwaBanner .pwa-title{font-size:14px;font-weight:700;margin-bottom:3px}
+  #pwaBanner .pwa-sub{font-size:12px;color:rgba(255,255,255,.7);line-height:1.4}
+  #pwaBanner .pwa-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+  #pwaBanner .pwa-btn{background:#6366f1;color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer}
+  #pwaBanner .pwa-btn-ghost{background:rgba(255,255,255,.12);color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer}
 </style>
+<link rel="manifest" href="admin-manifest.json">
 <script src="config.js"></script>
 <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
 <body>
+
+<!-- PWA: баннер "Добавить на главный экран" -->
+<div id="pwaBanner">
+  <div class="pwa-icon">📲</div>
+  <div class="pwa-text">
+    <div class="pwa-title" id="pwaBannerTitle">Установите приложение</div>
+    <div class="pwa-sub" id="pwaBannerSub">Добавьте админ-панель на главный экран для быстрого доступа</div>
+    <div class="pwa-actions">
+      <button class="pwa-btn" id="pwaBannerBtn" onclick="pwaBannerAction()">Установить</button>
+      <button class="pwa-btn-ghost" onclick="pwaBannerDismiss()">Позже</button>
+    </div>
+  </div>
+</div>
 
 <!-- LOGIN SCREEN -->
 <div id="loginScreen">
@@ -8526,6 +8550,49 @@ function showAdmin() {
 
 // На старте — проверяем сохранённый токен
 let _routesOnlyMode = false;
+// ── PWA: "Добавить на главный экран" (тот же паттерн, что в staff.html) ──
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js').catch(e => console.log('SW reg failed:', e.message));
+}
+let _pwaInstallEvent = null;
+const _isStandalonePwa = () => window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
+const _isIOSPwa        = () => /iPad|iPhone|iPod/.test(navigator.userAgent);
+
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  _pwaInstallEvent = e;
+  if (!_isStandalonePwa()) _showPwaBanner('chrome');
+});
+
+function _showPwaBanner(type) {
+  if (localStorage.getItem('admin_pwa_banner_dismissed') === '1') return;
+  const banner = document.getElementById('pwaBanner');
+  if (!banner) return;
+  if (type === 'safari') {
+    document.getElementById('pwaBannerTitle').textContent = 'Добавьте на главный экран';
+    document.getElementById('pwaBannerSub').innerHTML =
+      'Safari → <b style="color:#fff">Поделиться</b> (□↑) → <b style="color:#fff">На экран «Домой»</b> → Добавить';
+    document.getElementById('pwaBannerBtn').textContent = 'Понятно';
+  }
+  setTimeout(() => banner.classList.add('show'), 1500);
+}
+
+function pwaBannerAction() {
+  if (_pwaInstallEvent) {
+    _pwaInstallEvent.prompt();
+    _pwaInstallEvent.userChoice.then(() => { _pwaInstallEvent = null; });
+  }
+  document.getElementById('pwaBanner').classList.remove('show');
+  localStorage.setItem('admin_pwa_banner_dismissed', '1');
+}
+
+function pwaBannerDismiss() {
+  document.getElementById('pwaBanner').classList.remove('show');
+  localStorage.setItem('admin_pwa_banner_dismissed', '1');
+}
+
+if (_isIOSPwa() && !_isStandalonePwa()) _showPwaBanner('safari');
+
 window.addEventListener('DOMContentLoaded', () => {
   document.getElementById('passwordInput').addEventListener('keydown', e => {
     if (e.key === 'Enter') doLogin();

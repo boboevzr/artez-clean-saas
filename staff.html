@@ -7698,6 +7698,13 @@ document.addEventListener('click', e => {
 
 // ─── Инициализация ─────────────────────────────────────
 (async () => {
+  // ?fresh=1 — ссылка "Вход для персонала" с cleano.uz: сбрасываем кэш прошлой компании,
+  // всегда показываем экран ввода slug (как и в admin.html).
+  if (new URLSearchParams(location.search).get('fresh') === '1') {
+    localStorage.removeItem('staff_company_slug');
+    localStorage.removeItem('staff_company_name');
+    history.replaceState({}, '', location.pathname);
+  }
   if (await checkAuth()) {
     await loadStaffBranches();
     renderLdBranchBtns();

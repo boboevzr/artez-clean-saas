@@ -80,6 +80,12 @@
   .btn-ghost { background: transparent; color: var(--text); border-color: var(--line); }
   .btn-ghost:hover { border-color: var(--teal); color: var(--teal-soft); }
   :root[data-theme="light"] .btn-ghost:hover { color: var(--teal); }
+
+  .header-login-group { display: flex; gap: 8px; }
+  .header-login-btn { padding: 9px 16px; font-size: 13px; }
+  @media (max-width: 480px) {
+    .header-login-btn { padding: 8px 10px; font-size: 12px; }
+  }
   .btn-copy-highlight { background: color-mix(in srgb, var(--teal) 16%, transparent); border-color: var(--teal); color: var(--teal-soft); animation: copyGlow 2.2s ease-in-out infinite; }
   .btn-copy-highlight:hover { background: color-mix(in srgb, var(--teal) 26%, transparent); color: var(--teal-soft); }
   :root[data-theme="light"] .btn-copy-highlight { color: var(--teal); }
@@ -388,7 +394,10 @@
       <a href="#how" data-i18n="nav.how">Qanday ishlaydi</a>
       <a href="#pricing" data-i18n="nav.pricing">Tariflar</a>
     </nav>
-    <a class="btn btn-ghost" href="admin.html?fresh=1" target="_blank" rel="noopener" data-i18n="nav.login">Kirish</a>
+    <div class="header-login-group">
+      <a class="btn btn-ghost header-login-btn" href="admin.html?fresh=1" target="_blank" rel="noopener" data-i18n="nav.login">👑 Admin</a>
+      <a class="btn btn-ghost header-login-btn" href="staff.html?fresh=1" target="_blank" rel="noopener" data-i18n="nav.staffLogin">👥 Xodimlar</a>
+    </div>
     <button class="icon-btn" id="themeToggle" aria-label="Mavzuni almashtirish">🌙</button>
     <div class="lang-switch" id="langSwitch">
       <button type="button" data-lang-btn="ru">RU</button>
@@ -717,7 +726,8 @@
   // ── I18N ──
   var I18N = {
     ru: {
-      'nav.features':'Возможности','nav.how':'Как это работает','nav.pricing':'Тарифы','nav.tryFree':'Попробовать бесплатно','nav.login':'Войти',
+      'nav.features':'Возможности','nav.how':'Как это работает','nav.pricing':'Тарифы','nav.tryFree':'Попробовать бесплатно',
+      'nav.login':'👑 Админ','nav.staffLogin':'👥 Персонал',
       'hero.eyebrow':'SaaS-платформа для химчисток и прачечных',
       'hero.h1a':'Управляйте химчисткой или прачечной','hero.h1b':'из одного окна',
       'hero.lead':'Приём заказов, маршруты водителей, касса и зарплата, SMS и Telegram-уведомления клиентам, свой сайт для приёма заявок — всё в одной системе, без разработчиков и серверов.',
@@ -778,7 +788,8 @@
       'contact.callUs':'Позвонить','contact.none':'Контакты пока не заполнены',
     },
     uz: {
-      'nav.features':'Imkoniyatlar','nav.how':'Qanday ishlaydi','nav.pricing':'Tariflar','nav.tryFree':"Bepul sinab ko'ring",'nav.login':'Kirish',
+      'nav.features':'Imkoniyatlar','nav.how':'Qanday ishlaydi','nav.pricing':'Tariflar','nav.tryFree':"Bepul sinab ko'ring",
+      'nav.login':'👑 Admin','nav.staffLogin':'👥 Xodimlar',
       'hero.eyebrow':'Kimyoviy tozalash va kirxonalar uchun SaaS-platforma',
       'hero.h1a':'Kimyoviy tozalash yoki kirxonangizni','hero.h1b':'bitta oynadan boshqaring',
       'hero.lead':"Buyurtmalarni qabul qilish, haydovchilar marshruti, kassa va maosh, mijozlarga SMS va Telegram xabarnomalari, ariza qabul qilish uchun o'z saytingiz — hammasi bitta tizimda, dasturchi va serversiz.",
