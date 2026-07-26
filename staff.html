@@ -1198,6 +1198,7 @@ function _updateLangSwitchUI() {
   });
 }
 function _applyPageI18n() {
+  _buildProfileDrop();
   buildDrawerNav();
   buildDeskSidebar();
   document.getElementById('tbTitle').textContent = ({ dashboard:'CLEANO', leads:t('nav.leads'), orders:t('nav.orders'), clients:t('nav.clients'), notifications:t('nav.notifications'), profile:t('nav.profile') })[currentPage] || 'CLEANO';
@@ -1354,7 +1355,7 @@ const _i18n = {
     'prof.birth':'День рождения','prof.birth_none':'Не указана','prof.back':'Назад',
     'prof.my_data':'Мои данные','prof.edit':'Редактировать','prof.save':'Сохранить',
     'prof.branch_none':'— не указан —','prof.gender':'Пол','prof.gender_m':'Мужской','prof.gender_f':'Женский',
-    'prof.perms':'МОИ РАЗРЕШЕНИЯ','prof.logout':'Выйти из аккаунта',
+    'prof.perms':'МОИ РАЗРЕШЕНИЯ','prof.logout':'Выйти из аккаунта','profDrop.logout':'Выйти',
     'role.admin':'Администратор','role.manager':'Менеджер','role.callcenter':'Колл-центр',
     'role.driver':'Водитель','role.logistics':'Логистика','role.washer':'Мойщик','role.agent':'Агент',
     'perm.leads':'Лиды','perm.orders':'Заявки','perm.clients':'Клиенты','perm.status':'Статусы',
@@ -1590,7 +1591,7 @@ const _i18n = {
     'prof.birth':'Tug\'ilgan kun','prof.birth_none':'Ko\'rsatilmagan','prof.back':'Orqaga',
     'prof.my_data':'Mening ma\'lumotlarim','prof.edit':'Tahrirlash','prof.save':'Saqlash',
     'prof.branch_none':'— ko\'rsatilmagan —','prof.gender':'Jins','prof.gender_m':'Erkak','prof.gender_f':'Ayol',
-    'prof.perms':'MENING RUXSATLARIM','prof.logout':'Hisobdan chiqish',
+    'prof.perms':'MENING RUXSATLARIM','prof.logout':'Hisobdan chiqish','profDrop.logout':'Chiqish',
     'role.admin':'Administrator','role.manager':'Menejer','role.callcenter':'Call-markaz',
     'role.driver':'Haydovchi','role.logistics':'Logistika','role.washer':'Yuvuvchi','role.agent':'Agent',
     'perm.leads':'Lidlar','perm.orders':'Buyurtmalar','perm.clients':'Mijozlar','perm.status':'Holatlar',
@@ -1924,12 +1925,7 @@ function doLogout() {
 }
 
 // ─── Запуск приложения ─────────────────────────────────
-function startApp() {
-  document.getElementById('loginScreen').style.display = 'none';
-  document.getElementById('app').style.display = 'flex';
-  document.getElementById('app').style.flexDirection = 'column';
-  _updateLangSwitchUI();
-
+function _buildProfileDrop() {
   const role    = currentStaff.role;
   const name    = [currentStaff.first_name, currentStaff.last_name].filter(Boolean).join(' ');
   const initial = (currentStaff.first_name || '?')[0].toUpperCase();
@@ -1958,8 +1954,8 @@ function startApp() {
           ${localStorage.getItem('staff_company_slug') ? ` · <code>${_esc(localStorage.getItem('staff_company_slug'))}</code>` : ''}
         </div>
         <div class="profile-drop-sep"></div>
-        <button id="profDrop_cashBtn" class="profile-drop-logout" style="color:var(--text)" onclick="closeProfileDrop();openMyCashModal()">💵 Моя касса</button>
-        <button class="profile-drop-logout" onclick="doLogout()">⏻ Выйти</button>
+        <button id="profDrop_cashBtn" class="profile-drop-logout" style="color:var(--text)" onclick="closeProfileDrop();openMyCashModal()">💵 ${t('cash.title')}</button>
+        <button class="profile-drop-logout" onclick="doLogout()">⏻ ${t('profDrop.logout')}</button>
       </div>
     </div>`;
 
@@ -1969,7 +1965,15 @@ function startApp() {
   document.getElementById('drawerCompanySlug').textContent = localStorage.getItem('staff_company_slug') || '';
   document.getElementById('deskCompanyName').textContent = localStorage.getItem('staff_company_name') || '';
   document.getElementById('deskCompanySlug').textContent = localStorage.getItem('staff_company_slug') || '';
+}
 
+function startApp() {
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('app').style.display = 'flex';
+  document.getElementById('app').style.flexDirection = 'column';
+  _updateLangSwitchUI();
+
+  _buildProfileDrop();
   buildDrawerNav();
   buildDeskSidebar();
 
