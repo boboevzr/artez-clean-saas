@@ -10,6 +10,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <script src="config.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha384-sHL9NAb7lN7rfvG5lfHpm643Xkcjzp4jFvuavGOndn6pjVqS6ny56CAt3nsEVT4H" crossorigin="anonymous">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha384-cxOPjt7s7Iz04uaHJceBmS+qpjv2JkIHNVcuOrM+YHwZOmJGBXI00mdUXEq65HTH" crossorigin="anonymous"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -314,6 +316,10 @@
   .f-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   @media (max-width: 420px) { .f-row { grid-template-columns: 1fr; } }
   .f-hint { font-size: 11.5px; color: var(--text2); margin-top: 5px; }
+  .reg-map-wrap { position: relative; border-radius: 10px; overflow: hidden; border: 1.5px solid var(--line); }
+  #regWorkshopMap { width: 100%; height: 200px; background: var(--ink); }
+  .reg-map-locate { position: absolute; right: 8px; bottom: 8px; z-index: 500; font: inherit; font-size: 12px; font-weight: 700; padding: 8px 12px; border-radius: 999px; border: none; background: var(--surface); color: var(--text); cursor: pointer; box-shadow: 0 4px 14px -4px rgba(0,0,0,.4); }
+  .reg-map-locate:hover { background: var(--teal); color: #04120F; }
   .f-check { font-size: 11.5px; color: #F48080; margin-top: 5px; min-height: 0; display: none; }
   .f-check.show { display: block; }
   .f-error { font-size: 13px; color: #F48080; margin-bottom: 12px; min-height: 0; }
@@ -624,6 +630,18 @@
               <input type="email" id="regEmail" name="email" autocomplete="email" maxlength="160">
               <div class="f-check" id="regEmailCheck"></div>
             </div>
+            <div class="f-field">
+              <label data-i18n="reg.city">Shahar/tuman</label>
+              <input type="text" id="regCity" name="address-level2" autocomplete="address-level2" maxlength="120" placeholder="Toshkent, Yunusobod tumani">
+            </div>
+            <div class="f-field">
+              <label data-i18n="reg.workshopLoc">Sex/ustaxona joylashuvi <span class="opt" data-i18n="reg.optional">(ixtiyoriy)</span></label>
+              <div class="reg-map-wrap">
+                <div id="regWorkshopMap"></div>
+                <button type="button" class="reg-map-locate" id="regMapLocateBtn" data-i18n="reg.mapLocate">📍 Joriy joylashuv</button>
+              </div>
+              <div class="f-hint" data-i18n="reg.mapHint">Xaritada bosing yoki suring — keyinroq admin-panelda aniqlashtirishingiz mumkin</div>
+            </div>
             <div class="f-row">
               <div class="f-field">
                 <label data-i18n="reg.password">Parol</label>
@@ -761,6 +779,8 @@
       'reg.perk3':'Админ-панель','reg.perk3v':'готова сразу','reg.perk4':'Сайт для клиентов','reg.perk4v':'автоматически',
       'reg.companyName':'Название компании','reg.slug':'Адрес на сайте','reg.slugHint':'Только латинские буквы, цифры и дефис, 3–50 символов',
       'reg.contactName':'Ваше имя','reg.phone':'Телефон','reg.email':'Email','reg.optional':'(необязательно)',
+      'reg.city':'Город/район','reg.workshopLoc':'Локация цеха/мастерской',
+      'reg.mapLocate':'📍 Текущее местоположение','reg.mapHint':'Нажмите на карте или перетащите — позже можно уточнить в админ-панели',
       'reg.password':'Пароль','reg.password2':'Повторите пароль','reg.submit':'Зарегистрироваться',
       'reg.doneTitle':'Готово!','reg.doneText':'Компания создана. Используйте данные ниже, чтобы войти.',
       'reg.successModal.title':'Регистрация прошла успешно! 🎉',
@@ -823,6 +843,8 @@
       'reg.perk3':'Admin-panel','reg.perk3v':'darhol tayyor','reg.perk4':'Mijozlar uchun sayt','reg.perk4v':'avtomatik',
       'reg.companyName':'Kompaniya nomi','reg.slug':'Manzil saytda (slug)','reg.slugHint':"Faqat lotin harflari, raqamlar va tire, 3–50 belgi",
       'reg.contactName':'Ismingiz','reg.phone':'Telefon','reg.email':'Email','reg.optional':'(ixtiyoriy)',
+      'reg.city':'Shahar/tuman','reg.workshopLoc':'Sex/ustaxona joylashuvi',
+      'reg.mapLocate':'📍 Joriy joylashuv','reg.mapHint':"Xaritada bosing yoki suring — keyinroq admin-panelda aniqlashtirishingiz mumkin",
       'reg.password':'Parol','reg.password2':'Parolni takrorlang','reg.submit':"Ro'yxatdan o'tish",
       'reg.doneTitle':'Tayyor!','reg.doneText':"Kompaniyangiz yaratildi. Quyidagi login/parollardan foydalanib kiring.",
       'reg.successModal.title':"Ro'yxatdan o'tish muvaffaqiyatli! 🎉",
@@ -1082,8 +1104,36 @@
     document.getElementById('regSuccessView').style.display = 'none';
     document.getElementById('successModalOverlay').classList.remove('open');
     resetPhoneVerify();
+    regWorkshopLatLng = null;
+    if (regWorkshopMarker) { regWorkshopMap.removeLayer(regWorkshopMarker); regWorkshopMarker = null; }
   }
-  function openReg(){ resetRegForm(); regOverlay.classList.add('open'); document.body.style.overflow = 'hidden'; }
+
+  // ── Карта выбора локации цеха (Leaflet + OpenStreetMap, без API-ключа) ──
+  var regWorkshopMap = null, regWorkshopMarker = null, regWorkshopLatLng = null;
+  function initRegMapIfNeeded(){
+    if (regWorkshopMap) { setTimeout(function(){ regWorkshopMap.invalidateSize(); }, 100); return; }
+    regWorkshopMap = L.map('regWorkshopMap', { zoomControl: true }).setView([41.3111, 69.2797], 6);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors', maxZoom: 19,
+    }).addTo(regWorkshopMap);
+    regWorkshopMap.on('click', function(e){ setRegWorkshopMarker(e.latlng.lat, e.latlng.lng); });
+    setTimeout(function(){ regWorkshopMap.invalidateSize(); }, 150);
+  }
+  function setRegWorkshopMarker(lat, lng){
+    regWorkshopLatLng = { lat: lat, lng: lng };
+    if (regWorkshopMarker) { regWorkshopMarker.setLatLng([lat, lng]); }
+    else { regWorkshopMarker = L.marker([lat, lng]).addTo(regWorkshopMap); }
+  }
+  document.getElementById('regMapLocateBtn').addEventListener('click', function(){
+    if (!navigator.geolocation || !regWorkshopMap) return;
+    navigator.geolocation.getCurrentPosition(function(pos){
+      var lat = pos.coords.latitude, lng = pos.coords.longitude;
+      regWorkshopMap.setView([lat, lng], 15);
+      setRegWorkshopMarker(lat, lng);
+    }, function(){}, { timeout: 8000 });
+  });
+
+  function openReg(){ resetRegForm(); regOverlay.classList.add('open'); document.body.style.overflow = 'hidden'; initRegMapIfNeeded(); }
   function closeReg(){ regOverlay.classList.remove('open'); document.body.style.overflow = ''; }
   var openBtn = document.getElementById('openRegisterBtn');
   if (openBtn) openBtn.addEventListener('click', openReg);
@@ -1382,6 +1432,10 @@
           contact_phone: document.getElementById('regPhone').value.trim(),
           contact_email: document.getElementById('regEmail').value.trim() || null,
           admin_password: pw1,
+          city_ru: document.getElementById('regCity').value.trim() || null,
+          city_uz: document.getElementById('regCity').value.trim() || null,
+          workshop_lat: regWorkshopLatLng ? regWorkshopLatLng.lat : null,
+          workshop_lng: regWorkshopLatLng ? regWorkshopLatLng.lng : null,
         }),
       });
       var data = await r.json();
