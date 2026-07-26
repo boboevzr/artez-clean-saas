@@ -4861,6 +4861,10 @@
   </div>
 </div>
 
+<div id="setupWizardBadge" onclick="_reopenSetupWizard()" style="display:none;position:fixed;right:20px;bottom:20px;z-index:500;background:var(--accent);color:#fff;padding:11px 18px;border-radius:30px;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.25);align-items:center;gap:8px">
+  🧩 <span id="setupWizardBadgeText">Не заполнено: 0</span>
+</div>
+
 <div id="modalStaff" class="modal-overlay hidden">
   <div class="modal-box staff-modal-box">
 
@@ -7523,43 +7527,63 @@ function openAddBranchModal() { _bfOpenForm('add', null); }
 // ── Первоначальные настройки (мастер заполнения ключевых полей) ─────────
 let _setupWizardSiteSettings = null;
 let _setupWizardGapList = [];
+let _setupWizardRequiredCount = 0;
 
 async function _checkSetupWizard() {
   if (!_adminMe || _adminMe.role !== 'admin') return;
   const slug = localStorage.getItem('admin_company_slug') || '';
   if (sessionStorage.getItem('setup_wizard_dismissed_' + slug)) return;
+  const gaps = await _loadSetupGaps();
+  if (!gaps.required.length && !gaps.recommended.length) return;
+  _renderSetupWizard(gaps);
+  openModal('modalSetupWizard');
+}
+
+async function _loadSetupGaps() {
   try {
     const d = await apiGet('/admin/settings/site');
     _setupWizardSiteSettings = d?.settings || {};
   } catch (_) {
     _setupWizardSiteSettings = {};
   }
-  const gaps = _computeSetupGaps();
-  if (!gaps.required.length && !gaps.recommended.length) return;
-  _renderSetupWizard(gaps);
-  openModal('modalSetupWizard');
+  return _computeSetupGaps();
 }
 
 function _computeSetupGaps() {
   const required = [];
   const recommended = [];
   if (!_setupWizardSiteSettings?.contact_main) {
-    required.push({ label: 'Телефон компании', hint: 'Основной номер для клиентов', fix: _setupGoToContacts });
+    required.push({
+      kind: 'inline', label: 'Телефон компании', hint: 'Основной номер для клиентов',
+      placeholder: '+998 XX XXX-XX-XX',
+      save: async (val) => {
+        await apiFetch(`${API_BASE}/admin/settings/site`, { method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ contact_main: val }) });
+        _setupWizardSiteSettings.contact_main = val;
+      },
+    });
   }
   (window._BRANCHES || []).forEach(b => {
     const label = b.name_ru || b.slug;
     const phones = _brPhones(b.phones);
     if (!phones.length) {
-      required.push({ label: `Филиал «${label}»: телефон`, hint: 'Номер телефона филиала', fix: () => _setupGoToBranch(b.id) });
+      required.push({
+        kind: 'inline', label: `Филиал «${label}»: телефон`, hint: 'Номер телефона филиала',
+        placeholder: '+998 XX XXX-XX-XX',
+        save: async (val) => {
+          const newPhones = [{ n: val, receipt: true, site: true }, ...phones.slice(1)];
+          await apiFetch(`${API_BASE}/branches/${b.id}`, { method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ phones: newPhones }) });
+          b.phones = newPhones;
+        },
+      });
     }
     if (!(b.lat && b.lon) || !(b.workshop_lat && b.workshop_lon)) {
-      required.push({ label: `Филиал «${label}»: локация`, hint: 'Центр района и адрес цеха на карте', fix: () => _setupGoToBranch(b.id) });
+      required.push({ kind: 'nav', label: `Филиал «${label}»: локация`, hint: 'Центр района и адрес цеха на карте', fix: () => _setupGoToBranch(b.id) });
     }
     if (!b.tg_leads_group_id) {
-      required.push({ label: `Филиал «${label}»: Telegram-группа заявок`, hint: 'Куда присылать уведомления о новых заявках', fix: () => _setupGoToBranch(b.id) });
+      required.push({ kind: 'nav', label: `Филиал «${label}»: Telegram-группа заявок`, hint: 'Куда присылать уведомления о новых заявках', fix: () => _setupGoToBranch(b.id) });
     }
     if (!b.tg_orders_channel_id || !b.tg_delivery_group_id || !b.tg_delivery_channel_id) {
-      recommended.push({ label: `Филиал «${label}»: остальные Telegram-группы`, hint: 'Заказы, водители, доставка — по желанию', fix: () => _setupGoToBranch(b.id) });
+      recommended.push({ kind: 'nav', label: `Филиал «${label}»: остальные Telegram-группы`, hint: 'Заказы, водители, доставка — по желанию', fix: () => _setupGoToBranch(b.id) });
     }
   });
   return { required, recommended };
@@ -7571,25 +7595,83 @@ function _renderSetupWizard(gaps) {
     ? `Не заполнено обязательных пунктов: ${gaps.required.length}`
     : 'Есть несколько рекомендаций';
   _setupWizardGapList = gaps.required.concat(gaps.recommended);
-  const row = (g, i, dim) => `
+  const navRow = (g, i, dim) => `
     <div class="card" style="margin-bottom:8px;padding:12px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;${dim ? 'opacity:.65' : ''}" onclick="_setupWizardGapList[${i}].fix()">
       <div style="font-size:18px">${dim ? '💡' : '⚠️'}</div>
       <div style="flex:1"><div style="font-weight:600;font-size:13px">${_esc(g.label)}</div><div style="font-size:11px;color:var(--text2)">${_esc(g.hint)}</div></div>
       <div style="color:${dim ? 'var(--text2)' : 'var(--accent)'}">→</div>
     </div>`;
-  let html = gaps.required.map((g, i) => row(g, i, false)).join('');
-  html += gaps.recommended.map((g, i) => row(g, gaps.required.length + i, true)).join('');
+  const inlineRow = (g, i) => `
+    <div class="card" style="margin-bottom:8px;padding:12px 14px" id="setupWizardRow${i}">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+        <div style="font-size:18px">⚠️</div>
+        <div style="flex:1"><div style="font-weight:600;font-size:13px">${_esc(g.label)}</div><div style="font-size:11px;color:var(--text2)">${_esc(g.hint)}</div></div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input class="form-input" id="setupWizardInput${i}" placeholder="${_esc(g.placeholder || '')}" style="flex:1;min-width:0">
+        <button class="btn btn-primary btn-sm" style="flex-shrink:0" onclick="_setupInlineSave(${i})" id="setupWizardSaveBtn${i}">💾</button>
+      </div>
+    </div>`;
+  let html = gaps.required.map((g, i) => g.kind === 'inline' ? inlineRow(g, i) : navRow(g, i, false)).join('');
+  html += gaps.recommended.map((g, i) => navRow(g, gaps.required.length + i, true)).join('');
   document.getElementById('setupWizardList').innerHTML = html;
+  _setupWizardRequiredCount = gaps.required.length;
+}
+
+async function _setupInlineSave(i) {
+  const g = _setupWizardGapList[i];
+  const input = document.getElementById('setupWizardInput' + i);
+  const btn = document.getElementById('setupWizardSaveBtn' + i);
+  const val = input.value.trim();
+  if (!val) { input.focus(); return; }
+  btn.disabled = true;
+  try {
+    await g.save(val);
+    showToast('Сохранено');
+    const gaps = await _loadSetupGaps();
+    if (!gaps.required.length) {
+      closeModal('modalSetupWizard');
+      _hideSetupWizardBadge();
+      showToast('Первоначальные настройки завершены 🎉');
+    } else {
+      _renderSetupWizard(gaps);
+    }
+  } catch (e) {
+    showToast('Ошибка: ' + e.message, 'error');
+    btn.disabled = false;
+  }
+}
+
+function _hideSetupWizardBadge() {
+  const badge = document.getElementById('setupWizardBadge');
+  if (badge) badge.style.display = 'none';
+}
+
+function _showSetupWizardBadge() {
+  const badge = document.getElementById('setupWizardBadge');
+  if (!badge || _setupWizardRequiredCount <= 0) return;
+  document.getElementById('setupWizardBadgeText').textContent = `Не заполнено: ${_setupWizardRequiredCount}`;
+  badge.style.display = 'flex';
+}
+
+async function _reopenSetupWizard() {
+  const gaps = await _loadSetupGaps();
+  if (!gaps.required.length && !gaps.recommended.length) { _hideSetupWizardBadge(); return; }
+  _renderSetupWizard(gaps);
+  openModal('modalSetupWizard');
+  _hideSetupWizardBadge();
 }
 
 function dismissSetupWizard() {
   const slug = localStorage.getItem('admin_company_slug') || '';
   sessionStorage.setItem('setup_wizard_dismissed_' + slug, '1');
   closeModal('modalSetupWizard');
+  _hideSetupWizardBadge();
 }
 
 function _setupGoToPage() {
   closeModal('modalSetupWizard');
+  _showSetupWizardBadge();
   const navEl = document.querySelector('.nav-sub-item[data-page="company-settings"]');
   if (navEl) switchSubPage(navEl); else _activatePage('company-settings');
 }
