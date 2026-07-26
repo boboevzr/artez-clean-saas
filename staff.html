@@ -180,7 +180,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-s
 .drawer-overlay.open .drawer-panel{transform:translateX(0)}
 .drawer-header{padding:0 20px 16px;border-bottom:1px solid var(--sep);margin-bottom:8px;}
 .drawer-logo{font-size:20px;font-weight:800;color:var(--accent);}
-.drawer-sub{font-size:12px;color:var(--text2);margin-top:2px;}
+.drawer-company-name{font-size:15px;font-weight:700;color:var(--text);margin-top:10px;line-height:1.25;overflow-wrap:break-word;}
+.drawer-company-slug{font-size:11px;color:var(--text2);font-family:monospace;margin-top:2px;}
+.drawer-sub{font-size:12px;color:var(--text2);margin-top:8px;}
 .drawer-item{
   display:flex;align-items:center;gap:12px;
   padding:13px 20px;cursor:pointer;font-size:15px;
@@ -225,6 +227,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-s
     font-size:16px;font-weight:800;color:#fff;flex-shrink:0;
   }
   .desk-logo-name{font-size:17px;font-weight:800;color:var(--text);flex:1}
+  .desk-sidebar-company{padding:10px 14px 12px;border-bottom:1px solid var(--sep);}
+  .desk-company-name{font-size:14px;font-weight:700;color:var(--text);line-height:1.25;overflow-wrap:break-word;}
+  .desk-company-slug{font-size:11px;color:var(--text2);font-family:monospace;margin-top:2px;}
+  .desk-sidebar.nav-collapsed .desk-sidebar-company{display:none}
   .nav-toggle-btn{
     width:34px;height:34px;flex-shrink:0;cursor:pointer;
     background:var(--bg);border:1.5px solid var(--sep);border-radius:8px;
@@ -718,6 +724,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-s
   <div class="drawer-panel">
     <div class="drawer-header">
       <div class="drawer-logo">CLEANO</div>
+      <div class="drawer-company-name" id="drawerCompanyName"></div>
+      <div class="drawer-company-slug" id="drawerCompanySlug"></div>
       <div class="drawer-sub" id="drawerSubtitle">Сотрудник</div>
     </div>
     <div id="drawerNav"></div>
@@ -731,6 +739,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-s
       <div class="desk-logo-mark">C</div>
       <div class="desk-logo-name">CLEANO</div>
       <button class="nav-toggle-btn" id="sidebarToggleBtn" onclick="toggleSidebarCollapse()" title="Свернуть">«</button>
+    </div>
+    <div class="desk-sidebar-company" id="deskSidebarCompany">
+      <div class="desk-company-name" id="deskCompanyName"></div>
+      <div class="desk-company-slug" id="deskCompanySlug"></div>
     </div>
     <div class="desk-nav" id="deskNav"></div>
     <div class="desk-sidebar-bottom" id="deskSidebarBottom"></div>
@@ -1953,6 +1965,10 @@ function startApp() {
 
   // Drawer subtitle
   document.getElementById('drawerSubtitle').textContent = name || roleLabel;
+  document.getElementById('drawerCompanyName').textContent = localStorage.getItem('staff_company_name') || '';
+  document.getElementById('drawerCompanySlug').textContent = localStorage.getItem('staff_company_slug') || '';
+  document.getElementById('deskCompanyName').textContent = localStorage.getItem('staff_company_name') || '';
+  document.getElementById('deskCompanySlug').textContent = localStorage.getItem('staff_company_slug') || '';
 
   buildDrawerNav();
   buildDeskSidebar();
