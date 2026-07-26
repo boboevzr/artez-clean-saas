@@ -2,6 +2,16 @@
 <html lang="uz" id="htmlRoot">
 <head>
 <meta charset="UTF-8">
+<script>
+  // Сайт конкретной компании (кроме ARTEZ — у неё свой домен artez.uz) —
+  // редирект на мультитенантный шаблон компании раньше загрузки остального лендинга.
+  (function(){
+    var slug = new URLSearchParams(location.search).get('company_slug');
+    if (slug && slug !== 'artez') {
+      location.replace('/company-site.html' + location.search);
+    }
+  })();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cleano — kimyoviy tozalash va kirxonalar uchun platforma</title>
 <meta name="description" id="metaDesc" content="Cleano — kimyoviy tozalash va kirxonalar uchun SaaS-platforma: buyurtmalar, marshrutlar, kassa, SMS/Telegram, o'z saytingiz. 14 kun bepul.">
