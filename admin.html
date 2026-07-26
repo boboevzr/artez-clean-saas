@@ -1382,7 +1382,7 @@
         </defs>
         <circle cx="100" cy="100" r="68" fill="none" stroke="url(#tealatop)" stroke-width="22" stroke-linecap="round" stroke-dasharray="356 72" transform="rotate(-90 100 100)"/>
         <circle cx="100" cy="32" r="12" fill="#C79A3D"/>
-      </svg></span> <span>Cleano</span> <span style="color:var(--text2); font-weight:400; font-size:14px;">Админ</span><img id="topbarCompanyLogo" src="" alt="" style="display:none;width:22px;height:22px;border-radius:6px;object-fit:cover;margin-left:4px"></div>
+      </svg></span> <span>Cleano</span><span style="display:inline-flex;align-items:center;gap:6px;margin-left:14px"><img id="topbarCompanyLogo" src="" alt="" style="display:none;width:22px;height:22px;border-radius:6px;object-fit:cover"><span id="topbarCompanyName" style="color:var(--text2);font-weight:400;font-size:14px"></span></span></div>
     <div class="topbar-right">
       <div class="lang-switch" id="adminLangSwitch" style="display:flex;align-items:center;background:var(--surface2);border:1px solid var(--border);border-radius:999px;padding:3px;gap:2px">
         <button type="button" data-lang-btn="ru" onclick="_setAdminLang('ru')" style="border:none;background:transparent;color:var(--text2);padding:5px 12px;border-radius:999px;font-size:12px;font-weight:700;cursor:pointer;line-height:1.2">RU</button>
@@ -7402,7 +7402,9 @@ async function saveCompanyProfile() {
     _cfgOriginal['company_name'] = name;
     _cfgOriginal['company_slug'] = slug;
     if (slugChanged) localStorage.setItem('admin_company_slug', slug);
+    localStorage.setItem('admin_company_name', name);
     _setProfileSlug(slug);
+    _setTopbarCompanyName(name);
     cancelCard('card-company-profile', ['company_name','company_slug']);
     showToast('Сохранено');
   } catch(e) {
@@ -8729,16 +8731,27 @@ function _setProfileLogo(logoUrl) {
   else { img.style.display = 'none'; }
 }
 
+function _setTopbarCompanyName(name) {
+  const el = document.getElementById('topbarCompanyName');
+  if (el) el.textContent = name || '';
+}
+
 function _updateProfileUI() {
   const cachedSlug = localStorage.getItem('admin_company_slug');
   const cachedLogo = localStorage.getItem('admin_company_logo');
+  const cachedName = localStorage.getItem('admin_company_name');
   if (cachedSlug) _setProfileSlug(cachedSlug);
   if (cachedLogo !== null) _setProfileLogo(cachedLogo || null);
-  if (cachedSlug && cachedLogo !== null) return;
+  if (cachedName) _setTopbarCompanyName(cachedName);
+  if (cachedSlug && cachedLogo !== null && cachedName) return;
   apiGet('/company/info').then(d => {
     if (d?.slug) {
       localStorage.setItem('admin_company_slug', d.slug);
       _setProfileSlug(d.slug);
+    }
+    if (d?.name) {
+      localStorage.setItem('admin_company_name', d.name);
+      _setTopbarCompanyName(d.name);
     }
     localStorage.setItem('admin_company_logo', d?.logo_url || '');
     _setProfileLogo(d?.logo_url || null);
