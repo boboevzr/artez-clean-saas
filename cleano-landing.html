@@ -6,6 +6,9 @@
 <title>Cleano — kimyoviy tozalash va kirxonalar uchun platforma</title>
 <meta name="description" id="metaDesc" content="Cleano — kimyoviy tozalash va kirxonalar uchun SaaS-platforma: buyurtmalar, marshrutlar, kassa, SMS/Telegram, o'z saytingiz. 14 kun bepul.">
 <meta name="theme-color" content="#0B1210">
+<link rel="icon" href="LOGO/cleano-favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="LOGO/cleano-icon.svg">
+<link rel="apple-touch-icon" href="LOGO/cleano-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
@@ -780,7 +783,7 @@
       'reg.companyName':'Название компании','reg.slug':'Адрес на сайте','reg.slugHint':'Только латинские буквы, цифры и дефис, 3–50 символов',
       'reg.contactName':'Ваше имя','reg.phone':'Телефон','reg.email':'Email','reg.optional':'(необязательно)',
       'reg.city':'Город/район','reg.workshopLoc':'Локация цеха/мастерской',
-      'reg.mapLocate':'📍 Текущее местоположение','reg.mapHint':'Нажмите на карте или перетащите — позже можно уточнить в админ-панели',
+      'reg.mapLocate':'📍 Текущее местоположение','reg.mapHint':'Нажмите на карте вручную или используйте кнопку «Текущее местоположение» — город/район определится автоматически',
       'reg.password':'Пароль','reg.password2':'Повторите пароль','reg.submit':'Зарегистрироваться',
       'reg.doneTitle':'Готово!','reg.doneText':'Компания создана. Используйте данные ниже, чтобы войти.',
       'reg.successModal.title':'Регистрация прошла успешно! 🎉',
@@ -844,7 +847,7 @@
       'reg.companyName':'Kompaniya nomi','reg.slug':'Manzil saytda (slug)','reg.slugHint':"Faqat lotin harflari, raqamlar va tire, 3–50 belgi",
       'reg.contactName':'Ismingiz','reg.phone':'Telefon','reg.email':'Email','reg.optional':'(ixtiyoriy)',
       'reg.city':'Shahar/tuman','reg.workshopLoc':'Sex/ustaxona joylashuvi',
-      'reg.mapLocate':'📍 Joriy joylashuv','reg.mapHint':"Xaritada bosing yoki suring — keyinroq admin-panelda aniqlashtirishingiz mumkin",
+      'reg.mapLocate':'📍 Joriy joylashuv','reg.mapHint':"Xaritada qo'lda bosing yoki «Joriy joylashuv» tugmasidan foydalaning — shahar/tuman avtomatik aniqlanadi",
       'reg.password':'Parol','reg.password2':'Parolni takrorlang','reg.submit':"Ro'yxatdan o'tish",
       'reg.doneTitle':'Tayyor!','reg.doneText':"Kompaniyangiz yaratildi. Quyidagi login/parollardan foydalanib kiring.",
       'reg.successModal.title':"Ro'yxatdan o'tish muvaffaqiyatli! 🎉",
@@ -1124,13 +1127,33 @@
     if (regWorkshopMarker) { regWorkshopMarker.setLatLng([lat, lng]); }
     else { regWorkshopMarker = L.marker([lat, lng]).addTo(regWorkshopMap); }
   }
+  // Определение города/района по координатам через Nominatim (OpenStreetMap) — тоже без API-ключа
+  async function reverseGeocodeCity(lat, lng){
+    try {
+      var url = 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=' + lat + '&lon=' + lng
+        + '&accept-language=' + (lang === 'ru' ? 'ru' : 'uz');
+      var r = await fetch(url);
+      var data = await r.json();
+      var a = data.address || {};
+      var city = a.city || a.town || a.village || a.municipality || '';
+      var district = a.suburb || a.county || a.state_district || '';
+      var parts = [city, district].filter(function(p){ return p && p !== city; });
+      var full = city ? [city].concat(parts).join(', ') : '';
+      if (full) document.getElementById('regCity').value = full;
+    } catch(e) {}
+  }
   document.getElementById('regMapLocateBtn').addEventListener('click', function(){
     if (!navigator.geolocation || !regWorkshopMap) return;
+    var btn = this;
+    var origText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = '…';
     navigator.geolocation.getCurrentPosition(function(pos){
       var lat = pos.coords.latitude, lng = pos.coords.longitude;
       regWorkshopMap.setView([lat, lng], 15);
       setRegWorkshopMarker(lat, lng);
-    }, function(){}, { timeout: 8000 });
+      reverseGeocodeCity(lat, lng).finally(function(){ btn.disabled = false; btn.textContent = origText; });
+    }, function(){ btn.disabled = false; btn.textContent = origText; }, { timeout: 8000 });
   });
 
   function openReg(){ resetRegForm(); regOverlay.classList.add('open'); document.body.style.overflow = 'hidden'; initRegMapIfNeeded(); }
