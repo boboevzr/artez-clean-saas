@@ -1060,6 +1060,14 @@
         </div>
         <div style="font-size:11px;color:var(--text2);margin-top:4px">Отправьте эту ссылку клиенту (WhatsApp/SMS/лично) — при переходе и нажатии «Поделиться номером» в боте компания привяжется автоматически.</div>
       </div>
+      <div style="border-top:1px solid var(--border);margin-top:14px;padding-top:10px">
+        <div style="font-size:11px;color:var(--text2);margin-bottom:4px">🔐 Мастер-пароль (подтверждение удалений в admin.html)</div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <code id="ecMasterPassword" class="mono" style="flex:1;background:var(--surface2);padding:6px 10px;border-radius:6px;font-size:12px;word-break:break-all;color:var(--text)">—</code>
+          <button class="btn btn-ghost btn-sm" onclick="resetMasterPassword()" title="Сгенерировать новый мастер-пароль">🔄 Сбросить</button>
+        </div>
+        <div style="font-size:11px;color:var(--text2);margin-top:4px">Если клиент забыл или удалил сообщение с паролем — сгенерируйте новый. Если компания привязана к боту — он придёт ей в Telegram автоматически.</div>
+      </div>
     </div>
 
     <!-- Tab: Контакты -->
@@ -1966,6 +1974,17 @@ function copyTgLink() {
   const text = document.getElementById('ecTgLink').textContent;
   if (!text || text === '—') return;
   navigator.clipboard?.writeText(text).catch(() => {});
+}
+
+async function resetMasterPassword() {
+  if (!confirm('Сгенерировать новый мастер-пароль? Старый перестанет работать.')) return;
+  try {
+    const d = await api(`/saas/companies/${_currentCompanyId}/master-password`, 'POST');
+    document.getElementById('ecMasterPassword').textContent = d.password;
+    alert(d.sent_via_telegram
+      ? 'Новый мастер-пароль сгенерирован и отправлен компании в Telegram.'
+      : 'Новый мастер-пароль сгенерирован. Компания не привязана к Telegram — передайте пароль вручную.');
+  } catch(e) { alert(e.message); }
 }
 
 
