@@ -3171,7 +3171,7 @@
                     </div>
                   </div>
                 </div>
-                <div>
+                <div class="s-logo-upload" style="display:none">
                   <input type="file" id="cp_logo_file" accept="image/*" style="display:none" onchange="uploadCompanyLogo(this)">
                   <button class="btn btn-ghost btn-sm" type="button" onclick="document.getElementById('cp_logo_file').click()" data-i18n="cs.profile.upload.logo">🖼️ Загрузить лого</button>
                   <div style="font-size:11px;color:var(--text2);margin-top:4px" data-i18n="cs.profile.logo.hint">PNG/JPG, до 400 КБ</div>
@@ -12153,6 +12153,7 @@ async function botBroadcastRestart() {
 function editCard(cardId) {
   const card = document.getElementById(cardId);
   card.querySelectorAll('.form-input, input[type="checkbox"]').forEach(el => el.disabled = false);
+  card.querySelectorAll('.s-logo-upload').forEach(el => el.style.display = '');
   card.querySelector('.s-edit-btn').style.display   = 'none';
   card.querySelector('.s-save-btn').style.display   = '';
   card.querySelector('.s-cancel-btn').style.display = '';
@@ -12167,6 +12168,7 @@ function cancelCard(cardId, keys) {
     else if (_cfgOriginal[k] !== undefined) el.value = _cfgOriginal[k];
   });
   card.querySelectorAll('.form-input, input[type="checkbox"]').forEach(el => el.disabled = true);
+  card.querySelectorAll('.s-logo-upload').forEach(el => el.style.display = 'none');
   updateLeadsGroupStatus();
   card.querySelector('.s-edit-btn').style.display   = '';
   card.querySelector('.s-save-btn').style.display   = 'none';
