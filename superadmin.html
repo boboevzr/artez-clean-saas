@@ -2093,6 +2093,8 @@ async function impersonateCompany(id) {
     const d = await api(`/saas/companies/${id}/impersonate`, 'POST');
     localStorage.setItem('artez_admin_token', d.token);
     localStorage.setItem('admin_company_slug', d.slug || '');
+    localStorage.setItem('admin_company_name', d.company_name || '');
+    localStorage.removeItem('admin_company_logo');
     window.open('admin.html', '_blank');
   } catch(e) { alert('Ошибка: ' + e.message); }
 }

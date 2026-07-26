@@ -8743,7 +8743,10 @@ function _updateProfileUI() {
   if (cachedSlug) _setProfileSlug(cachedSlug);
   if (cachedLogo !== null) _setProfileLogo(cachedLogo || null);
   if (cachedName) _setTopbarCompanyName(cachedName);
-  if (cachedSlug && cachedLogo !== null && cachedName) return;
+  // Кэш — только для мгновенной отрисовки на старте. Ниже ВСЕГДА подтягиваем
+  // актуальные данные: slug/logo/name в localStorage могут быть от ДРУГОЙ
+  // компании (impersonate из superadmin.html не пишет name/logo, смена
+  // компании в этом же браузере оставляет чужой logo и т.п.).
   apiGet('/company/info').then(d => {
     if (d?.slug) {
       localStorage.setItem('admin_company_slug', d.slug);
