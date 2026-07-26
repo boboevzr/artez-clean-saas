@@ -761,6 +761,16 @@
   .s-tab:hover, .cs-tab:hover { color: var(--text); border-color: var(--accent); }
   .s-tab.active, .cs-tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
   .cfg-title-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+
+  /* Рамка логотипа компании — с градиентом и мягкой тенью, красивая иконка-заглушка если лого нет */
+  .company-logo-frame { width: 76px; height: 76px; border-radius: 18px; padding: 3px; flex-shrink: 0;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    box-shadow: 0 8px 22px -8px rgba(245,166,35,.45); transition: transform .2s cubic-bezier(.34,1.56,.64,1), box-shadow .2s ease; }
+  .company-logo-frame:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 12px 28px -8px rgba(245,166,35,.6); }
+  .company-logo-frame-inner { width: 100%; height: 100%; border-radius: 15px; background: var(--surface);
+    display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .company-logo-frame-inner img { width: 100%; height: 100%; object-fit: contain; padding: 7px; }
+  .company-logo-frame-inner .logo-empty-ico { width: 32px; height: 32px; color: var(--accent); opacity: .85; }
   .cfg-title-row .cfg-title { margin-bottom: 0; }
   .s-edit-btn {
     background: var(--surface2); border: 1px solid var(--border);
@@ -3139,8 +3149,19 @@
                 <button class="btn s-edit-btn" onclick="editCard('card-company-profile')">✏️</button>
               </div>
               <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px">
-                <img id="cp_logo_preview" src="" alt="Логотип" style="width:64px;height:64px;border-radius:12px;object-fit:cover;background:var(--bg2);border:1px solid var(--border);display:none">
-                <div id="cp_logo_placeholder" style="width:64px;height:64px;border-radius:12px;background:var(--bg2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:24px;color:var(--text2)">🏢</div>
+                <div class="company-logo-frame">
+                  <div class="company-logo-frame-inner">
+                    <img id="cp_logo_preview" src="" alt="Логотип" style="display:none">
+                    <div id="cp_logo_placeholder">
+                      <svg class="logo-empty-ico" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M4 21V5a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v16M12 21V9a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M7 8h1M7 11h1M7 14h1M7 17h1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                        <path d="M15 12h1M15 15h1M15 18h1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                        <path d="M2 21h20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                      </svg>
+                    </div>
+                  </div>
+                </div>
                 <div>
                   <input type="file" id="cp_logo_file" accept="image/*" style="display:none" onchange="uploadCompanyLogo(this)">
                   <button class="btn btn-ghost btn-sm" type="button" onclick="document.getElementById('cp_logo_file').click()" data-i18n="cs.profile.upload.logo">🖼️ Загрузить лого</button>
