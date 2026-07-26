@@ -1347,6 +1347,15 @@
         <a href="#" onclick="event.preventDefault();_showSlugPanel()" style="font-size:12px;color:var(--text2)">Сменить компанию</a>
       </div>
       <div class="error" id="loginError2"></div>
+      <div id="loginTgBlockedBox" style="display:none;background:var(--surface2,#f4f4f4);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:12px;font-size:13px;line-height:1.5">
+        <div style="font-weight:600;margin-bottom:6px">⚠️ Telegram-бот не привязан</div>
+        <div style="margin-bottom:8px">Для входа компания должна быть привязана к боту поддержки Cleano — так вы не пропустите важные уведомления и рассылки.</div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+          <code id="loginTgBotUsername" style="background:var(--bg,#fff);border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-family:monospace;flex:1">—</code>
+          <button type="button" class="btn btn-ghost btn-sm" id="loginTgCopyBtn" onclick="copyLoginTgBot()">📋 Копировать</button>
+        </div>
+        <div style="color:var(--text2)">Обратитесь в поддержку Cleano — она отправит вам персональную ссылку для привязки. Перейдите по ней в Telegram и нажмите «Поделиться номером» — доступ откроется автоматически.</div>
+      </div>
       <input type="text" id="loginInput" placeholder="Логин" autocomplete="username" style="margin-bottom:10px">
       <input type="password" id="passwordInput" placeholder="Пароль" autocomplete="current-password">
       <button class="btn btn-save" style="width:100%; justify-content:center; padding:12px;" id="loginBtn" onclick="doLogin()">
@@ -7127,16 +7136,34 @@ function _showLoginScreen() {
   }
 }
 
+let _loginTgBotUsername = '';
+async function _ensureLoginTgBotUsername() {
+  if (_loginTgBotUsername) return _loginTgBotUsername;
+  try {
+    const r = await fetch(`${API_BASE}/saas/public-settings`);
+    const d = await r.json();
+    _loginTgBotUsername = (d.settings?.cleano_bot_username || '').trim();
+  } catch (_) {}
+  return _loginTgBotUsername;
+}
+function copyLoginTgBot() {
+  const text = document.getElementById('loginTgBotUsername').textContent;
+  if (!text || text === '—') return;
+  navigator.clipboard?.writeText(text).catch(() => {});
+}
+
 async function doLogin() {
   const slug  = localStorage.getItem('admin_company_slug') || '';
   const login = document.getElementById('loginInput').value.trim();
   const pass  = document.getElementById('passwordInput').value;
   const btn   = document.getElementById('loginBtn');
   const err   = document.getElementById('loginError2');
+  const tgBox = document.getElementById('loginTgBlockedBox');
   if (!slug) { _showSlugPanel(); return; }
   btn.disabled = true;
   btn.textContent = 'Вход…';
   err.textContent = '';
+  tgBox.style.display = 'none';
   if (!login || !pass) {
     err.textContent = 'Введите логин и пароль';
     btn.disabled = false; btn.textContent = 'Войти →'; return;
@@ -7154,6 +7181,12 @@ async function doLogin() {
     showAdmin();
   } catch (e) {
     err.textContent = e.message;
+    if (e.message && e.message.includes('не привязана к Telegram')) {
+      tgBox.style.display = '';
+      _ensureLoginTgBotUsername().then(u => {
+        document.getElementById('loginTgBotUsername').textContent = u ? '@' + u : '—';
+      });
+    }
   } finally {
     btn.disabled = false;
     btn.textContent = 'Войти →';
