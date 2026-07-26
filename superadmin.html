@@ -1048,6 +1048,18 @@
           <button class="btn btn-ghost btn-sm" onclick="regenKey()" title="Сгенерировать новый ключ">🔄</button>
         </div>
       </div>
+      <div style="border-top:1px solid var(--border);margin-top:14px;padding-top:10px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+          <div style="font-size:11px;color:var(--text2)">🔗 Привязка к Telegram-боту Cleano</div>
+          <span id="ecTgLinkStatus" class="badge">—</span>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <code id="ecTgLink" class="mono" style="flex:1;background:var(--surface2);padding:6px 10px;border-radius:6px;font-size:12px;word-break:break-all;color:var(--text)">—</code>
+          <button class="btn btn-ghost btn-sm" onclick="copyTgLink()" title="Скопировать ссылку">📋</button>
+          <button class="btn btn-ghost btn-sm" onclick="loadTgLinkStatus()" title="Обновить статус">🔄</button>
+        </div>
+        <div style="font-size:11px;color:var(--text2);margin-top:4px">Отправьте эту ссылку клиенту (WhatsApp/SMS/лично) — при переходе и нажатии «Поделиться номером» в боте компания привяжется автоматически.</div>
+      </div>
     </div>
 
     <!-- Tab: Контакты -->
@@ -1930,6 +1942,30 @@ async function openEditCompany(id) {
   ecTab('data');
   openModal('modalEditCompany');
   loadEditExtras(id);
+  loadTgLinkStatus();
+}
+
+async function loadTgLinkStatus() {
+  const statusEl = document.getElementById('ecTgLinkStatus');
+  const linkEl   = document.getElementById('ecTgLink');
+  statusEl.textContent = '…';
+  statusEl.className = 'badge';
+  try {
+    const d = await api(`/saas/companies/${_currentCompanyId}/telegram-link`);
+    linkEl.textContent = d.link;
+    statusEl.textContent = d.linked ? '✅ Привязан' : '⚠️ Не привязан';
+    statusEl.className = 'badge ' + (d.linked ? 'badge-green' : 'badge-red');
+  } catch(e) {
+    linkEl.textContent = '—';
+    statusEl.textContent = '⚠️ ' + e.message;
+    statusEl.className = 'badge badge-red';
+  }
+}
+
+function copyTgLink() {
+  const text = document.getElementById('ecTgLink').textContent;
+  if (!text || text === '—') return;
+  navigator.clipboard?.writeText(text).catch(() => {});
 }
 
 
