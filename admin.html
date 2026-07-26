@@ -3313,6 +3313,63 @@
 
           <!-- ─── Филиалы ─── -->
           <div class="cs-panel" id="cstab-branches" style="display:none">
+
+            <!-- Группа лидов + шаблоны (общие для всех филиалов; ID групп — в карточках филиалов ниже) -->
+            <div class="card" id="card-tg-leads" style="margin-bottom:14px">
+              <div class="cfg-title-row">
+                <h3 class="cfg-title" data-i18n="tg.card.leads">🎯 Уведомления о лидах</h3>
+                <button class="btn s-edit-btn" onclick="editCard('card-tg-leads')">✏️</button>
+              </div>
+
+              <label id="leads_group_enabled_wrap" style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;margin-bottom:14px;cursor:pointer;background:var(--accent-bg,#e8f5e9);border:1.5px solid var(--accent,#163E3B)">
+                <input type="checkbox" id="cfg_leads_group_enabled" disabled onchange="updateLeadsGroupStatus()" style="width:18px;height:18px;accent-color:#163E3B;cursor:pointer;flex-shrink:0">
+                <span style="font-size:14px;font-weight:600;color:var(--accent,#163E3B)" data-i18n="tg.leads.enabled">Отправлять уведомления в группу</span>
+              </label>
+
+              <div style="font-size:12px;color:var(--text2);margin-bottom:12px">
+                Уведомления о новых лидах со всех источников (сайт, агенты, сотрудники) — в группу филиала, настроенную в карточке филиала ниже.
+              </div>
+
+              <div class="cfg-field" style="margin-bottom:14px">
+                <label>📝 Шаблон уведомления</label>
+                <textarea id="cfg_lead_notify_ru" class="form-input" rows="7" disabled
+                  style="resize:vertical;font-family:monospace;font-size:13px"
+                  placeholder="🎯 {lead_code} · {source_full}&#10;👤 {client_name}  📞 {client_phone}&#10;🏢 {branch}{note_inline}&#10;{location_link}&#10;&#10;Переменные: {lead_code} {client_name} {client_phone} {branch} {source} {source_full} {creator} {note} {note_short} {note_inline} {location_link}"></textarea>
+              </div>
+
+              <div class="cfg-field" style="margin-bottom:4px;margin-top:14px">
+                <label data-i18n="tg.field.overdue">⏱ Просрочен через (минут)</label>
+                <div style="display:flex;align-items:center;gap:10px">
+                  <input id="cfg_callback_overdue_minutes" type="number" min="1" max="1440" class="form-input" disabled style="width:100px" placeholder="10">
+                  <span style="font-size:13px;color:var(--text2)" data-i18n="tg.field.overdue.suffix">минут после запланированного времени</span>
+                </div>
+              </div>
+
+              <div class="cfg-actions">
+                <button class="btn btn-primary s-save-btn" onclick="saveLeadsGroupCard()" style="display:none;">💾 Сохранить</button>
+                <button class="btn btn-ghost   s-cancel-btn" onclick="cancelCard('card-tg-leads',['leads_group_enabled','lead_notify_ru','callback_overdue_minutes'])" style="display:none;">Отмена</button>
+                <span class="s-msg" id="msg_card-tg-leads"></span>
+              </div>
+            </div>
+
+            <!-- Шаблон уведомления в группу водителей (общий; ID групп — в карточках филиалов ниже) -->
+            <div class="card" id="card-tg-delivery" style="margin-bottom:14px">
+              <div class="cfg-title-row">
+                <h3 class="cfg-title" data-i18n="tg.card.delivery">🚗 Уведомления водителям / доставщикам</h3>
+                <button class="btn s-edit-btn" onclick="editCard('card-tg-delivery')">✏️</button>
+              </div>
+              <div class="cfg-field" style="margin-top:8px">
+                <label>📝 Шаблон уведомления в группу</label>
+                <textarea id="cfg_delivery_group_template" class="form-input" disabled rows="2" style="font-family:monospace;font-size:12px;resize:vertical" placeholder="🚗 {route_name}-{count} — {route_type} · {date} {time}"></textarea>
+                <div style="font-size:11px;color:var(--text2);margin-top:4px">Переменные: <code>{route_name}</code> <code>{count}</code> <code>{route_type}</code> <code>{date}</code> <code>{time}</code> · Список всегда идёт в канал.</div>
+              </div>
+              <div class="cfg-actions">
+                <button class="btn btn-primary s-save-btn" onclick="saveCard('card-tg-delivery',['delivery_group_template'])" style="display:none;">💾 Сохранить</button>
+                <button class="btn btn-ghost   s-cancel-btn" onclick="cancelCard('card-tg-delivery',['delivery_group_template'])" style="display:none;">Отмена</button>
+                <span class="s-msg" id="msg_card-tg-delivery"></span>
+              </div>
+            </div>
+
             <div id="branchContactsContainer"></div>
             <button class="btn btn-primary" onclick="openAddBranchModal()" style="margin-top:12px" data-i18n="cs.branches.add">+ Добавить филиал</button>
           </div>
@@ -3385,25 +3442,6 @@
             </div>
           </div>
 
-          <div class="card" id="card-tg-orders">
-            <div class="cfg-title-row">
-              <h3 class="cfg-title" data-i18n="tg.card.orders.groups">📋 Группы Заказов</h3>
-              <button class="btn s-edit-btn" onclick="editCard('card-tg-orders')">✏️</button>
-            </div>
-            <div class="cfg-field" style="margin-bottom:10px">
-              <label data-i18n="tg.field.group.fallback">ID общей группы (fallback)</label>
-              <input type="text" id="cfg_tg_group_id" class="form-input" disabled placeholder="-5211502458">
-            </div>
-            <p style="color:var(--text2);font-size:14px">
-              Telegram-группы для каждого филиала настраиваются в разделе <strong>«Контакты → Филиалы»</strong>.
-            </p>
-            <div class="cfg-actions">
-              <button class="btn btn-primary  s-save-btn"   onclick="saveCard('card-tg-orders',['tg_group_id'])" style="display:none;">💾 Сохранить</button>
-              <button class="btn btn-ghost    s-cancel-btn" onclick="cancelCard('card-tg-orders',['tg_group_id'])" style="display:none;">Отмена</button>
-              <span class="s-msg" id="msg_card-tg-orders"></span>
-            </div>
-          </div>
-
           <!-- Медиа-канал -->
           <div class="card" id="card-tg-measure" style="margin-bottom:14px">
             <div class="cfg-title-row">
@@ -3438,75 +3476,6 @@
               <button class="btn btn-primary  s-save-btn"   onclick="saveCashChannel()" style="display:none;">💾 Сохранить</button>
               <button class="btn btn-ghost    s-cancel-btn" onclick="cancelCashChannelCard()" style="display:none;">Отмена</button>
               <span class="s-msg" id="msg_card-tg-cash"></span>
-            </div>
-          </div>
-
-          <!-- Группа лидов + шаблоны -->
-          <div class="card" id="card-tg-leads" style="margin-top:14px">
-            <div class="cfg-title-row">
-              <h3 class="cfg-title" data-i18n="tg.card.leads">🎯 Группа Лидов</h3>
-              <button class="btn s-edit-btn" onclick="editCard('card-tg-leads')">✏️</button>
-            </div>
-
-            <!-- Чекбокс активности -->
-            <label id="leads_group_enabled_wrap" style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;margin-bottom:14px;cursor:pointer;background:var(--accent-bg,#e8f5e9);border:1.5px solid var(--accent,#163E3B)">
-              <input type="checkbox" id="cfg_leads_group_enabled" disabled onchange="updateLeadsGroupStatus()" style="width:18px;height:18px;accent-color:#163E3B;cursor:pointer;flex-shrink:0">
-              <span style="font-size:14px;font-weight:600;color:var(--accent,#163E3B)" data-i18n="tg.leads.enabled">Отправлять уведомления в группу</span>
-            </label>
-
-            <div style="font-size:12px;color:var(--text2);margin-bottom:12px">
-              Уведомления о новых лидах со всех источников (сайт, агенты, сотрудники). Можно задать отдельную группу для каждого филиала.
-            </div>
-
-            <div class="cfg-field" style="margin-bottom:10px">
-              <label data-i18n="tg.field.group.fallback">ID общей группы (fallback)</label>
-              <input type="text" id="cfg_leads_group_id" class="form-input" disabled placeholder="-100...">
-            </div>
-            <p style="color:var(--text2);font-size:14px;margin-bottom:14px">
-              Группы лидов для каждого филиала настраиваются в разделе <strong>«Контакты → Филиалы»</strong>.
-            </p>
-
-
-            <div class="cfg-field" style="margin-bottom:14px">
-              <label>📝 Шаблон уведомления</label>
-              <textarea id="cfg_lead_notify_ru" class="form-input" rows="7" disabled
-                style="resize:vertical;font-family:monospace;font-size:13px"
-                placeholder="🎯 {lead_code} · {source_full}&#10;👤 {client_name}  📞 {client_phone}&#10;🏢 {branch}{note_inline}&#10;{location_link}&#10;&#10;Переменные: {lead_code} {client_name} {client_phone} {branch} {source} {source_full} {creator} {note} {note_short} {note_inline} {location_link}"></textarea>
-            </div>
-
-            <div class="cfg-field" style="margin-bottom:4px;margin-top:14px">
-              <label data-i18n="tg.field.overdue">⏱ Просрочен через (минут)</label>
-              <div style="display:flex;align-items:center;gap:10px">
-                <input id="cfg_callback_overdue_minutes" type="number" min="1" max="1440" class="form-input" disabled style="width:100px" placeholder="10">
-                <span style="font-size:13px;color:var(--text2)" data-i18n="tg.field.overdue.suffix">минут после запланированного времени</span>
-              </div>
-            </div>
-
-            <div class="cfg-actions">
-              <button class="btn btn-primary s-save-btn" onclick="saveLeadsGroupCard()" style="display:none;">💾 Сохранить</button>
-              <button class="btn btn-ghost   s-cancel-btn" onclick="cancelCard('card-tg-leads',['leads_group_id','leads_group_enabled','lead_notify_ru','callback_overdue_minutes'])" style="display:none;">Отмена</button>
-              <span class="s-msg" id="msg_card-tg-leads"></span>
-            </div>
-          </div>
-
-          <!-- Карточка: Группа водителей (маршруты) -->
-          <div class="card" id="card-tg-delivery" style="margin-top:14px">
-            <div class="cfg-title-row">
-              <h3 class="cfg-title" data-i18n="tg.card.delivery">🚗 Группа водителей / доставщиков</h3>
-              <button class="btn s-edit-btn" onclick="editCard('card-tg-delivery')">✏️</button>
-            </div>
-            <p style="color:var(--text2);font-size:14px;margin-bottom:12px">
-              Telegram-каналы и группы доставки для каждого филиала настраиваются в разделе <strong>«Контакты → Филиалы»</strong>.
-            </p>
-            <div class="cfg-field" style="margin-top:8px">
-              <label>📝 Шаблон уведомления в группу</label>
-              <textarea id="cfg_delivery_group_template" class="form-input" disabled rows="2" style="font-family:monospace;font-size:12px;resize:vertical" placeholder="🚗 {route_name}-{count} — {route_type} · {date} {time}"></textarea>
-              <div style="font-size:11px;color:var(--text2);margin-top:4px">Переменные: <code>{route_name}</code> <code>{count}</code> <code>{route_type}</code> <code>{date}</code> <code>{time}</code> · Список всегда идёт в канал.</div>
-            </div>
-            <div class="cfg-actions">
-              <button class="btn btn-primary s-save-btn" onclick="saveCard('card-tg-delivery',['delivery_group_template'])" style="display:none;">💾 Сохранить</button>
-              <button class="btn btn-ghost   s-cancel-btn" onclick="cancelCard('card-tg-delivery',['delivery_group_template'])" style="display:none;">Отмена</button>
-              <span class="s-msg" id="msg_card-tg-delivery"></span>
             </div>
           </div>
 
@@ -11847,8 +11816,8 @@ async function tsResetMonth() {
 const SITE_KEYS = [
   'social_instagram','social_tg_bot','social_tg_group',
   'contact_short','contact_main','contact_email',
-  'tg_bot_token','tg_group_id','tg_group_sms_id',
-  'leads_group_id','leads_group_enabled','lead_notify_ru','callback_overdue_minutes',
+  'tg_bot_token','tg_group_sms_id',
+  'leads_group_enabled','lead_notify_ru','callback_overdue_minutes',
   'new_clients_group_id',
   'delivery_group_id', 'delivery_group_template',
   'eskiz_email','eskiz_password','eskiz_from',
@@ -15873,7 +15842,7 @@ async function saveLeadsGroupCard() {
     body: JSON.stringify({ leads_group_enabled: cb.checked ? '1' : '0' })
   });
   // Сохраняем остальные поля через стандартный saveCard
-  await saveCard('card-tg-leads', ['leads_group_id','leads_group_enabled','lead_notify_ru','callback_overdue_minutes']);
+  await saveCard('card-tg-leads', ['leads_group_enabled','lead_notify_ru','callback_overdue_minutes']);
 }
 
 // ══════════════════════════════════════════
