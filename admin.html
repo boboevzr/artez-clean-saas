@@ -15841,8 +15841,12 @@ async function saveLeadsGroupCard() {
     method:'PUT', headers:{'Content-Type':'application/json', Authorization:`Bearer ${token}`},
     body: JSON.stringify({ leads_group_enabled: cb.checked ? '1' : '0' })
   });
-  // Сохраняем остальные поля через стандартный saveCard
-  await saveCard('card-tg-leads', ['leads_group_enabled','lead_notify_ru','callback_overdue_minutes']);
+  _cfgOriginal['leads_group_enabled'] = cb.checked ? '1' : '0';
+  // Сохраняем остальные поля через стандартный saveCard.
+  // leads_group_enabled НЕ включаем сюда: saveCard читает el.value.trim(), а у
+  // чекбокса value — всегда статичное "on" независимо от .checked, что затирало
+  // бы уже корректно сохранённое значение выше.
+  await saveCard('card-tg-leads', ['lead_notify_ru','callback_overdue_minutes']);
 }
 
 // ══════════════════════════════════════════
