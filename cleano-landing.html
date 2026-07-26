@@ -323,6 +323,10 @@
   #regWorkshopMap { width: 100%; height: 200px; background: var(--ink); }
   .reg-map-locate { position: absolute; right: 8px; bottom: 8px; z-index: 500; font: inherit; font-size: 12px; font-weight: 700; padding: 8px 12px; border-radius: 999px; border: none; background: var(--surface); color: var(--text); cursor: pointer; box-shadow: 0 4px 14px -4px rgba(0,0,0,.4); }
   .reg-map-locate:hover { background: var(--teal); color: #04120F; }
+  .reg-map-fullscreen { position: absolute; right: 8px; top: 8px; z-index: 500; width: 32px; height: 32px; border-radius: 50%; border: none; background: rgba(0,0,0,.55); color: #fff; font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(2px); transition: background .15s, transform .15s; }
+  .reg-map-fullscreen:hover { background: rgba(0,0,0,.75); transform: scale(1.08); }
+  .reg-map-wrap:fullscreen { border-radius: 0; border: none; }
+  .reg-map-wrap:fullscreen #regWorkshopMap { width: 100vw; height: 100vh; }
   .f-check { font-size: 11.5px; color: #F48080; margin-top: 5px; min-height: 0; display: none; }
   .f-check.show { display: block; }
   .f-error { font-size: 13px; color: #F48080; margin-bottom: 12px; min-height: 0; }
@@ -639,9 +643,10 @@
             </div>
             <div class="f-field">
               <label data-i18n="reg.workshopLoc">Sex/ustaxona joylashuvi <span class="opt" data-i18n="reg.optional">(ixtiyoriy)</span></label>
-              <div class="reg-map-wrap">
+              <div class="reg-map-wrap" id="regMapWrap">
                 <div id="regWorkshopMap"></div>
                 <button type="button" class="reg-map-locate" id="regMapLocateBtn" data-i18n="reg.mapLocate">📍 Joriy joylashuv</button>
+                <button type="button" class="reg-map-fullscreen" id="regMapFullscreenBtn" data-i18n-title="reg.mapFullscreen" title="To'liq ekran">⛶</button>
               </div>
               <div class="f-hint" data-i18n="reg.mapHint">Xaritada bosing yoki suring — keyinroq admin-panelda aniqlashtirishingiz mumkin</div>
             </div>
@@ -784,6 +789,7 @@
       'reg.contactName':'Ваше имя','reg.phone':'Телефон','reg.email':'Email','reg.optional':'(необязательно)',
       'reg.city':'Город/район','reg.workshopLoc':'Локация цеха/мастерской',
       'reg.mapLocate':'📍 Текущее местоположение','reg.mapHint':'Нажмите на карте вручную или используйте кнопку «Текущее местоположение» — город/район определится автоматически',
+      'reg.mapFullscreen':'На весь экран',
       'reg.password':'Пароль','reg.password2':'Повторите пароль','reg.submit':'Зарегистрироваться',
       'reg.doneTitle':'Готово!','reg.doneText':'Компания создана. Используйте данные ниже, чтобы войти.',
       'reg.successModal.title':'Регистрация прошла успешно! 🎉',
@@ -848,6 +854,7 @@
       'reg.contactName':'Ismingiz','reg.phone':'Telefon','reg.email':'Email','reg.optional':'(ixtiyoriy)',
       'reg.city':'Shahar/tuman','reg.workshopLoc':'Sex/ustaxona joylashuvi',
       'reg.mapLocate':'📍 Joriy joylashuv','reg.mapHint':"Xaritada qo'lda bosing yoki «Joriy joylashuv» tugmasidan foydalaning — shahar/tuman avtomatik aniqlanadi",
+      'reg.mapFullscreen':"To'liq ekran",
       'reg.password':'Parol','reg.password2':'Parolni takrorlang','reg.submit':"Ro'yxatdan o'tish",
       'reg.doneTitle':'Tayyor!','reg.doneText':"Kompaniyangiz yaratildi. Quyidagi login/parollardan foydalanib kiring.",
       'reg.successModal.title':"Ro'yxatdan o'tish muvaffaqiyatli! 🎉",
@@ -1142,21 +1149,42 @@
       if (full) document.getElementById('regCity').value = full;
     } catch(e) {}
   }
-  document.getElementById('regMapLocateBtn').addEventListener('click', function(){
+  function locateAndFillCity(btn){
     if (!navigator.geolocation || !regWorkshopMap) return;
-    var btn = this;
-    var origText = btn.textContent;
-    btn.disabled = true;
-    btn.textContent = '…';
+    var origText = btn ? btn.textContent : null;
+    if (btn) { btn.disabled = true; btn.textContent = '…'; }
     navigator.geolocation.getCurrentPosition(function(pos){
       var lat = pos.coords.latitude, lng = pos.coords.longitude;
       regWorkshopMap.setView([lat, lng], 15);
       setRegWorkshopMarker(lat, lng);
-      reverseGeocodeCity(lat, lng).finally(function(){ btn.disabled = false; btn.textContent = origText; });
-    }, function(){ btn.disabled = false; btn.textContent = origText; }, { timeout: 8000 });
+      reverseGeocodeCity(lat, lng).finally(function(){ if (btn) { btn.disabled = false; btn.textContent = origText; } });
+    }, function(){ if (btn) { btn.disabled = false; btn.textContent = origText; } }, { timeout: 8000 });
+  }
+  document.getElementById('regMapLocateBtn').addEventListener('click', function(){ locateAndFillCity(this); });
+
+  // ── Полноэкранный просмотр карты ──
+  var regMapWrap = document.getElementById('regMapWrap');
+  document.getElementById('regMapFullscreenBtn').addEventListener('click', function(){
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+    } else {
+      var req = regMapWrap.requestFullscreen || regMapWrap.webkitRequestFullscreen || regMapWrap.mozRequestFullScreen;
+      if (req) req.call(regMapWrap);
+    }
+  });
+  document.addEventListener('fullscreenchange', function(){
+    if (regWorkshopMap) setTimeout(function(){ regWorkshopMap.invalidateSize(); }, 100);
   });
 
-  function openReg(){ resetRegForm(); regOverlay.classList.add('open'); document.body.style.overflow = 'hidden'; initRegMapIfNeeded(); }
+  function openReg(){
+    resetRegForm();
+    regOverlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    initRegMapIfNeeded();
+    // Автоматически определяем текущее местоположение при открытии страницы регистрации —
+    // браузер сам покажет системный запрос разрешения на геолокацию.
+    setTimeout(function(){ locateAndFillCity(document.getElementById('regMapLocateBtn')); }, 300);
+  }
   function closeReg(){ regOverlay.classList.remove('open'); document.body.style.overflow = ''; }
   var openBtn = document.getElementById('openRegisterBtn');
   if (openBtn) openBtn.addEventListener('click', openReg);
