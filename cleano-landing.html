@@ -1454,8 +1454,9 @@
     e.preventDefault();
     var errEl = document.getElementById('regError');
     errEl.textContent = '';
-    if (DUP_FIELDS.some(function(f){ return dupState[f]; })) {
-      errEl.textContent = (I18N[lang]||I18N.uz)['reg.err.generic'];
+    var dupFields = DUP_FIELDS.filter(function(f){ return dupState[f]; });
+    if (dupFields.length) {
+      errEl.textContent = dupFields.map(function(f){ return (I18N[lang]||I18N.uz)[DUP_MSG_KEY[f]] || ''; }).filter(Boolean).join(' · ');
       return;
     }
     var pw1 = document.getElementById('regPassword').value;

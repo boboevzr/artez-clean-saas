@@ -8632,6 +8632,17 @@ window.addEventListener('DOMContentLoaded', () => {
       return;
     }
   }
+  // ?company_slug=... в URL (напр. ссылка "Войти в админ-панель" после регистрации на cleano.uz)
+  // указывает КОНКРЕТНУЮ компанию — это должно перебивать любую уже сохранённую сессию
+  // в этом браузере (иначе, если тут раньше логинились в другую компанию, adminToken
+  // ниже молча откроет СТАРУЮ компанию вместо той, что указана в ссылке).
+  const qsSlug = new URLSearchParams(location.search).get('company_slug');
+  if (qsSlug && qsSlug !== localStorage.getItem('admin_company_slug')) {
+    adminToken = null;
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem('admin_company_slug');
+    localStorage.removeItem('admin_company_name');
+  }
   if (adminToken) { showAdmin(); return; }
   // ?fresh=1 — ссылка "Войти" с cleano.uz: неизвестно, чья это компания и авторизован ли
   // вообще посетитель, поэтому сбрасываем ранее кэшированный slug и всегда показываем
@@ -8641,9 +8652,6 @@ window.addEventListener('DOMContentLoaded', () => {
     localStorage.removeItem('admin_company_name');
     history.replaceState({}, '', location.pathname);
   }
-  // ?company_slug=... в URL (напр. ссылка "Войти в админ-панель" после регистрации на cleano.uz)
-  // предзаполняет slug, чтобы сразу попасть на экран логина/пароля.
-  const qsSlug = new URLSearchParams(location.search).get('company_slug');
   if (qsSlug && !localStorage.getItem('admin_company_slug')) {
     fetch(`${API_BASE}/company/resolve?slug=${encodeURIComponent(qsSlug)}`)
       .then(res => res.json().then(data => ({ ok: res.ok, data })))
