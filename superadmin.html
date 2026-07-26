@@ -65,6 +65,42 @@
   .card-title-row { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
   .card-title-row .card-title { margin-bottom: 0; flex: 1; }
 
+  /* Демо-видео Cleano */
+  .demo-video-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  @media (max-width: 640px) { .demo-video-grid { grid-template-columns: 1fr; } }
+  .demo-video-col { display: flex; flex-direction: column; gap: 10px; }
+  .demo-video-col-head { display: flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 600; }
+  .demo-video-flag { font-size: 16px; }
+  .demo-video-pill { margin-left: auto; font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 999px; background: var(--surface2); color: var(--text2); border: 1px solid var(--border); }
+  .demo-video-pill.ok { background: color-mix(in srgb, var(--green) 18%, var(--surface2)); color: var(--green); border-color: color-mix(in srgb, var(--green) 40%, var(--border)); }
+
+  .demo-video-preview { position: relative; aspect-ratio: 16/9; border-radius: 12px; overflow: hidden; background: linear-gradient(135deg, var(--surface2), var(--bg)); border: 1px solid var(--border); }
+  .demo-video-preview video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .demo-video-empty { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; color: var(--text2); font-size: 12px; }
+  .demo-video-empty-ico { width: 40px; height: 40px; border-radius: 50%; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 18px; }
+
+  .demo-video-filepicker {
+    display: flex; align-items: center; gap: 8px; padding: 9px 12px; border-radius: 9px;
+    border: 1.5px dashed var(--border); background: var(--surface2); color: var(--text2);
+    font-size: 12.5px; cursor: pointer; transition: border-color .15s, color .15s, background .15s;
+  }
+  .demo-video-filepicker:hover { border-color: var(--accent); color: var(--text); background: color-mix(in srgb, var(--accent) 8%, var(--surface2)); }
+  .demo-video-filepicker.picked { border-style: solid; border-color: var(--accent); color: var(--text); }
+  .dvf-ico { flex-shrink: 0; }
+  .dvf-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  .demo-video-upload-btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 10px 16px; border-radius: 10px; border: none; cursor: pointer;
+    font-size: 13px; font-weight: 700; color: #1a1200;
+    background: linear-gradient(135deg, #ffcf6b 0%, var(--accent) 100%);
+    box-shadow: 0 6px 18px -6px color-mix(in srgb, var(--accent) 65%, transparent);
+    transition: transform .18s cubic-bezier(.34,1.56,.64,1), box-shadow .2s ease, filter .15s;
+  }
+  .demo-video-upload-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 24px -6px color-mix(in srgb, var(--accent) 75%, transparent); filter: brightness(1.05); }
+  .demo-video-upload-btn:active { transform: translateY(0); }
+  .demo-video-upload-btn:disabled { opacity: .55; cursor: default; transform: none; filter: none; box-shadow: none; }
+
   /* TABLE */
   .table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 20px; }
   table { width: 100%; border-collapse: collapse; }
@@ -347,20 +383,55 @@
           <div id="gs_cleano_bot_webhook_status" style="font-size:12px;margin-top:8px"></div>
         </div>
 
-        <div class="card" style="max-width:560px;margin-top:16px">
+        <div class="card demo-video-card" style="max-width:900px;margin-top:16px">
           <div class="card-title">🎥 Демо-видео (лендинг cleano.uz)</div>
-          <p style="font-size:12px;color:var(--text2);margin-bottom:12px">Видео в "бирке" на главной странице cleano.uz — отдельное для русского и узбекского языка, проигрывается в зависимости от выбранного языка. Хранится в Telegram, макс. 19 МБ.</p>
-          <div class="field">
-            <label>🇷🇺 Видео на русском <span id="gs_video_ru_status" style="font-weight:400"></span></label>
-            <input type="file" id="gs_video_ru_file" accept="video/*">
-            <button class="btn btn-primary btn-sm" style="margin-top:8px" onclick="uploadCleanoDemoVideo('ru')">⬆️ Загрузить</button>
+          <p style="font-size:12px;color:var(--text2);margin-bottom:16px">Видео в "бирке" на главной странице cleano.uz — отдельное для русского и узбекского языка, проигрывается автоматически в зависимости от выбранного языка. Хранится в Telegram, файл до <strong>19 МБ</strong>.</p>
+          <div class="demo-video-grid">
+            <div class="demo-video-col">
+              <div class="demo-video-col-head">
+                <span class="demo-video-flag">🇷🇺</span> Видео на русском
+                <span class="demo-video-pill" id="gs_video_ru_pill">— нет</span>
+              </div>
+              <div class="demo-video-preview" id="gs_video_ru_preview">
+                <video id="gs_video_ru_player" muted loop playsinline style="display:none"></video>
+                <div class="demo-video-empty" id="gs_video_ru_empty">
+                  <div class="demo-video-empty-ico">🎬</div>
+                  <span>Видео ещё не загружено</span>
+                </div>
+              </div>
+              <label class="demo-video-filepicker" for="gs_video_ru_file">
+                <span class="dvf-ico">📁</span>
+                <span class="dvf-text" id="gs_video_ru_filename">Выбрать файл…</span>
+              </label>
+              <input type="file" id="gs_video_ru_file" accept="video/*" style="display:none" onchange="cleanoVideoFilePicked('ru')">
+              <button class="demo-video-upload-btn" onclick="uploadCleanoDemoVideo('ru', this)">
+                <span>⬆️</span> Загрузить
+              </button>
+            </div>
+
+            <div class="demo-video-col">
+              <div class="demo-video-col-head">
+                <span class="demo-video-flag">🇺🇿</span> Видео на узбекском
+                <span class="demo-video-pill" id="gs_video_uz_pill">— нет</span>
+              </div>
+              <div class="demo-video-preview" id="gs_video_uz_preview">
+                <video id="gs_video_uz_player" muted loop playsinline style="display:none"></video>
+                <div class="demo-video-empty" id="gs_video_uz_empty">
+                  <div class="demo-video-empty-ico">🎬</div>
+                  <span>Видео ещё не загружено</span>
+                </div>
+              </div>
+              <label class="demo-video-filepicker" for="gs_video_uz_file">
+                <span class="dvf-ico">📁</span>
+                <span class="dvf-text" id="gs_video_uz_filename">Выбрать файл…</span>
+              </label>
+              <input type="file" id="gs_video_uz_file" accept="video/*" style="display:none" onchange="cleanoVideoFilePicked('uz')">
+              <button class="demo-video-upload-btn" onclick="uploadCleanoDemoVideo('uz', this)">
+                <span>⬆️</span> Загрузить
+              </button>
+            </div>
           </div>
-          <div class="field" style="margin-top:14px">
-            <label>🇺🇿 Видео на узбекском <span id="gs_video_uz_status" style="font-weight:400"></span></label>
-            <input type="file" id="gs_video_uz_file" accept="video/*">
-            <button class="btn btn-primary btn-sm" style="margin-top:8px" onclick="uploadCleanoDemoVideo('uz')">⬆️ Загрузить</button>
-          </div>
-          <div id="gs_video_msg" style="font-size:12px;margin-top:10px"></div>
+          <div id="gs_video_msg" style="font-size:12.5px;margin-top:14px"></div>
         </div>
       </div>
 
@@ -1636,21 +1707,58 @@ async function saveCleanoBot() {
   } catch(e) { alert(e.message); }
 }
 
+function _setDemoVideoPreview(lang, uploaded) {
+  const player = document.getElementById('gs_video_' + lang + '_player');
+  const empty  = document.getElementById('gs_video_' + lang + '_empty');
+  const pill   = document.getElementById('gs_video_' + lang + '_pill');
+  if (uploaded) {
+    player.src = `${API}/cleano/demo-video/${lang}?_=${Date.now()}`;
+    player.style.display = '';
+    player.play().catch(() => {});
+    empty.style.display = 'none';
+    pill.textContent = '✓ загружено';
+    pill.classList.add('ok');
+  } else {
+    player.removeAttribute('src');
+    player.style.display = 'none';
+    empty.style.display = '';
+    pill.textContent = '— нет';
+    pill.classList.remove('ok');
+  }
+}
+
 async function loadCleanoDemoVideoStatus() {
   try {
     const d = await api('/saas/cleano-demo-video-status');
-    document.getElementById('gs_video_ru_status').textContent = d.ru ? '✓ загружено' : '— не загружено';
-    document.getElementById('gs_video_uz_status').textContent = d.uz ? '✓ загружено' : '— не загружено';
+    _setDemoVideoPreview('ru', d.ru);
+    _setDemoVideoPreview('uz', d.uz);
   } catch(e) {}
 }
 
-async function uploadCleanoDemoVideo(lang) {
+function cleanoVideoFilePicked(lang) {
+  const input = document.getElementById('gs_video_' + lang + '_file');
+  const label = input.previousElementSibling;
+  const nameEl = document.getElementById('gs_video_' + lang + '_filename');
+  const file = input.files[0];
+  if (file) {
+    nameEl.textContent = file.name + ' (' + (file.size / 1024 / 1024).toFixed(1) + ' МБ)';
+    label.classList.add('picked');
+  } else {
+    nameEl.textContent = 'Выбрать файл…';
+    label.classList.remove('picked');
+  }
+}
+
+async function uploadCleanoDemoVideo(lang, btn) {
   const input = document.getElementById('gs_video_' + lang + '_file');
   const msg = document.getElementById('gs_video_msg');
   const file = input.files[0];
   if (!file) { msg.style.color = '#e74c3c'; msg.textContent = 'Выберите файл видео'; return; }
   msg.style.color = 'var(--text2)';
   msg.textContent = 'Загрузка… это может занять до минуты';
+  btn.disabled = true;
+  const origHtml = btn.innerHTML;
+  btn.innerHTML = '<span>⏳</span> Загрузка…';
   try {
     const fd = new FormData();
     fd.append('file', file);
@@ -1659,13 +1767,17 @@ async function uploadCleanoDemoVideo(lang) {
     });
     const d = await res.json();
     if (!res.ok) throw new Error(d.detail || 'Ошибка загрузки видео');
-    msg.style.color = 'var(--success, #2ecc71)';
+    msg.style.color = 'var(--green)';
     msg.textContent = '✓ Видео (' + lang.toUpperCase() + ') загружено';
     input.value = '';
+    cleanoVideoFilePicked(lang);
     await loadCleanoDemoVideoStatus();
   } catch(e) {
     msg.style.color = '#e74c3c';
     msg.textContent = e.message;
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = origHtml;
   }
 }
 
