@@ -1043,7 +1043,7 @@
       // Telegram-бот в подвале — только если у компании реально настроен свой бот
       const botRow = document.getElementById('fc_tg_bot_row');
       const fcBot  = document.getElementById('fc_tg_bot');
-      const safeBotUrl = _safeUrl(s.social_tg_bot);
+      const safeBotUrl = s.order_bot_username ? _safeUrl('https://t.me/' + s.order_bot_username) : '';
       if (safeBotUrl) {
         if (fcBot) fcBot.href = safeBotUrl;
         if (botRow) botRow.style.display = '';
@@ -2618,7 +2618,7 @@
     // Bot — только если у компании реально настроен свой бот
     const bot = document.getElementById('cmBot');
     if (bot) {
-      const safeBotUrl = _safeUrl(s.social_tg_bot);
+      const safeBotUrl = s.order_bot_username ? _safeUrl('https://t.me/' + s.order_bot_username) : '';
       if (safeBotUrl) { bot.href = safeBotUrl; bot.classList.remove('hidden'); }
       else             { bot.href = '#';       bot.classList.add('hidden'); }
     }

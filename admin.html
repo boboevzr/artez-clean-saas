@@ -3382,55 +3382,31 @@
         <div class="section-header"><h2>📱 Telegram · Настройки бота</h2></div>
         <div style="max-width:580px;">
 
-          <div class="card" id="card-tg-bot" style="margin-bottom:14px">
-            <div class="cfg-title-row">
-              <h3 class="cfg-title" data-i18n="tg.card.bot">🤖 Бот заявок</h3>
-              <button class="btn s-edit-btn" onclick="editCard('card-tg-bot')">✏️</button>
-            </div>
-            <div class="cfg-field" style="margin-bottom:12px">
-              <label data-i18n="tg.field.link">Ссылка</label>
-              <input type="url" id="cfg_social_tg_bot" class="form-input" disabled placeholder="https://t.me/...">
-            </div>
-            <div class="cfg-field" style="margin-bottom:10px">
-              <label data-i18n="tg.field.token">Токен бота (для уведомлений API)</label>
-              <div class="cfg-pwd-wrap">
-                <input type="password" id="cfg_tg_bot_token" class="form-input" disabled placeholder="8871514482:AAG...">
-                <button type="button" class="cfg-eye" onclick="togglePwd('cfg_tg_bot_token',this)" tabindex="-1">👁</button>
-              </div>
-            </div>
-            <p class="cfg-hint" style="margin-bottom:10px">⚠️ Это токен для API-уведомлений. Сам бот читает токен из env-переменной <b>BOT_TOKEN</b> в Railway → сервис artez-bot → Variables.</p>
-            <div class="cfg-actions">
-              <button class="btn btn-primary  s-save-btn"   onclick="saveCard('card-tg-bot',['social_tg_bot','tg_bot_token'])" style="display:none;">💾 Сохранить</button>
-              <button class="btn btn-ghost    s-cancel-btn" onclick="cancelCard('card-tg-bot',['social_tg_bot','tg_bot_token'])" style="display:none;">Отмена</button>
-              <span class="s-msg" id="msg_card-tg-bot"></span>
-            </div>
-            <hr style="border:none;border-top:1px solid var(--border);margin:14px 0">
-            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-              <button class="btn" style="background:#2563eb;color:#fff;gap:6px" onclick="botBroadcastRestart()" data-i18n="tg.btn.restart.bot">🔄 Перезапустить бот для всех</button>
-              <span style="font-size:12px;color:var(--text2)" data-i18n="tg.btn.restart.desc">Отправит всем клиентам сообщение «Нажмите /start»</span>
-            </div>
-          </div>
-
           <!-- Бот для клиентов (приём заказов) — свой токен на компанию, общий процесс на бэкенде -->
           <div class="card" id="card-order-bot" style="margin-bottom:14px">
             <div class="cfg-title-row">
-              <h3 class="cfg-title">📦 Бот для клиентов (приём заказов)</h3>
+              <h3 class="cfg-title" data-i18n="tg.card.order_bot">📦 Бот для клиентов (приём заказов)</h3>
             </div>
-            <p class="cfg-hint" style="margin-bottom:12px">Отдельный бот для приёма заказов от ваших клиентов. Создайте бота через <a href="https://t.me/BotFather" target="_blank" rel="noopener">@BotFather</a> (команда /newbot), скопируйте токен и вставьте ниже.</p>
+            <p class="cfg-hint" style="margin-bottom:12px"><span data-i18n="tg.order_bot.hint1">Отдельный бот для приёма заказов от ваших клиентов. Создайте бота через</span> <a href="https://t.me/BotFather" target="_blank" rel="noopener">@BotFather</a> <span data-i18n="tg.order_bot.hint2">(команда /newbot), скопируйте токен и вставьте ниже.</span></p>
             <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;font-size:13px">
               <span id="orderBotStatusDot" style="width:8px;height:8px;border-radius:50%;background:var(--text2);flex-shrink:0"></span>
-              <span id="orderBotStatusText" style="color:var(--text2)">Проверка…</span>
+              <span id="orderBotStatusText" style="color:var(--text2)" data-i18n="tg.order_bot.status.checking">Проверка…</span>
             </div>
             <div class="cfg-field" style="margin-bottom:10px">
-              <label>Токен бота</label>
+              <label data-i18n="tg.order_bot.token.label">Токен бота</label>
               <div class="cfg-pwd-wrap">
                 <input type="password" id="cfg_order_bot_token" class="form-input" placeholder="123456789:AAG...">
                 <button type="button" class="cfg-eye" onclick="togglePwd('cfg_order_bot_token',this)" tabindex="-1">👁</button>
               </div>
             </div>
             <div class="cfg-actions">
-              <button class="btn btn-primary" id="orderBotSaveBtn" onclick="saveOrderBotToken()">🔗 Подключить / обновить</button>
+              <button class="btn btn-primary" id="orderBotSaveBtn" onclick="saveOrderBotToken()" data-i18n="tg.order_bot.connect.btn">🔗 Подключить / обновить</button>
               <span class="s-msg" id="msg_card-order-bot"></span>
+            </div>
+            <hr style="border:none;border-top:1px solid var(--border);margin:14px 0">
+            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+              <button class="btn" style="background:#2563eb;color:#fff;gap:6px" onclick="botBroadcastRestart()" data-i18n="tg.btn.restart.bot">🔄 Перезапустить бот для всех</button>
+              <span style="font-size:12px;color:var(--text2)" data-i18n="tg.btn.restart.desc">Отправит всем клиентам сообщение «Нажмите /start»</span>
             </div>
           </div>
 
@@ -6438,15 +6414,28 @@ const _adminI18n = {
     'sms.cnt.add.title':'Добавить контакт','sms.cnt.fio.lbl':'Ф.И.О (необязательно)','sms.cnt.add.btn':'💾 Добавить',
     'sms.imp.title':'📥 Импорт контактов CSV','sms.imp.group.lbl':'Группа для импорта',
     'sms.tpl.tab.templates':'📋 Шаблоны','sms.tpl.tab.system':'🔑 Системные',
-    'tg.card.bot':'🤖 Бот заявок','tg.card.group':'💬 Группа TG',
+    'tg.card.group':'💬 Группа TG',
     'tg.card.orders.groups':'📋 Группы Заказов','tg.card.media':'📁 Медиа-канал',
     'tg.card.cash':'💵 Канал кассы','tg.card.leads':'🎯 Группа Лидов',
     'tg.card.delivery':'🚗 Группа водителей / доставщиков','tg.card.new.clients':'👤 Новые пользователи сайта',
-    'tg.field.link':'Ссылка','tg.field.token':'Токен бота (для уведомлений API)',
+    'tg.field.link':'Ссылка',
     'tg.field.group.id':'ID группы','tg.field.group.fallback':'ID общей группы (fallback)','tg.field.channel.id':'ID канала',
     'tg.field.new.clients.group':'ID группы «Новые клиенты»',
     'tg.field.overdue':'⏱ Просрочен через (минут)','tg.field.overdue.suffix':'минут после запланированного времени',
     'tg.leads.enabled':'Отправлять уведомления в группу',
+    'tg.card.order_bot':'📦 Бот для клиентов (приём заказов)',
+    'tg.order_bot.hint1':'Отдельный бот для приёма заказов от ваших клиентов. Создайте бота через',
+    'tg.order_bot.hint2':'(команда /newbot), скопируйте токен и вставьте ниже.',
+    'tg.order_bot.token.label':'Токен бота',
+    'tg.order_bot.connect.btn':'🔗 Подключить / обновить',
+    'tg.order_bot.status.checking':'Проверка…',
+    'tg.order_bot.status.connected':'Подключён',
+    'tg.order_bot.status.not_connected':'Не подключён',
+    'tg.order_bot.status.error':'Ошибка проверки статуса',
+    'tg.order_bot.enter_token':'Введите токен',
+    'tg.order_bot.connecting':'Подключение…',
+    'tg.order_bot.connected_toast_prefix':'Бот',
+    'tg.order_bot.connected_toast_suffix':'подключён',
     'tg.btn.restart.bot':'🔄 Перезапустить бот для всех',
     'tg.btn.restart.desc':'Отправит всем клиентам сообщение «Нажмите /start»',
     'tg.master.title':'🔐 Мастер-пароль admin.html',
@@ -6948,15 +6937,28 @@ const _adminI18n = {
     'sms.cnt.add.title':'Kontakt qoʻshish','sms.cnt.fio.lbl':'F.I.O (ixtiyoriy)','sms.cnt.add.btn':'💾 Qoʻshish',
     'sms.imp.title':'📥 CSV kontaktlarni import qilish','sms.imp.group.lbl':'Import uchun guruh',
     'sms.tpl.tab.templates':'📋 Shablonlar','sms.tpl.tab.system':'🔑 Tizimli',
-    'tg.card.bot':'🤖 Buyurtmalar boti','tg.card.group':'💬 TG Guruhi',
+    'tg.card.group':'💬 TG Guruhi',
     'tg.card.orders.groups':'📋 Buyurtmalar guruhlari','tg.card.media':'📁 Media-kanal',
     'tg.card.cash':'💵 Kassa kanali','tg.card.leads':'🎯 Lidlar guruhi',
     'tg.card.delivery':'🚗 Haydovchilar / yetkazuvchilar guruhi','tg.card.new.clients':'👤 Yangi sayt foydalanuvchilari',
-    'tg.field.link':'Havola','tg.field.token':'Bot tokeni (API bildirishnomalar uchun)',
+    'tg.field.link':'Havola',
     'tg.field.group.id':'Guruh IDsi','tg.field.group.fallback':'Umumiy guruh IDsi (fallback)','tg.field.channel.id':'Kanal IDsi',
     'tg.field.new.clients.group':'Yangi mijozlar guruhi IDsi',
     'tg.field.overdue':'⏱ Muddat oʻtishi (daqiqa)','tg.field.overdue.suffix':'belgilangan vaqtdan keyin daqiqa',
     'tg.leads.enabled':'Guruhga bildirishnomalar yuborish',
+    'tg.card.order_bot':'📦 Mijozlar uchun bot (buyurtma qabul qilish)',
+    'tg.order_bot.hint1':'Mijozlaringizdan buyurtma qabul qilish uchun alohida bot. Botni',
+    'tg.order_bot.hint2':'orqali yarating (/newbot buyrugʻi), tokenni nusxalab quyiga joylashtiring.',
+    'tg.order_bot.token.label':'Bot tokeni',
+    'tg.order_bot.connect.btn':'🔗 Ulash / yangilash',
+    'tg.order_bot.status.checking':'Tekshirilmoqda…',
+    'tg.order_bot.status.connected':'Ulangan',
+    'tg.order_bot.status.not_connected':'Ulanmagan',
+    'tg.order_bot.status.error':'Holatni tekshirishda xatolik',
+    'tg.order_bot.enter_token':'Tokenni kiriting',
+    'tg.order_bot.connecting':'Ulanmoqda…',
+    'tg.order_bot.connected_toast_prefix':'Bot',
+    'tg.order_bot.connected_toast_suffix':'ulandi',
     'tg.btn.restart.bot':'🔄 Botni barchaga qayta ishga tushirish',
     'tg.btn.restart.desc':'Barcha mijozlarga «/start bosing» xabarini yuboradi',
     'tg.master.title':'🔐 admin.html master-paroli',
@@ -11837,9 +11839,9 @@ async function tsResetMonth() {
 
 // ── SITE SETTINGS ──
 const SITE_KEYS = [
-  'social_instagram','social_tg_bot','social_tg_group',
+  'social_instagram','social_tg_group',
   'contact_short','contact_main','contact_email',
-  'tg_bot_token','tg_group_sms_id',
+  'tg_group_sms_id',
   'leads_group_enabled','lead_notify_ru','callback_overdue_minutes',
   'new_clients_group_id',
   'delivery_group_id', 'delivery_group_template',
@@ -15849,14 +15851,14 @@ async function loadOrderBotStatus() {
     if (d && d.connected) {
       dot.style.background = 'var(--green)';
       text.style.color = '';
-      text.textContent = `Подключён: @${d.username}`;
+      text.textContent = `${_t('tg.order_bot.status.connected')}: @${d.username}`;
     } else {
       dot.style.background = 'var(--text2)';
       text.style.color = 'var(--text2)';
-      text.textContent = 'Не подключён';
+      text.textContent = _t('tg.order_bot.status.not_connected');
     }
   } catch(e) {
-    text.textContent = 'Ошибка проверки статуса';
+    text.textContent = _t('tg.order_bot.status.error');
   }
 }
 
@@ -15865,10 +15867,10 @@ async function saveOrderBotToken() {
   const msg = document.getElementById('msg_card-order-bot');
   const btn = document.getElementById('orderBotSaveBtn');
   const token = input.value.trim();
-  if (!token) { showToast('Введите токен', 'error'); return; }
+  if (!token) { showToast(_t('tg.order_bot.enter_token'), 'error'); return; }
   btn.disabled = true;
   msg.style.color = '';
-  msg.textContent = 'Подключение…';
+  msg.textContent = _t('tg.order_bot.connecting');
   try {
     const res = await apiFetch(`${API_BASE}/admin/order-bot/setup`, {
       method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ token })
@@ -15877,7 +15879,7 @@ async function saveOrderBotToken() {
     if (!res.ok) throw new Error(d.detail || 'Ошибка подключения');
     input.value = '';
     msg.textContent = '';
-    showToast(`Бот @${d.username} подключён`);
+    showToast(`${_t('tg.order_bot.connected_toast_prefix')} @${d.username} ${_t('tg.order_bot.connected_toast_suffix')}`);
     await loadOrderBotStatus();
   } catch(e) {
     if (e.message !== '401') { msg.style.color = 'var(--red)'; msg.textContent = e.message; }
@@ -15957,13 +15959,6 @@ let _tgMsgsCache = null;
 
 // ── Переменные проекта ──────────────────────
 const PROJ_VAR_CATEGORIES = [
-  {
-    id: 'tg-bot', icon: '🤖', title: 'Telegram · Бот',
-    vars: [
-      { key: 'social_tg_bot',  label: 'Ссылка на бота',  type: 'url',      placeholder: 'https://t.me/artez_orders_bot' },
-      { key: 'tg_bot_token',   label: 'API-токен бота',  type: 'password', placeholder: '8871514482:AAG...' },
-    ]
-  },
   {
     id: 'tg-groups', icon: '💬', title: 'Telegram · Группы',
     vars: [

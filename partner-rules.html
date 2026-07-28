@@ -452,9 +452,8 @@
       const phoneTel = phoneDigits ? (phoneDigits.startsWith('998') ? '+' + phoneDigits : '+998' + phoneDigits) : '+998792221221';
       let botUrl = 'https://t.me/artez_orders_bot';
       let botHandle = '@artez_orders_bot';
-      if (s && s.social_tg_bot) {
-        const raw = s.social_tg_bot.trim();
-        botUrl = /^https?:\/\//.test(raw) ? raw : 'https://t.me/' + raw.replace(/^@/, '');
+      if (s && s.order_bot_username) {
+        botUrl = 'https://t.me/' + s.order_bot_username.trim().replace(/^@/, '');
         botHandle = '@' + botUrl.split('/').pop();
       }
       let commission = '5–10%';
