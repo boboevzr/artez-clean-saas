@@ -8555,8 +8555,11 @@ async function staffOpenOrder(orderId) {
   const editBtn = document.getElementById('so_edit_btn');
   const editableStatuses = new Set(['new','confirmed','pickup','received','washing','drying','packing','ready']);
   if (currentStaff?.can_edit_delivery === true || currentStaff?.role === 'admin') editableStatuses.add('delivery');
-  const canEditThisOrder = editableStatuses.has(o.status) && hasPermission('orders') &&
-    (o.status !== 'confirmed' || currentStaff?.can_edit_confirmed === true || currentStaff?.role === 'admin');
+  const isAdminStaff = currentStaff?.role === 'admin';
+  // Админ может менять статус заказа в ЛЮБОЕ состояние, включая delivered/cancelled —
+  // остальным ролям статус после доставки/отмены недоступен для редактирования.
+  const canEditThisOrder = (isAdminStaff || editableStatuses.has(o.status)) && hasPermission('orders') &&
+    (o.status !== 'confirmed' || currentStaff?.can_edit_confirmed === true || isAdminStaff);
   if (editBtn) editBtn.style.display = canEditThisOrder ? '' : 'none';
 
   // Дедлайн
@@ -10578,8 +10581,9 @@ async function staffChangeStatus(newStatus, packerLogin) {
   const editBtn = document.getElementById('so_edit_btn');
   const editableStatuses = new Set(['new','confirmed','pickup','received','washing','drying','packing','ready']);
   if (currentStaff?.can_edit_delivery === true || currentStaff?.role === 'admin') editableStatuses.add('delivery');
-  const canEditNow = editableStatuses.has(newStatus) && hasPermission('orders') &&
-    (newStatus !== 'confirmed' || currentStaff?.can_edit_confirmed === true || currentStaff?.role === 'admin');
+  const isAdminStaffNow = currentStaff?.role === 'admin';
+  const canEditNow = (isAdminStaffNow || editableStatuses.has(newStatus)) && hasPermission('orders') &&
+    (newStatus !== 'confirmed' || currentStaff?.can_edit_confirmed === true || isAdminStaffNow);
   if (editBtn) editBtn.style.display = canEditNow ? '' : 'none';
 
   // Обновить список платежей (влияет на показ кнопки удаления)
