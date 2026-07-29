@@ -2173,7 +2173,7 @@
       const res = await fetch(`${API_BASE}/orders`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({ ...payload, company_slug: window.APP_COMPANY_SLUG }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok){
@@ -2886,6 +2886,7 @@
           branch: _branchName(_siteBranches.find(c => c.slug === _cbBranch)) || _cbBranch || '',
           name: currentUser?.first_name || '',
           profile_phone: currentUser?.phone || '',
+          company_slug: window.APP_COMPANY_SLUG,
         }),
       });
       const data = await res.json();
