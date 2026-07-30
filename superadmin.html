@@ -638,7 +638,7 @@
             <label style="font-size:13px;font-weight:600">Включить SMS при заборе (дефолт для новых компаний)</label>
             <label style="position:relative;display:inline-block;width:44px;height:24px">
               <input type="checkbox" id="sa_sys_sms_pickup_enabled" onchange="saSmsPickupToggleEnabled(this.checked)" style="opacity:0;width:0;height:0">
-              <span id="sa_sys_sms_pickup_enabled_track" style="position:absolute;inset:0;background:var(--border);border-radius:24px;cursor:pointer;transition:.2s" onclick="document.getElementById('sa_sys_sms_pickup_enabled').click()"></span>
+              <span id="sa_sys_sms_pickup_enabled_track" style="position:absolute;inset:0;background:var(--border);border-radius:24px;cursor:pointer;transition:.2s"></span>
             </label>
           </div>
           <div class="sys-sms-card" id="sa-sys-card-pickup_ru" style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 18px">
@@ -666,6 +666,47 @@
               </div>
             </div>
             <textarea id="sa_sys_sms_pickup_uz" rows="3" disabled oninput="_saSmsPickupCountLen('pickup_uz')" style="width:100%;resize:vertical;opacity:0.7;padding:8px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text)" placeholder="{order_num} buyurtma kuryer tomonidan qabul qilindi..."></textarea>
+          </div>
+
+          <div style="padding:10px 14px;border-radius:10px;background:#fef9c3;border:1px solid #fde68a;font-size:13px;color:#854d0e;margin-top:6px">
+            ✅ SMS клиенту, когда заказ готов к выдаче/доставке. Плейсхолдеры:
+            <code style="background:rgba(0,0,0,0.08);padding:1px 6px;border-radius:4px">{order_num}</code>
+            <code style="background:rgba(0,0,0,0.08);padding:1px 6px;border-radius:4px">{phones}</code>
+            <code style="background:rgba(0,0,0,0.08);padding:1px 6px;border-radius:4px">{bot_link}</code>
+            <code style="background:rgba(0,0,0,0.08);padding:1px 6px;border-radius:4px">{site_link}</code>
+          </div>
+          <div class="sys-sms-card" style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 18px;display:flex;align-items:center;justify-content:space-between">
+            <label style="font-size:13px;font-weight:600">Включить SMS при Готово (дефолт для новых компаний)</label>
+            <label style="position:relative;display:inline-block;width:44px;height:24px">
+              <input type="checkbox" id="sa_sys_sms_ready_enabled" onchange="saSmsReadyToggleEnabled(this.checked)" style="opacity:0;width:0;height:0">
+              <span id="sa_sys_sms_ready_enabled_track" style="position:absolute;inset:0;background:var(--border);border-radius:24px;cursor:pointer;transition:.2s"></span>
+            </label>
+          </div>
+          <div class="sys-sms-card" id="sa-sys-card-ready_ru" style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 18px">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+              <label style="font-size:13px;font-weight:600">🇷🇺 Готово — русский текст (латиница)</label>
+              <div style="display:flex;gap:6px;align-items:center">
+                <span id="sa-sys-len-ready_ru" style="font-size:11px;color:var(--text2)"></span>
+                <span id="sa-sys-msg-ready_ru" style="font-size:12px;display:none"></span>
+                <button id="sa-sys-edit-ready_ru" onclick="saSmsSysEdit('ready_ru')" class="btn-outline" style="padding:4px 10px">✏️ Изменить</button>
+                <button id="sa-sys-save-ready_ru" onclick="saSmsSysSaveOne('ready_ru','sms_ready_template_ru')" class="btn btn-primary btn-sm" style="display:none;padding:4px 10px">💾 Сохранить</button>
+                <button id="sa-sys-cancel-ready_ru" onclick="saSmsSysCancel('ready_ru')" class="btn-outline" style="display:none;padding:4px 10px">Отмена</button>
+              </div>
+            </div>
+            <textarea id="sa_sys_sms_ready_ru" rows="3" disabled oninput="_saSmsPickupCountLen('ready_ru')" style="width:100%;resize:vertical;opacity:0.7;padding:8px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text)" placeholder="Zakaz {order_num} gotov..."></textarea>
+          </div>
+          <div class="sys-sms-card" id="sa-sys-card-ready_uz" style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 18px">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+              <label style="font-size:13px;font-weight:600">🇺🇿 Готово — узбекский текст (латиница)</label>
+              <div style="display:flex;gap:6px;align-items:center">
+                <span id="sa-sys-len-ready_uz" style="font-size:11px;color:var(--text2)"></span>
+                <span id="sa-sys-msg-ready_uz" style="font-size:12px;display:none"></span>
+                <button id="sa-sys-edit-ready_uz" onclick="saSmsSysEdit('ready_uz')" class="btn-outline" style="padding:4px 10px">✏️ Изменить</button>
+                <button id="sa-sys-save-ready_uz" onclick="saSmsSysSaveOne('ready_uz','sms_ready_template_uz')" class="btn btn-primary btn-sm" style="display:none;padding:4px 10px">💾 Сохранить</button>
+                <button id="sa-sys-cancel-ready_uz" onclick="saSmsSysCancel('ready_uz')" class="btn-outline" style="display:none;padding:4px 10px">Отмена</button>
+              </div>
+            </div>
+            <textarea id="sa_sys_sms_ready_uz" rows="3" disabled oninput="_saSmsPickupCountLen('ready_uz')" style="width:100%;resize:vertical;opacity:0.7;padding:8px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text)" placeholder="{order_num} buyurtma tayyor..."></textarea>
           </div>
 
           <div style="margin-top:8px">
@@ -1966,14 +2007,17 @@ async function saSmsSysLoad() {
     const d = await api('/saas/catalog/sms-templates');
     const s = d.templates || {};
     const map = { sa_sys_sms_register: 'sms_text_register', sa_sys_sms_login: 'sms_text_login', sa_sys_sms_reset: 'sms_text_reset',
-                  sa_sys_sms_pickup_ru: 'sms_pickup_template_ru', sa_sys_sms_pickup_uz: 'sms_pickup_template_uz' };
+                  sa_sys_sms_pickup_ru: 'sms_pickup_template_ru', sa_sys_sms_pickup_uz: 'sms_pickup_template_uz',
+                  sa_sys_sms_ready_ru: 'sms_ready_template_ru', sa_sys_sms_ready_uz: 'sms_ready_template_uz' };
     Object.entries(map).forEach(([elId, key]) => {
       const el = document.getElementById(elId);
       if (el && s[key] !== undefined) el.value = s[key];
     });
-    ['pickup_ru','pickup_uz'].forEach(_saSmsPickupCountLen);
+    ['pickup_ru','pickup_uz','ready_ru','ready_uz'].forEach(_saSmsPickupCountLen);
     const enabledEl = document.getElementById('sa_sys_sms_pickup_enabled');
     if (enabledEl) { enabledEl.checked = s.sms_pickup_enabled === 'true'; _saSmsPickupRenderToggle(enabledEl.checked); }
+    const readyEnabledEl = document.getElementById('sa_sys_sms_ready_enabled');
+    if (readyEnabledEl) { readyEnabledEl.checked = s.sms_ready_enabled === 'true'; _saSmsReadyRenderToggle(readyEnabledEl.checked); }
   } catch(e) {}
 }
 
@@ -1996,6 +2040,18 @@ function _saSmsPickupRenderToggle(checked) {
 async function saSmsPickupToggleEnabled(checked) {
   _saSmsPickupRenderToggle(checked);
   try { await api('/saas/catalog/sms-templates', 'PUT', { sms_pickup_enabled: checked ? 'true' : 'false' }); } catch(e) {}
+}
+
+function _saSmsReadyRenderToggle(checked) {
+  const track = document.getElementById('sa_sys_sms_ready_enabled_track');
+  if (!track) return;
+  track.style.background = checked ? '#163E3B' : 'var(--border)';
+  track.innerHTML = `<span style="position:absolute;top:2px;left:${checked?'22px':'2px'};width:20px;height:20px;background:#fff;border-radius:50%;transition:.2s"></span>`;
+}
+
+async function saSmsReadyToggleEnabled(checked) {
+  _saSmsReadyRenderToggle(checked);
+  try { await api('/saas/catalog/sms-templates', 'PUT', { sms_ready_enabled: checked ? 'true' : 'false' }); } catch(e) {}
 }
 
 function saSmsSysEdit(field) {

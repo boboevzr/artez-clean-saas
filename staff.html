@@ -7396,7 +7396,7 @@ async function loadDelivery(silent = false) {
     const r = await apiFetch('/api/staff/my-route');
     const data = await r.json();
     if (!r.ok) throw new Error(data.detail || 'Ошибка');
-    _drvRoutes = data.routes || [];
+    _drvRoutes = (data.routes || []).slice().sort((a, b) => (b.id || 0) - (a.id || 0));
     _renderDelivery();
     if (silent && scrollEl) scrollEl.scrollTop = savedScroll;
     // Fallback: показать модалку если пришло решение по оплате (без push)
@@ -8201,7 +8201,7 @@ document.addEventListener('click', e => {
 </div>
 
 <!-- ═══════════ МОДАЛКИ ЗАКАЗА ═══════════ -->
-<div id="staffModalOrder" class="modal-overlay" style="z-index:300;align-items:center;padding:0 12px;" onclick="if(event.target===this)staffCloseOrder()">
+<div id="staffModalOrder" class="modal-overlay" style="z-index:300;align-items:center;padding:0 12px;">
   <div class="modal-box" style="padding:0;overflow:hidden;display:flex;flex-direction:column;height:calc(100dvh - 32px);width:100%;max-width:520px;border-radius:20px;">
 
     <!-- Шапка -->
@@ -8224,12 +8224,12 @@ document.addEventListener('click', e => {
       <button id="so-tabBtn-items"   onclick="soSwitchTab('items')"   style="flex:1;padding:11px 4px;border:none;background:none;font-size:12px;font-weight:600;color:#888;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap">📋 Позиции</button>
       <button id="so-tabBtn-photo"   onclick="soSwitchTab('photo')"   style="flex:1;padding:11px 4px;border:none;background:none;font-size:12px;font-weight:600;color:#888;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap">📷 Фото</button>
       <button id="so-tabBtn-payment" onclick="soSwitchTab('payment')" style="flex:1;padding:11px 4px;border:none;background:none;font-size:12px;font-weight:600;color:#888;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap">💰 Оплата</button>
+      <button id="so-tabBtn-notif"   onclick="soSwitchTab('notif')"   style="flex:1;padding:11px 4px;border:none;background:none;font-size:12px;font-weight:600;color:#888;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap">🔔 Уведомления</button>
     </div>
 
     <!-- Вкладка: Инфо -->
     <div id="so-tab-info" style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column">
       <div style="padding:8px 20px 0;display:flex;justify-content:flex-end;gap:8px">
-        <button id="so_sms_btn" onclick="soOpenSmsModal()" style="background:none;border:1px solid #e5e7eb;border-radius:8px;padding:5px 10px;font-size:14px;color:#6b7280;cursor:pointer">📲 SMS</button>
         <button id="so_edit_btn" onclick="staffOpenOrderEdit()" style="display:none;background:none;border:1px solid #e5e7eb;border-radius:8px;padding:5px 10px;font-size:14px;color:#6b7280;cursor:pointer"><span id="soEditBtnLbl">✏️ Редактировать</span></button>
       </div>
       <div style="padding:12px 20px;display:grid;grid-template-columns:1fr 1fr;gap:8px">
@@ -8268,6 +8268,7 @@ document.addEventListener('click', e => {
 
     <!-- Вкладка: Позиции -->
     <div id="so-tab-items" style="flex:1;min-height:0;display:none;flex-direction:column">
+      <div id="so_items_preview_row" style="padding:8px 20px 0"></div>
       <div id="so_bulk_row" style="padding:8px 20px;border-bottom:1px solid #f0f0f0;display:flex;align-items:center;gap:8px;flex-shrink:0;background:#fafafa">
         <span id="soBulkLbl" style="font-size:12px;color:#888;flex-shrink:0">Принято:</span>
         <input id="so_bulk_count" type="number" min="1" max="50" placeholder="0" inputmode="numeric"
@@ -8380,6 +8381,14 @@ document.addEventListener('click', e => {
         <div id="soPaymentHistoryTitle" style="font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">История операций</div>
         <div id="s_pm_activity" style="font-size:12px;color:#888"></div>
       </div>
+    </div>
+
+    <!-- Вкладка: Уведомления -->
+    <div id="so-tab-notif" style="flex:1;min-height:0;overflow-y:auto;display:none;flex-direction:column;padding:14px 20px">
+      <button id="so_sms_btn" onclick="soOpenSmsModal()" style="width:100%;padding:11px;background:#163E3B;color:#fff;border:none;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:8px">📲 Отправить SMS клиенту</button>
+      <div id="so_notif_receipt_row" style="margin-bottom:12px"></div>
+      <div id="soNotifListTitle" style="font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">История уведомлений</div>
+      <div id="so_notif_list" style="font-size:12px;color:#888"></div>
     </div>
 
   </div>
@@ -8640,7 +8649,7 @@ async function _loadStaffPrices() {
 
 function soSwitchTab(tab) {
   _sActiveTab = tab;
-  const tabs = ['info','items','photo','payment'];
+  const tabs = ['info','items','photo','payment','notif'];
   tabs.forEach(t => {
     const panel = document.getElementById(`so-tab-${t}`);
     const btn   = document.getElementById(`so-tabBtn-${t}`);
@@ -8654,6 +8663,7 @@ function soSwitchTab(tab) {
   if (tab === 'photo')   staffRenderPhotoGrid();
   if (tab === 'payment') { soRecalcAutoDiscounts(); sLoadPaymentModal(); }
   if (tab === 'items')   _sRenderItemActivity();
+  if (tab === 'notif')   _sRenderNotifications();
 }
 
 async function _sFetchActivity() {
@@ -8684,6 +8694,26 @@ async function _sRenderItemActivity() {
     return `<div style="padding:5px 0;border-bottom:1px solid #f0f0f0;display:flex;justify-content:space-between;gap:8px">
       <div>${_iconItem(a)} ${a.details}</div>
       <div style="white-space:nowrap;color:#aaa">${dt} · ${a.staff_name||'—'}</div>
+    </div>`;
+  }).join('');
+}
+
+// Вкладка «Уведомления» — лог отправленных клиенту SMS и Telegram-уведомлений
+// (order_activity: sms_sent/sms_failed/tg_sent). Ретеншн/чистку старых записей
+// решим позже отдельно, чтобы не мусорить базу (см. запрос пользователя 2026-07-30).
+const _NOTIF_ACTIONS = ['sms_sent', 'sms_failed', 'tg_sent'];
+async function _sRenderNotifications() {
+  const el = document.getElementById('so_notif_list');
+  if (!el) return;
+  el.innerHTML = '<div style="color:#aaa">Загрузка…</div>';
+  const acts = (await _sFetchActivity()).filter(a => _NOTIF_ACTIONS.includes(a.action));
+  if (!acts.length) { el.innerHTML = '<div style="color:#aaa">Пока нет уведомлений</div>'; return; }
+  el.innerHTML = acts.map(a => {
+    const dt = (_parseUTC(a.created_at)||new Date()).toLocaleString('ru',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit',timeZone:_TZ});
+    const icon = a.action === 'tg_sent' ? '🔔' : (a.action === 'sms_failed' ? '❌' : '📲');
+    return `<div style="padding:7px 0;border-bottom:1px solid #f0f0f0">
+      <div>${icon} ${_esc(a.details||'')}</div>
+      <div style="white-space:nowrap;color:#aaa;margin-top:2px">${dt} · ${_esc(a.staff_name||'—')}</div>
     </div>`;
   }).join('');
 }
@@ -8830,8 +8860,8 @@ async function staffOpenOrder(orderId) {
   const isAdminStaff = currentStaff?.role === 'admin';
   // Админ может менять статус заказа в ЛЮБОЕ состояние, включая delivered/cancelled —
   // остальным ролям статус после доставки/отмены недоступен для редактирования.
-  const canEditThisOrder = (isAdminStaff || editableStatuses.has(o.status)) && hasPermission('orders') &&
-    (o.status !== 'confirmed' || currentStaff?.can_edit_confirmed === true || isAdminStaff);
+  const canEditThisOrder = hasPermission('orders') &&
+    (isAdminStaff || (editableStatuses.has(o.status) && currentStaff?.can_edit_confirmed === true));
   if (editBtn) editBtn.style.display = canEditThisOrder ? '' : 'none';
 
   // Дедлайн
@@ -8943,18 +8973,31 @@ function staffCloseOrder() {
 // с выбором языка (водитель/менеджер знает, на каком клиент общается). Полная
 // история (успех/провал/язык/кто/когда) — во вкладке «История» этого же заказа
 // (order_activity, пишется бэкендом при отправке).
+let _soSmsKind = 'pickup';
+function _soSmsSetKind(kind) {
+  _soSmsKind = kind;
+  document.getElementById('soSmsKindPickup')?.classList.toggle('active', kind === 'pickup');
+  document.getElementById('soSmsKindReady')?.classList.toggle('active', kind === 'ready');
+}
+
 function soOpenSmsModal() {
   document.getElementById('soSmsModal')?.remove();
   const div = document.createElement('div');
   div.id = 'soSmsModal';
-  div.style.cssText = 'position:fixed;inset:0;z-index:10020;background:rgba(0,0,0,.65);display:flex;align-items:flex-end;justify-content:center';
+  div.style.cssText = 'position:fixed;inset:0;z-index:10020;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;padding:16px';
+  const readyStatuses = ['ready','delivery','delivered'];
+  _soSmsKind = readyStatuses.includes(_sOrderCache?.status) ? 'ready' : 'pickup';
   div.innerHTML = `
-    <div style="background:var(--surface,#1e2130);border-radius:20px 20px 0 0;padding:24px;width:100%;max-width:500px">
-      <div style="font-size:17px;font-weight:800;color:var(--text);margin-bottom:6px">📲 Отправить SMS клиенту</div>
-      <div style="font-size:13px;color:var(--text2);margin-bottom:14px">Выберите язык — на каком клиент общается</div>
+    <div style="background:#fff;border-radius:20px;padding:24px;width:100%;max-width:440px">
+      <div style="font-size:17px;font-weight:800;color:#1c1c1e;margin-bottom:6px">📲 Отправить SMS клиенту</div>
+      <div style="font-size:13px;color:#8e8e93;margin-bottom:12px">Выберите тип и язык — на каком клиент общается</div>
+      <div class="filter-chips" style="margin-bottom:14px">
+        <button class="fchip ${_soSmsKind==='pickup'?'active':''}" id="soSmsKindPickup" onclick="_soSmsSetKind('pickup')">🚚 При заборе</button>
+        <button class="fchip ${_soSmsKind==='ready'?'active':''}" id="soSmsKindReady" onclick="_soSmsSetKind('ready')">✅ Готово</button>
+      </div>
       <button onclick="soSendSms('ru')" style="width:100%;padding:14px;background:#163E3B;color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:10px">🇷🇺 Отправить на русском</button>
-      <button onclick="soSendSms('uz')" style="width:100%;padding:14px;background:#163E3B;color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:10px">🇺🇿 Ўзбек тилида юбориш</button>
-      <button onclick="document.getElementById('soSmsModal')?.remove()" style="width:100%;padding:11px;border:1.5px solid var(--sep);border-radius:12px;background:none;color:var(--text2);font-size:14px;font-weight:600;cursor:pointer">Отмена</button>
+      <button onclick="soSendSms('uz')" style="width:100%;padding:14px;background:#163E3B;color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:10px">🇺🇿 O'zbek tilida yuborish</button>
+      <button onclick="document.getElementById('soSmsModal')?.remove()" style="width:100%;padding:11px;border:1.5px solid #e5e5ea;border-radius:12px;background:none;color:#8e8e93;font-size:14px;font-weight:600;cursor:pointer">Отмена</button>
     </div>`;
   document.body.appendChild(div);
 }
@@ -8963,11 +9006,12 @@ async function soSendSms(lang) {
   document.getElementById('soSmsModal')?.remove();
   try {
     const r = await apiFetch(`/api/admin/orders/${_sOrderId}/send-sms`, {
-      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ lang }),
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ lang, kind: _soSmsKind }),
     });
     const d = await r.json();
     if (!r.ok) throw new Error(d.detail || 'Ошибка');
-    showToast('✅ SMS отправлен');
+    if (d.sent) showToast('✅ SMS отправлен');
+    else showToast('⚠️ ' + (d.reason || 'SMS не отправлен'), 'error');
   } catch(e) { showToast('⚠️ ' + e.message, 'error'); }
 }
 
@@ -10695,6 +10739,13 @@ function staffRenderWorkflow(currentStatus, permissions, rowId) {
        </div>`
     : '';
 
+  // 👁 Просмотр — во вкладку «Позиции», 🔔/🔕 отправка чека — во вкладку «Уведомления»
+  // (перенесено из общей строки статусов по запросу пользователя 2026-07-30).
+  const itemsPreviewEl = document.getElementById('so_items_preview_row');
+  if (itemsPreviewEl) itemsPreviewEl.innerHTML = previewReceiptBtn;
+  const notifReceiptEl = document.getElementById('so_notif_receipt_row');
+  if (notifReceiptEl) notifReceiptEl.innerHTML = sendReceiptBtn;
+
   const statusDropdown = () => `
     <div style="display:flex;gap:8px;align-items:center">
       <select id="so_status_sel" style="flex:1;padding:9px 12px;border:1.5px solid #e5e5e5;border-radius:10px;font-size:13px;background:#fafafa;outline:none">
@@ -10716,14 +10767,14 @@ function staffRenderWorkflow(currentStatus, permissions, rowId) {
     else if (isWashing)   { row.innerHTML = dryingBtn; }
     else if (isDrying)    { row.innerHTML = packingBtn; }
     else if (isPacking)   { row.innerHTML = readyBtn; }
-    else if (isReady)     { row.innerHTML = deliveryBtn + previewReceiptBtn + sendReceiptBtn; }
+    else if (isReady)     { row.innerHTML = deliveryBtn; }
     else if (currentStatus === 'delivery') {
       const role = currentStaff?.role;
       const canDeliver = role === 'admin' || role === 'manager' || currentStaff?.can_approve_debt;
       const deliveredBtn = canDeliver ? _wfBtn("staffMarkDelivered()", '#7c3aed', '✅ Доставлен') : '';
-      row.innerHTML = deliveredBtn + previewReceiptBtn + sendReceiptBtn;
+      row.innerHTML = deliveredBtn;
     }
-    else if (currentStatus === 'delivered') { row.innerHTML = previewReceiptBtn + sendReceiptBtn; }
+    else if (currentStatus === 'delivered') { row.innerHTML = ''; }
     else                  { row.innerHTML = statusDropdown(); }
     return;
   }
@@ -10735,9 +10786,10 @@ function staffRenderWorkflow(currentStatus, permissions, rowId) {
   }
 
   // Роли без общего права "status" (колл-центр, водитель), но с доступом к чеку —
-  // только кнопки просмотра/отправки чека, без кнопок смены статуса.
+  // кнопки просмотра/отправки чека уже отрисованы выше в свои вкладки, здесь
+  // статусной строке показывать нечего.
   if (showReceiptBtns) {
-    row.innerHTML = previewReceiptBtn + sendReceiptBtn;
+    row.style.display = 'none';
     return;
   }
 
@@ -10892,8 +10944,8 @@ async function staffChangeStatus(newStatus, packerLogin) {
   const editableStatuses = new Set(['new','confirmed','pickup','received','washing','drying','packing','ready']);
   if (currentStaff?.can_edit_delivery === true || currentStaff?.role === 'admin') editableStatuses.add('delivery');
   const isAdminStaffNow = currentStaff?.role === 'admin';
-  const canEditNow = (isAdminStaffNow || editableStatuses.has(newStatus)) && hasPermission('orders') &&
-    (newStatus !== 'confirmed' || currentStaff?.can_edit_confirmed === true || isAdminStaffNow);
+  const canEditNow = hasPermission('orders') &&
+    (isAdminStaffNow || (editableStatuses.has(newStatus) && currentStaff?.can_edit_confirmed === true));
   if (editBtn) editBtn.style.display = canEditNow ? '' : 'none';
 
   // Обновить список платежей (влияет на показ кнопки удаления)
