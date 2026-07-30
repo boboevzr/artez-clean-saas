@@ -4381,6 +4381,49 @@
               <textarea id="sys_sms_reset" class="price-input" rows="3" disabled style="width:100%;resize:vertical;opacity:0.7" placeholder="Kod vosstanovleniya parolya: {code}"></textarea>
             </div>
 
+            <!-- Поле: SMS клиенту при заборе водителем -->
+            <div style="padding:10px 14px;border-radius:10px;background:#fef9c3;border:1px solid #fde68a;font-size:13px;color:#854d0e;margin-top:6px">
+              🚚 SMS клиенту, когда водитель забрал вещи (новый заказ или существующий). Только латиница, до 170 символов (1 SMS-сегмент). Плейсхолдеры:
+              <code style="background:rgba(0,0,0,0.08);padding:1px 6px;border-radius:4px">{order_num}</code>
+              <code style="background:rgba(0,0,0,0.08);padding:1px 6px;border-radius:4px">{count}</code>
+              <code style="background:rgba(0,0,0,0.08);padding:1px 6px;border-radius:4px">{phones}</code>
+              <code style="background:rgba(0,0,0,0.08);padding:1px 6px;border-radius:4px">{bot_link}</code>
+              <code style="background:rgba(0,0,0,0.08);padding:1px 6px;border-radius:4px">{site_link}</code>
+            </div>
+            <div class="sys-sms-card" style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 18px;display:flex;align-items:center;justify-content:space-between">
+              <label style="font-size:13px;font-weight:600;color:var(--text)">Включить SMS при заборе</label>
+              <label style="position:relative;display:inline-block;width:44px;height:24px">
+                <input type="checkbox" id="sys_sms_pickup_enabled" onchange="smsPickupToggleEnabled(this.checked)" style="opacity:0;width:0;height:0">
+                <span id="sys_sms_pickup_enabled_track" style="position:absolute;inset:0;background:var(--border);border-radius:24px;cursor:pointer;transition:.2s" onclick="document.getElementById('sys_sms_pickup_enabled').click()"></span>
+              </label>
+            </div>
+            <div class="sys-sms-card" id="sys-card-pickup_ru" style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 18px">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                <label style="font-size:13px;font-weight:600;color:var(--text)">🇷🇺 Забор — русский текст (латиница)</label>
+                <div style="display:flex;gap:6px;align-items:center">
+                  <span id="sys-len-pickup_ru" style="font-size:11px;color:var(--text2)"></span>
+                  <span id="sys-msg-pickup_ru" style="font-size:12px;display:none"></span>
+                  <button id="sys-edit-pickup_ru" onclick="smsSysEdit('pickup_ru')" class="btn btn-sm" style="background:var(--surface2);color:var(--text);padding:4px 10px">✏️ Изменить</button>
+                  <button id="sys-save-pickup_ru" onclick="smsSysSaveOne('pickup_ru','sms_pickup_template_ru')" class="btn btn-primary btn-sm" style="display:none;padding:4px 10px">💾 Сохранить</button>
+                  <button id="sys-cancel-pickup_ru" onclick="smsSysCancel('pickup_ru')" class="btn btn-sm" style="display:none;background:var(--surface2);color:var(--text);padding:4px 10px">Отмена</button>
+                </div>
+              </div>
+              <textarea id="sys_sms_pickup_ru" class="price-input" rows="3" disabled oninput="_smsPickupCountLen('pickup_ru')" style="width:100%;resize:vertical;opacity:0.7" placeholder="Zakaz {order_num} prinyat kurerom ({count} poz.)..."></textarea>
+            </div>
+            <div class="sys-sms-card" id="sys-card-pickup_uz" style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 18px">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                <label style="font-size:13px;font-weight:600;color:var(--text)">🇺🇿 Забор — узбекский текст (латиница)</label>
+                <div style="display:flex;gap:6px;align-items:center">
+                  <span id="sys-len-pickup_uz" style="font-size:11px;color:var(--text2)"></span>
+                  <span id="sys-msg-pickup_uz" style="font-size:12px;display:none"></span>
+                  <button id="sys-edit-pickup_uz" onclick="smsSysEdit('pickup_uz')" class="btn btn-sm" style="background:var(--surface2);color:var(--text);padding:4px 10px">✏️ Изменить</button>
+                  <button id="sys-save-pickup_uz" onclick="smsSysSaveOne('pickup_uz','sms_pickup_template_uz')" class="btn btn-primary btn-sm" style="display:none;padding:4px 10px">💾 Сохранить</button>
+                  <button id="sys-cancel-pickup_uz" onclick="smsSysCancel('pickup_uz')" class="btn btn-sm" style="display:none;background:var(--surface2);color:var(--text);padding:4px 10px">Отмена</button>
+                </div>
+              </div>
+              <textarea id="sys_sms_pickup_uz" class="price-input" rows="3" disabled oninput="_smsPickupCountLen('pickup_uz')" style="width:100%;resize:vertical;opacity:0.7" placeholder="{order_num} buyurtma kuryer tomonidan qabul qilindi..."></textarea>
+            </div>
+
           </div>
         </div>
 
@@ -22717,11 +22760,41 @@ async function smsSysLoad() {
   }).then(r => r.json()).catch(() => null);
   if (!res) return;
   const s = res.settings || {};
-  const map = { sys_sms_register: 'sms_text_register', sys_sms_login: 'sms_text_login', sys_sms_reset: 'sms_text_reset' };
+  const map = { sys_sms_register: 'sms_text_register', sys_sms_login: 'sms_text_login', sys_sms_reset: 'sms_text_reset',
+                sys_sms_pickup_ru: 'sms_pickup_template_ru', sys_sms_pickup_uz: 'sms_pickup_template_uz' };
   Object.entries(map).forEach(([elId, key]) => {
     const el = document.getElementById(elId);
     if (el && s[key] !== undefined) el.value = s[key];
   });
+  ['pickup_ru','pickup_uz'].forEach(_smsPickupCountLen);
+  const enabledEl = document.getElementById('sys_sms_pickup_enabled');
+  if (enabledEl) { enabledEl.checked = s.sms_pickup_enabled === 'true'; _smsPickupRenderToggle(enabledEl.checked); }
+}
+
+// Латиница ≤170 символов = 1 SMS-сегмент по GSM-7 — считаем и подсвечиваем красным при превышении.
+function _smsPickupCountLen(field) {
+  const ta  = document.getElementById(`sys_sms_${field}`);
+  const len = document.getElementById(`sys-len-${field}`);
+  if (!ta || !len) return;
+  const n = ta.value.length;
+  len.textContent = `${n}/170`;
+  len.style.color = n > 170 ? '#dc2626' : 'var(--text2)';
+}
+
+function _smsPickupRenderToggle(checked) {
+  const track = document.getElementById('sys_sms_pickup_enabled_track');
+  if (!track) return;
+  track.style.background = checked ? '#163E3B' : 'var(--border)';
+  track.innerHTML = `<span style="position:absolute;top:2px;left:${checked?'22px':'2px'};width:20px;height:20px;background:#fff;border-radius:50%;transition:.2s"></span>`;
+}
+
+async function smsPickupToggleEnabled(checked) {
+  _smsPickupRenderToggle(checked);
+  await fetch(`${API_BASE}/admin/settings/site`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${adminToken}` },
+    body: JSON.stringify({ sms_pickup_enabled: checked ? 'true' : 'false' })
+  }).catch(() => {});
 }
 
 function smsSysEdit(field) {

@@ -250,6 +250,9 @@
       <div class="nav-item" data-page="sa-tg-messages" onclick="showPage('sa-tg-messages',this)">
         <span class="icon">📱</span> Уведомления TG
       </div>
+      <div class="nav-item" data-page="sa-sms-templates" onclick="showPage('sa-sms-templates',this)">
+        <span class="icon">✉️</span> SMS-шаблоны
+      </div>
       <div class="nav-item" data-page="sa-expense-cats" onclick="showPage('sa-expense-cats',this)">
         <span class="icon">🧾</span> Расходы
       </div>
@@ -569,6 +572,104 @@
             <div style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">⚙️ Переменные</div>
             <div style="font-size:11px;color:var(--text2);margin-bottom:10px">Нажми — скопируется</div>
             <div id="saTgVarsPanelList"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGE: SMS Templates (template) -->
+      <div class="page" id="page-sa-sms-templates">
+        <div class="section-header">
+          <div class="page-title" style="margin:0">✉️ SMS-шаблоны (шаблон)</div>
+        </div>
+        <p style="font-size:13px;color:var(--text2);margin-bottom:16px">Копируются в новые компании при создании. Уже существующие компании не трогает, пока не нажать «Разослать недостающие ключи» — а те, что уже сохранили свой текст, всё равно не перезапишутся (заполняются только пустые ключи).</p>
+        <div style="max-width:560px;display:flex;flex-direction:column;gap:12px">
+          <div style="padding:10px 14px;border-radius:10px;background:#fef9c3;border:1px solid #fde68a;font-size:13px;color:#854d0e">
+            Используйте <code style="background:rgba(0,0,0,0.08);padding:1px 6px;border-radius:4px">{code}</code> — вместо него подставится одноразовый код.
+          </div>
+
+          <div class="sys-sms-card" id="sa-sys-card-register" style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 18px">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+              <label style="font-size:13px;font-weight:600">📲 Регистрация на сайте</label>
+              <div style="display:flex;gap:6px;align-items:center">
+                <span id="sa-sys-msg-register" style="font-size:12px;display:none"></span>
+                <button id="sa-sys-edit-register" onclick="saSmsSysEdit('register')" class="btn-outline" style="padding:4px 10px">✏️ Изменить</button>
+                <button id="sa-sys-save-register" onclick="saSmsSysSaveOne('register','sms_text_register')" class="btn btn-primary btn-sm" style="display:none;padding:4px 10px">💾 Сохранить</button>
+                <button id="sa-sys-cancel-register" onclick="saSmsSysCancel('register')" class="btn-outline" style="display:none;padding:4px 10px">Отмена</button>
+              </div>
+            </div>
+            <textarea id="sa_sys_sms_register" rows="3" disabled style="width:100%;resize:vertical;opacity:0.7;padding:8px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text)" placeholder="Kod podtverzhdeniya dlya registracii: {code}"></textarea>
+          </div>
+
+          <div class="sys-sms-card" id="sa-sys-card-login" style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 18px">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+              <label style="font-size:13px;font-weight:600">🔐 Вход в аккаунт</label>
+              <div style="display:flex;gap:6px;align-items:center">
+                <span id="sa-sys-msg-login" style="font-size:12px;display:none"></span>
+                <button id="sa-sys-edit-login" onclick="saSmsSysEdit('login')" class="btn-outline" style="padding:4px 10px">✏️ Изменить</button>
+                <button id="sa-sys-save-login" onclick="saSmsSysSaveOne('login','sms_text_login')" class="btn btn-primary btn-sm" style="display:none;padding:4px 10px">💾 Сохранить</button>
+                <button id="sa-sys-cancel-login" onclick="saSmsSysCancel('login')" class="btn-outline" style="display:none;padding:4px 10px">Отмена</button>
+              </div>
+            </div>
+            <textarea id="sa_sys_sms_login" rows="3" disabled style="width:100%;resize:vertical;opacity:0.7;padding:8px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text)" placeholder="Kod vhoda: {code}"></textarea>
+          </div>
+
+          <div class="sys-sms-card" id="sa-sys-card-reset" style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 18px">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+              <label style="font-size:13px;font-weight:600">🔑 Восстановление пароля</label>
+              <div style="display:flex;gap:6px;align-items:center">
+                <span id="sa-sys-msg-reset" style="font-size:12px;display:none"></span>
+                <button id="sa-sys-edit-reset" onclick="saSmsSysEdit('reset')" class="btn-outline" style="padding:4px 10px">✏️ Изменить</button>
+                <button id="sa-sys-save-reset" onclick="saSmsSysSaveOne('reset','sms_text_reset')" class="btn btn-primary btn-sm" style="display:none;padding:4px 10px">💾 Сохранить</button>
+                <button id="sa-sys-cancel-reset" onclick="saSmsSysCancel('reset')" class="btn-outline" style="display:none;padding:4px 10px">Отмена</button>
+              </div>
+            </div>
+            <textarea id="sa_sys_sms_reset" rows="3" disabled style="width:100%;resize:vertical;opacity:0.7;padding:8px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text)" placeholder="Kod vosstanovleniya parolya: {code}"></textarea>
+          </div>
+
+          <div style="padding:10px 14px;border-radius:10px;background:#fef9c3;border:1px solid #fde68a;font-size:13px;color:#854d0e;margin-top:6px">
+            🚚 SMS клиенту, когда водитель забрал вещи. Только латиница, до 170 символов (1 SMS-сегмент). Плейсхолдеры:
+            <code style="background:rgba(0,0,0,0.08);padding:1px 6px;border-radius:4px">{order_num}</code>
+            <code style="background:rgba(0,0,0,0.08);padding:1px 6px;border-radius:4px">{count}</code>
+            <code style="background:rgba(0,0,0,0.08);padding:1px 6px;border-radius:4px">{phones}</code>
+            <code style="background:rgba(0,0,0,0.08);padding:1px 6px;border-radius:4px">{bot_link}</code>
+            <code style="background:rgba(0,0,0,0.08);padding:1px 6px;border-radius:4px">{site_link}</code>
+          </div>
+          <div class="sys-sms-card" style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 18px;display:flex;align-items:center;justify-content:space-between">
+            <label style="font-size:13px;font-weight:600">Включить SMS при заборе (дефолт для новых компаний)</label>
+            <label style="position:relative;display:inline-block;width:44px;height:24px">
+              <input type="checkbox" id="sa_sys_sms_pickup_enabled" onchange="saSmsPickupToggleEnabled(this.checked)" style="opacity:0;width:0;height:0">
+              <span id="sa_sys_sms_pickup_enabled_track" style="position:absolute;inset:0;background:var(--border);border-radius:24px;cursor:pointer;transition:.2s" onclick="document.getElementById('sa_sys_sms_pickup_enabled').click()"></span>
+            </label>
+          </div>
+          <div class="sys-sms-card" id="sa-sys-card-pickup_ru" style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 18px">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+              <label style="font-size:13px;font-weight:600">🇷🇺 Забор — русский текст (латиница)</label>
+              <div style="display:flex;gap:6px;align-items:center">
+                <span id="sa-sys-len-pickup_ru" style="font-size:11px;color:var(--text2)"></span>
+                <span id="sa-sys-msg-pickup_ru" style="font-size:12px;display:none"></span>
+                <button id="sa-sys-edit-pickup_ru" onclick="saSmsSysEdit('pickup_ru')" class="btn-outline" style="padding:4px 10px">✏️ Изменить</button>
+                <button id="sa-sys-save-pickup_ru" onclick="saSmsSysSaveOne('pickup_ru','sms_pickup_template_ru')" class="btn btn-primary btn-sm" style="display:none;padding:4px 10px">💾 Сохранить</button>
+                <button id="sa-sys-cancel-pickup_ru" onclick="saSmsSysCancel('pickup_ru')" class="btn-outline" style="display:none;padding:4px 10px">Отмена</button>
+              </div>
+            </div>
+            <textarea id="sa_sys_sms_pickup_ru" rows="3" disabled oninput="_saSmsPickupCountLen('pickup_ru')" style="width:100%;resize:vertical;opacity:0.7;padding:8px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text)" placeholder="Zakaz {order_num} prinyat kurerom ({count} poz.)..."></textarea>
+          </div>
+          <div class="sys-sms-card" id="sa-sys-card-pickup_uz" style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 18px">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+              <label style="font-size:13px;font-weight:600">🇺🇿 Забор — узбекский текст (латиница)</label>
+              <div style="display:flex;gap:6px;align-items:center">
+                <span id="sa-sys-len-pickup_uz" style="font-size:11px;color:var(--text2)"></span>
+                <span id="sa-sys-msg-pickup_uz" style="font-size:12px;display:none"></span>
+                <button id="sa-sys-edit-pickup_uz" onclick="saSmsSysEdit('pickup_uz')" class="btn-outline" style="padding:4px 10px">✏️ Изменить</button>
+                <button id="sa-sys-save-pickup_uz" onclick="saSmsSysSaveOne('pickup_uz','sms_pickup_template_uz')" class="btn btn-primary btn-sm" style="display:none;padding:4px 10px">💾 Сохранить</button>
+                <button id="sa-sys-cancel-pickup_uz" onclick="saSmsSysCancel('pickup_uz')" class="btn-outline" style="display:none;padding:4px 10px">Отмена</button>
+              </div>
+            </div>
+            <textarea id="sa_sys_sms_pickup_uz" rows="3" disabled oninput="_saSmsPickupCountLen('pickup_uz')" style="width:100%;resize:vertical;opacity:0.7;padding:8px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text)" placeholder="{order_num} buyurtma kuryer tomonidan qabul qilindi..."></textarea>
+          </div>
+
+          <div style="margin-top:8px">
+            <button class="btn-outline" onclick="saSmsReseedCompanies()">🔄 Разослать недостающие ключи во все компании</button>
           </div>
         </div>
       </div>
@@ -1577,6 +1678,7 @@ function showPage(name, navEl) {
   if (name === 'sa-services') loadCatalogServices();
   if (name === 'sa-prices') loadCatalogPrices();
   if (name === 'sa-tg-messages') loadSaTgMessages();
+  if (name === 'sa-sms-templates') saSmsSysLoad();
   if (name === 'sa-expense-cats') loadSaExpCats();
   if (name === 'sa-chat-templates') loadSaChatTpls();
   if (name === 'sa-site-slides') loadSaSlides();
@@ -1855,6 +1957,90 @@ async function saveSupportContact() {
     msg.style.display = '';
     setTimeout(() => msg.style.display = 'none', 3000);
     gsLockCard('support');
+  } catch(e) { alert(e.message); }
+}
+
+// ── SMS-ШАБЛОНЫ (шаблон company_id=0) ──────────────────
+async function saSmsSysLoad() {
+  try {
+    const d = await api('/saas/catalog/sms-templates');
+    const s = d.templates || {};
+    const map = { sa_sys_sms_register: 'sms_text_register', sa_sys_sms_login: 'sms_text_login', sa_sys_sms_reset: 'sms_text_reset',
+                  sa_sys_sms_pickup_ru: 'sms_pickup_template_ru', sa_sys_sms_pickup_uz: 'sms_pickup_template_uz' };
+    Object.entries(map).forEach(([elId, key]) => {
+      const el = document.getElementById(elId);
+      if (el && s[key] !== undefined) el.value = s[key];
+    });
+    ['pickup_ru','pickup_uz'].forEach(_saSmsPickupCountLen);
+    const enabledEl = document.getElementById('sa_sys_sms_pickup_enabled');
+    if (enabledEl) { enabledEl.checked = s.sms_pickup_enabled === 'true'; _saSmsPickupRenderToggle(enabledEl.checked); }
+  } catch(e) {}
+}
+
+function _saSmsPickupCountLen(field) {
+  const ta  = document.getElementById(`sa_sys_sms_${field}`);
+  const len = document.getElementById(`sa-sys-len-${field}`);
+  if (!ta || !len) return;
+  const n = ta.value.length;
+  len.textContent = `${n}/170`;
+  len.style.color = n > 170 ? '#dc2626' : 'var(--text2)';
+}
+
+function _saSmsPickupRenderToggle(checked) {
+  const track = document.getElementById('sa_sys_sms_pickup_enabled_track');
+  if (!track) return;
+  track.style.background = checked ? '#163E3B' : 'var(--border)';
+  track.innerHTML = `<span style="position:absolute;top:2px;left:${checked?'22px':'2px'};width:20px;height:20px;background:#fff;border-radius:50%;transition:.2s"></span>`;
+}
+
+async function saSmsPickupToggleEnabled(checked) {
+  _saSmsPickupRenderToggle(checked);
+  try { await api('/saas/catalog/sms-templates', 'PUT', { sms_pickup_enabled: checked ? 'true' : 'false' }); } catch(e) {}
+}
+
+function saSmsSysEdit(field) {
+  const ta   = document.getElementById(`sa_sys_sms_${field}`);
+  const card = document.getElementById(`sa-sys-card-${field}`);
+  ta.disabled = false; ta.style.opacity = '1'; ta.focus();
+  document.getElementById(`sa-sys-edit-${field}`).style.display   = 'none';
+  document.getElementById(`sa-sys-save-${field}`).style.display   = '';
+  document.getElementById(`sa-sys-cancel-${field}`).style.display = '';
+  card.style.borderColor = '#6366f1';
+  ta.dataset.orig = ta.value;
+}
+
+function saSmsSysCancel(field) {
+  const ta = document.getElementById(`sa_sys_sms_${field}`);
+  ta.value = ta.dataset.orig || ta.value;
+  ta.disabled = true; ta.style.opacity = '0.7';
+  document.getElementById(`sa-sys-edit-${field}`).style.display   = '';
+  document.getElementById(`sa-sys-save-${field}`).style.display   = 'none';
+  document.getElementById(`sa-sys-cancel-${field}`).style.display = 'none';
+  document.getElementById(`sa-sys-card-${field}`).style.borderColor = '';
+  document.getElementById(`sa-sys-msg-${field}`).style.display = 'none';
+}
+
+async function saSmsSysSaveOne(field, settingKey) {
+  const ta  = document.getElementById(`sa_sys_sms_${field}`);
+  const msg = document.getElementById(`sa-sys-msg-${field}`);
+  const btn = document.getElementById(`sa-sys-save-${field}`);
+  btn.disabled = true; btn.textContent = '⏳';
+  try {
+    await api('/saas/catalog/sms-templates', 'PUT', { [settingKey]: ta.value.trim() });
+    msg.style.display = ''; msg.style.color = '#16a34a'; msg.textContent = '✅ Сохранено';
+    saSmsSysCancel(field);
+    setTimeout(() => { msg.style.display = 'none'; }, 2500);
+  } catch(e) {
+    msg.style.display = ''; msg.style.color = '#dc2626'; msg.textContent = '❌ Ошибка';
+  }
+  btn.disabled = false; btn.textContent = '💾 Сохранить';
+}
+
+async function saSmsReseedCompanies() {
+  if (!confirm('Заполнить недостающие SMS-ключи во всех компаниях из этого шаблона? Уже заданные компанией тексты не тронет.')) return;
+  try {
+    const r = await api('/saas/catalog/sms-templates/seed-to-companies', 'POST');
+    alert(`Готово: проверено компаний — ${r.companies}`);
   } catch(e) { alert(e.message); }
 }
 

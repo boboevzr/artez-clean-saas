@@ -1082,6 +1082,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-s
       </div>
       <div class="field-inp"><textarea id="or_note" placeholder="Детали заявки..." rows="3"></textarea></div>
     </div>
+    <div class="field-inline" style="margin-bottom:0">
+      <div class="field-label">Кол-во позиций</div>
+      <div class="field-inp" style="flex:0 0 90px"><input id="or_item_count" type="number" min="0" placeholder="0"></div>
+    </div>
+    <div class="field" id="or_sms_lang_field" style="margin-top:10px">
+      <div class="field-label">Язык SMS клиенту</div>
+      <div class="filter-chips">
+        <button type="button" class="fchip active" id="or_lang_ru" onclick="_orSetSmsLang('ru')">🇷🇺 Русский</button>
+        <button type="button" class="fchip" id="or_lang_uz" onclick="_orSetSmsLang('uz')">🇺🇿 Ўзбек</button>
+      </div>
+    </div>
   </div>
   <div class="modal-fs-foot">
     <button class="btn-cancel" id="orCancelBtn" onclick="closeModal('modalOrder')">Отмена</button>
@@ -1283,7 +1294,7 @@ const _i18n = {
     'lead.send_tg':'📢 Отправить в группу ТГ','lead.send_take':'✋ Взять себе',
     'lead.created_assigned':'✅ Лид создан и назначен на вас',
     'nav.leads':'🎯 Лиды','nav.orders':'📦 Заявки','nav.clients':'👥 Клиенты','nav.notifications':'🔔 Уведомления','nav.profile':'Профиль',
-    'nav.lbl.dashboard':'Главная','nav.lbl.leads':'Лиды','nav.lbl.orders':'Заявки','nav.lbl.clients':'Клиенты','nav.lbl.notifications':'Уведомления','nav.lbl.delivery':'Доставка','nav.lbl.timesheet':'Табель','nav.lbl.chat':'Чаты','nav.lbl.cash':'Касса','nav.lbl.profile':'Профиль','nav.lbl.routes_admin':'Маршруты',
+    'nav.lbl.dashboard':'Главная','nav.lbl.leads':'Лиды','nav.lbl.orders':'Заявки','nav.lbl.clients':'Клиенты','nav.lbl.notifications':'Уведомления','nav.lbl.delivery':'Доставка','nav.lbl.pickup':'Забор','nav.lbl.timesheet':'Табель','nav.lbl.chat':'Чаты','nav.lbl.cash':'Касса','nav.lbl.profile':'Профиль','nav.lbl.routes_admin':'Маршруты',
     'ord.st.new':'Новый','ord.st.confirmed':'Подтверждён','ord.st.pickup':'Вывоз','ord.st.received':'В мастерской','ord.st.washing':'Мойка','ord.st.drying':'Сушка','ord.st.packing':'Упаковка','ord.st.ready':'Готов','ord.st.delivery':'Доставка','ord.st.delivered':'Доставлен','ord.st.cancelled':'Отменён',
     'drv.btn.took':'✅ Забрал','drv.btn.not_taken':'❌ Не забрал','drv.btn.delivered':'🏠 Доставил',
     'drv.btn.payment':'💳 Оплата','drv.btn.returned':'🔙 Вернул','drv.btn.undo':'↩️ Отменить',
@@ -2161,6 +2172,7 @@ const NAV_ITEMS = [
   { id:'clients',       icon:'👥', label:'Клиенты',       perm:'clients' },
   { id:'notifications', icon:'🔔', label:'Уведомления',   perm:null,     agentHide:true },
   { id:'delivery',      icon:'🚚', label:'Доставка',      canDrive:true },
+  { id:'pickup',        icon:'📥', label:'Забор',          canDrive:true },
   { id:'timesheet',     icon:'📅', label:'Табель',         agentHide:true },
   { id:'chat',          icon:'💬', label:'Чаты',           perm:null,     agentHide:true, action:'openChatPanel' },
   { id:'cash',          icon:'💵', label:'Касса',          canCash:true,  action:'openMyCashModal' },
@@ -2262,7 +2274,7 @@ function gotoPage(pageId) {
                   (pageId === 'orders' && hasPermission('orders') && currentStaff?.can_create_order !== false);
   fab.style.display = showFab ? 'flex' : 'none';
 
-  const titles = { dashboard:'CLEANO', leads:t('nav.leads'), orders:t('nav.orders'), clients:t('nav.clients'), notifications:t('nav.notifications'), delivery:'🚚 Доставка', timesheet:'📅 Табель', profile:t('nav.profile') };
+  const titles = { dashboard:'CLEANO', leads:t('nav.leads'), orders:t('nav.orders'), clients:t('nav.clients'), notifications:t('nav.notifications'), delivery:'🚚 Доставка', pickup:'📥 Забор', timesheet:'📅 Табель', profile:t('nav.profile') };
   document.getElementById('tbTitle').textContent = titles[pageId] || 'CLEANO';
 
   const pad = document.getElementById('scrollPad');
@@ -2281,17 +2293,26 @@ function gotoPage(pageId) {
   }
   else if (pageId === 'clients') { pad.innerHTML = pageClients(); loadClients(); }
   else if (pageId === 'notifications') { pad.innerHTML = pageNotifications(); loadNotifications(); }
-  else if (pageId === 'delivery')  { pad.innerHTML = pageDelivery();  loadDelivery();  _startDrvRefresh(); }
+  else if (pageId === 'delivery')  { _drvSelectedRouteId = null; pad.innerHTML = pageDelivery();  loadDelivery();  _startDrvRefresh(); }
+  else if (pageId === 'pickup')    { pad.innerHTML = pagePickup(); }
   else if (pageId === 'timesheet') { pad.innerHTML = pageTimesheet(); loadMyTimesheet(); }
   else if (pageId === 'profile')   { pad.innerHTML = pageProfile(); }
   if (pageId !== 'delivery') _stopDrvRefresh();
 }
 
+let _orSmsLang = 'ru';
+function _orSetSmsLang(lang) {
+  _orSmsLang = lang;
+  document.getElementById('or_lang_ru')?.classList.toggle('active', lang === 'ru');
+  document.getElementById('or_lang_uz')?.classList.toggle('active', lang === 'uz');
+}
+
 function clearOrderForm() {
   ['or_name','or_phone','or_short_address','or_address','or_note',
-   'or_location','or_location_address','or_lead_id'].forEach(id => {
+   'or_location','or_location_address','or_lead_id','or_item_count'].forEach(id => {
     const el = document.getElementById(id); if (el) el.value = '';
   });
+  _orSetSmsLang('ru');
   const svc = document.getElementById('or_service'); if (svc) svc.value = '';
   _setOrBranch(currentStaff?.branch || window._BRANCHES?.[0]?.slug || '');
   const locDisp = document.getElementById('locDisplay');
@@ -2787,6 +2808,8 @@ async function submitOrder() {
         note:             document.getElementById('or_note').value.trim() || '',
         pickup_date:      document.getElementById('or_pickup_date')?.value || '',
         pickup_time:      document.getElementById('or_pickup_time')?.value || '',
+        item_count:       parseInt(document.getElementById('or_item_count')?.value) || 0,
+        sms_lang:         _orSmsLang,
       })
     });
     let data = {};
@@ -7188,6 +7211,176 @@ function pageDelivery() {
   return `<div id="drvPage" style="padding:0 0 80px"></div>`;
 }
 
+// ══════════════════════════════════════
+//  ЗАБОР У КЛИЕНТА (new/confirmed → pickup) — водитель на месте проверяет по
+//  телефону, есть ли уже заказ (создан менеджером/колл-центром). Если есть —
+//  указывает кол-во позиций и подтверждает забор (создаёт пустые позиции,
+//  мойщик потом доизмерит). Если нет — открывает обычную форму «Новый заказ»
+//  с уже вписанным телефоном (см. pkpCreateNew).
+// ══════════════════════════════════════
+function pagePickup() {
+  return `<div style="padding:12px 14px 80px">
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px">
+      <div style="font-size:13px;font-weight:600;margin-bottom:8px;color:var(--text)">🔍 Проверить заказ по телефону</div>
+      <div style="display:flex;gap:8px">
+        <input id="pkp_phone" type="text" inputmode="tel" placeholder="+998 90 000-00-00"
+          style="flex:1;padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;background:var(--bg);color:var(--text);font-size:14px"
+          onkeydown="if(event.key==='Enter')pkpSearch()">
+        <button onclick="pkpSearch()" style="padding:10px 18px;background:#163E3B;color:#fff;border:none;border-radius:10px;font-weight:700;cursor:pointer;white-space:nowrap">Найти</button>
+      </div>
+    </div>
+    <div id="pkpResult" style="margin-top:14px"></div>
+  </div>`;
+}
+
+let _pkpOrder = null;
+let _pkpMode  = 'count';
+let _pkpSvcRowN = 0;
+
+async function pkpSearch() {
+  const phoneRaw = document.getElementById('pkp_phone')?.value.trim();
+  const resEl = document.getElementById('pkpResult');
+  if (!phoneRaw) { showToast('Введите телефон', 'error'); return; }
+  resEl.innerHTML = `<div style="text-align:center;padding:20px;color:var(--text2)">Ищем…</div>`;
+  try {
+    const r = await apiFetch(`/api/staff/pickup/lookup?phone=${encodeURIComponent(phoneRaw)}`);
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.detail || 'Ошибка');
+    if (d.order) _pkpRenderFound(d.order);
+    else _pkpRenderNotFound(phoneRaw);
+  } catch(e) {
+    resEl.innerHTML = `<div style="color:#ef4444;padding:12px;text-align:center">⚠️ ${e.message}</div>`;
+  }
+}
+
+function _pkpRenderNotFound(phone) {
+  document.getElementById('pkpResult').innerHTML = `
+    <div style="background:var(--surface);border:1.5px dashed var(--border);border-radius:14px;padding:18px;text-align:center">
+      <div style="font-size:14px;color:var(--text2);margin-bottom:12px">Заказ, ожидающий забора, с этим номером не найден.</div>
+      <button onclick="pkpCreateNew('${phone.replace(/'/g,"")}')" style="padding:10px 20px;background:#163E3B;color:#fff;border:none;border-radius:10px;font-weight:700;cursor:pointer">➕ Создать новый заказ</button>
+    </div>`;
+}
+
+function pkpCreateNew(phone) {
+  clearOrderForm();
+  document.getElementById('or_phone').value = phone;
+  _applyOrderFormI18n();
+  openModal('modalOrder');
+  setTimeout(() => document.getElementById('or_name')?.focus(), 200);
+}
+
+function _pkpRenderFound(o) {
+  _pkpOrder = o; _pkpMode = 'count'; _pkpSvcRowN = 0; _pkpLang = 'ru';
+  const name = [o.client_first_name, o.client_last_name].filter(Boolean).join(' ') || '—';
+  document.getElementById('pkpResult').innerHTML = `
+    <div style="background:var(--surface);border:1.5px solid #163E3B;border-radius:14px;padding:14px;margin-bottom:12px">
+      <div style="font-weight:700;font-size:15px;margin-bottom:4px">📋 ${o.order_num}</div>
+      <div style="font-size:13px;color:var(--text2)">${name}</div>
+      <div style="font-size:13px;color:var(--text2)">${o.short_address || o.address || '—'}</div>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px">
+      <div style="font-size:13px;font-weight:600;margin-bottom:8px;color:var(--text)">📦 Сколько позиций забираете?</div>
+      <div class="filter-chips" style="margin-bottom:10px">
+        <button class="fchip active" id="pkp_mode_count_btn" onclick="_pkpSetMode('count')">Общее число</button>
+        <button class="fchip" id="pkp_mode_svc_btn" onclick="_pkpSetMode('by_service')">По услугам</button>
+      </div>
+      <div id="pkp_mode_count_wrap">
+        <input id="pkp_count" type="number" min="1" value="1" style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;background:var(--bg);color:var(--text);font-size:14px">
+      </div>
+      <div id="pkp_mode_svc_wrap" style="display:none">
+        <div id="pkp_svc_rows"></div>
+        <button onclick="_pkpAddSvcRow()" style="margin-top:6px;padding:6px 12px;border:1.5px dashed var(--border);border-radius:8px;background:none;color:var(--text2);font-size:12px;cursor:pointer">+ Добавить услугу</button>
+      </div>
+      <div style="margin-top:12px">
+        <div style="font-size:13px;font-weight:600;margin-bottom:6px;color:var(--text)">💬 Язык SMS клиенту</div>
+        <div class="filter-chips">
+          <button class="fchip active" id="pkp_lang_ru" onclick="_pkpSetLang('ru')">🇷🇺 Русский</button>
+          <button class="fchip" id="pkp_lang_uz" onclick="_pkpSetLang('uz')">🇺🇿 Ўзбек</button>
+        </div>
+      </div>
+      <button onclick="pkpTake()" id="pkpTakeBtn" style="width:100%;margin-top:14px;padding:12px;background:#163E3B;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer">✅ Забрал</button>
+      <button onclick="pkpNotTaken()" style="width:100%;margin-top:8px;padding:10px;background:none;border:1.5px solid #ef4444;color:#ef4444;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer">❌ Не забрал</button>
+    </div>`;
+  _pkpAddSvcRow();
+}
+
+let _pkpLang = 'ru';
+function _pkpSetLang(lang) {
+  _pkpLang = lang;
+  document.getElementById('pkp_lang_ru')?.classList.toggle('active', lang === 'ru');
+  document.getElementById('pkp_lang_uz')?.classList.toggle('active', lang === 'uz');
+}
+
+function _pkpSetMode(mode) {
+  _pkpMode = mode;
+  document.getElementById('pkp_mode_count_btn').classList.toggle('active', mode === 'count');
+  document.getElementById('pkp_mode_svc_btn').classList.toggle('active', mode === 'by_service');
+  document.getElementById('pkp_mode_count_wrap').style.display = mode === 'count' ? '' : 'none';
+  document.getElementById('pkp_mode_svc_wrap').style.display   = mode === 'by_service' ? '' : 'none';
+}
+
+function _pkpAddSvcRow() {
+  const wrap = document.getElementById('pkp_svc_rows');
+  if (!wrap) return;
+  const id = _pkpSvcRowN++;
+  const row = document.createElement('div');
+  row.id = `pkp_svc_row_${id}`;
+  row.style.cssText = 'display:flex;gap:8px;margin-bottom:6px';
+  row.innerHTML = `
+    <input type="text" placeholder="Услуга (ковёр, диван…)" class="pkp-svc-name" style="flex:1;padding:8px 10px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:13px">
+    <input type="number" min="1" value="1" class="pkp-svc-qty" style="width:70px;padding:8px 10px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:13px">
+    <button onclick="document.getElementById('pkp_svc_row_${id}').remove()" style="background:none;border:none;color:#ef4444;font-size:18px;cursor:pointer;padding:0 6px">✕</button>`;
+  wrap.appendChild(row);
+}
+
+async function pkpTake() {
+  if (!_pkpOrder) return;
+  const btn = document.getElementById('pkpTakeBtn');
+  const body = { mode: _pkpMode, sms_lang: _pkpLang };
+  if (_pkpMode === 'by_service') {
+    const items = {};
+    document.querySelectorAll('#pkp_svc_rows > div').forEach(row => {
+      const name = row.querySelector('.pkp-svc-name')?.value.trim();
+      const qty  = parseInt(row.querySelector('.pkp-svc-qty')?.value) || 0;
+      if (name && qty > 0) items[name] = (items[name] || 0) + qty;
+    });
+    if (!Object.keys(items).length) { showToast('Укажите хотя бы одну услугу', 'error'); return; }
+    body.items = items;
+  } else {
+    body.count = parseInt(document.getElementById('pkp_count')?.value) || 1;
+  }
+  btn.disabled = true; btn.textContent = '⏳…';
+  try {
+    const r = await apiFetch(`/api/staff/pickup/${_pkpOrder.id}/take`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
+    });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.detail || 'Ошибка');
+    showToast(`✅ Забрал (${(d.items||[]).length} поз.)`);
+    document.getElementById('pkp_phone').value = '';
+    document.getElementById('pkpResult').innerHTML = '';
+    _pkpOrder = null;
+  } catch(e) {
+    showToast('⚠️ ' + e.message, 'error');
+    btn.disabled = false; btn.textContent = '✅ Забрал';
+  }
+}
+
+async function pkpNotTaken() {
+  if (!_pkpOrder) return;
+  const reason = prompt('Причина (необязательно):') || '';
+  try {
+    const r = await apiFetch(`/api/staff/pickup/${_pkpOrder.id}/not-taken`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ reason }),
+    });
+    if (!r.ok) { const d = await r.json(); throw new Error(d.detail || 'Ошибка'); }
+    showToast('❌ Отмечено: не забрал');
+    document.getElementById('pkp_phone').value = '';
+    document.getElementById('pkpResult').innerHTML = '';
+    _pkpOrder = null;
+  } catch(e) { showToast('⚠️ ' + e.message, 'error'); }
+}
+
 async function loadDelivery(silent = false) {
   if (_drvLoading) return;
   _drvLoading = true;
@@ -7221,6 +7414,9 @@ async function loadDelivery(silent = false) {
   } finally { _drvLoading = false; }
 }
 
+let _drvSelectedRouteId = null;
+let _drvRouteFilter = '';   // '' | 'planned' | 'active' | 'done' — как в admin.html
+
 function _renderDelivery() {
   const el = document.getElementById('drvPage');
   if (!el) return;
@@ -7234,9 +7430,64 @@ function _renderDelivery() {
       </div>`;
     return;
   }
-  el.innerHTML = _drvRoutes.map((route, ri) => _drvRouteCard(route, ri)).join('') +
-    `<div style="padding:16px;text-align:center">
+  const selected = _drvSelectedRouteId && _drvRoutes.find(r => r.id === _drvSelectedRouteId);
+  if (selected) { _renderRouteDetail(selected); return; }
+  _renderRouteList();
+}
+
+const _RT_STATUS_LABEL = { planned: 'Запланирован', active: 'В пути', done: 'Выполнен' };
+const _RT_TYPE_ICON = { pickup: '📥', delivery: '🚚' };
+
+function _renderRouteList() {
+  const el = document.getElementById('drvPage');
+  const filters = [['', 'Все'], ['planned', 'Запланирован'], ['active', 'В пути'], ['done', 'Выполнен']];
+  const visible = _drvRoutes.filter(r => !_drvRouteFilter || r.status === _drvRouteFilter);
+  el.innerHTML = `
+    <div class="filter-chips" style="margin:12px 14px 0">
+      ${filters.map(([v,label]) => `<button class="fchip ${v===_drvRouteFilter?'active':''}" onclick="_setDrvRouteFilter('${v}')">${label}</button>`).join('')}
+    </div>
+    ${visible.length ? visible.map(route => _drvRouteListCard(route)).join('') : `
+      <div style="text-align:center;padding:60px 20px;color:var(--text2)">Нет маршрутов в этой категории</div>`}
+    <div style="padding:16px;text-align:center">
       <button onclick="loadDelivery()" style="padding:10px 20px;border-radius:12px;border:1.5px solid var(--sep);background:none;color:var(--text2);font-size:14px;font-weight:600;cursor:pointer">🔄 Обновить</button>
+    </div>`;
+}
+
+function _setDrvRouteFilter(v) { _drvRouteFilter = v; _renderRouteList(); }
+
+function _drvRouteListCard(route) {
+  const stops = route.stops || [];
+  const done = stops.filter(s => s.stop_status === 'done').length;
+  const total = stops.length;
+  const icon = _RT_TYPE_ICON[route.type] || '🔀';
+  const stLabel = _RT_STATUS_LABEL[route.status] || route.status;
+  const stColor = route.status === 'done' ? '#22c55e' : route.status === 'active' ? '#0ea5e9' : 'var(--text2)';
+  return `
+    <div onclick="_openRouteDetail(${route.id})" style="margin:12px 14px 0;background:var(--card-bg,var(--surface));border-radius:16px;padding:14px 16px;box-shadow:0 2px 12px rgba(0,0,0,.06);cursor:pointer;display:flex;align-items:center;justify-content:space-between">
+      <div>
+        <div style="font-weight:700;font-size:15px;color:var(--text)">${icon} ${route.name || 'Маршрут'}</div>
+        ${route.driver_name ? `<div style="font-size:12px;color:var(--text2);margin-top:2px">🚚 ${route.driver_name}</div>` : ''}
+        <div style="font-size:12px;color:var(--text2);margin-top:2px">${done}/${total} выполнено</div>
+      </div>
+      <div style="text-align:right;flex-shrink:0;margin-left:10px">
+        <div style="font-size:11px;font-weight:700;color:${stColor};text-transform:uppercase">${stLabel}</div>
+        <div style="font-size:18px;color:var(--text2);margin-top:4px">›</div>
+      </div>
+    </div>`;
+}
+
+function _openRouteDetail(routeId) { _drvSelectedRouteId = routeId; _renderDelivery(); }
+function _backToRouteList()        { _drvSelectedRouteId = null;    _renderDelivery(); }
+
+function _renderRouteDetail(route) {
+  const el = document.getElementById('drvPage');
+  el.innerHTML = `
+    <div style="padding:12px 14px 0">
+      <button onclick="_backToRouteList()" style="padding:8px 14px;border-radius:10px;border:1.5px solid var(--sep);background:none;color:var(--text2);font-size:13px;font-weight:600;cursor:pointer">← К маршрутам</button>
+    </div>
+    ${_drvRouteCard(route, 0)}
+    <div style="padding:16px;text-align:center">
+      <button onclick="loadDelivery(true)" style="padding:10px 20px;border-radius:12px;border:1.5px solid var(--sep);background:none;color:var(--text2);font-size:14px;font-weight:600;cursor:pointer">🔄 Обновить</button>
     </div>`;
 }
 
@@ -7286,8 +7537,13 @@ function _drvStopCard(stop, si, route) {
   const stColor = st === 'done' ? 'var(--success,#22c55e)' : st === 'skipped' ? 'var(--text3,#888)' : 'var(--accent)';
   const stLabel = _drvStatusLabel(st);
 
+  // Маршрут закрыт (выполнен целиком) — прячем кнопки действий, оставляем
+  // только статус (как в TG-канале водителей после закрытия маршрута).
+  const routeClosed = route?.status === 'done';
   let buttons = '';
-  if (st === 'pending') {
+  if (routeClosed) {
+    // без кнопок — только статус выше (stLabel/stColor)
+  } else if (st === 'pending') {
     if (!confirmed) {
       buttons = `
         <button onclick="drvTake(${ordId})" style="${_drvBtnStyle('accent')}">${t('drv.btn.took')}</button>
@@ -7972,7 +8228,8 @@ document.addEventListener('click', e => {
 
     <!-- Вкладка: Инфо -->
     <div id="so-tab-info" style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column">
-      <div style="padding:8px 20px 0;display:flex;justify-content:flex-end">
+      <div style="padding:8px 20px 0;display:flex;justify-content:flex-end;gap:8px">
+        <button id="so_sms_btn" onclick="soOpenSmsModal()" style="background:none;border:1px solid #e5e7eb;border-radius:8px;padding:5px 10px;font-size:14px;color:#6b7280;cursor:pointer">📲 SMS</button>
         <button id="so_edit_btn" onclick="staffOpenOrderEdit()" style="display:none;background:none;border:1px solid #e5e7eb;border-radius:8px;padding:5px 10px;font-size:14px;color:#6b7280;cursor:pointer"><span id="soEditBtnLbl">✏️ Редактировать</span></button>
       </div>
       <div style="padding:12px 20px;display:grid;grid-template-columns:1fr 1fr;gap:8px">
@@ -8681,6 +8938,38 @@ function staffCloseOrder() {
   if (_orderItemsPollTimer) { clearInterval(_orderItemsPollTimer); _orderItemsPollTimer = null; }
 }
 
+
+// Кнопка «📲 SMS» в карточке заказа — ручная/повторная отправка SMS о заборе клиенту,
+// с выбором языка (водитель/менеджер знает, на каком клиент общается). Полная
+// история (успех/провал/язык/кто/когда) — во вкладке «История» этого же заказа
+// (order_activity, пишется бэкендом при отправке).
+function soOpenSmsModal() {
+  document.getElementById('soSmsModal')?.remove();
+  const div = document.createElement('div');
+  div.id = 'soSmsModal';
+  div.style.cssText = 'position:fixed;inset:0;z-index:10020;background:rgba(0,0,0,.65);display:flex;align-items:flex-end;justify-content:center';
+  div.innerHTML = `
+    <div style="background:var(--surface,#1e2130);border-radius:20px 20px 0 0;padding:24px;width:100%;max-width:500px">
+      <div style="font-size:17px;font-weight:800;color:var(--text);margin-bottom:6px">📲 Отправить SMS клиенту</div>
+      <div style="font-size:13px;color:var(--text2);margin-bottom:14px">Выберите язык — на каком клиент общается</div>
+      <button onclick="soSendSms('ru')" style="width:100%;padding:14px;background:#163E3B;color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:10px">🇷🇺 Отправить на русском</button>
+      <button onclick="soSendSms('uz')" style="width:100%;padding:14px;background:#163E3B;color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:10px">🇺🇿 Ўзбек тилида юбориш</button>
+      <button onclick="document.getElementById('soSmsModal')?.remove()" style="width:100%;padding:11px;border:1.5px solid var(--sep);border-radius:12px;background:none;color:var(--text2);font-size:14px;font-weight:600;cursor:pointer">Отмена</button>
+    </div>`;
+  document.body.appendChild(div);
+}
+
+async function soSendSms(lang) {
+  document.getElementById('soSmsModal')?.remove();
+  try {
+    const r = await apiFetch(`/api/admin/orders/${_sOrderId}/send-sms`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ lang }),
+    });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.detail || 'Ошибка');
+    showToast('✅ SMS отправлен');
+  } catch(e) { showToast('⚠️ ' + e.message, 'error'); }
+}
 
 function soNewOrderForClient() {
   if (!_sOrderCache) return;
