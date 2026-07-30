@@ -1361,7 +1361,7 @@ const _i18n = {
     'perm.leads':'Лиды','perm.orders':'Заявки','perm.clients':'Клиенты','perm.status':'Статусы',
     'perm.staff':'Сотрудники','perm.reports':'Отчёты','perm.settings':'Настройки',
     'perm.orders_own':'Свои заявки','perm.status_delivery':'Статус доставки',
-    'ord.title':'Заявки','ord.filters':'🔽 Фильтры','ord.select_all':'Все','ord.delete':'🗑 Удалить','ord.reset':'↺ Сброс','ord.select':'☑️ Выбрать','ord.search_ph':'Номер, телефон…','ord.all':'🗂 Все','ord.mine':'👤 Мои',
+    'ord.title':'Заявки','ord.filters':'🔽 Фильтры','ord.select_all':'Все','ord.delete':'🗑 Удалить','ord.reset':'↺ Сброс','ord.select':'☑️ Выбрать','ord.search_ph':'Номер, телефон…','ord.all':'🗂 Все','ord.mine':'👤 Мои','ord.debt':'💸 Долги',
     'ord.date.all':'Все даты','ord.date.today':'Сегодня','ord.date.yesterday':'Вчера','ord.date.week':'Неделя','ord.date.month':'Месяц','ord.date.period':'Период',
     'ord.staff.all':'👤 Все сотрудники','ord.staff.pick':'Выбрать сотрудника','ord.staff.none':'Заявок от сотрудников нет','ord.staff.not_found':'Не найдено','ord.staff.search_ph':'Имя…',
     'ord.empty':'Заявок нет','ord.loading':'Загрузка…','ord.no_access':'Нет доступа','ord.tab.unavailable':'недоступна для вашей роли',
@@ -1597,7 +1597,7 @@ const _i18n = {
     'perm.leads':'Lidlar','perm.orders':'Buyurtmalar','perm.clients':'Mijozlar','perm.status':'Holatlar',
     'perm.staff':'Xodimlar','perm.reports':'Hisobotlar','perm.settings':'Sozlamalar',
     'perm.orders_own':'Mening buyurtmalarim','perm.status_delivery':'Yetkazish holati',
-    'ord.title':'Buyurtmalar','ord.filters':'🔽 Filtrlar','ord.select_all':'Barchasi','ord.delete':`🗑 Oʻchirish`,'ord.reset':`↺ Tozalash`,'ord.select':'☑️ Tanlash','ord.search_ph':'Raqam, telefon…','ord.all':'🗂 Barchasi','ord.mine':'👤 Mening',
+    'ord.title':'Buyurtmalar','ord.filters':'🔽 Filtrlar','ord.select_all':'Barchasi','ord.delete':`🗑 Oʻchirish`,'ord.reset':`↺ Tozalash`,'ord.select':'☑️ Tanlash','ord.search_ph':'Raqam, telefon…','ord.all':'🗂 Barchasi','ord.mine':'👤 Mening','ord.debt':'💸 Qarzlar',
     'ord.date.all':'Barcha sana','ord.date.today':'Bugun','ord.date.yesterday':'Kecha','ord.date.week':'Hafta','ord.date.month':'Oy','ord.date.period':'Davr',
     'ord.staff.all':'👤 Barcha xodimlar','ord.staff.pick':'Xodim tanlash','ord.staff.none':`Xodimlardan buyurtma yoʻq`,'ord.staff.not_found':'Topilmadi','ord.staff.search_ph':'Ism…',
     'ord.empty':`Buyurtma yoʻq`,'ord.loading':'Yuklanmoqda…','ord.no_access':`Kirish yoʻq`,'ord.tab.unavailable':`sizning rolingiz uchun mavjud emas`,
@@ -3612,7 +3612,8 @@ function toggleOrderSelect(id, row) {
 function selectAllOrders() {
   const q = (document.getElementById('ordersSearch')?.value||'').toLowerCase();
   const visible = ordersData.filter(o => {
-    if (ordersFilter !== 'all' && o.status !== ordersFilter) return false;
+    if (ordersFilter === 'debt' && !_orderHasDebt(o)) return false;
+    if (ordersFilter !== 'all' && ordersFilter !== 'debt' && o.status !== ordersFilter) return false;
     if (q && !(o.order_num||'').toLowerCase().includes(q) && !(o.client_phone||'').includes(q) && !(o.client_first_name||'').toLowerCase().includes(q)) return false;
     return true;
   });
@@ -5913,6 +5914,7 @@ function pageOrders() {
     </div>
     <div class="filter-chips">
       ${statuses.map(s=>`<button class="fchip ${s===ordersFilter?'active':''}" id="ofc_${s}" onclick="setOrdersFilter('${s}')">${s==='all'?t('ord.all'):statusLabel(s)}</button>`).join('')}
+      ${!_isWasherPage ? `<button class="fchip ${ordersFilter==='debt'?'active':''}" id="ofc_debt" onclick="setOrdersFilter('debt')">${t('ord.debt')}</button>` : ''}
     </div>
     <div id="ordersList"><div class="empty-box">${t('ord.loading')}</div></div>
   `;
@@ -6157,12 +6159,24 @@ function selectOrdersStaff(name) {
 const WASHER_ALLOWED_STATUSES = new Set(['all','washing','drying','packing','ready']);
 
 const fmtMoney = n => (n != null && n !== '' && Number(n) !== 0) ? Number(n).toLocaleString('ru') + ' сум' : '—';
+// Та же формула, что в get_orders_with_debt (бэкенд) — items_total/total_price минус
+// все скидки минус уже учтённые платежи. Используется и в _payRow, и в фильтре «Долги».
+function _orderDebtAmount(o) {
+  const total = Number(o.items_total ?? o.total_price ?? 0);
+  const disc  = Number(o.discount_sum||0) + Number(o.delivery_discount||0) + Number(o.manual_discount||0);
+  const net   = Math.max(0, total - disc);
+  const paid  = Number(o.paid_amount ?? 0);
+  return Math.max(0, net - paid);
+}
+function _orderHasDebt(o) {
+  return !!o.debt_responsible_id && _orderDebtAmount(o) > 0;
+}
 function _payRow(o) {
   const total = Number(o.items_total ?? o.total_price ?? 0);
   const disc  = Number(o.discount_sum||0) + Number(o.delivery_discount||0) + Number(o.manual_discount||0);
   const net   = Math.max(0, total - disc);
   const paid  = Number(o.paid_amount ?? 0);
-  const debt  = Math.max(0, net - paid);
+  const debt  = _orderDebtAmount(o);
   return `💰 ${fmtMoney(net)} · <span style="color:${paid>0?'#22c55e':'var(--text2)'}">Опл: ${fmtMoney(paid)}</span> · <span style="color:${debt>0?'#ef4444':'var(--text2)'}">Долг: ${fmtMoney(debt)}</span>`;
 }
 
@@ -6195,7 +6209,8 @@ function renderOrders() {
   const WASHER_ORDER_STATUSES = new Set(['washing','drying','packing','ready']);
   _renderOrdersDateRow();
   let items = isWasher ? ordersData.filter(o => WASHER_ORDER_STATUSES.has(o.status)) : ordersData;
-  if (ordersFilter !== 'all') items = items.filter(o=>o.status===ordersFilter);
+  if (ordersFilter === 'debt') items = items.filter(_orderHasDebt);
+  else if (ordersFilter !== 'all') items = items.filter(o=>o.status===ordersFilter);
   if (ordersStaffFilter) items = items.filter(o => _orderCreatorName(o) === ordersStaffFilter);
   if (ordersOwnerFilter === 'mine') {
     const myName = [currentStaff?.first_name, currentStaff?.last_name].filter(Boolean).join(' ');
@@ -9173,10 +9188,16 @@ async function sLoadPaymentModal() {
       }).join('')
     : `<div style="color:#888;font-size:13px;text-align:center;padding:12px">${t('pm.empty')}</div>`;
 
-  // Кнопка добавить / блокировка для delivered и cancelled
+  // Кнопка добавить / блокировка для delivered и cancelled — ИСКЛЮЧЕНИЕ: заказ
+  // доставлен с непогашенным долгом (debt_responsible_id) — admin и «Ответственный
+  // за долги» (can_approve_debt) всё равно могут добавить платёж, чтобы записать
+  // погашение долга (иначе долг физически нельзя было закрыть после доставки).
   const addWrap = document.getElementById('s_pm_add_wrap');
   if (addWrap) {
-    if (['delivered','cancelled'].includes(_sOrderCache?.status)) {
+    const isDeliveredWithDebt = _sOrderCache?.status === 'delivered' && !!_sOrderCache?.debt_responsible_id;
+    const canAddDebtPayment = isDeliveredWithDebt && (isAdmin || currentStaff?.can_approve_debt);
+    const isBlocked = ['delivered','cancelled'].includes(_sOrderCache?.status) && !canAddDebtPayment;
+    if (isBlocked) {
       addWrap.innerHTML = `<div style="text-align:center;padding:10px 0;font-size:12px;color:#aaa">${t('pm.locked')}</div>`;
     } else {
       addWrap.innerHTML = `<button onclick="sOpenAddPaymentModal()" style="width:100%;padding:12px;background:#163E3B;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;touch-action:manipulation;margin-bottom:16px">${t('pm.add')}</button>`;

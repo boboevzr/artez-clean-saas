@@ -2181,6 +2181,7 @@
           <button class="filter-btn" data-status="delivery"  data-i18n="status.delivery"  onclick="filterOrders(this)">🚚 Доставка</button>
           <button class="filter-btn" data-status="delivered" data-i18n="status.delivered" onclick="filterOrders(this)">✅ Доставлен</button>
           <button class="filter-btn" data-status="cancelled" data-i18n="status.cancelled" onclick="filterOrders(this)">❌ Отменено</button>
+          <button class="filter-btn" data-status="debt" onclick="filterOrders(this)">💸 Долги</button>
         </div>
         <div id="adminOrdersStaffRow" style="display:flex;gap:6px;margin-top:8px;margin-bottom:4px"></div>
         <div id="ordersList"><div class="loader">Загрузка…</div></div>
@@ -9715,10 +9716,16 @@ let currentStatus = '';
 async function loadOrders(status) {
   currentStatus = status;
   document.getElementById('ordersList').innerHTML = '<div class="loader">Загрузка…</div>';
-  const path = status ? `/admin/orders?status=${status}` : '/admin/orders';
+  // «debt» — не настоящий статус заказа (это delivered + непогашенный долг), поэтому
+  // грузим весь список (с высоким limit — долги могут быть старше последних 50
+  // заказов) и фильтруем на клиенте той же формулой, что и в _payRow/
+  // get_orders_with_debt (см. _orderHasDebt).
+  const path = status === 'debt' ? '/admin/orders?limit=1000'
+    : status ? `/admin/orders?status=${status}` : '/admin/orders';
   const data = await apiGet(path);
   if (!data) return;
-  renderOrderCards(data.orders || [], 'ordersList');
+  const orders = status === 'debt' ? (data.orders || []).filter(_orderHasDebt) : (data.orders || []);
+  renderOrderCards(orders, 'ordersList');
   _renderAdminOrdersStaffRow();
 }
 
@@ -9740,12 +9747,24 @@ function statusBadgeClass(status) {
 }
 
 const fmtMoney = n => (n != null && n !== '' && Number(n) !== 0) ? Number(n).toLocaleString('ru') + ' сум' : '—';
+// Та же формула, что в get_orders_with_debt (бэкенд) — items_total/total_price минус
+// все скидки минус уже учтённые платежи. Используется и в _payRow, и в фильтре «Долги».
+function _orderDebtAmount(o) {
+  const total = Number(o.items_total ?? o.total_price ?? 0);
+  const disc  = Number(o.discount_sum||0) + Number(o.delivery_discount||0) + Number(o.manual_discount||0);
+  const net   = Math.max(0, total - disc);
+  const paid  = Number(o.paid_amount ?? 0);
+  return Math.max(0, net - paid);
+}
+function _orderHasDebt(o) {
+  return !!o.debt_responsible_id && _orderDebtAmount(o) > 0;
+}
 function _payRow(o) {
   const total   = Number(o.items_total ?? o.total_price ?? 0);
   const disc    = Number(o.discount_sum||0) + Number(o.delivery_discount||0) + Number(o.manual_discount||0);
   const net     = Math.max(0, total - disc);
   const paid    = Number(o.paid_amount ?? 0);
-  const debt    = Math.max(0, net - paid);
+  const debt    = _orderDebtAmount(o);
   return `<span>💰 ${fmtMoney(net)}</span><span style="color:${paid>0?'#22c55e':'inherit'}">Опл: ${fmtMoney(paid)}</span><span style="color:${debt>0?'#ef4444':'inherit'}">Долг: ${fmtMoney(debt)}</span>`;
 }
 
