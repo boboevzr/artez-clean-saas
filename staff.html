@@ -8206,7 +8206,7 @@ document.addEventListener('click', e => {
 </div>
 
 <!-- ═══════════ МОДАЛКИ ЗАКАЗА ═══════════ -->
-<div id="staffModalOrder" class="modal-overlay" style="z-index:300;align-items:center;padding:0 12px;">
+<div id="staffModalOrder" class="modal-overlay" data-no-auto-close="true" style="z-index:300;align-items:center;padding:0 12px;">
   <div class="modal-box" style="padding:0;overflow:hidden;display:flex;flex-direction:column;height:calc(100dvh - 32px);width:100%;max-width:520px;border-radius:20px;">
 
     <!-- Шапка -->
@@ -8763,7 +8763,9 @@ async function _loadWashers() {
   try {
     const res = await fetch(`${API_BASE}/staff/list?role=washer`, { headers:{Authorization:`Bearer ${_staffToken()}`} });
     const d = await res.json();
-    _washersList = d.staff || [];
+    // Мойщики «На паузе» (active=false) или уволенные не должны попадать в список
+    // назначения — они физически не могут работать с заказом (не заходят в staff).
+    _washersList = (d.staff || []).filter(w => w.active && !w.fired);
   } catch(e) {}
   return _washersList;
 }
