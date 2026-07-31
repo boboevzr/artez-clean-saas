@@ -9018,6 +9018,10 @@ async function soSendSms(lang) {
     if (d.sent) showToast('✅ SMS отправлен');
     else showToast('⚠️ ' + (d.reason || 'SMS не отправлен'), 'error');
   } catch(e) { showToast('⚠️ ' + e.message, 'error'); }
+  // Попытка (успех/провал) уже залогирована бэкендом в order_activity — обновляем
+  // кэш и перерисовываем «Историю уведомлений», чтобы её увидеть сразу, без переоткрытия карточки.
+  _sActivityCache = null;
+  if (_sActiveTab === 'notif') _sRenderNotifications();
 }
 
 function soNewOrderForClient() {
