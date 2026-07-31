@@ -4350,7 +4350,14 @@
                   <button id="sys-cancel-register" onclick="smsSysCancel('register')" class="btn btn-sm" style="display:none;background:var(--surface2);color:var(--text);padding:4px 10px">Отмена</button>
                 </div>
               </div>
-              <textarea id="sys_sms_register" class="price-input" rows="3" disabled style="width:100%;resize:vertical;opacity:0.7" placeholder="Kod podtverzhdeniya dlya registracii: {code}"></textarea>
+              <textarea id="sys_sms_register" class="price-input" rows="3" disabled oninput="_smsEskizPreview('register')" style="width:100%;resize:vertical;opacity:0.7" placeholder="Kod podtverzhdeniya dlya registracii: {code}"></textarea>
+              <div style="margin-top:8px;padding:10px 12px;background:var(--bg,#f5f5f7);border:1px dashed var(--border);border-radius:10px">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+                  <span style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase">Пример для Eskiz-модерации</span>
+                  <button onclick="_smsCopyEskizPreview('register')" style="font-size:11px;padding:2px 8px;border:1px solid var(--border);border-radius:6px;background:none;color:var(--text2);cursor:pointer">📋 Копировать</button>
+                </div>
+                <div id="sys-eskiz-register" style="font-size:13px;color:var(--text);white-space:pre-wrap"></div>
+              </div>
             </div>
 
             <!-- Поле: Вход -->
@@ -4364,7 +4371,14 @@
                   <button id="sys-cancel-login" onclick="smsSysCancel('login')" class="btn btn-sm" style="display:none;background:var(--surface2);color:var(--text);padding:4px 10px">Отмена</button>
                 </div>
               </div>
-              <textarea id="sys_sms_login" class="price-input" rows="3" disabled style="width:100%;resize:vertical;opacity:0.7" placeholder="Kod vhoda na sayt ARTEZ.uz: {code}"></textarea>
+              <textarea id="sys_sms_login" class="price-input" rows="3" disabled oninput="_smsEskizPreview('login')" style="width:100%;resize:vertical;opacity:0.7" placeholder="Kod vhoda na sayt ARTEZ.uz: {code}"></textarea>
+              <div style="margin-top:8px;padding:10px 12px;background:var(--bg,#f5f5f7);border:1px dashed var(--border);border-radius:10px">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+                  <span style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase">Пример для Eskiz-модерации</span>
+                  <button onclick="_smsCopyEskizPreview('login')" style="font-size:11px;padding:2px 8px;border:1px solid var(--border);border-radius:6px;background:none;color:var(--text2);cursor:pointer">📋 Копировать</button>
+                </div>
+                <div id="sys-eskiz-login" style="font-size:13px;color:var(--text);white-space:pre-wrap"></div>
+              </div>
             </div>
 
             <!-- Поле: Сброс пароля -->
@@ -4378,7 +4392,14 @@
                   <button id="sys-cancel-reset" onclick="smsSysCancel('reset')" class="btn btn-sm" style="display:none;background:var(--surface2);color:var(--text);padding:4px 10px">Отмена</button>
                 </div>
               </div>
-              <textarea id="sys_sms_reset" class="price-input" rows="3" disabled style="width:100%;resize:vertical;opacity:0.7" placeholder="Kod vosstanovleniya parolya: {code}"></textarea>
+              <textarea id="sys_sms_reset" class="price-input" rows="3" disabled oninput="_smsEskizPreview('reset')" style="width:100%;resize:vertical;opacity:0.7" placeholder="Kod vosstanovleniya parolya: {code}"></textarea>
+              <div style="margin-top:8px;padding:10px 12px;background:var(--bg,#f5f5f7);border:1px dashed var(--border);border-radius:10px">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+                  <span style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase">Пример для Eskiz-модерации</span>
+                  <button onclick="_smsCopyEskizPreview('reset')" style="font-size:11px;padding:2px 8px;border:1px solid var(--border);border-radius:6px;background:none;color:var(--text2);cursor:pointer">📋 Копировать</button>
+                </div>
+                <div id="sys-eskiz-reset" style="font-size:13px;color:var(--text);white-space:pre-wrap"></div>
+              </div>
             </div>
 
             <!-- Поле: SMS клиенту при заборе водителем -->
@@ -4408,7 +4429,14 @@
                   <button id="sys-cancel-pickup_ru" onclick="smsSysCancel('pickup_ru')" class="btn btn-sm" style="display:none;background:var(--surface2);color:var(--text);padding:4px 10px">Отмена</button>
                 </div>
               </div>
-              <textarea id="sys_sms_pickup_ru" class="price-input" rows="3" disabled oninput="_smsPickupCountLen('pickup_ru')" style="width:100%;resize:vertical;opacity:0.7" placeholder="Zakaz {order_num} prinyat kurerom ({count} poz.)..."></textarea>
+              <textarea id="sys_sms_pickup_ru" class="price-input" rows="3" disabled oninput="_smsPickupCountLen('pickup_ru');_smsEskizPreview('pickup_ru')" style="width:100%;resize:vertical;opacity:0.7" placeholder="Zakaz {order_num} prinyat kurerom ({count} poz.)..."></textarea>
+              <div style="margin-top:8px;padding:10px 12px;background:var(--bg,#f5f5f7);border:1px dashed var(--border);border-radius:10px">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+                  <span style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase">Пример для Eskiz-модерации</span>
+                  <button onclick="_smsCopyEskizPreview('pickup_ru')" style="font-size:11px;padding:2px 8px;border:1px solid var(--border);border-radius:6px;background:none;color:var(--text2);cursor:pointer">📋 Копировать</button>
+                </div>
+                <div id="sys-eskiz-pickup_ru" style="font-size:13px;color:var(--text);white-space:pre-wrap"></div>
+              </div>
             </div>
             <div class="sys-sms-card" id="sys-card-pickup_uz" style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 18px">
               <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
@@ -4421,7 +4449,14 @@
                   <button id="sys-cancel-pickup_uz" onclick="smsSysCancel('pickup_uz')" class="btn btn-sm" style="display:none;background:var(--surface2);color:var(--text);padding:4px 10px">Отмена</button>
                 </div>
               </div>
-              <textarea id="sys_sms_pickup_uz" class="price-input" rows="3" disabled oninput="_smsPickupCountLen('pickup_uz')" style="width:100%;resize:vertical;opacity:0.7" placeholder="{order_num} buyurtma kuryer tomonidan qabul qilindi..."></textarea>
+              <textarea id="sys_sms_pickup_uz" class="price-input" rows="3" disabled oninput="_smsPickupCountLen('pickup_uz');_smsEskizPreview('pickup_uz')" style="width:100%;resize:vertical;opacity:0.7" placeholder="{order_num} buyurtma kuryer tomonidan qabul qilindi..."></textarea>
+              <div style="margin-top:8px;padding:10px 12px;background:var(--bg,#f5f5f7);border:1px dashed var(--border);border-radius:10px">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+                  <span style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase">Пример для Eskiz-модерации</span>
+                  <button onclick="_smsCopyEskizPreview('pickup_uz')" style="font-size:11px;padding:2px 8px;border:1px solid var(--border);border-radius:6px;background:none;color:var(--text2);cursor:pointer">📋 Копировать</button>
+                </div>
+                <div id="sys-eskiz-pickup_uz" style="font-size:13px;color:var(--text);white-space:pre-wrap"></div>
+              </div>
             </div>
 
             <!-- Поле: SMS клиенту при статусе «Готово» -->
@@ -4450,7 +4485,14 @@
                   <button id="sys-cancel-ready_ru" onclick="smsSysCancel('ready_ru')" class="btn btn-sm" style="display:none;background:var(--surface2);color:var(--text);padding:4px 10px">Отмена</button>
                 </div>
               </div>
-              <textarea id="sys_sms_ready_ru" class="price-input" rows="3" disabled oninput="_smsPickupCountLen('ready_ru')" style="width:100%;resize:vertical;opacity:0.7" placeholder="zakaz {order_num} gotov..."></textarea>
+              <textarea id="sys_sms_ready_ru" class="price-input" rows="3" disabled oninput="_smsPickupCountLen('ready_ru');_smsEskizPreview('ready_ru')" style="width:100%;resize:vertical;opacity:0.7" placeholder="zakaz {order_num} gotov..."></textarea>
+              <div style="margin-top:8px;padding:10px 12px;background:var(--bg,#f5f5f7);border:1px dashed var(--border);border-radius:10px">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+                  <span style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase">Пример для Eskiz-модерации</span>
+                  <button onclick="_smsCopyEskizPreview('ready_ru')" style="font-size:11px;padding:2px 8px;border:1px solid var(--border);border-radius:6px;background:none;color:var(--text2);cursor:pointer">📋 Копировать</button>
+                </div>
+                <div id="sys-eskiz-ready_ru" style="font-size:13px;color:var(--text);white-space:pre-wrap"></div>
+              </div>
             </div>
             <div class="sys-sms-card" id="sys-card-ready_uz" style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 18px">
               <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
@@ -4463,7 +4505,14 @@
                   <button id="sys-cancel-ready_uz" onclick="smsSysCancel('ready_uz')" class="btn btn-sm" style="display:none;background:var(--surface2);color:var(--text);padding:4px 10px">Отмена</button>
                 </div>
               </div>
-              <textarea id="sys_sms_ready_uz" class="price-input" rows="3" disabled oninput="_smsPickupCountLen('ready_uz')" style="width:100%;resize:vertical;opacity:0.7" placeholder="{order_num} buyurtma tayyor..."></textarea>
+              <textarea id="sys_sms_ready_uz" class="price-input" rows="3" disabled oninput="_smsPickupCountLen('ready_uz');_smsEskizPreview('ready_uz')" style="width:100%;resize:vertical;opacity:0.7" placeholder="{order_num} buyurtma tayyor..."></textarea>
+              <div style="margin-top:8px;padding:10px 12px;background:var(--bg,#f5f5f7);border:1px dashed var(--border);border-radius:10px">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+                  <span style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase">Пример для Eskiz-модерации</span>
+                  <button onclick="_smsCopyEskizPreview('ready_uz')" style="font-size:11px;padding:2px 8px;border:1px solid var(--border);border-radius:6px;background:none;color:var(--text2);cursor:pointer">📋 Копировать</button>
+                </div>
+                <div id="sys-eskiz-ready_uz" style="font-size:13px;color:var(--text);white-space:pre-wrap"></div>
+              </div>
             </div>
 
           </div>
@@ -22814,6 +22863,45 @@ async function smsSysLoad() {
   if (enabledEl) { enabledEl.checked = s.sms_pickup_enabled === 'true'; _smsPickupRenderToggle(enabledEl.checked); }
   const readyEnabledEl = document.getElementById('sys_sms_ready_enabled');
   if (readyEnabledEl) { readyEnabledEl.checked = s.sms_ready_enabled === 'true'; _smsReadyRenderToggle(readyEnabledEl.checked); }
+
+  // Значения для примера, который отправляется на модерацию в Eskiz — реальные
+  // настроенные телефоны/бот/домен компании, а не {плейсхолдеры}. Eskiz требует
+  // ТОЧНЫЙ текст, какой уйдёт получателю (см. запрос пользователя 2026-07-30).
+  // " / " — тот же разделитель, что использует бэкенд (_render_sms_notification).
+  const phones = [s.contact_short, s.contact_main].filter(Boolean).join(' / ');
+  const botLink = s.order_bot_username ? `t.me/${s.order_bot_username}` : '@your_bot';
+  const slug = localStorage.getItem('admin_company_slug') || '';
+  _smsPreviewVars = {
+    code: '123456',
+    order_num: '#1120',
+    count: '12',
+    phones: phones || '+998 XX XXX-XX-XX',
+    bot_link: botLink,
+    site_link: slug ? `https://cleano.uz/?c=${slug}` : 'https://cleano.uz',
+  };
+  ['register','login','reset','pickup_ru','pickup_uz','ready_ru','ready_uz'].forEach(_smsEskizPreview);
+}
+
+let _smsPreviewVars = {};
+
+function _smsEskizPreview(field) {
+  const ta  = document.getElementById(`sys_sms_${field}`);
+  const out = document.getElementById(`sys-eskiz-${field}`);
+  if (!ta || !out) return;
+  let text = ta.value || '';
+  Object.entries(_smsPreviewVars).forEach(([k, v]) => {
+    text = text.split(`{${k}}`).join(v);
+  });
+  out.textContent = text;
+}
+
+async function _smsCopyEskizPreview(field) {
+  const out = document.getElementById(`sys-eskiz-${field}`);
+  if (!out) return;
+  try {
+    await navigator.clipboard.writeText(out.textContent || '');
+    showToast('📋 Скопировано');
+  } catch(e) { showToast('Не удалось скопировать', 'error'); }
 }
 
 // Латиница ≤170 символов = 1 SMS-сегмент по GSM-7 — считаем и подсвечиваем красным при превышении.
