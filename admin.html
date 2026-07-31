@@ -22892,10 +22892,9 @@ function _smsEskizPreview(field) {
   Object.entries(_smsPreviewVars).forEach(([k, v]) => {
     text = text.split(`{${k}}`).join(v);
   });
-  // Схлопываем переводы строк/лишние пробелы — бэкенд делает то же самое перед
-  // отправкой (см. _render_sms_notification), иначе превью разойдётся с реально
-  // отправляемым текстом и введёт в заблуждение при копировании для Eskiz.
-  out.textContent = text.split(/\s+/).filter(Boolean).join(' ');
+  // Без авто-схлопывания переносов строк — показываем ровно то, что реально уйдёт
+  // (пользователь сам контролирует форматирование шаблона).
+  out.textContent = text;
 }
 
 async function _smsCopyEskizPreview(field) {
@@ -22963,9 +22962,12 @@ function smsSysEdit(field) {
   ta.dataset.orig = ta.value;
 }
 
-function smsSysCancel(field) {
+// Закрыть режим редактирования БЕЗ отката значения — используется после успешного
+// сохранения (баг был: smsSysSaveOne вызывал smsSysCancel, которая откатывала
+// textarea на ta.dataset.orig — сохранение реально проходило на бэкенде, но
+// текст в поле визуально возвращался к старому, выглядело как «не сохраняется»).
+function _smsSysCloseEdit(field) {
   const ta = document.getElementById(`sys_sms_${field}`);
-  ta.value    = ta.dataset.orig || ta.value;
   ta.disabled = true;
   ta.style.opacity = '0.7';
   document.getElementById(`sys-edit-${field}`).style.display   = '';
@@ -22973,6 +22975,12 @@ function smsSysCancel(field) {
   document.getElementById(`sys-cancel-${field}`).style.display = 'none';
   document.getElementById(`sys-card-${field}`).style.borderColor = '';
   document.getElementById(`sys-msg-${field}`).style.display = 'none';
+}
+
+function smsSysCancel(field) {
+  const ta = document.getElementById(`sys_sms_${field}`);
+  ta.value = ta.dataset.orig || ta.value;
+  _smsSysCloseEdit(field);
 }
 
 async function smsSysSaveOne(field, settingKey) {
@@ -22988,7 +22996,9 @@ async function smsSysSaveOne(field, settingKey) {
   btn.disabled = false; btn.textContent = '💾 Сохранить';
   if (res && !res.detail) {
     msg.style.display = ''; msg.style.color = '#16a34a'; msg.textContent = '✅ Сохранено';
-    smsSysCancel(field);
+    ta.dataset.orig = ta.value;   // новое сохранённое значение — теперь это база для будущей Отмены
+    _smsSysCloseEdit(field);
+    _smsEskizPreview(field);      // обновить «Пример для Eskiz» под только что сохранённым текстом
     setTimeout(() => { msg.style.display = 'none'; }, 2500);
   } else {
     msg.style.display = ''; msg.style.color = '#dc2626'; msg.textContent = '❌ Ошибка';
