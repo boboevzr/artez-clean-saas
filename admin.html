@@ -22892,7 +22892,10 @@ function _smsEskizPreview(field) {
   Object.entries(_smsPreviewVars).forEach(([k, v]) => {
     text = text.split(`{${k}}`).join(v);
   });
-  out.textContent = text;
+  // Схлопываем переводы строк/лишние пробелы — бэкенд делает то же самое перед
+  // отправкой (см. _render_sms_notification), иначе превью разойдётся с реально
+  // отправляемым текстом и введёт в заблуждение при копировании для Eskiz.
+  out.textContent = text.split(/\s+/).filter(Boolean).join(' ');
 }
 
 async function _smsCopyEskizPreview(field) {
