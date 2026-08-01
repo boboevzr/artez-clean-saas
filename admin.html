@@ -2766,6 +2766,7 @@
           <button class="s-tab"        data-stab="agents"     onclick="switchStab(this)" data-i18n="cfg.tab.agents">🤝 Агенты</button>
           <button class="s-tab"        data-stab="receipt"    onclick="switchStab(this)" data-i18n="cfg.tab.receipt">🧾 Чек</button>
           <button class="s-tab"        data-stab="slides"     onclick="switchStab(this)" data-i18n="cfg.tab.slides">🖼️ Слайдер</button>
+          <button class="s-tab"        data-stab="video"      onclick="switchStab(this);loadSiteVideo()" data-i18n="cfg.tab.video">🎥 Видео</button>
           <button class="s-tab"        data-stab="stats"      onclick="switchStab(this)" data-i18n="cfg.tab.stats">📊 Статистика</button>
           <button class="s-tab"        data-stab="reviews"    onclick="switchStab(this)" data-i18n="cfg.tab.reviews">⭐ Отзывы</button>
           <button class="s-tab"        data-stab="faq"        onclick="switchStab(this)" data-i18n="cfg.tab.faq">❓ FAQ</button>
@@ -3030,6 +3031,54 @@
               <p class="cfg-hint" data-i18n="slides.hint">До 5 слайдов. Показываются на сайте в автослайдере на самом верху страницы.</p>
               <div id="slidesList" style="margin-top:10px"></div>
               <button class="btn btn-primary" id="slidesAddBtn" onclick="openSlideModal()" style="margin-top:12px" data-i18n="slides.btn.add">+ Добавить слайд</button>
+            </div>
+          </div>
+
+          <!-- ─── Видео-карточка ─── -->
+          <div class="s-panel" id="stab-video" style="display:none;">
+            <div class="card">
+              <div class="cfg-title-row">
+                <h3 class="cfg-title" data-i18n="video.card.title">🎥 Видео-карточка на сайте</h3>
+              </div>
+              <p class="cfg-hint" data-i18n="video.card.hint">Короткое видео о вашей компании (до 19 МБ). Показывается на главной странице сайта — выберите, где именно.</p>
+
+              <div class="sys-sms-card" style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;margin-top:12px">
+                <label style="font-size:13px;font-weight:600;color:var(--text)" data-i18n="video.enable">Показывать видео-карточку</label>
+                <label style="position:relative;display:inline-block;width:44px;height:24px">
+                  <input type="checkbox" id="cfg_site_video_enabled" onchange="siteVideoToggleEnabled(this.checked)" style="opacity:0;width:0;height:0">
+                  <span id="cfg_site_video_enabled_track" style="position:absolute;inset:0;background:var(--border);border-radius:24px;cursor:pointer;transition:.2s"></span>
+                </label>
+              </div>
+
+              <div style="margin-top:16px">
+                <label style="font-size:13px;font-weight:600;color:var(--text);display:block;margin-bottom:8px" data-i18n="video.placement">Где показать</label>
+                <div style="display:flex;flex-direction:column;gap:8px">
+                  <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer">
+                    <input type="radio" name="site_video_placement" value="hero" onchange="siteVideoSetPlacement('hero')">
+                    <span data-i18n="video.placement.hero">Рядом с hero (заголовком)</span>
+                  </label>
+                  <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer">
+                    <input type="radio" name="site_video_placement" value="how_it_works" onchange="siteVideoSetPlacement('how_it_works')">
+                    <span data-i18n="video.placement.how">Отдельный блок «Как это работает»</span>
+                  </label>
+                  <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer">
+                    <input type="radio" name="site_video_placement" value="reviews" onchange="siteVideoSetPlacement('reviews')">
+                    <span data-i18n="video.placement.reviews">Рядом с отзывами</span>
+                  </label>
+                  <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer">
+                    <input type="radio" name="site_video_placement" value="floating" onchange="siteVideoSetPlacement('floating')">
+                    <span data-i18n="video.placement.floating">Плавающий виджет в углу</span>
+                  </label>
+                </div>
+              </div>
+
+              <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
+                <div id="siteVideoStatus" style="font-size:13px;color:var(--text2);margin-bottom:10px" data-i18n="video.loading">Загрузка…</div>
+                <input type="file" id="siteVideoFileInput" accept="video/*" style="display:none" onchange="siteVideoFilePicked()">
+                <button class="btn btn-primary btn-sm" onclick="document.getElementById('siteVideoFileInput').click()" data-i18n="video.btn.upload">📤 Загрузить видео</button>
+                <button class="btn btn-sm" id="siteVideoDeleteBtn" onclick="siteVideoDelete()" style="display:none;background:var(--surface2);color:var(--text)" data-i18n="video.btn.delete">🗑️ Удалить</button>
+                <span class="s-msg" id="msg_site_video"></span>
+              </div>
             </div>
           </div>
 
@@ -6024,7 +6073,7 @@ function _setAdminLang(lang) {
     'sms-pricing': () => smsPricingLoad(),
     'salary-calc': () => salCalcLoad(),
     timesheet: () => loadTimesheet(),
-    siteconfig: () => { loadSiteSlides(); loadSiteStatsAdmin(); loadSiteReviews(); loadSiteFaq(); },
+    siteconfig: () => { loadSiteSlides(); loadSiteVideo(); loadSiteStatsAdmin(); loadSiteReviews(); loadSiteFaq(); },
     'company-settings': () => { renderBranchContactCards(); },
     'site-design': () => designLoad(),
   };
@@ -6134,8 +6183,14 @@ const _adminI18n = {
     'cfg.tab.contacts':'📞 Контакты','cfg.tab.staff':'👤 Сотрудники',
     'cfg.tab.sms':'📨 SMS (Eskiz)','cfg.tab.sheets':'📊 Google Sheets',
     'cfg.tab.agents':'🤝 Агенты','cfg.tab.receipt':'🧾 Чек',
-    'cfg.tab.slides':'🖼️ Слайдер','cfg.tab.stats':'📊 Статистика',
+    'cfg.tab.slides':'🖼️ Слайдер','cfg.tab.video':'🎥 Видео','cfg.tab.stats':'📊 Статистика',
     'cfg.tab.reviews':'⭐ Отзывы','cfg.tab.faq':'❓ FAQ',
+    'video.card.title':'🎥 Видео-карточка на сайте',
+    'video.card.hint':'Короткое видео о вашей компании (до 19 МБ). Показывается на главной странице сайта — выберите, где именно.',
+    'video.enable':'Показывать видео-карточку','video.placement':'Где показать',
+    'video.placement.hero':'Рядом с hero (заголовком)','video.placement.how':'Отдельный блок «Как это работает»',
+    'video.placement.reviews':'Рядом с отзывами','video.placement.floating':'Плавающий виджет в углу',
+    'video.loading':'Загрузка…','video.btn.upload':'📤 Загрузить видео','video.btn.delete':'🗑️ Удалить',
     'slides.title':'🖼️ Слайдер на главной странице',
     'slides.hint':'До 5 слайдов. Показываются на сайте в автослайдере на самом верху страницы.',
     'slides.btn.add':'+ Добавить слайд','slides.empty':'Слайдов пока нет.',
@@ -6657,8 +6712,14 @@ const _adminI18n = {
     'cfg.tab.contacts':'📞 Kontaktlar','cfg.tab.staff':'👤 Xodimlar',
     'cfg.tab.sms':'📨 SMS (Eskiz)','cfg.tab.sheets':'📊 Google Sheets',
     'cfg.tab.agents':'🤝 Agentlar','cfg.tab.receipt':'🧾 Chek',
-    'cfg.tab.slides':'🖼️ Slayder','cfg.tab.stats':'📊 Statistika',
+    'cfg.tab.slides':'🖼️ Slayder','cfg.tab.video':'🎥 Video','cfg.tab.stats':'📊 Statistika',
     'cfg.tab.reviews':'⭐ Sharhlar','cfg.tab.faq':'❓ FAQ',
+    'video.card.title':'🎥 Saytdagi video-karta',
+    'video.card.hint':"Kompaniyangiz haqida qisqa video (19 MB gacha). Sayt bosh sahifasida ko'rsatiladi — qayerda ko'rsatilishini tanlang.",
+    'video.enable':"Video-kartani ko'rsatish",'video.placement':"Qayerda ko'rsatilsin",
+    'video.placement.hero':"Hero (sarlavha) yonida",'video.placement.how':"Alohida blok «Bu qanday ishlaydi»",
+    'video.placement.reviews':"Sharhlar yonida",'video.placement.floating':"Burchakdagi suzuvchi vidjet",
+    'video.loading':'Yuklanmoqda…','video.btn.upload':'📤 Video yuklash','video.btn.delete':"🗑️ O'chirish",
     'slides.title':'🖼️ Bosh sahifadagi slayder',
     'slides.hint':"5 tagacha slayd. Saytda, sahifaning eng tepasidagi avtoslayderda ko'rsatiladi.",
     'slides.btn.add':'+ Slayd qo\'shish','slides.empty':"Hozircha slaydlar yo'q.",
@@ -8108,6 +8169,74 @@ function closeBranchLimitModal() {
 }
 
 // ── СЛАЙДЕР ГЛАВНОЙ СТРАНИЦЫ ────────────────────────────────────────────────
+// ── Видео-карточка на сайте ─────────────────────────────────────────────
+async function loadSiteVideo() {
+  const res = await apiGet('/admin/settings/site');
+  const s = res?.settings || {};
+  const enabledEl = document.getElementById('cfg_site_video_enabled');
+  if (enabledEl) { enabledEl.checked = s.site_video_enabled === 'true'; _siteVideoRenderToggle(enabledEl.checked); }
+  const placement = s.site_video_placement || 'hero';
+  document.querySelectorAll('input[name="site_video_placement"]').forEach(r => { r.checked = (r.value === placement); });
+
+  const st = await apiGet('/admin/site-video-status');
+  const statusEl = document.getElementById('siteVideoStatus');
+  const delBtn = document.getElementById('siteVideoDeleteBtn');
+  if (st?.has_video) {
+    if (statusEl) statusEl.textContent = '✅ Видео загружено';
+    if (delBtn) delBtn.style.display = '';
+  } else {
+    if (statusEl) statusEl.textContent = '— Видео не загружено';
+    if (delBtn) delBtn.style.display = 'none';
+  }
+}
+
+function _siteVideoRenderToggle(checked) {
+  const track = document.getElementById('cfg_site_video_enabled_track');
+  if (!track) return;
+  track.style.background = checked ? '#163E3B' : 'var(--border)';
+  track.innerHTML = `<span style="position:absolute;top:2px;left:${checked?'22px':'2px'};width:20px;height:20px;background:#fff;border-radius:50%;transition:.2s"></span>`;
+}
+
+async function siteVideoToggleEnabled(checked) {
+  _siteVideoRenderToggle(checked);
+  await apiPut('/admin/settings/site', { site_video_enabled: checked ? 'true' : 'false' });
+}
+
+async function siteVideoSetPlacement(value) {
+  await apiPut('/admin/settings/site', { site_video_placement: value });
+  showToast('✅ Сохранено');
+}
+
+async function siteVideoFilePicked() {
+  const input = document.getElementById('siteVideoFileInput');
+  const file = input.files[0];
+  if (!file) return;
+  const msg = document.getElementById('msg_site_video');
+  if (msg) { msg.style.color = 'var(--text2)'; msg.textContent = '⏳ Загрузка...'; }
+  const form = new FormData();
+  form.append('file', file);
+  try {
+    const r = await fetch(`${API_BASE}/admin/site-video`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${adminToken}` },
+      body: form
+    });
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok || !d.ok) throw new Error(d.detail || 'Ошибка загрузки');
+    if (msg) { msg.style.color = '#15803d'; msg.textContent = '✅ Загружено'; }
+    await loadSiteVideo();
+  } catch (e) {
+    if (msg) { msg.style.color = '#dc2626'; msg.textContent = '❌ ' + (e.message || 'Ошибка'); }
+  }
+  input.value = '';
+}
+
+async function siteVideoDelete() {
+  if (!confirm('Удалить видео-карточку?')) return;
+  const r = await apiDelete('/admin/site-video');
+  if (r?.ok) { await loadSiteVideo(); showToast('Видео удалено'); }
+}
+
 const MAX_SLIDES = 5;
 let _slides = [];
 let _slideEditId = null;

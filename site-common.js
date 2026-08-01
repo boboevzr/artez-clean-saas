@@ -1113,9 +1113,60 @@
         document.head.appendChild(sc);
       }
 
+      // Видео-карточка на сайте — своё видео компании, размещение выбрано в admin.html
+      if (s.site_video_enabled === 'true') initSiteVideoCard(s.site_video_placement || 'hero');
+
       return s;
     } catch (_) { return null; }
   })();
+
+  // ── Видео-карточка сайта (site_video_enabled/site_video_placement) ──────
+  function initSiteVideoCard(placement) {
+    try {
+      if (sessionStorage.getItem('site_video_closed') === '1') return;
+      const slotMap = { hero: 'siteVideoSlotHero', how_it_works: 'siteVideoSlotHiw', reviews: 'siteVideoSlotReviews' };
+      let cls = placement || 'hero';
+      let mountParent;
+      if (cls === 'floating') {
+        mountParent = document.body;
+      } else {
+        mountParent = document.getElementById(slotMap[cls] || slotMap.hero);
+        if (!mountParent) { cls = 'floating'; mountParent = document.body; }
+      }
+      const wrap = document.createElement('div');
+      wrap.className = `site-video-card site-video-card--${cls}`;
+      wrap.id = 'siteVideoCard';
+      wrap.innerHTML =
+        '<video id="siteVideoEl" muted loop playsinline preload="metadata"></video>' +
+        '<button class="svc-close" id="siteVideoCloseBtn" type="button" aria-label="Закрыть">✕</button>' +
+        '<div class="svc-controls">' +
+          '<button id="siteVideoPlayBtn" type="button">⏸</button>' +
+          '<button id="siteVideoMuteBtn" type="button">🔇</button>' +
+        '</div>';
+      mountParent.appendChild(wrap);
+
+      const video = wrap.querySelector('#siteVideoEl');
+      video.addEventListener('canplaythrough', () => { video.play().catch(() => {}); }, { once: true });
+      video.addEventListener('error', () => { wrap.remove(); });
+      video.src = `${API_BASE}/site-video?company_slug=${encodeURIComponent(window.APP_COMPANY_SLUG || '')}`;
+      video.load();
+
+      const playBtn = wrap.querySelector('#siteVideoPlayBtn');
+      const muteBtn = wrap.querySelector('#siteVideoMuteBtn');
+      playBtn.addEventListener('click', () => { if (video.paused) video.play(); else video.pause(); });
+      video.addEventListener('play',  () => { playBtn.textContent = '⏸'; });
+      video.addEventListener('pause', () => { playBtn.textContent = '▶'; });
+      muteBtn.addEventListener('click', () => {
+        video.muted = !video.muted;
+        muteBtn.textContent = video.muted ? '🔇' : '🔊';
+      });
+      wrap.querySelector('#siteVideoCloseBtn').addEventListener('click', () => {
+        video.pause();
+        wrap.remove();
+        try { sessionStorage.setItem('site_video_closed', '1'); } catch (_) {}
+      });
+    } catch (_) {}
+  }
 
 
   function statusClass(s){ return 's-' + (s || 'new').replace(/_/g, '-'); }
