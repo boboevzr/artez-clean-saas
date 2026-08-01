@@ -924,13 +924,23 @@
   var fallback = document.getElementById('videoFallback');
   var videoFrame = video.closest('.tag-video-frame');
   var videoLoadTimer = null;
+  var videoLoadToken = 0;
+  // Ждём canplaythrough (браузер уверен, что видео проиграется без подгрузок) и только
+  // ТОГДА жмём play — раньше play() вызывался сразу после load(), из-за чего при быстром
+  // переключении RU/UZ звук иногда стартовал раньше, чем успевал отрисоваться кадр видео.
+  video.addEventListener('canplaythrough', function(){
+    if (video.dataset.loadToken != videoLoadToken) return; // устаревшая загрузка — язык уже переключили ещё раз
+    video.play().catch(function(){});
+  });
   function loadDemoVideo(l){
     clearTimeout(videoLoadTimer);
+    video.pause();
     video.style.display = '';
     fallback.style.display = 'none';
+    videoLoadToken++;
+    video.dataset.loadToken = videoLoadToken;
     video.src = DEMO_VIDEO_API + (l === 'ru' ? 'ru' : 'uz') + '?_=' + Date.now();
     video.load();
-    video.play().catch(function(){});
     videoLoadTimer = setTimeout(function(){
       if (video.readyState === 0) { video.style.display='none'; fallback.style.display='flex'; }
     }, 3500);
