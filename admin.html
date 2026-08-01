@@ -7998,8 +7998,16 @@ let _designPalettes = [];
 let _designSelTemplate = null;
 let _designSelPalette = null;
 
+let _designCompanySlug = null;
+
 async function designLoad() {
   try {
+    // Не берём slug из localStorage напрямую — он может быть от ДРУГОЙ компании
+    // (impersonate из superadmin.html, переключение компании в этом же браузере
+    // и т.п. — см. комментарий в _updateProfileUI). Подтягиваем актуальный.
+    const info = await apiGet('/company/info').catch(() => null);
+    _designCompanySlug = info?.slug || localStorage.getItem('admin_company_slug') || '';
+
     const r = await apiGet('/admin/company/site-design');
     if (!r?.ok) return;
     _designTemplates = r.templates || [];
@@ -8057,7 +8065,7 @@ function designSelectPalette(key) {
 function designUpdatePreview() {
   const frame = document.getElementById('designPreviewFrame');
   if (!frame || !_designSelTemplate || !_designSelPalette) return;
-  const slug = localStorage.getItem('admin_company_slug') || '';
+  const slug = _designCompanySlug || localStorage.getItem('admin_company_slug') || '';
   frame.src = `index.html?company_slug=${encodeURIComponent(slug)}&preview_template=${encodeURIComponent(_designSelTemplate)}&preview_palette=${encodeURIComponent(_designSelPalette)}`;
 }
 
