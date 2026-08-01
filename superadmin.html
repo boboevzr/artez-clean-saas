@@ -103,6 +103,7 @@
   .demo-video-upload-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 24px -6px color-mix(in srgb, var(--accent) 75%, transparent); filter: brightness(1.05); }
   .demo-video-upload-btn:active { transform: translateY(0); }
   .demo-video-upload-btn:disabled { opacity: .55; cursor: default; transform: none; filter: none; box-shadow: none; }
+  .slide-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; }
 
   /* TABLE */
   .table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 20px; }
@@ -438,6 +439,13 @@
             </div>
           </div>
           <div id="gs_video_msg" style="font-size:12.5px;margin-top:14px"></div>
+        </div>
+
+        <div class="card slide-card" style="max-width:1100px;margin-top:16px">
+          <div class="card-title">🖼️ Слайдер (лендинг cleano.uz)</div>
+          <p style="font-size:12px;color:var(--text2);margin-bottom:16px">Фото, которые показываются в «бирке» на главной странице cleano.uz вместо видео — после того как посетитель закроет видео-карточку крестиком. От 1 до 5 фото, показываются по очереди.</p>
+          <div class="slide-grid" id="gs_slides_grid"></div>
+          <div id="gs_slides_msg" style="font-size:12.5px;margin-top:14px"></div>
         </div>
       </div>
 
@@ -1710,7 +1718,7 @@ function showPage(name, navEl) {
   document.getElementById('page-' + name).classList.add('active');
   if (navEl) navEl.classList.add('active');
   if (name === 'companies') loadCompanies();
-  if (name === 'settings') { loadGlobalSettings(); loadSupportContact(); loadCleanoDemoVideoStatus(); }
+  if (name === 'settings') { loadGlobalSettings(); loadSupportContact(); loadCleanoDemoVideoStatus(); loadCleanoSlidesStatus(); }
   if (name === 'plans') loadPlans();
   if (name === 'maintenance') maintenancePreview();
   if (name === 'sa-departments') saRenderDepts();
@@ -1960,6 +1968,116 @@ async function uploadCleanoDemoVideo(lang, btn) {
     btn.disabled = false;
     btn.innerHTML = origHtml;
   }
+}
+
+const CLEANO_SLIDE_MAX = 5;
+
+function _renderSlideSlots() {
+  const grid = document.getElementById('gs_slides_grid');
+  if (!grid || grid.dataset.rendered) return;
+  let html = '';
+  for (let i = 1; i <= CLEANO_SLIDE_MAX; i++) {
+    html += `
+      <div class="demo-video-col">
+        <div class="demo-video-col-head">Фото ${i}<span class="demo-video-pill" id="gs_slide_${i}_pill">— нет</span></div>
+        <div class="demo-video-preview" id="gs_slide_${i}_preview" style="aspect-ratio:1/1">
+          <img id="gs_slide_${i}_img" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
+          <div class="demo-video-empty" id="gs_slide_${i}_empty"><div class="demo-video-empty-ico">🖼️</div><span>Нет фото</span></div>
+        </div>
+        <label class="demo-video-filepicker" for="gs_slide_${i}_file">
+          <span class="dvf-ico">📁</span><span class="dvf-text" id="gs_slide_${i}_filename">Выбрать файл…</span>
+        </label>
+        <input type="file" id="gs_slide_${i}_file" accept="image/*" style="display:none" onchange="cleanoSlideFilePicked(${i})">
+        <div style="display:flex;gap:8px">
+          <button class="demo-video-upload-btn" style="flex:1;padding:8px 10px;font-size:12px" onclick="uploadCleanoSlide(${i}, this)"><span>⬆️</span> Загрузить</button>
+          <button class="btn btn-ghost btn-sm" onclick="deleteCleanoSlide(${i})" title="Удалить">🗑</button>
+        </div>
+      </div>`;
+  }
+  grid.innerHTML = html;
+  grid.dataset.rendered = '1';
+}
+
+function _setSlidePreview(i, uploaded) {
+  const img   = document.getElementById(`gs_slide_${i}_img`);
+  const empty = document.getElementById(`gs_slide_${i}_empty`);
+  const pill  = document.getElementById(`gs_slide_${i}_pill`);
+  if (!img) return;
+  if (uploaded) {
+    img.src = `${API}/cleano/landing-slide/${i}?_=${Date.now()}`;
+    img.style.display = '';
+    empty.style.display = 'none';
+    pill.textContent = '✓ загружено';
+    pill.classList.add('ok');
+  } else {
+    img.removeAttribute('src');
+    img.style.display = 'none';
+    empty.style.display = '';
+    pill.textContent = '— нет';
+    pill.classList.remove('ok');
+  }
+}
+
+async function loadCleanoSlidesStatus() {
+  _renderSlideSlots();
+  try {
+    const d = await api('/saas/cleano-landing-slides-status');
+    for (let i = 1; i <= CLEANO_SLIDE_MAX; i++) _setSlidePreview(i, !!(d.slides || {})[String(i)]);
+  } catch(e) {}
+}
+
+function cleanoSlideFilePicked(i) {
+  const input = document.getElementById(`gs_slide_${i}_file`);
+  const label = input.previousElementSibling;
+  const nameEl = document.getElementById(`gs_slide_${i}_filename`);
+  const file = input.files[0];
+  if (file) {
+    nameEl.textContent = file.name;
+    label.classList.add('picked');
+  } else {
+    nameEl.textContent = 'Выбрать файл…';
+    label.classList.remove('picked');
+  }
+}
+
+async function uploadCleanoSlide(i, btn) {
+  const input = document.getElementById(`gs_slide_${i}_file`);
+  const msg = document.getElementById('gs_slides_msg');
+  const file = input.files[0];
+  if (!file) { msg.style.color = '#e74c3c'; msg.textContent = 'Выберите файл'; return; }
+  msg.style.color = 'var(--text2)';
+  msg.textContent = 'Загрузка…';
+  btn.disabled = true;
+  const origHtml = btn.innerHTML;
+  btn.innerHTML = '<span>⏳</span>';
+  try {
+    const fd = new FormData();
+    fd.append('file', file);
+    const res = await fetch(`${API}/saas/cleano-landing-slides/${i}`, {
+      method: 'POST', headers: { Authorization: 'Bearer ' + _token }, body: fd
+    });
+    const d = await res.json();
+    if (!res.ok) throw new Error(d.detail || 'Ошибка загрузки');
+    msg.style.color = 'var(--green)';
+    msg.textContent = `✓ Фото ${i} загружено`;
+    input.value = '';
+    cleanoSlideFilePicked(i);
+    await loadCleanoSlidesStatus();
+  } catch(e) {
+    msg.style.color = '#e74c3c';
+    msg.textContent = e.message;
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = origHtml;
+  }
+}
+
+async function deleteCleanoSlide(i) {
+  if (!confirm(`Удалить фото ${i}?`)) return;
+  try {
+    await api(`/saas/cleano-landing-slides/${i}`, 'DELETE');
+    await loadCleanoSlidesStatus();
+  } catch(e) { alert(e.message); }
 }
 
 function toggleGsKey() {

@@ -169,6 +169,12 @@
   .tag-video-frame.vertical { aspect-ratio: 9/16; }
   .tag-video-frame video, .tag-video-frame .fallback { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
   .tag-video-controls { position: absolute; right: 8px; bottom: 8px; z-index: 2; display: flex; gap: 8px; }
+  .tag-slider { position: absolute; inset: 0; }
+  .tag-slide-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .4s ease; }
+  .tag-slide-img.show { opacity: 1; }
+  .tag-slide-dots { position: absolute; left: 0; right: 0; bottom: 10px; z-index: 2; display: flex; justify-content: center; gap: 6px; }
+  .tag-slide-dots span { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,.5); transition: background .15s, transform .15s; }
+  .tag-slide-dots span.active { background: #fff; transform: scale(1.3); }
   .tag-fullscreen-btn { width: 32px; height: 32px; border-radius: 50%; border: none; background: rgba(0,0,0,.55); color: #fff; font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(2px); transition: background .15s, transform .15s; }
   .tag-fullscreen-btn:hover { background: rgba(0,0,0,.75); transform: scale(1.08); }
   /* В полноэкранном режиме видео должно ЦЕЛИКОМ помещаться на экран (contain), а не
@@ -452,16 +458,20 @@
       <div class="hang-tag" id="hangTag">
         <button class="tag-close" id="tagClose" aria-label="Yopish">✕</button>
         <div class="tag-string-pin"></div>
-        <div class="tag-video-frame">
+        <div class="tag-video-frame" id="tagVideoFrame">
           <video id="demoVideo" autoplay muted loop playsinline poster="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='180'%3E%3Crect width='320' height='180' fill='%23122622'/%3E%3C/svg%3E"></video>
           <div class="fallback" id="videoFallback">
             <div class="play-ico">▶</div>
             <span data-i18n="video.soon">Video tez orada</span>
           </div>
-          <div class="tag-video-controls">
+          <div class="tag-video-controls" id="tagVideoControls">
             <button type="button" class="tag-fullscreen-btn" id="videoPlayBtn" aria-label="Play/Pause" data-i18n-title="video.play" title="Pauza/Ijro">⏸</button>
             <button type="button" class="tag-fullscreen-btn" id="videoMuteBtn" aria-label="Mute/Unmute" data-i18n-title="video.mute" title="Ovozni yoqish/o'chirish">🔇</button>
             <button type="button" class="tag-fullscreen-btn" id="videoFullscreenBtn" aria-label="Fullscreen" data-i18n-title="video.fullscreen" title="To'liq ekran">⛶</button>
+          </div>
+          <div class="tag-slider" id="tagSlider" style="display:none">
+            <img class="tag-slide-img" id="tagSlideImg" alt="">
+            <div class="tag-slide-dots" id="tagSlideDots"></div>
           </div>
         </div>
         <div class="tag-cap">
@@ -971,9 +981,59 @@
     muteBtn.textContent = video.muted ? '🔇' : '🔊';
   });
 
-  // ── Close hanging tag ──
-  document.getElementById('tagClose').addEventListener('click', function(){
-    document.getElementById('hangTag').classList.add('hidden');
+  // ── Крестик закрывает видео (со звуком) и показывает слайдер фото вместо него,
+  // а не прячет всю карточку целиком ──
+  var SLIDE_API_BASE = (window.APP_API_URL || 'https://web-production-eef2a.up.railway.app') + '/api/cleano/landing-slide';
+  var slideIndices = null;   // null = ещё не запрашивали
+  var slideCurrent = 0;
+  var slideTimer = null;
+
+  function showSlide(i){
+    if (!slideIndices || !slideIndices.length) return;
+    slideCurrent = ((i % slideIndices.length) + slideIndices.length) % slideIndices.length;
+    var img = document.getElementById('tagSlideImg');
+    img.classList.remove('show');
+    var next = new Image();
+    next.onload = function(){ img.src = next.src; img.classList.add('show'); };
+    next.src = SLIDE_API_BASE + '/' + slideIndices[slideCurrent] + '?_=' + Date.now();
+    document.querySelectorAll('#tagSlideDots span').forEach(function(d, idx){
+      d.classList.toggle('active', idx === slideCurrent);
+    });
+  }
+
+  function startSlider(){
+    clearInterval(slideTimer);
+    if (!slideIndices || slideIndices.length <= 1) return;
+    slideTimer = setInterval(function(){ showSlide(slideCurrent + 1); }, 4000);
+  }
+
+  document.getElementById('tagClose').addEventListener('click', async function(){
+    video.pause();
+    video.muted = true; // на случай повторного показа видео позже — не звучит незаметно в фоне
+    clearTimeout(videoLoadTimer);
+    video.style.display = 'none';
+    fallback.style.display = 'none';
+    document.getElementById('tagVideoControls').style.display = 'none';
+
+    if (slideIndices === null) {
+      try {
+        var r = await fetch(SLIDE_API_BASE.replace('/landing-slide', '/landing-slides-list'));
+        var d = await r.json();
+        slideIndices = d.indices || [];
+      } catch(e) { slideIndices = []; }
+    }
+
+    if (!slideIndices.length) {
+      // Фото не настроены суперадмином — старое поведение: просто скрыть карточку целиком.
+      document.getElementById('hangTag').classList.add('hidden');
+      return;
+    }
+
+    var dots = document.getElementById('tagSlideDots');
+    dots.innerHTML = slideIndices.map(function(){ return '<span></span>'; }).join('');
+    document.getElementById('tagSlider').style.display = '';
+    showSlide(0);
+    startSlider();
   });
 
   // ── Scroll reveal ──
