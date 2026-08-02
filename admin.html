@@ -1295,6 +1295,39 @@
   #pwaBanner .pwa-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
   #pwaBanner .pwa-btn{background:#6366f1;color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer}
   #pwaBanner .pwa-btn-ghost{background:rgba(255,255,255,.12);color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer}
+
+  /* Видео-карточка сайта — RU/UZ (тот же стиль, что демо-видео в superadmin.html) */
+  .demo-video-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  @media (max-width: 640px) { .demo-video-grid { grid-template-columns: 1fr; } }
+  .demo-video-col { display: flex; flex-direction: column; gap: 10px; }
+  .demo-video-col-head { display: flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 600; }
+  .demo-video-flag { font-size: 16px; }
+  .demo-video-pill { margin-left: auto; font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 999px; background: var(--surface2); color: var(--text2); border: 1px solid var(--border); }
+  .demo-video-pill.ok { background: color-mix(in srgb, var(--green) 18%, var(--surface2)); color: var(--green); border-color: color-mix(in srgb, var(--green) 40%, var(--border)); }
+  .demo-video-preview { position: relative; aspect-ratio: 16/9; border-radius: 12px; overflow: hidden; background: linear-gradient(135deg, var(--surface2), var(--bg)); border: 1px solid var(--border); }
+  .demo-video-preview video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .demo-video-empty { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; color: var(--text2); font-size: 12px; }
+  .demo-video-empty-ico { width: 40px; height: 40px; border-radius: 50%; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 18px; }
+  .demo-video-filepicker {
+    display: flex; align-items: center; gap: 8px; padding: 9px 12px; border-radius: 9px;
+    border: 1.5px dashed var(--border); background: var(--surface2); color: var(--text2);
+    font-size: 12.5px; cursor: pointer; transition: border-color .15s, color .15s, background .15s;
+  }
+  .demo-video-filepicker:hover { border-color: var(--accent); color: var(--text); background: color-mix(in srgb, var(--accent) 8%, var(--surface2)); }
+  .demo-video-filepicker.picked { border-style: solid; border-color: var(--accent); color: var(--text); }
+  .dvf-ico { flex-shrink: 0; }
+  .dvf-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .demo-video-upload-btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 10px 16px; border-radius: 10px; border: none; cursor: pointer;
+    font-size: 13px; font-weight: 700; color: #1a1200;
+    background: linear-gradient(135deg, #ffcf6b 0%, var(--accent) 100%);
+    box-shadow: 0 6px 18px -6px color-mix(in srgb, var(--accent) 65%, transparent);
+    transition: transform .18s cubic-bezier(.34,1.56,.64,1), box-shadow .2s ease, filter .15s;
+  }
+  .demo-video-upload-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 24px -6px color-mix(in srgb, var(--accent) 75%, transparent); filter: brightness(1.05); }
+  .demo-video-upload-btn:active { transform: translateY(0); }
+  .demo-video-upload-btn:disabled { opacity: .55; cursor: default; transform: none; filter: none; box-shadow: none; }
 </style>
 <link rel="manifest" href="admin-manifest.json">
 <script src="config.js"></script>
@@ -3067,17 +3100,58 @@
                   </label>
                   <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer">
                     <input type="radio" name="site_video_placement" value="floating" onchange="siteVideoSetPlacement('floating')">
-                    <span data-i18n="video.placement.floating">Плавающий виджет в углу</span>
+                    <span data-i18n="video.placement.floating">Плавающий виджет внизу слева</span>
                   </label>
                 </div>
               </div>
 
               <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
-                <div id="siteVideoStatus" style="font-size:13px;color:var(--text2);margin-bottom:10px" data-i18n="video.loading">Загрузка…</div>
-                <input type="file" id="siteVideoFileInput" accept="video/*" style="display:none" onchange="siteVideoFilePicked()">
-                <button class="btn btn-primary btn-sm" onclick="document.getElementById('siteVideoFileInput').click()" data-i18n="video.btn.upload">📤 Загрузить видео</button>
-                <button class="btn btn-sm" id="siteVideoDeleteBtn" onclick="siteVideoDelete()" style="display:none;background:var(--surface2);color:var(--text)" data-i18n="video.btn.delete">🗑️ Удалить</button>
-                <span class="s-msg" id="msg_site_video"></span>
+                <p class="cfg-hint" data-i18n="video.ruuz.hint">Отдельное видео для русского и узбекского языка — на сайте показывается видео текущего выбранного языка. До 19 МБ.</p>
+                <div class="demo-video-grid">
+                  <div class="demo-video-col">
+                    <div class="demo-video-col-head">
+                      <span class="demo-video-flag">🇷🇺</span> <span data-i18n="video.ru">Видео на русском</span>
+                      <span class="demo-video-pill" id="siteVideo_ru_pill">— нет</span>
+                    </div>
+                    <div class="demo-video-preview" id="siteVideo_ru_preview">
+                      <video id="siteVideo_ru_player" muted loop playsinline style="display:none"></video>
+                      <div class="demo-video-empty" id="siteVideo_ru_empty">
+                        <div class="demo-video-empty-ico">🎬</div>
+                        <span data-i18n="video.notuploaded">Видео ещё не загружено</span>
+                      </div>
+                    </div>
+                    <label class="demo-video-filepicker" for="siteVideo_ru_file">
+                      <span class="dvf-ico">📁</span>
+                      <span class="dvf-text" id="siteVideo_ru_filename" data-i18n="video.choosefile">Выбрать файл…</span>
+                    </label>
+                    <input type="file" id="siteVideo_ru_file" accept="video/*" style="display:none" onchange="siteVideoFilePicked('ru')">
+                    <button class="demo-video-upload-btn" onclick="uploadSiteVideo('ru', this)">
+                      <span>⬆️</span> <span data-i18n="video.btn.upload">Загрузить</span>
+                    </button>
+                  </div>
+                  <div class="demo-video-col">
+                    <div class="demo-video-col-head">
+                      <span class="demo-video-flag">🇺🇿</span> <span data-i18n="video.uz">Видео на узбекском</span>
+                      <span class="demo-video-pill" id="siteVideo_uz_pill">— нет</span>
+                    </div>
+                    <div class="demo-video-preview" id="siteVideo_uz_preview">
+                      <video id="siteVideo_uz_player" muted loop playsinline style="display:none"></video>
+                      <div class="demo-video-empty" id="siteVideo_uz_empty">
+                        <div class="demo-video-empty-ico">🎬</div>
+                        <span data-i18n="video.notuploaded">Видео ещё не загружено</span>
+                      </div>
+                    </div>
+                    <label class="demo-video-filepicker" for="siteVideo_uz_file">
+                      <span class="dvf-ico">📁</span>
+                      <span class="dvf-text" id="siteVideo_uz_filename" data-i18n="video.choosefile">Выбрать файл…</span>
+                    </label>
+                    <input type="file" id="siteVideo_uz_file" accept="video/*" style="display:none" onchange="siteVideoFilePicked('uz')">
+                    <button class="demo-video-upload-btn" onclick="uploadSiteVideo('uz', this)">
+                      <span>⬆️</span> <span data-i18n="video.btn.upload">Загрузить</span>
+                    </button>
+                  </div>
+                </div>
+                <div id="msg_site_video" style="font-size:12.5px;margin-top:14px"></div>
               </div>
             </div>
           </div>
@@ -6189,8 +6263,11 @@ const _adminI18n = {
     'video.card.hint':'Короткое видео о вашей компании (до 19 МБ). Показывается на главной странице сайта — выберите, где именно.',
     'video.enable':'Показывать видео-карточку','video.placement':'Где показать',
     'video.placement.hero':'Рядом с hero (заголовком)','video.placement.how':'Отдельный блок «Как это работает»',
-    'video.placement.reviews':'Рядом с отзывами','video.placement.floating':'Плавающий виджет в углу',
-    'video.loading':'Загрузка…','video.btn.upload':'📤 Загрузить видео','video.btn.delete':'🗑️ Удалить',
+    'video.placement.reviews':'Рядом с отзывами','video.placement.floating':'Плавающий виджет внизу слева',
+    'video.loading':'Загрузка…','video.btn.upload':'Загрузить','video.btn.delete':'🗑️ Удалить',
+    'video.ruuz.hint':'Отдельное видео для русского и узбекского языка — на сайте показывается видео текущего выбранного языка. До 19 МБ.',
+    'video.ru':'Видео на русском','video.uz':'Видео на узбекском',
+    'video.notuploaded':'Видео ещё не загружено','video.choosefile':'Выбрать файл…',
     'slides.title':'🖼️ Слайдер на главной странице',
     'slides.hint':'До 5 слайдов. Показываются на сайте в автослайдере на самом верху страницы.',
     'slides.btn.add':'+ Добавить слайд','slides.empty':'Слайдов пока нет.',
@@ -6718,8 +6795,11 @@ const _adminI18n = {
     'video.card.hint':"Kompaniyangiz haqida qisqa video (19 MB gacha). Sayt bosh sahifasida ko'rsatiladi — qayerda ko'rsatilishini tanlang.",
     'video.enable':"Video-kartani ko'rsatish",'video.placement':"Qayerda ko'rsatilsin",
     'video.placement.hero':"Hero (sarlavha) yonida",'video.placement.how':"Alohida blok «Bu qanday ishlaydi»",
-    'video.placement.reviews':"Sharhlar yonida",'video.placement.floating':"Burchakdagi suzuvchi vidjet",
-    'video.loading':'Yuklanmoqda…','video.btn.upload':'📤 Video yuklash','video.btn.delete':"🗑️ O'chirish",
+    'video.placement.reviews':"Sharhlar yonida",'video.placement.floating':"Pastda chapda suzuvchi vidjet",
+    'video.loading':'Yuklanmoqda…','video.btn.upload':'Yuklash','video.btn.delete':"🗑️ O'chirish",
+    'video.ruuz.hint':"Rus va o'zbek tili uchun alohida video — saytda joriy tanlangan til videosi ko'rsatiladi. 19 MB gacha.",
+    'video.ru':'Ruscha video','video.uz':"O'zbekcha video",
+    'video.notuploaded':'Video hali yuklanmagan','video.choosefile':'Fayl tanlash…',
     'slides.title':'🖼️ Bosh sahifadagi slayder',
     'slides.hint':"5 tagacha slayd. Saytda, sahifaning eng tepasidagi avtoslayderda ko'rsatiladi.",
     'slides.btn.add':'+ Slayd qo\'shish','slides.empty':"Hozircha slaydlar yo'q.",
@@ -8186,15 +8266,31 @@ async function loadSiteVideo() {
   const placement = s.site_video_placement || 'hero';
   document.querySelectorAll('input[name="site_video_placement"]').forEach(r => { r.checked = (r.value === placement); });
 
-  const st = await apiGet('/admin/site-video-status');
-  const statusEl = document.getElementById('siteVideoStatus');
-  const delBtn = document.getElementById('siteVideoDeleteBtn');
-  if (st?.has_video) {
-    if (statusEl) statusEl.textContent = '✅ Видео загружено';
-    if (delBtn) delBtn.style.display = '';
+  try {
+    const d = await apiGet('/admin/site-video-status');
+    _setSiteVideoPreview('ru', d?.ru);
+    _setSiteVideoPreview('uz', d?.uz);
+  } catch(e) {}
+}
+
+function _setSiteVideoPreview(lang, uploaded) {
+  const player = document.getElementById('siteVideo_' + lang + '_player');
+  const empty  = document.getElementById('siteVideo_' + lang + '_empty');
+  const pill   = document.getElementById('siteVideo_' + lang + '_pill');
+  if (!player) return;
+  if (uploaded) {
+    player.src = `${API_BASE}/site-video/${lang}?_=${Date.now()}`;
+    player.style.display = '';
+    player.play().catch(() => {});
+    empty.style.display = 'none';
+    pill.textContent = '✓ загружено';
+    pill.classList.add('ok');
   } else {
-    if (statusEl) statusEl.textContent = '— Видео не загружено';
-    if (delBtn) delBtn.style.display = 'none';
+    player.removeAttribute('src');
+    player.style.display = 'none';
+    empty.style.display = '';
+    pill.textContent = '— нет';
+    pill.classList.remove('ok');
   }
 }
 
@@ -8215,34 +8311,50 @@ async function siteVideoSetPlacement(value) {
   showToast('✅ Сохранено');
 }
 
-async function siteVideoFilePicked() {
-  const input = document.getElementById('siteVideoFileInput');
+function siteVideoFilePicked(lang) {
+  const input = document.getElementById('siteVideo_' + lang + '_file');
+  const label = input.previousElementSibling;
+  const nameEl = document.getElementById('siteVideo_' + lang + '_filename');
   const file = input.files[0];
-  if (!file) return;
-  const msg = document.getElementById('msg_site_video');
-  if (msg) { msg.style.color = 'var(--text2)'; msg.textContent = '⏳ Загрузка...'; }
-  const form = new FormData();
-  form.append('file', file);
-  try {
-    const r = await fetch(`${API_BASE}/admin/site-video`, {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${adminToken}` },
-      body: form
-    });
-    const d = await r.json().catch(() => ({}));
-    if (!r.ok || !d.ok) throw new Error(d.detail || 'Ошибка загрузки');
-    if (msg) { msg.style.color = '#15803d'; msg.textContent = '✅ Загружено'; }
-    await loadSiteVideo();
-  } catch (e) {
-    if (msg) { msg.style.color = '#dc2626'; msg.textContent = '❌ ' + (e.message || 'Ошибка'); }
+  if (file) {
+    nameEl.textContent = file.name + ' (' + (file.size / 1024 / 1024).toFixed(1) + ' МБ)';
+    label.classList.add('picked');
+  } else {
+    nameEl.textContent = 'Выбрать файл…';
+    label.classList.remove('picked');
   }
-  input.value = '';
 }
 
-async function siteVideoDelete() {
-  if (!confirm('Удалить видео-карточку?')) return;
-  const r = await apiDelete('/admin/site-video');
-  if (r?.ok) { await loadSiteVideo(); showToast('Видео удалено'); }
+async function uploadSiteVideo(lang, btn) {
+  const input = document.getElementById('siteVideo_' + lang + '_file');
+  const msg = document.getElementById('msg_site_video');
+  const file = input.files[0];
+  if (!file) { msg.style.color = '#dc2626'; msg.textContent = 'Выберите файл видео'; return; }
+  msg.style.color = 'var(--text2)';
+  msg.textContent = 'Загрузка… это может занять до минуты';
+  btn.disabled = true;
+  const origHtml = btn.innerHTML;
+  btn.innerHTML = '<span>⏳</span> Загрузка…';
+  try {
+    const fd = new FormData();
+    fd.append('file', file);
+    const r = await fetch(`${API_BASE}/admin/site-video/${lang}`, {
+      method: 'POST', headers: { Authorization: `Bearer ${adminToken}` }, body: fd
+    });
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok || !d.ok) throw new Error(d.detail || 'Ошибка загрузки видео');
+    msg.style.color = '#15803d';
+    msg.textContent = '✓ Видео (' + lang.toUpperCase() + ') загружено';
+    input.value = '';
+    siteVideoFilePicked(lang);
+    await loadSiteVideo();
+  } catch (e) {
+    msg.style.color = '#dc2626';
+    msg.textContent = e.message || 'Ошибка';
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = origHtml;
+  }
 }
 
 const MAX_SLIDES = 5;

@@ -395,6 +395,7 @@
     applyI18n();
     if (typeof recalc === 'function') recalc();
     if (typeof refreshDynamicUI === 'function') refreshDynamicUI();
+    _reloadSiteVideoForLang();
   }
 
   applyI18n();
@@ -1121,6 +1122,24 @@
   })();
 
   // ── Видео-карточка сайта (site_video_enabled/site_video_placement) ──────
+  // Стиль "бирки" — как демо-видео на лендинге cleano.uz: отдельное видео на
+  // RU/UZ, переключается вместе с языком сайта (см. хук в setLang() выше).
+  let _siteVideoEl = null;
+  let _siteVideoLoadToken = 0;
+
+  function _siteVideoSrc() {
+    return `${API_BASE}/site-video/${lang}?company_slug=${encodeURIComponent(window.APP_COMPANY_SLUG || '')}&_=${Date.now()}`;
+  }
+
+  function _reloadSiteVideoForLang() {
+    if (!_siteVideoEl) return;
+    _siteVideoLoadToken++;
+    _siteVideoEl.dataset.loadToken = _siteVideoLoadToken;
+    _siteVideoEl.pause();
+    _siteVideoEl.src = _siteVideoSrc();
+    _siteVideoEl.load();
+  }
+
   function initSiteVideoCard(placement) {
     try {
       if (sessionStorage.getItem('site_video_closed') === '1') return;
@@ -1137,22 +1156,33 @@
       wrap.className = `site-video-card site-video-card--${cls}`;
       wrap.id = 'siteVideoCard';
       wrap.innerHTML =
-        '<video id="siteVideoEl" muted loop playsinline preload="metadata"></video>' +
-        '<button class="svc-close" id="siteVideoCloseBtn" type="button" aria-label="Закрыть">✕</button>' +
-        '<div class="svc-controls">' +
-          '<button id="siteVideoPlayBtn" type="button">⏸</button>' +
-          '<button id="siteVideoMuteBtn" type="button">🔇</button>' +
-        '</div>';
+        '<span class="svc-pin"></span>' +
+        '<div class="svc-frame">' +
+          '<video id="siteVideoEl" muted loop playsinline preload="metadata"></video>' +
+          '<div class="svc-controls">' +
+            '<button id="siteVideoPlayBtn" type="button" aria-label="Пуск/пауза">⏸</button>' +
+            '<button id="siteVideoMuteBtn" type="button" aria-label="Звук">🔇</button>' +
+            '<button id="siteVideoFsBtn" type="button" aria-label="На весь экран">⛶</button>' +
+          '</div>' +
+        '</div>' +
+        '<button class="svc-close" id="siteVideoCloseBtn" type="button" aria-label="Закрыть">✕</button>';
       mountParent.appendChild(wrap);
 
       const video = wrap.querySelector('#siteVideoEl');
-      video.addEventListener('canplaythrough', () => { video.play().catch(() => {}); }, { once: true });
-      video.addEventListener('error', () => { wrap.remove(); });
-      video.src = `${API_BASE}/site-video?company_slug=${encodeURIComponent(window.APP_COMPANY_SLUG || '')}`;
+      _siteVideoEl = video;
+      _siteVideoLoadToken++;
+      video.dataset.loadToken = _siteVideoLoadToken;
+      video.addEventListener('canplaythrough', () => {
+        if (String(video.dataset.loadToken) !== String(_siteVideoLoadToken)) return;
+        video.play().catch(() => {});
+      });
+      video.addEventListener('error', () => { wrap.remove(); _siteVideoEl = null; });
+      video.src = _siteVideoSrc();
       video.load();
 
       const playBtn = wrap.querySelector('#siteVideoPlayBtn');
       const muteBtn = wrap.querySelector('#siteVideoMuteBtn');
+      const fsBtn   = wrap.querySelector('#siteVideoFsBtn');
       playBtn.addEventListener('click', () => { if (video.paused) video.play(); else video.pause(); });
       video.addEventListener('play',  () => { playBtn.textContent = '⏸'; });
       video.addEventListener('pause', () => { playBtn.textContent = '▶'; });
@@ -1160,9 +1190,11 @@
         video.muted = !video.muted;
         muteBtn.textContent = video.muted ? '🔇' : '🔊';
       });
+      fsBtn.addEventListener('click', () => { video.requestFullscreen?.(); });
       wrap.querySelector('#siteVideoCloseBtn').addEventListener('click', () => {
         video.pause();
         wrap.remove();
+        _siteVideoEl = null;
         try { sessionStorage.setItem('site_video_closed', '1'); } catch (_) {}
       });
     } catch (_) {}
