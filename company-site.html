@@ -2839,6 +2839,9 @@
   .site-video-card .svc-frame{ position:relative; aspect-ratio:16/9; border-radius:10px; overflow:hidden; background:var(--ink); border:1px solid var(--line); transition:aspect-ratio .25s ease; }
   .site-video-card .svc-frame.vertical{ aspect-ratio:9/16; }
   .site-video-card video{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .site-video-card video:fullscreen{ object-fit:contain; background:#000; }
+  .site-video-card video:-webkit-full-screen{ object-fit:contain; background:#000; }
+  .site-video-card video:-moz-full-screen{ object-fit:contain; background:#000; }
   .site-video-card .svc-controls{ position:absolute; right:8px; bottom:8px; z-index:2; display:flex; gap:6px; }
   .site-video-card .svc-controls button{
     width:28px; height:28px; border-radius:50%; border:none; background:rgba(0,0,0,.55); color:#fff;

@@ -1184,7 +1184,12 @@
       video.muted = !video.muted;
       muteBtn.textContent = video.muted ? '🔇' : '🔊';
     });
-    fsBtn.addEventListener('click', () => { video.requestFullscreen?.(); });
+    fsBtn.addEventListener('click', () => {
+      // iOS Safari не поддерживает requestFullscreen на произвольном элементе — там
+      // только video.webkitEnterFullscreen() (нативный fullscreen-плеер видео).
+      const req = video.requestFullscreen || video.webkitRequestFullscreen || video.webkitEnterFullscreen || video.mozRequestFullScreen;
+      if (req) req.call(video);
+    });
     wrap.querySelector('#siteVideoCloseBtn').addEventListener('click', () => { _collapseSiteVideoCard(wrap); });
   }
 
