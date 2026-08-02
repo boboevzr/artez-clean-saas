@@ -13084,7 +13084,16 @@ async function changeOrderStatus() {
 function odUpdateTotal() {
   const pickupDisc   = parseFloat(_adminOrderCache?.discount_sum      || 0);
   const deliveryDisc = parseFloat(_adminOrderCache?.delivery_discount  || 0);
-  const manualDisc   = parseFloat(document.getElementById('od_manual_disc_input')?.value || 0) || 0;
+  const mdInput = document.getElementById('od_manual_disc_input');
+  let manualDisc = parseFloat(mdInput?.value || 0) || 0;
+  // Скидка не задана вручную — автоматически округляем сумму к оплате вниз до
+  // тысячи (остаток < 1000 уходит в скидку). Не трогаем, если сотрудник сейчас
+  // печатает в поле, и не трогаем, если скидка уже задана (не 0).
+  if (manualDisc === 0 && mdInput && document.activeElement !== mdInput) {
+    const beforeManual = Math.max(0, _odItemsTotal - pickupDisc - deliveryDisc);
+    const rounding = beforeManual % 1000;
+    if (rounding > 0) { manualDisc = rounding; mdInput.value = rounding; }
+  }
   const totalDisc    = pickupDisc + deliveryDisc + manualDisc;
   const net  = Math.max(0, _odItemsTotal - totalDisc);
   _pmOrderNet = net;

@@ -9222,7 +9222,17 @@ async function sLoadOrderPayment(o) {
 }
 
 function sUpdatePaymentDisplay() {
-  const totalDiscount = _sDiscountSum + _sDeliveryDiscount + _sManualDiscount;
+  const mdInput = document.getElementById('so_manual_disc_input');
+  let manualDiscount = _sManualDiscount;
+  // Скидка не задана вручную — автоматически округляем сумму к оплате вниз до
+  // тысячи (остаток < 1000 уходит в скидку). Не трогаем, если сотрудник сейчас
+  // печатает в поле, и не трогаем, если скидка уже задана (не 0).
+  if (manualDiscount === 0 && mdInput && document.activeElement !== mdInput) {
+    const beforeManual = Math.max(0, _sItemsTotal - _sDiscountSum - _sDeliveryDiscount);
+    const rounding = beforeManual % 1000;
+    if (rounding > 0) manualDiscount = rounding;
+  }
+  const totalDiscount = _sDiscountSum + _sDeliveryDiscount + manualDiscount;
   const net  = Math.max(0, _sItemsTotal - totalDiscount);
   _sPmOrderNet = net;
   const debt = Math.max(0, net - _sPmCachedPaid);
@@ -9250,7 +9260,8 @@ function sUpdatePaymentDisplay() {
   }
   if (el('so_selfpickup_disc_val'))  el('so_selfpickup_disc_val').textContent  = _sDiscountSum      > 0 ? Number(Math.round(_sDiscountSum)).toLocaleString('ru')      : '0';
   if (el('so_selfdelivery_disc_val')) el('so_selfdelivery_disc_val').textContent = _sDeliveryDiscount > 0 ? Number(Math.round(_sDeliveryDiscount)).toLocaleString('ru') : '0';
-  if (el('so_manual_disc_input'))      el('so_manual_disc_input').value       = _sManualDiscount   > 0 ? Math.round(_sManualDiscount)   : '';
+  if (el('so_manual_disc_input') && document.activeElement !== mdInput)
+    el('so_manual_disc_input').value = manualDiscount > 0 ? Math.round(manualDiscount) : '';
 }
 
 function soUpdateManualDiscount() {
