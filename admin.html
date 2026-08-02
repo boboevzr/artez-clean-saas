@@ -12864,7 +12864,7 @@ function renderOrderItems(items) {
     breakdownEl.innerHTML = Object.entries(svcGroups).map(([name, g]) => {
       const label = g.sqm > 0 ? `${g.sqm.toFixed(2)} м²` : `${g.count} шт`;
       return `<div style="display:flex;justify-content:space-between;font-size:12.5px;color:var(--text2);padding:3px 4px">
-        <span>${name}</span><span>${label}</span>
+        <span>${_esc(name)}</span><span>${label}</span>
       </div>`;
     }).join('');
   }

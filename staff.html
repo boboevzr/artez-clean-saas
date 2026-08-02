@@ -10251,7 +10251,7 @@ function staffRenderItems(items, containerEl) {
   const _svcBreakdownHtml = Object.entries(_svcGroups).map(([name, g]) => {
     const label = g.sqm > 0 ? `${g.sqm.toFixed(2)} м²` : `${g.count} шт`;
     return `<div style="display:flex;justify-content:space-between;font-size:12px;color:#6b7280;padding:2px 0">
-      <span>${name}</span><span>${label}</span>
+      <span>${_esc(name)}</span><span>${label}</span>
     </div>`;
   }).join('');
 
