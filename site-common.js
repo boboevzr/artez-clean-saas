@@ -1140,9 +1140,65 @@
     _siteVideoEl.load();
   }
 
+  // Закрытие крестиком сворачивает карточку в маленькую круглую кнопку (не убирает
+  // совсем) — по клику на неё карточка разворачивается обратно, видео грузится заново
+  // под текущий язык. При обновлении страницы карточка всегда открывается заново.
+  function _renderSiteVideoExpanded(wrap) {
+    wrap.classList.remove('svc-collapsed');
+    wrap.innerHTML =
+      '<span class="svc-pin"></span>' +
+      '<div class="svc-frame">' +
+        '<video id="siteVideoEl" muted loop playsinline preload="metadata"></video>' +
+        '<div class="svc-controls">' +
+          '<button id="siteVideoPlayBtn" type="button" aria-label="Пуск/пауза">⏸</button>' +
+          '<button id="siteVideoMuteBtn" type="button" aria-label="Звук">🔇</button>' +
+          '<button id="siteVideoFsBtn" type="button" aria-label="На весь экран">⛶</button>' +
+        '</div>' +
+      '</div>' +
+      '<button class="svc-close" id="siteVideoCloseBtn" type="button" aria-label="Закрыть">✕</button>';
+
+    const video = wrap.querySelector('#siteVideoEl');
+    _siteVideoEl = video;
+    _siteVideoLoadToken++;
+    video.dataset.loadToken = _siteVideoLoadToken;
+    video.addEventListener('canplaythrough', () => {
+      if (String(video.dataset.loadToken) !== String(_siteVideoLoadToken)) return;
+      wrap.style.display = '';
+      video.play().catch(() => {});
+    });
+    video.addEventListener('error', () => { wrap.style.display = 'none'; });
+    const frame = wrap.querySelector('.svc-frame');
+    video.addEventListener('loadedmetadata', () => {
+      if (frame) frame.classList.toggle('vertical', video.videoHeight > video.videoWidth);
+    });
+    video.src = _siteVideoSrc();
+    video.load();
+
+    const playBtn = wrap.querySelector('#siteVideoPlayBtn');
+    const muteBtn = wrap.querySelector('#siteVideoMuteBtn');
+    const fsBtn   = wrap.querySelector('#siteVideoFsBtn');
+    playBtn.addEventListener('click', () => { if (video.paused) video.play(); else video.pause(); });
+    video.addEventListener('play',  () => { playBtn.textContent = '⏸'; });
+    video.addEventListener('pause', () => { playBtn.textContent = '▶'; });
+    muteBtn.addEventListener('click', () => {
+      video.muted = !video.muted;
+      muteBtn.textContent = video.muted ? '🔇' : '🔊';
+    });
+    fsBtn.addEventListener('click', () => { video.requestFullscreen?.(); });
+    wrap.querySelector('#siteVideoCloseBtn').addEventListener('click', () => { _collapseSiteVideoCard(wrap); });
+  }
+
+  function _collapseSiteVideoCard(wrap) {
+    if (_siteVideoEl) _siteVideoEl.pause();
+    _siteVideoEl = null;
+    wrap.style.display = '';
+    wrap.classList.add('svc-collapsed');
+    wrap.innerHTML = '<button class="svc-reopen-btn" type="button" aria-label="Показать видео">🎥</button>';
+    wrap.querySelector('.svc-reopen-btn').addEventListener('click', () => { _renderSiteVideoExpanded(wrap); });
+  }
+
   function initSiteVideoCard(placement) {
     try {
-      if (sessionStorage.getItem('site_video_closed') === '1') return;
       const slotMap = { hero: 'siteVideoSlotHero', how_it_works: 'siteVideoSlotHiw', reviews: 'siteVideoSlotReviews' };
       let cls = placement || 'hero';
       let mountParent;
@@ -1155,52 +1211,8 @@
       const wrap = document.createElement('div');
       wrap.className = `site-video-card site-video-card--${cls}`;
       wrap.id = 'siteVideoCard';
-      wrap.innerHTML =
-        '<span class="svc-pin"></span>' +
-        '<div class="svc-frame">' +
-          '<video id="siteVideoEl" muted loop playsinline preload="metadata"></video>' +
-          '<div class="svc-controls">' +
-            '<button id="siteVideoPlayBtn" type="button" aria-label="Пуск/пауза">⏸</button>' +
-            '<button id="siteVideoMuteBtn" type="button" aria-label="Звук">🔇</button>' +
-            '<button id="siteVideoFsBtn" type="button" aria-label="На весь экран">⛶</button>' +
-          '</div>' +
-        '</div>' +
-        '<button class="svc-close" id="siteVideoCloseBtn" type="button" aria-label="Закрыть">✕</button>';
       mountParent.appendChild(wrap);
-
-      const video = wrap.querySelector('#siteVideoEl');
-      _siteVideoEl = video;
-      _siteVideoLoadToken++;
-      video.dataset.loadToken = _siteVideoLoadToken;
-      video.addEventListener('canplaythrough', () => {
-        if (String(video.dataset.loadToken) !== String(_siteVideoLoadToken)) return;
-        video.play().catch(() => {});
-      });
-      video.addEventListener('error', () => { wrap.remove(); _siteVideoEl = null; });
-      const frame = wrap.querySelector('.svc-frame');
-      video.addEventListener('loadedmetadata', () => {
-        if (frame) frame.classList.toggle('vertical', video.videoHeight > video.videoWidth);
-      });
-      video.src = _siteVideoSrc();
-      video.load();
-
-      const playBtn = wrap.querySelector('#siteVideoPlayBtn');
-      const muteBtn = wrap.querySelector('#siteVideoMuteBtn');
-      const fsBtn   = wrap.querySelector('#siteVideoFsBtn');
-      playBtn.addEventListener('click', () => { if (video.paused) video.play(); else video.pause(); });
-      video.addEventListener('play',  () => { playBtn.textContent = '⏸'; });
-      video.addEventListener('pause', () => { playBtn.textContent = '▶'; });
-      muteBtn.addEventListener('click', () => {
-        video.muted = !video.muted;
-        muteBtn.textContent = video.muted ? '🔇' : '🔊';
-      });
-      fsBtn.addEventListener('click', () => { video.requestFullscreen?.(); });
-      wrap.querySelector('#siteVideoCloseBtn').addEventListener('click', () => {
-        video.pause();
-        wrap.remove();
-        _siteVideoEl = null;
-        try { sessionStorage.setItem('site_video_closed', '1'); } catch (_) {}
-      });
+      _renderSiteVideoExpanded(wrap);
     } catch (_) {}
   }
 

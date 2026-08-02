@@ -2854,6 +2854,21 @@
   }
   .site-video-card .svc-close:hover{ color:var(--ink); transform:scale(1.08); }
 
+  /* Свёрнутое состояние (после ✕) — маленькая кнопка возврата вместо полного скрытия */
+  .site-video-card.svc-collapsed{
+    width:auto; padding:0; background:none; box-shadow:none;
+    animation:none; transform:none; opacity:1;
+  }
+  .site-video-card.svc-collapsed::before,
+  .site-video-card.svc-collapsed::after{ display:none; }
+  .svc-reopen-btn{
+    display:flex; align-items:center; justify-content:center;
+    width:52px; height:52px; border-radius:50%; border:1px solid var(--line);
+    background:var(--sand-card); box-shadow:var(--shadow); color:var(--ink);
+    font-size:22px; cursor:pointer; transition:transform .15s ease;
+  }
+  .svc-reopen-btn:hover{ transform:scale(1.08); }
+
   .site-video-card--hero{ position:absolute; right:24px; bottom:24px; width:180px; z-index:3; }
   @media(max-width:860px){ .site-video-card--hero{ width:130px; right:14px; bottom:14px; } }
 
@@ -3657,7 +3672,7 @@
   </div>
 </div>
 
-<script src="site-common.js?v=7"></script>
+<script src="site-common.js?v=8"></script>
 
 <!-- ══════════════════════════════
      OVERLAY + CABINET DRAWER
