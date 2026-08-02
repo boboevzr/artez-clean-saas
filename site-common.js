@@ -1177,6 +1177,10 @@
         video.play().catch(() => {});
       });
       video.addEventListener('error', () => { wrap.remove(); _siteVideoEl = null; });
+      const frame = wrap.querySelector('.svc-frame');
+      video.addEventListener('loadedmetadata', () => {
+        if (frame) frame.classList.toggle('vertical', video.videoHeight > video.videoWidth);
+      });
       video.src = _siteVideoSrc();
       video.load();
 

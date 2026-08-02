@@ -2836,7 +2836,8 @@
     position:absolute; top:-44px; left:50%; transform:translateX(-50%); width:7px; height:7px; border-radius:50%;
     background:var(--amber); box-shadow:0 0 0 3px color-mix(in srgb, var(--amber) 30%, transparent);
   }
-  .site-video-card .svc-frame{ position:relative; aspect-ratio:16/9; border-radius:10px; overflow:hidden; background:var(--ink); border:1px solid var(--line); }
+  .site-video-card .svc-frame{ position:relative; aspect-ratio:16/9; border-radius:10px; overflow:hidden; background:var(--ink); border:1px solid var(--line); transition:aspect-ratio .25s ease; }
+  .site-video-card .svc-frame.vertical{ aspect-ratio:9/16; }
   .site-video-card video{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
   .site-video-card .svc-controls{ position:absolute; right:8px; bottom:8px; z-index:2; display:flex; gap:6px; }
   .site-video-card .svc-controls button{
@@ -2860,8 +2861,8 @@
 
   .site-video-card--reviews{ width:100%; max-width:320px; margin:0 auto 32px; }
 
-  .site-video-card--floating{ position:fixed; left:20px; bottom:20px; width:150px; z-index:900; }
-  @media(max-width:640px){ .site-video-card--floating{ width:110px; left:12px; bottom:12px; } }
+  .site-video-card--floating{ position:fixed; left:20px; bottom:20px; width:190px; z-index:900; }
+  @media(max-width:640px){ .site-video-card--floating{ width:140px; left:12px; bottom:12px; } }
 </style>
 </head>
 <body>
@@ -3656,7 +3657,7 @@
   </div>
 </div>
 
-<script src="site-common.js?v=6"></script>
+<script src="site-common.js?v=7"></script>
 
 <!-- ══════════════════════════════
      OVERLAY + CABINET DRAWER
