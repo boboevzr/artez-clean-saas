@@ -3128,6 +3128,7 @@
                     <button class="demo-video-upload-btn" onclick="uploadSiteVideo('ru', this)">
                       <span>⬆️</span> <span data-i18n="video.btn.upload">Загрузить</span>
                     </button>
+                    <button class="btn btn-sm" id="siteVideo_ru_delete_btn" onclick="deleteSiteVideo('ru')" style="display:none;background:var(--surface2);color:var(--text);width:100%" data-i18n="video.btn.delete">🗑️ Удалить видео</button>
                   </div>
                   <div class="demo-video-col">
                     <div class="demo-video-col-head">
@@ -3149,6 +3150,7 @@
                     <button class="demo-video-upload-btn" onclick="uploadSiteVideo('uz', this)">
                       <span>⬆️</span> <span data-i18n="video.btn.upload">Загрузить</span>
                     </button>
+                    <button class="btn btn-sm" id="siteVideo_uz_delete_btn" onclick="deleteSiteVideo('uz')" style="display:none;background:var(--surface2);color:var(--text);width:100%" data-i18n="video.btn.delete">🗑️ Удалить видео</button>
                   </div>
                 </div>
                 <div id="msg_site_video" style="font-size:12.5px;margin-top:14px"></div>
@@ -8277,7 +8279,9 @@ function _setSiteVideoPreview(lang, uploaded) {
   const player = document.getElementById('siteVideo_' + lang + '_player');
   const empty  = document.getElementById('siteVideo_' + lang + '_empty');
   const pill   = document.getElementById('siteVideo_' + lang + '_pill');
+  const delBtn = document.getElementById('siteVideo_' + lang + '_delete_btn');
   if (!player) return;
+  if (delBtn) delBtn.style.display = uploaded ? '' : 'none';
   if (uploaded) {
     player.src = `${API_BASE}/site-video/${lang}?_=${Date.now()}`;
     player.style.display = '';
@@ -8355,6 +8359,12 @@ async function uploadSiteVideo(lang, btn) {
     btn.disabled = false;
     btn.innerHTML = origHtml;
   }
+}
+
+async function deleteSiteVideo(lang) {
+  if (!confirm('Удалить видео (' + lang.toUpperCase() + ')?')) return;
+  const r = await apiDelete('/admin/site-video/' + lang);
+  if (r?.ok) { await loadSiteVideo(); showToast('Видео удалено'); }
 }
 
 const MAX_SLIDES = 5;
@@ -12798,9 +12808,11 @@ function renderOrderItems(items) {
     numEl.dataset.orderNum = baseNum;
     numEl.textContent = items.length > 0 ? `${baseNum}/${items.length}` : baseNum;
   }
+  const breakdownEl = document.getElementById('od_items_breakdown');
   if (!items.length) {
     tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text2);padding:24px">Позиций нет — нажмите «+ Добавить позицию»</td></tr>';
     document.getElementById('od_total').textContent = '0 сум';
+    if (breakdownEl) breakdownEl.innerHTML = '';
     return;
   }
   let total = 0;
@@ -12837,6 +12849,26 @@ function renderOrderItems(items) {
       </td>
     </tr>`;
   }).join('');
+
+  // Разбивка по услугам — сумма площади (если замерена) или количество позиций (шт).
+  const svcGroups = {};
+  items.forEach(it => {
+    if (!it.service) return;
+    const isCorrected = it.measure_status === 'corrected';
+    const sqm = parseFloat((isCorrected ? it.actual_sqm : it.sqm) || 0);
+    if (!svcGroups[it.service]) svcGroups[it.service] = { count: 0, sqm: 0 };
+    svcGroups[it.service].count++;
+    svcGroups[it.service].sqm += sqm;
+  });
+  if (breakdownEl) {
+    breakdownEl.innerHTML = Object.entries(svcGroups).map(([name, g]) => {
+      const label = g.sqm > 0 ? `${g.sqm.toFixed(2)} м²` : `${g.count} шт`;
+      return `<div style="display:flex;justify-content:space-between;font-size:12.5px;color:var(--text2);padding:3px 4px">
+        <span>${name}</span><span>${label}</span>
+      </div>`;
+    }).join('');
+  }
+
   _odItemsTotal = total;
   odUpdateTotal();
 }
@@ -19921,6 +19953,7 @@ function confirmBranchLoc() {
           </thead>
           <tbody id="od_items_tbody"></tbody>
         </table>
+        <div id="od_items_breakdown" style="padding:8px 4px 14px"></div>
       </div>
     </div>
 

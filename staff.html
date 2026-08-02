@@ -10239,6 +10239,22 @@ function staffRenderItems(items, containerEl) {
   // менеджер на приёмке) — иначе некому исправить назначение и перейти в «Мойка».
   const canManageWasher   = !['delivered','cancelled'].includes(_sOrderStatus);
   const needsMeasure      = (canMeasure || canApproveMeasure) && isWashingPhase;
+
+  // Разбивка по услугам — сумма площади (если замерена) или количество позиций (шт).
+  const _svcGroups = {};
+  items.forEach(it => {
+    if (!it.service) return;
+    if (!_svcGroups[it.service]) _svcGroups[it.service] = { count: 0, sqm: 0 };
+    _svcGroups[it.service].count++;
+    _svcGroups[it.service].sqm += parseFloat(it.sqm || 0);
+  });
+  const _svcBreakdownHtml = Object.entries(_svcGroups).map(([name, g]) => {
+    const label = g.sqm > 0 ? `${g.sqm.toFixed(2)} м²` : `${g.count} шт`;
+    return `<div style="display:flex;justify-content:space-between;font-size:12px;color:#6b7280;padding:2px 0">
+      <span>${name}</span><span>${label}</span>
+    </div>`;
+  }).join('');
+
   let total = 0;
   el.innerHTML = items.map((it,i) => {
     total += parseFloat(it.total_sum || 0);
@@ -10368,7 +10384,8 @@ function staffRenderItems(items, containerEl) {
       </div>
     </div>`;
   }).join('') + (total > 0
-    ? `<div style="padding:10px 14px 4px;border-top:2px solid #e5e7eb;margin-top:6px;display:flex;justify-content:space-between;align-items:center">
+    ? `<div style="padding:8px 14px 0;margin-top:4px">${_svcBreakdownHtml}</div>
+       <div style="padding:10px 14px 4px;border-top:2px solid #e5e7eb;margin-top:6px;display:flex;justify-content:space-between;align-items:center">
         <span style="font-size:13px;font-weight:600;color:#6b7280">${t('items.total')}</span>
         <span style="font-size:16px;font-weight:800;color:#1a1a1a">${Number(total).toLocaleString('ru')} сум</span>
        </div>`
