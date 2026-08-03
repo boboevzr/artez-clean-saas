@@ -962,9 +962,14 @@
   loadDemoVideo(lang);
 
   // ── Полноэкранный просмотр видео ──
+  // webkitEnterFullscreen ПЕРВЫМ: на iPhone Safari requestFullscreen может формально
+  // существовать как свойство, но не работать — реально рабочий способ там —
+  // только нативный fullscreen-плеер видео.
   document.getElementById('videoFullscreenBtn').addEventListener('click', function(){
-    var req = video.requestFullscreen || video.webkitRequestFullscreen || video.webkitEnterFullscreen || video.mozRequestFullScreen;
-    if (req) req.call(video);
+    if (video.webkitEnterFullscreen) video.webkitEnterFullscreen();
+    else if (video.requestFullscreen) video.requestFullscreen();
+    else if (video.webkitRequestFullscreen) video.webkitRequestFullscreen();
+    else if (video.mozRequestFullScreen) video.mozRequestFullScreen();
   });
 
   // ── Пуск/пауза и звук — видео по умолчанию autoplay+muted (иначе браузер не даст

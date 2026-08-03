@@ -1185,10 +1185,13 @@
       muteBtn.textContent = video.muted ? '🔇' : '🔊';
     });
     fsBtn.addEventListener('click', () => {
-      // iOS Safari не поддерживает requestFullscreen на произвольном элементе — там
-      // только video.webkitEnterFullscreen() (нативный fullscreen-плеер видео).
-      const req = video.requestFullscreen || video.webkitRequestFullscreen || video.webkitEnterFullscreen || video.mozRequestFullScreen;
-      if (req) req.call(video);
+      // webkitEnterFullscreen ПЕРВЫМ: на iPhone Safari requestFullscreen может
+      // формально существовать как свойство, но не работать — единственный
+      // реально рабочий способ там — нативный fullscreen-плеер видео.
+      if (video.webkitEnterFullscreen) video.webkitEnterFullscreen();
+      else if (video.requestFullscreen) video.requestFullscreen();
+      else if (video.webkitRequestFullscreen) video.webkitRequestFullscreen();
+      else if (video.mozRequestFullScreen) video.mozRequestFullScreen();
     });
     wrap.querySelector('#siteVideoCloseBtn').addEventListener('click', () => { _collapseSiteVideoCard(wrap); });
   }
