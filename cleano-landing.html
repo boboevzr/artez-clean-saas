@@ -193,6 +193,18 @@
   .hang-tag.hidden { display: none; }
   @media (max-width: 900px) { .hang-tag { width: min(280px, 84vw); } }
 
+  /* ── Pull-to-refresh (кастомный индикатор) ── */
+  .ptr-indicator{
+    position: fixed; top: 0; left: 50%; transform: translate(-50%,-60px);
+    z-index: 99999; background: var(--paper); color: var(--ink);
+    border-radius: 0 0 14px 14px; padding: 9px 16px; font-size: 12.5px; font-weight: 600;
+    box-shadow: var(--shadow); display: flex; align-items: center; gap: 7px;
+    transition: transform .2s ease; pointer-events: none;
+  }
+  .ptr-indicator.show{ transform: translate(-50%,0); }
+  .ptr-indicator .ptr-spin{ display: inline-block; animation: ptrSpin .7s linear infinite; }
+  @keyframes ptrSpin{ to{ transform: rotate(360deg); } }
+
   /* ===== TRUST STRIP ===== */
   .trust-strip { position: relative; z-index: 1; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 20px 0; }
   .trust-strip .wrap { display: flex; gap: 36px; flex-wrap: wrap; justify-content: center; font-size: 13px; color: var(--text2); }
@@ -1519,6 +1531,50 @@
       btn.textContent = originalText;
     }
   });
+})();
+
+// ── Pull-to-refresh (кастомный жест) ──
+// Исключаем зоны с собственным скроллом/навигацией: модалка контактов, регистрация, SMS-модалки.
+(function(){
+  var EXCLUDE_SELECTOR = '.float-overlay, .reg-page, .sms-modal-overlay';
+  var THRESHOLD = 70;
+  var startY = 0, lastDy = 0, active = false, triggered = false;
+
+  var indicator = document.createElement('div');
+  indicator.className = 'ptr-indicator';
+  indicator.innerHTML = '<span class="ptr-spin">⟳</span><span class="ptr-text">Потяните для обновления</span>';
+  document.addEventListener('DOMContentLoaded', function(){ document.body.appendChild(indicator); });
+
+  document.addEventListener('touchstart', function(e){
+    if (triggered) return;
+    if (e.target.closest(EXCLUDE_SELECTOR)) return;
+    if (window.scrollY <= 0 && e.touches.length === 1) {
+      startY = e.touches[0].clientY;
+      active = true;
+    }
+  }, { passive: true });
+
+  document.addEventListener('touchmove', function(e){
+    if (!active || triggered) return;
+    if (window.scrollY > 0) { active = false; indicator.classList.remove('show'); return; }
+    lastDy = e.touches[0].clientY - startY;
+    if (lastDy <= 0) { indicator.classList.remove('show'); return; }
+    indicator.classList.add('show');
+    indicator.querySelector('.ptr-text').textContent =
+      lastDy > THRESHOLD ? 'Отпустите для обновления' : 'Потяните для обновления';
+  }, { passive: true });
+
+  document.addEventListener('touchend', function(){
+    if (active && lastDy > THRESHOLD && !triggered) {
+      triggered = true;
+      indicator.querySelector('.ptr-text').textContent = 'Обновление…';
+      setTimeout(function(){ location.reload(); }, 150);
+    } else {
+      indicator.classList.remove('show');
+    }
+    active = false;
+    lastDy = 0;
+  }, { passive: true });
 })();
 </script>
 </body>

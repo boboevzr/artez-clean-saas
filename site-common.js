@@ -1195,10 +1195,22 @@
       if (req) req.call(frame);
     });
     const fsCloseBtn = wrap.querySelector('#siteVideoFsCloseBtn');
+    const controlsEl = wrap.querySelector('.svc-controls');
     fsCloseBtn.addEventListener('click', () => {
       const exit = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen;
       if (exit) exit.call(document);
     });
+    // Показываем/прячем ✕ через JS (не через CSS :fullscreen) — надёжнее на Android,
+    // где :fullscreen у вложенных селекторов срабатывает не всегда одинаково.
+    // Пока фуллскрин — прячем обычные play/mute/fs, оставляем только ✕.
+    function _onFsChange() {
+      const fsEl = document.fullscreenElement || document.webkitFullscreenElement;
+      const isFs = !!fsEl;
+      fsCloseBtn.style.display = isFs ? 'flex' : 'none';
+      if (controlsEl) controlsEl.style.display = isFs ? 'none' : 'flex';
+    }
+    document.addEventListener('fullscreenchange', _onFsChange);
+    document.addEventListener('webkitfullscreenchange', _onFsChange);
     wrap.querySelector('#siteVideoCloseBtn').addEventListener('click', () => { _collapseSiteVideoCard(wrap); });
   }
 
@@ -3262,5 +3274,48 @@
     document.body.classList.add('page-ready');
   });
 
-  // Pull-to-refresh отключён (мешает скроллу чата и навигации)
+  // ── Pull-to-refresh (кастомный жест, а не нативный браузерный — тот раньше
+  // мешал скроллу чата и навигации, поэтому overscroll-behavior-y:none остаётся).
+  // Исключаем зоны с собственным скроллом/навигацией: чат, дровер, модалки.
+  (function(){
+    const EXCLUDE_SELECTOR = '.modal-overlay, .drawer-overlay, .cabinet-drawer, .chat-overlay, .chat-widget';
+    const THRESHOLD = 70;
+    let startY = 0, lastDy = 0, active = false, triggered = false;
+
+    const indicator = document.createElement('div');
+    indicator.className = 'ptr-indicator';
+    indicator.innerHTML = '<span class="ptr-spin">⟳</span><span class="ptr-text">Потяните для обновления</span>';
+    document.addEventListener('DOMContentLoaded', () => document.body.appendChild(indicator));
+
+    document.addEventListener('touchstart', (e) => {
+      if (triggered) return;
+      if (e.target.closest(EXCLUDE_SELECTOR)) return;
+      if (window.scrollY <= 0 && e.touches.length === 1) {
+        startY = e.touches[0].clientY;
+        active = true;
+      }
+    }, { passive: true });
+
+    document.addEventListener('touchmove', (e) => {
+      if (!active || triggered) return;
+      if (window.scrollY > 0) { active = false; indicator.classList.remove('show'); return; }
+      lastDy = e.touches[0].clientY - startY;
+      if (lastDy <= 0) { indicator.classList.remove('show'); return; }
+      indicator.classList.add('show');
+      indicator.querySelector('.ptr-text').textContent =
+        lastDy > THRESHOLD ? 'Отпустите для обновления' : 'Потяните для обновления';
+    }, { passive: true });
+
+    document.addEventListener('touchend', () => {
+      if (active && lastDy > THRESHOLD && !triggered) {
+        triggered = true;
+        indicator.querySelector('.ptr-text').textContent = 'Обновление…';
+        setTimeout(() => location.reload(), 150);
+      } else {
+        indicator.classList.remove('show');
+      }
+      active = false;
+      lastDy = 0;
+    }, { passive: true });
+  })();
 
