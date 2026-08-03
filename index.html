@@ -2839,9 +2839,23 @@
   .site-video-card .svc-frame{ position:relative; aspect-ratio:16/9; border-radius:10px; overflow:hidden; background:var(--ink); border:1px solid var(--line); transition:aspect-ratio .25s ease; }
   .site-video-card .svc-frame.vertical{ aspect-ratio:9/16; }
   .site-video-card video{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
-  .site-video-card video:fullscreen{ object-fit:contain; background:#000; }
-  .site-video-card video:-webkit-full-screen{ object-fit:contain; background:#000; }
-  .site-video-card video:-moz-full-screen{ object-fit:contain; background:#000; }
+  /* На Android/десктопе в fullscreen уходит вся .svc-frame (не голый video) — так наша
+     кнопка ✕ остаётся видна поверх видео. На iOS свой нативный плеер (webkitEnterFullscreen),
+     эти правила там не применяются. */
+  .site-video-card .svc-frame:fullscreen{ aspect-ratio:auto; background:#000; }
+  .site-video-card .svc-frame:-webkit-full-screen{ aspect-ratio:auto; background:#000; }
+  .site-video-card .svc-frame:-moz-full-screen{ aspect-ratio:auto; background:#000; }
+  .site-video-card .svc-frame:fullscreen video{ object-fit:contain; }
+  .site-video-card .svc-frame:-webkit-full-screen video{ object-fit:contain; }
+  .site-video-card .svc-frame:-moz-full-screen video{ object-fit:contain; }
+  .site-video-card .svc-fs-close{
+    display:none; position:absolute; top:10px; right:10px; z-index:4; width:34px; height:34px;
+    border-radius:50%; border:none; background:rgba(0,0,0,.6); color:#fff; font-size:16px;
+    cursor:pointer; align-items:center; justify-content:center; backdrop-filter:blur(2px);
+  }
+  .site-video-card .svc-frame:fullscreen .svc-fs-close,
+  .site-video-card .svc-frame:-webkit-full-screen .svc-fs-close,
+  .site-video-card .svc-frame:-moz-full-screen .svc-fs-close{ display:flex; }
   .site-video-card .svc-controls{ position:absolute; right:8px; bottom:8px; z-index:2; display:flex; gap:6px; }
   .site-video-card .svc-controls button{
     width:28px; height:28px; border-radius:50%; border:none; background:rgba(0,0,0,.55); color:#fff;

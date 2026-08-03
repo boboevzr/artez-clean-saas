@@ -1154,6 +1154,7 @@
           '<button id="siteVideoMuteBtn" type="button" aria-label="Звук">🔇</button>' +
           '<button id="siteVideoFsBtn" type="button" aria-label="На весь экран">⛶</button>' +
         '</div>' +
+        '<button class="svc-fs-close" id="siteVideoFsCloseBtn" type="button" aria-label="Закрыть полноэкранный режим">✕</button>' +
       '</div>' +
       '<button class="svc-close" id="siteVideoCloseBtn" type="button" aria-label="Закрыть">✕</button>';
 
@@ -1185,13 +1186,18 @@
       muteBtn.textContent = video.muted ? '🔇' : '🔊';
     });
     fsBtn.addEventListener('click', () => {
-      // webkitEnterFullscreen ПЕРВЫМ: на iPhone Safari requestFullscreen может
-      // формально существовать как свойство, но не работать — единственный
-      // реально рабочий способ там — нативный fullscreen-плеер видео.
-      if (video.webkitEnterFullscreen) video.webkitEnterFullscreen();
-      else if (video.requestFullscreen) video.requestFullscreen();
-      else if (video.webkitRequestFullscreen) video.webkitRequestFullscreen();
-      else if (video.mozRequestFullScreen) video.mozRequestFullScreen();
+      // iOS Safari: нативный fullscreen-плеер видео (со своей кнопкой закрытия).
+      // Остальные (Android/десктоп): фуллскрин самой рамки (.svc-frame), чтобы
+      // наша кнопка ✕ была видна поверх видео — на голом <video> она была бы
+      // не видна, т.к. Fullscreen API показывает только сам элемент.
+      if (video.webkitEnterFullscreen) { video.webkitEnterFullscreen(); return; }
+      const req = frame.requestFullscreen || frame.webkitRequestFullscreen || frame.mozRequestFullScreen;
+      if (req) req.call(frame);
+    });
+    const fsCloseBtn = wrap.querySelector('#siteVideoFsCloseBtn');
+    fsCloseBtn.addEventListener('click', () => {
+      const exit = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen;
+      if (exit) exit.call(document);
     });
     wrap.querySelector('#siteVideoCloseBtn').addEventListener('click', () => { _collapseSiteVideoCard(wrap); });
   }
