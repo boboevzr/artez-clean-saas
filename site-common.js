@@ -1154,7 +1154,6 @@
           '<button id="siteVideoMuteBtn" type="button" aria-label="Звук">🔇</button>' +
           '<button id="siteVideoFsBtn" type="button" aria-label="На весь экран">⛶</button>' +
         '</div>' +
-        '<button class="svc-fs-close" id="siteVideoFsCloseBtn" type="button" aria-label="Закрыть полноэкранный режим">✕</button>' +
       '</div>' +
       '<button class="svc-close" id="siteVideoCloseBtn" type="button" aria-label="Закрыть">✕</button>';
 
@@ -1187,27 +1186,18 @@
     });
     fsBtn.addEventListener('click', () => {
       // iOS Safari: нативный fullscreen-плеер видео (со своей кнопкой закрытия).
-      // Остальные (Android/десктоп): фуллскрин самой рамки (.svc-frame), чтобы
-      // наша кнопка ✕ была видна поверх видео — на голом <video> она была бы
-      // не видна, т.к. Fullscreen API показывает только сам элемент.
+      // Остальные (Android/десктоп): фуллскрин самого <video> + включаем нативные
+      // controls (прогресс-бар, play/pause, громкость, закрытие) — свой ✕ поверх
+      // голого video не показать (Fullscreen API рендерит только сам элемент),
+      // а нативные controls браузера дают всё нужное из коробки и везде одинаково.
       if (video.webkitEnterFullscreen) { video.webkitEnterFullscreen(); return; }
-      const req = frame.requestFullscreen || frame.webkitRequestFullscreen || frame.mozRequestFullScreen;
-      if (req) req.call(frame);
+      video.controls = true;
+      const req = video.requestFullscreen || video.webkitRequestFullscreen || video.mozRequestFullScreen;
+      if (req) req.call(video);
     });
-    const fsCloseBtn = wrap.querySelector('#siteVideoFsCloseBtn');
-    const controlsEl = wrap.querySelector('.svc-controls');
-    fsCloseBtn.addEventListener('click', () => {
-      const exit = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen;
-      if (exit) exit.call(document);
-    });
-    // Показываем/прячем ✕ через JS (не через CSS :fullscreen) — надёжнее на Android,
-    // где :fullscreen у вложенных селекторов срабатывает не всегда одинаково.
-    // Пока фуллскрин — прячем обычные play/mute/fs, оставляем только ✕.
     function _onFsChange() {
       const fsEl = document.fullscreenElement || document.webkitFullscreenElement;
-      const isFs = !!fsEl;
-      fsCloseBtn.style.display = isFs ? 'flex' : 'none';
-      if (controlsEl) controlsEl.style.display = isFs ? 'none' : 'flex';
+      if (!fsEl) video.controls = false;
     }
     document.addEventListener('fullscreenchange', _onFsChange);
     document.addEventListener('webkitfullscreenchange', _onFsChange);
