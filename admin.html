@@ -1478,9 +1478,10 @@
           <span class="nav-group-arrow" id="ng-arrow-crm">▸</span>
         </div>
         <div class="nav-group-items" id="ng-items-crm" style="display:none;">
-          <div class="nav-sub-item" data-page="clients"    onclick="switchSubPage(this)">👤 Клиенты</div>
-          <div class="nav-sub-item" data-page="contacts"   onclick="switchSubPage(this)">📒 Справочник</div>
-          <div class="nav-sub-item" data-page="site-users" onclick="switchSubPage(this)">🌐 Польз. сайта</div>
+          <div class="nav-sub-item" data-page="clients"          onclick="switchSubPage(this)">👤 Клиенты</div>
+          <div class="nav-sub-item" data-page="contacts"         onclick="switchSubPage(this)">📒 Справочник</div>
+          <div class="nav-sub-item" data-page="active-contacts"  onclick="switchSubPage(this)">✅ Актуальные</div>
+          <div class="nav-sub-item" data-page="site-users"       onclick="switchSubPage(this)">🌐 Польз. сайта</div>
         </div>
       </div>
 
@@ -2312,6 +2313,37 @@
             <tbody id="adminLeadsTbody"></tbody>
           </table>
           <div id="adminLeadsEmpty" data-i18n="empty.leads" style="display:none" class="loader">Лидов не найдено</div>
+        </div>
+      </div>
+
+      <!-- ACTIVE CONTACTS (единая база актуальных номеров) -->
+      <div class="page" id="page-active-contacts">
+        <div class="section-header">
+          <h2>✅ Актуальные контакты</h2>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn btn-sm" style="background:var(--surface2);color:var(--text)" onclick="adminBackfillActiveContacts()" title="Разовый импорт всех накопленных ранее контактов (клиенты, лиды, пользователи сайта)">🔄 Импортировать всё</button>
+            <button class="btn btn-sm" style="background:var(--green);color:#fff" onclick="adminExportActiveContactsPhonebook()" title="Имя, телефон, email, адрес — для загрузки в телефонную книгу">📇 Телефонная книга</button>
+            <button class="btn btn-sm" style="background:var(--blue);color:#fff" onclick="openSmsExportModal()" title="Только номера — для массовой SMS-рассылки">📱 Для SMS</button>
+          </div>
+        </div>
+        <p class="cfg-hint" style="margin-bottom:14px">Единая база проверенных номеров — реальные клиенты (заказы/лиды/сайт/бот) + дозвонившиеся из автодозвона. Источник для будущей массовой SMS-рассылки и автодозвона.</p>
+        <div id="adminActiveContactsCount" style="font-size:13px;color:var(--text2);margin-bottom:14px"></div>
+        <div class="card" style="margin-bottom:14px">
+          <div class="filters-row">
+            <input class="filter-input" id="adminActiveContactsSearch" placeholder="🔍 Имя или телефон…" oninput="adminActiveContactsDebounce()" style="min-width:220px">
+          </div>
+        </div>
+        <div class="card" style="overflow-x:auto">
+          <table class="staff-table" id="adminActiveContactsTable">
+            <thead><tr><th>#</th><th>Имя</th><th>Телефон</th><th>Источник</th><th>Обновлён</th></tr></thead>
+            <tbody id="adminActiveContactsTbody"></tbody>
+          </table>
+          <div id="adminActiveContactsEmpty" style="display:none" class="loader">Контактов не найдено</div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:center;gap:14px;margin-top:14px">
+          <button class="btn btn-sm" style="background:var(--surface2);color:var(--text)" onclick="adminActiveContactsPage(-1)">‹ Назад</button>
+          <span id="adminActiveContactsPageInfo" style="font-size:13px;color:var(--text2)"></span>
+          <button class="btn btn-sm" style="background:var(--surface2);color:var(--text)" onclick="adminActiveContactsPage(1)">Вперёд ›</button>
         </div>
       </div>
 
@@ -4930,6 +4962,7 @@
         <div style="display:flex;border-bottom:2px solid var(--border);margin-bottom:16px;gap:0">
           <button id="adTab-tests" onclick="adSetTab('tests')" style="padding:8px 20px;border:none;background:none;font-size:14px;font-weight:600;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;color:var(--text2)" data-i18n="ad.tab.tests">🔧 Тесты</button>
           <button id="adTab-campaigns" onclick="adSetTab('campaigns')" style="padding:8px 20px;border:none;background:none;font-size:14px;font-weight:600;cursor:pointer;border-bottom:2px solid #6366f1;margin-bottom:-2px;color:var(--text)" data-i18n="ad.tab.campaigns">📋 Кампании</button>
+          <button id="adTab-callback" onclick="adSetTab('callback')" style="padding:8px 20px;border:none;background:none;font-size:14px;font-weight:600;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;color:var(--text2)" data-i18n="ad.tab.callback">☎️ Обратный звонок</button>
         </div>
         <div id="adCampaignList" style="display:flex;flex-direction:column;gap:12px">
           <div style="text-align:center;padding:48px 0;color:var(--text2)">
@@ -6457,6 +6490,8 @@ const _adminI18n = {
     'empty.groups.hint':'Создайте первую группу контактов',
     'empty.campaigns.hint':'Создайте первую кампанию автодозвона',
     'empty.tests':'Нет тестовых звонков','empty.tests.hint':'Нажмите «Тест звонка» чтобы проверить АТС',
+    'ad.tab.callback':'☎️ Обратный звонок',
+    'empty.callback':'Нет обратных звонков','empty.callback.hint':'Здесь появятся звонки с кнопки «Обратный звонок» на сайте',
     'ad.agent.offline':'🔴 Агент не активен','ad.agent.online':'🟢 Агент активен',
     'gr.birthday.title':'День рождения / Юбилей',
     'gr.birthday.desc':'Автоматически поздравляет клиентов у которых сегодня день рождения. Берёт список из CRM — нужна дата ДР в карточке клиента.',
@@ -6989,6 +7024,8 @@ const _adminI18n = {
     'empty.groups.hint':'Birinchi kontakt guruhini yarating',
     'empty.campaigns.hint':'Birinchi avtouzatish kampaniyasini yarating',
     'empty.tests':'Sinov chaqiruvlari yoʻq','empty.tests.hint':'ATSni tekshirish uchun «Sinov chaqiruvi» ni bosing',
+    'ad.tab.callback':'☎️ Qayta qo\'ng\'iroq',
+    'empty.callback':'Qayta qo\'ng\'iroqlar yoʻq','empty.callback.hint':'Bu yerda saytdagi «Qayta qo\'ng\'iroq» tugmasidan kelgan chaqiruvlar ko\'rinadi',
     'ad.agent.offline':'🔴 Agent faol emas','ad.agent.online':'🟢 Agent faol',
     'gr.birthday.title':'Tugʻilgan kun / Yubiley',
     'gr.birthday.desc':'CRM roʻyxatidan bugun tugʻilgan kun boʻlgan mijozlarni avtomatik tabriklayd. Mijoz kartasida tugʻilgan kun sanasi kerak.',
@@ -9522,6 +9559,7 @@ function _activatePage(page) {
   if (page === 'agents')      loadStaffFromAPI();
   if (page === 'leads')       adminLoadLeads();
   if (page === 'clients')     adminLoadClients();
+  if (page === 'active-contacts') adminLoadActiveContacts();
   if (page === 'contacts')    adminLoadContacts();
   if (page === 'site-users')  adminLoadSiteUsers();
   if (page === 'siteconfig')  { loadSiteSettings(); staffMgmtLoad(); }
@@ -15494,6 +15532,148 @@ async function adminExportClientsExcel() {
   } catch(e) { alert('Ошибка экспорта: ' + e.message); }
 }
 
+let _adminActiveContactsTimer  = null;
+let _adminActiveContactsOffset = 0;
+const ADMIN_ACTIVE_CONTACTS_PAGE_SIZE = 50;
+
+function adminActiveContactsDebounce() {
+  _adminActiveContactsOffset = 0;
+  clearTimeout(_adminActiveContactsTimer);
+  _adminActiveContactsTimer = setTimeout(adminLoadActiveContacts, 350);
+}
+
+function adminActiveContactsPage(dir) {
+  const next = _adminActiveContactsOffset + dir * ADMIN_ACTIVE_CONTACTS_PAGE_SIZE;
+  _adminActiveContactsOffset = Math.max(0, next);
+  adminLoadActiveContacts();
+}
+
+async function adminLoadActiveContacts() {
+  const q     = (document.getElementById('adminActiveContactsSearch')?.value || '').trim();
+  const tbody = document.getElementById('adminActiveContactsTbody');
+  const empty = document.getElementById('adminActiveContactsEmpty');
+  if (!tbody) return;
+  let url = `/admin/active-contacts?limit=${ADMIN_ACTIVE_CONTACTS_PAGE_SIZE}&offset=${_adminActiveContactsOffset}`;
+  if (q) url += `&search=${encodeURIComponent(q)}`;
+  try {
+    const data = await apiGet(url);
+    if (!data) return;
+    const contacts = data.contacts || [];
+    const total = data.count ?? contacts.length;
+    const countEl = document.getElementById('adminActiveContactsCount');
+    if (countEl) countEl.textContent = `Всего: ${total}`;
+    const pageInfo = document.getElementById('adminActiveContactsPageInfo');
+    if (pageInfo) {
+      const from = total ? _adminActiveContactsOffset + 1 : 0;
+      const to   = Math.min(_adminActiveContactsOffset + ADMIN_ACTIVE_CONTACTS_PAGE_SIZE, total);
+      pageInfo.textContent = `${from}–${to} из ${total}`;
+    }
+    if (!contacts.length) {
+      tbody.innerHTML = '';
+      empty.style.display = '';
+      return;
+    }
+    empty.style.display = 'none';
+    const SRC = { crm: '👤 Клиент', autodial: '☎️ Автодозвон', both: '👤+☎️' };
+    tbody.innerHTML = contacts.map((c, i) => {
+      const name = [c.first_name, c.last_name].filter(Boolean).join(' ') || '—';
+      const upd  = c.updated_at ? new Date(c.updated_at).toLocaleDateString('ru') : '—';
+      return `<tr>
+        <td>${_adminActiveContactsOffset + i + 1}</td>
+        <td data-label="Имя"><b>${_esc(name)}</b></td>
+        <td data-label="Телефон"><a href="tel:${c.phone}">${c.phone}</a></td>
+        <td data-label="Источник">${SRC[c.source] || c.source || '—'}</td>
+        <td data-label="Обновлён">${upd}</td>
+      </tr>`;
+    }).join('');
+  } catch(e) { tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:var(--red)">Ошибка: ${e.message}</td></tr>`; }
+}
+
+async function adminBackfillActiveContacts() {
+  if (!confirm('Импортировать всех накопленных ранее клиентов, лидов и пользователей сайта в единую базу актуальных контактов? Дубликаты по телефону пропускаются автоматически.')) return;
+  showToast('⏳ Импорт запущен, это может занять время…');
+  try {
+    const r = await apiPost('/admin/active-contacts/backfill', {});
+    if (r?.ok) {
+      const s = r.stats || {};
+      showToast(`✅ Готово: клиенты ${s.crm_clients||0}, лиды ${s.leads||0}, сайт ${s.site_users||0}`, 'success');
+      adminLoadActiveContacts();
+    } else showToast('Ошибка импорта', 'error');
+  } catch(e) { showToast('Ошибка: ' + e.message, 'error'); }
+}
+
+async function _fetchAllActiveContacts() {
+  const data = await apiGet('/admin/active-contacts?limit=100000');
+  return (data && data.contacts) || [];
+}
+
+// 1) Телефонная книга: Имя и фамилия / Сотовый / E-mail / Адрес.
+// E-mail в системе не собирается (нет такого поля ни в одной форме) — колонка
+// оставлена пустой намеренно, под формат импорта телефонной книги.
+async function adminExportActiveContactsPhonebook() {
+  try {
+    const contacts = await _fetchAllActiveContacts();
+    if (!contacts.length) { alert('Нет контактов для экспорта'); return; }
+    const rows = contacts.map(c => ({
+      'Имя и фамилия': [c.first_name, c.last_name].filter(Boolean).join(' ').trim(),
+      'Сотовый':       c.phone || '',
+      'E-mail':        '',
+      'Адрес':         c.address || '',
+    }));
+    const ws = XLSX.utils.json_to_sheet(rows);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Телефонная книга');
+    XLSX.writeFile(wb, `cleano_phonebook_${new Date().toISOString().slice(0,10)}.xlsx`);
+  } catch(e) { alert('Ошибка экспорта: ' + e.message); }
+}
+
+// 2) Для SMS-рассылки: только номера, по N в файл (N задаёт пользователь), через
+// ";", .txt. Несколько файлов сразу — браузер может заблокировать одновременные
+// скачивания, поэтому запускаем их с небольшой задержкой друг от друга.
+function openSmsExportModal() {
+  document.getElementById('modalSmsExport').style.display = 'flex';
+}
+
+function _smsExportPreset(size) {
+  document.getElementById('smsExportChunkSize').value = size;
+}
+
+function adminExportActiveContactsSmsConfirm() {
+  const size = parseInt(document.getElementById('smsExportChunkSize')?.value, 10);
+  if (!size || size < 1) { alert('Укажите корректное количество номеров в файле'); return; }
+  document.getElementById('modalSmsExport').style.display = 'none';
+  adminExportActiveContactsSms(size);
+}
+
+async function adminExportActiveContactsSms(chunkSize) {
+  try {
+    const contacts = await _fetchAllActiveContacts();
+    if (!contacts.length) { alert('Нет контактов для экспорта'); return; }
+    const phones = contacts.map(c => c.phone).filter(Boolean);
+    const CHUNK = chunkSize || 1000;
+    const date  = new Date().toISOString().slice(0,10);
+    let fileIdx = 0;
+    for (let start = 0; start < phones.length; start += CHUNK) {
+      const chunk = phones.slice(start, start + CHUNK);
+      const text  = chunk.join(';');
+      const from  = start + 1;
+      const to    = Math.min(start + CHUNK, phones.length);
+      const filename = `SMS-${date}-${from}-${to}.txt`;
+      setTimeout(() => {
+        const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+        const url  = URL.createObjectURL(blob);
+        const a    = document.createElement('a');
+        a.href = url; a.download = filename;
+        document.body.appendChild(a); a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }, fileIdx * 350);
+      fileIdx++;
+    }
+    showToast(`📱 Готовим ${fileIdx} файл(ов) для скачивания…`, 'success');
+  } catch(e) { alert('Ошибка экспорта: ' + e.message); }
+}
+
 function adminDownloadClientTemplate() {
   const rows = [{ 'Телефон':'+998901234567','Имя':'Алишер','Фамилия':'Каримов','Доп.номер':'','Статус':'new','Источник':'call','Заметка':'' }];
   const ws = XLSX.utils.json_to_sheet(rows);
@@ -19845,6 +20025,33 @@ function confirmBranchLoc() {
   </div>
 </div>
 
+<!-- MODAL: SMS EXPORT (Актуальные контакты) -->
+<div id="modalSmsExport" class="modal-overlay" style="display:none">
+  <div class="modal-box-sm" style="max-width:380px">
+    <div style="background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;padding:16px 20px;border-radius:12px 12px 0 0;margin:-24px -24px 20px">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div style="font-size:16px;font-weight:700">📱 Экспорт для SMS</div>
+        <button onclick="document.getElementById('modalSmsExport').style.display='none'" style="background:rgba(255,255,255,.2);border:none;color:#fff;width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:16px;line-height:1">✕</button>
+      </div>
+    </div>
+    <div style="font-size:13px;color:var(--text2);margin-bottom:14px">Номеров по файлу — по достижении лимита начинается новый файл.</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px" id="smsExportPresets">
+      <button class="btn btn-sm" data-size="100"  onclick="_smsExportPreset(100)"  style="background:var(--surface2);color:var(--text)">100</button>
+      <button class="btn btn-sm" data-size="200"  onclick="_smsExportPreset(200)"  style="background:var(--surface2);color:var(--text)">200</button>
+      <button class="btn btn-sm" data-size="500"  onclick="_smsExportPreset(500)"  style="background:var(--surface2);color:var(--text)">500</button>
+      <button class="btn btn-sm" data-size="1000" onclick="_smsExportPreset(1000)" style="background:var(--surface2);color:var(--text)">1000</button>
+    </div>
+    <div style="margin-bottom:20px">
+      <label style="font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:8px">Или своё количество</label>
+      <input type="number" id="smsExportChunkSize" class="price-input" style="width:100%" min="1" step="1" value="1000">
+    </div>
+    <div style="display:flex;gap:10px">
+      <button class="btn" style="flex:1" onclick="document.getElementById('modalSmsExport').style.display='none'">Отмена</button>
+      <button class="btn" style="flex:2;background:var(--blue);color:#fff" onclick="adminExportActiveContactsSmsConfirm()">📥 Скачать</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL: CONTACTS DUPLICATES -->
 <div id="modalContactsDups" class="modal-overlay" style="display:none">
   <div class="modal-box" style="max-width:720px;max-height:90vh;display:flex;flex-direction:column">
@@ -20873,9 +21080,10 @@ function confirmBranchLoc() {
       <span class="mob-drawer-group-arrow" id="mobDrawerCrmArrow">▸</span>
     </div>
     <div class="mob-drawer-sub" id="mobDrawerCrmItems" style="display:none;">
-      <div class="mob-drawer-sub-item" data-page="clients"    onclick="mobDrawerGoCrm(this)">👤 Клиенты</div>
-      <div class="mob-drawer-sub-item" data-page="contacts"   onclick="mobDrawerGoCrm(this)">📒 Справочник</div>
-      <div class="mob-drawer-sub-item" data-page="site-users" onclick="mobDrawerGoCrm(this)">🌐 Польз. сайта</div>
+      <div class="mob-drawer-sub-item" data-page="clients"         onclick="mobDrawerGoCrm(this)">👤 Клиенты</div>
+      <div class="mob-drawer-sub-item" data-page="contacts"        onclick="mobDrawerGoCrm(this)">📒 Справочник</div>
+      <div class="mob-drawer-sub-item" data-page="active-contacts" onclick="mobDrawerGoCrm(this)">✅ Актуальные</div>
+      <div class="mob-drawer-sub-item" data-page="site-users"      onclick="mobDrawerGoCrm(this)">🌐 Польз. сайта</div>
     </div>
 
     <!-- Автодозвон accordion -->
@@ -22073,7 +22281,7 @@ let _adAllCampaigns = [];
 
 function adSetTab(tab) {
   _adTab = tab;
-  ['campaigns','tests'].forEach(t => {
+  ['campaigns','tests','callback'].forEach(t => {
     const btn = document.getElementById(`adTab-${t}`);
     if (!btn) return;
     btn.style.borderBottomColor = t === tab ? '#6366f1' : 'transparent';
@@ -22085,12 +22293,15 @@ function adSetTab(tab) {
 
 function _adRenderCampaigns() {
   const wrap = document.getElementById('adCampaignList');
-  const isTest = _adTab === 'tests';
-  const list = _adAllCampaigns.filter(c => isTest ? c.source_type === 'manual' : c.source_type !== 'manual');
+  const list = _adAllCampaigns.filter(c => {
+    if (_adTab === 'tests') return c.source_type === 'manual';
+    if (_adTab === 'callback') return c.source_type === 'callback';
+    return c.source_type !== 'manual' && c.source_type !== 'callback';
+  });
   if (!list.length) {
-    const icon = isTest ? '🔧' : '📋';
-    const label = isTest ? _t('empty.tests') : _t('empty.campaigns');
-    const sub = isTest ? _t('empty.tests.hint') : _t('empty.campaigns.hint');
+    const icon  = _adTab === 'tests' ? '🔧' : _adTab === 'callback' ? '☎️' : '📋';
+    const label = _adTab === 'tests' ? _t('empty.tests') : _adTab === 'callback' ? _t('empty.callback') : _t('empty.campaigns');
+    const sub   = _adTab === 'tests' ? _t('empty.tests.hint') : _adTab === 'callback' ? _t('empty.callback.hint') : _t('empty.campaigns.hint');
     wrap.innerHTML = `<div style="text-align:center;padding:48px 0;color:var(--text2)">
       <div style="font-size:36px;margin-bottom:10px">${icon}</div>
       <div style="font-size:15px;font-weight:600">${label}</div>
@@ -22139,6 +22350,9 @@ function _adCampaignCard(c) {
         <button onclick="adOpenDetail(${c.id})" class="btn btn-sm" style="background:var(--surface2);color:var(--text)" title="Детали / лог">📋</button>
         <button onclick="adOpenEdit(${c.id})" class="btn btn-sm" style="background:var(--surface2);color:var(--text)" title="Редактировать">✏️</button>
         <button onclick="adDeleteCampaign(${c.id},'${_esc(c.name)}')" class="btn btn-sm" style="background:var(--surface2);color:#dc2626" title="Удалить">🗑</button>
+        ${(c.answered_count || 0) > 0
+          ? `<button onclick="adImportActive(${c.id},${c.answered_count||0},this)" class="btn btn-sm" style="background:#dcfce7;color:#16a34a;border:1px solid #86efac" title="Добавить дозвонившихся в единую базу актуальных контактов">📥 В актуальные</button>`
+          : ''}
       </div>
     </div>
     ${total > 0 ? `
@@ -22164,6 +22378,36 @@ function _adStat(label, val, color) {
 }
 
 function _esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+async function adImportActive(id, total, btn) {
+  const origHtml = btn.innerHTML;
+  btn.disabled = true;
+  // Сам импорт бэкенд делает одним запросом (без пер-номерного прогресса) — эта
+  // "бегущая" анимация просто наглядно показывает, что идёт работа, а не тишина.
+  let fake = 0;
+  btn.innerHTML = total > 0 ? `⏳ Добавляем 0 из ${total}…` : '⏳ Добавляем…';
+  const timer = total > 0 ? setInterval(() => {
+    fake = Math.min(fake + 1, total - 1);
+    btn.innerHTML = `⏳ Добавляем ${fake} из ${total}…`;
+  }, Math.max(60, Math.min(400, 4000 / total))) : null;
+  try {
+    const r = await apiPost(`/admin/autodial/campaigns/${id}/import-active`, {});
+    clearInterval(timer);
+    if (r?.ok) {
+      btn.innerHTML = `✅ Добавлено ${r.imported}${total ? ' из ' + total : ''}`;
+      showToast(`✅ Добавлено в актуальные: ${r.imported}`, 'success');
+    } else {
+      btn.innerHTML = origHtml;
+      showToast('Ошибка импорта', 'error');
+    }
+  } catch(e) {
+    clearInterval(timer);
+    btn.innerHTML = origHtml;
+    showToast('Ошибка: ' + e.message, 'error');
+  } finally {
+    setTimeout(() => { btn.disabled = false; btn.innerHTML = origHtml; }, 2500);
+  }
+}
 
 // ── Создание / редактирование ──────────────────────────────────────────
 function adDayToggle(cb) {

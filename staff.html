@@ -6244,7 +6244,9 @@ function renderOrders() {
   if (q) items = items.filter(o=>
     (o.order_num||'').toLowerCase().includes(q)||
     (o.client_phone||'').includes(q)||
-    (o.client_first_name||'').toLowerCase().includes(q));
+    (o.client_first_name||'').toLowerCase().includes(q)||
+    (o.short_address||'').toLowerCase().includes(q)||
+    (o.address||'').toLowerCase().includes(q));
   if (!items.length) { el.innerHTML = `<div class="empty-box">${t('ord.empty')}</div>`; return; }
   const _pendingMeasureOrderIds = new Set(_pendingMeasureReviews.map(r => r.order_id));
   el.innerHTML = `<div class="list-card">${items.map(o=>{
@@ -6260,8 +6262,9 @@ function renderOrders() {
     return `<div class="list-item" onclick="${onclick}" style="cursor:pointer;${cardStyle}">
       ${_ordersSelectMode ? `<input type="checkbox" ${sel?'checked':''} onclick="event.stopPropagation();toggleOrderSelect(${o.id},this.closest('.list-item'))" style="width:20px;height:20px;flex-shrink:0;accent-color:#163E3B">` : `<div class="li-icon" style="background:${isExpress?'#fef3c7':'var(--green-bg)'}">${isExpress?'⚡':'📦'}</div>`}
       <div class="li-body">
-        <div class="li-name">${sourceIcon(o.source)} #${(o.order_num||'').replace(/^ARTEZ-/,'')}${o.item_count > 0 ? `<span style="color:#888">/${o.item_count}</span>` : ''}${o.corrected_count > 0 ? `<span style="color:#f97316;font-size:11px;margin-left:5px">⚠️${o.corrected_count}</span>` : ''}${hasMeasure ? `<span style="background:#163E3B;color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:6px;margin-left:6px">📐${measureCnt}</span>` : ''} ${o.client_first_name||''} ${o.client_last_name||''}</div>
-        <div class="li-sub">📞 ${o.client_phone||''} · ${o.service||''}</div>
+        <div class="li-name">${sourceIcon(o.source)} #${(o.order_num||'').replace(/^ARTEZ-/,'')}${o.item_count > 0 ? `<span style="color:#888">/${o.item_count}</span>` : ''}${o.corrected_count > 0 ? `<span style="color:#f97316;font-size:11px;margin-left:5px">⚠️${o.corrected_count}</span>` : ''}${hasMeasure ? `<span style="background:#163E3B;color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:6px;margin-left:6px">📐${measureCnt}</span>` : ''} ${_esc(o.client_first_name||'')} ${_esc(o.client_last_name||'')}</div>
+        <div class="li-sub">📞 ${_esc(o.client_phone||'')} · ${_esc(o.service||'')}</div>
+        ${(o.short_address || o.address) ? `<div class="li-sub" style="font-size:11px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${_esc(o.short_address || o.address || '')}">📍 ${_esc(o.short_address || o.address)}</div>` : ''}
         <div class="li-sub" style="font-size:11px;margin-top:2px">${_payRow(o)}</div>
       </div>
       ${o.promo_id ? `<span class="li-badge-promo">${t('promo.badge')}</span>` : ''}
