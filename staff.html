@@ -8450,6 +8450,10 @@ document.addEventListener('click', e => {
         <div style="font-size:11px;color:#888;margin-bottom:3px">Клиент</div>
         <div id="wmo_client" style="font-size:15px;font-weight:700;color:#1a1a1a"></div>
       </div>
+      <div id="wmo_phone_wrap" style="background:#f5f5f7;border-radius:12px;padding:12px 14px;margin-bottom:10px;display:none">
+        <div style="font-size:11px;color:#888;margin-bottom:3px">Телефон</div>
+        <a id="wmo_phone" href="#" style="font-size:15px;font-weight:700;color:#007aff;text-decoration:none"></a>
+      </div>
       <div style="background:#f5f5f7;border-radius:12px;padding:12px 14px;margin-bottom:10px">
         <div style="font-size:11px;color:#888;margin-bottom:3px">Адрес</div>
         <div id="wmo_address" style="font-size:14px;font-weight:600;color:#1a1a1a"></div>
@@ -9088,6 +9092,7 @@ async function washerOpenOrder(orderId) {
   document.getElementById('wmo_status_badge').innerHTML   = '';
   document.getElementById('wmo_status_text').textContent  = '';
   document.getElementById('wmo_client').textContent       = '';
+  document.getElementById('wmo_phone_wrap').style.display = 'none';
   document.getElementById('wmo_address').textContent      = '';
   document.getElementById('wmo_workflow_row').innerHTML   = '';
   const _wdw = document.getElementById('wmo_deadline_wrap'); if(_wdw) _wdw.style.display='none';
@@ -9108,6 +9113,14 @@ async function washerOpenOrder(orderId) {
     `<span style="background:#e8f1ff;color:#007aff;border-radius:8px;padding:3px 10px;font-size:12px;font-weight:600">${statusLabel(o.status)}</span>`;
   document.getElementById('wmo_status_text').textContent = statusLabel(o.status);
   document.getElementById('wmo_client').textContent = [o.client_first_name,o.client_last_name].filter(Boolean).join(' ') || '—';
+  const wmoPhoneWrap = document.getElementById('wmo_phone_wrap');
+  if (o.client_phone) {
+    document.getElementById('wmo_phone').textContent = o.client_phone;
+    document.getElementById('wmo_phone').href = `tel:${o.client_phone}`;
+    wmoPhoneWrap.style.display = '';
+  } else {
+    wmoPhoneWrap.style.display = 'none';
+  }
   document.getElementById('wmo_address').textContent = (o.short_address || o.address || '—');
 
   const dlEl   = document.getElementById('wmo_deadline');
