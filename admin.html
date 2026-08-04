@@ -15075,9 +15075,11 @@ function _clearAdminNewOrder() {
   document.getElementById('noPhoneDrop').style.display = 'none';
 }
 
-function openAdminNewLeadModal() {
+async function openAdminNewLeadModal() {
   _clearAdminNewLead();
   document.getElementById('modalAdminNewLead').style.display = 'flex';
+  await loadBranches();
+  renderBranchOptions(document.getElementById('nl_branch'));
 }
 
 function closeAdminNewLead() {
@@ -15085,9 +15087,11 @@ function closeAdminNewLead() {
   document.getElementById('modalAdminNewLead').style.display = 'none';
 }
 
-function openAdminNewOrderModal() {
+async function openAdminNewOrderModal() {
   _clearAdminNewOrder();
   document.getElementById('modalAdminNewOrder').style.display = 'flex';
+  await loadBranches();
+  renderBranchOptions(document.getElementById('no_branch'));
 }
 
 function closeAdminNewOrder() {
