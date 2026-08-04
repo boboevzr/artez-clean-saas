@@ -5385,6 +5385,14 @@
             <div class="sf-track" id="sf_notify_new_users_track" onclick="event.stopPropagation();document.getElementById('sf_notify_new_users').click()"><div class="sf-thumb" id="sf_notify_new_users_thumb"></div></div>
           </label>
         </div>
+        <div class="sf-perm-row">
+          <label style="display:contents;cursor:pointer">
+            <input type="checkbox" id="sf_hide_client_phone" style="opacity:0;width:0;height:0;position:absolute" onchange="sfToggleStyle('sf_hide_client_phone')">
+            <div style="font-size:20px;flex-shrink:0;width:28px;text-align:center">🙈</div>
+            <div style="flex:1"><div class="sf-perm-title" data-i18n="sf.perm.hide_phone">Скрыть номер клиента</div><div class="sf-perm-desc" data-i18n="sf.perm.hide_phone.d">Не показывать телефон клиента в списке и карточке заказа</div></div>
+            <div class="sf-track" id="sf_hide_client_phone_track" onclick="event.stopPropagation();document.getElementById('sf_hide_client_phone').click()"><div class="sf-thumb" id="sf_hide_client_phone_thumb"></div></div>
+          </label>
+        </div>
       </div>
       </div><!-- /sfacc_perms_content -->
 
@@ -6656,6 +6664,7 @@ const _adminI18n = {
     'sf.perm.drive':'Водитель','sf.perm.drive.d':'Вкладка «Доставка» в staff — маршруты и стопы',
     'sf.perm.timesheet':'Табель (менеджер)','sf.perm.timesheet.d':'Вводить часы всех сотрудников в staff.html',
     'sf.perm.notify.users':'Уведомления о новых клиентах','sf.perm.notify.users.d':'DM в Telegram при каждой новой регистрации',
+    'sf.perm.hide_phone':'Скрыть номер клиента','sf.perm.hide_phone.d':'Не показывать телефон клиента в списке и карточке заказа',
     'sf.section.docs':'🪪 Документы',
     'sf.lbl.pass.series':'Серия паспорта','sf.lbl.pass.num':'Номер паспорта','sf.lbl.pinfl':'ПИНФЛ',
     'sf.section.contacts':'🏠 Контакты',
@@ -7190,6 +7199,7 @@ const _adminI18n = {
     'sf.perm.drive':'Haydovchi','sf.perm.drive.d':'staff.html da «Yetkazib berish» vkladkasi — marshrutlar',
     'sf.perm.timesheet':'Tabel (menejer)','sf.perm.timesheet.d':'staff.html da barcha xodimlar soatlarini kiritish',
     'sf.perm.notify.users':'Yangi mijozlar haqida bildirishnoma','sf.perm.notify.users.d':'Har yangi roʻyxatdan oʻtishda Telegram DM',
+    'sf.perm.hide_phone':'Mijoz raqamini yashirish','sf.perm.hide_phone.d':'Buyurtmalar roʻyxati va kartochkasida mijoz raqamini koʻrsatmaslik',
     'sf.section.docs':'🪪 Hujjatlar',
     'sf.lbl.pass.series':'Pasport seriyasi','sf.lbl.pass.num':'Pasport raqami','sf.lbl.pinfl':'JSHSHIR',
     'sf.section.contacts':'🏠 Kontaktlar',
@@ -11077,6 +11087,7 @@ async function openStaffModal(id=null) {
   sfSetToggle('sf_can_confirm_order', true);
   sfSetToggle('sf_can_drive', false);
   sfSetToggle('sf_can_view_timesheet', false);
+  sfSetToggle('sf_hide_client_phone', false);
   sfSetGender('M');
   sfUpdateAvatar(); sfUpdateRoleBadge();
 
@@ -11114,6 +11125,7 @@ async function openStaffModal(id=null) {
     sfSetToggle('sf_can_drive',           !!s.can_drive);
     sfSetToggle('sf_can_view_timesheet',  !!s.can_view_timesheet);
     sfSetToggle('sf_notify_new_users',   s.notify_new_users === true);
+    sfSetToggle('sf_hide_client_phone',  !!s.hide_client_phone);
     sfSetToggle('sf_can_measure',         !!s.can_measure);
     sfSetToggle('sf_can_approve_measure', !!s.can_approve_measure);
     sfSetToggle('sf_can_create_order',    s.can_create_order !== false);
@@ -11166,6 +11178,7 @@ async function saveStaff() {
   const canDrive             = document.getElementById('sf_can_drive')?.checked ?? false;
   const canViewTimesheet     = document.getElementById('sf_can_view_timesheet')?.checked ?? false;
   const notifyNewUsers       = document.getElementById('sf_notify_new_users')?.checked ?? false;
+  const hideClientPhone      = document.getElementById('sf_hide_client_phone')?.checked ?? false;
   const canMeasure          = document.getElementById('sf_can_measure')?.checked ?? false;
   const canApproveMeasure   = document.getElementById('sf_can_approve_measure')?.checked ?? false;
   const canOverrideMeasure  = document.getElementById('sf_can_override_measure')?.checked ?? false;
@@ -11184,7 +11197,7 @@ async function saveStaff() {
     birth_date: document.getElementById('sf_birth_date').value || null,
   };
 
-  const permBody = { can_edit_items: canEditItems, can_measure: canMeasure, can_approve_measure: canApproveMeasure, can_override_measure: canOverrideMeasure, can_create_order: canCreateOrder, can_confirm_order: canConfirmOrder, can_edit_confirmed: canEditConfirmed, can_send_pickup: canSendPickup, can_edit_delivery: canEditDelivery, can_manage_cash: canManageCash, can_approve_debt: canApproveDebt, can_drive: canDrive, can_view_timesheet: canViewTimesheet, notify_new_users: notifyNewUsers };
+  const permBody = { can_edit_items: canEditItems, can_measure: canMeasure, can_approve_measure: canApproveMeasure, can_override_measure: canOverrideMeasure, can_create_order: canCreateOrder, can_confirm_order: canConfirmOrder, can_edit_confirmed: canEditConfirmed, can_send_pickup: canSendPickup, can_edit_delivery: canEditDelivery, can_manage_cash: canManageCash, can_approve_debt: canApproveDebt, can_drive: canDrive, can_view_timesheet: canViewTimesheet, notify_new_users: notifyNewUsers, hide_client_phone: hideClientPhone };
   try {
     if (id) {
       const res = await apiFetch(`${API_BASE}/staff/${id}`, {
