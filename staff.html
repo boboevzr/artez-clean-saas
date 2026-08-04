@@ -1861,6 +1861,12 @@ async function doLogin() {
       showChangePasswordScreen();
       return;
     }
+    // Логин в другую компанию (другой slug) в этой же вкладке без перезагрузки
+    // страницы раньше оставлял window._BRANCHES от предыдущей компании — обновляем.
+    await loadStaffBranches();
+    renderLdBranchBtns();
+    renderOrBranchBtns();
+    renderSoeBranchOptions();
     try { startApp(); } catch(appErr) {
       console.error('startApp error:', appErr);
       err.textContent = 'Ошибка запуска: ' + appErr.message; err.style.display = 'block';
