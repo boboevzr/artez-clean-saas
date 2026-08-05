@@ -1086,13 +1086,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-s
       <div class="field-label">Кол-во позиций</div>
       <div class="field-inp" style="flex:0 0 90px"><input id="or_item_count" type="number" min="0" placeholder="0"></div>
     </div>
-    <div class="field" id="or_sms_lang_field" style="margin-top:10px">
-      <div class="field-label">Язык SMS клиенту</div>
-      <div class="filter-chips">
-        <button type="button" class="fchip active" id="or_lang_ru" onclick="_orSetSmsLang('ru')">🇷🇺 Русский</button>
-        <button type="button" class="fchip" id="or_lang_uz" onclick="_orSetSmsLang('uz')">🇺🇿 Ўзбек</button>
-      </div>
-    </div>
   </div>
   <div class="modal-fs-foot">
     <button class="btn-cancel" id="orCancelBtn" onclick="closeModal('modalOrder')">Отмена</button>
@@ -2842,6 +2835,7 @@ async function submitOrder() {
         showToast(`✅ Заявка ${data.order_num} создана`, 'success');
         await loadOrders();
       }
+      if (data.id && data.item_count > 0) _orOpenSmsConfirm(data.id);
     } else {
       alert(data.detail || `Ошибка сервера (${res.status})`);
     }
@@ -9037,6 +9031,41 @@ async function soSendSms(lang) {
   // кэш и перерисовываем «Историю уведомлений», чтобы её увидеть сразу, без переоткрытия карточки.
   _sActivityCache = null;
   if (_sActiveTab === 'notif') _sRenderNotifications();
+}
+
+// Подтверждение SMS сразу после создания заявки с позициями (item_count > 0).
+// Раньше SMS уходило молча бэкендом на язык, выбранный ДО сохранения — теперь
+// явный вопрос после, с выбором языка, тот же эндпоинт что и ручная отправка
+// из вкладки «Уведомления» (см. запрос пользователя 2026-08-05).
+function _orOpenSmsConfirm(orderId) {
+  document.getElementById('orSmsConfirmModal')?.remove();
+  const div = document.createElement('div');
+  div.id = 'orSmsConfirmModal';
+  div.style.cssText = 'position:fixed;inset:0;z-index:10020;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;padding:16px';
+  div.innerHTML = `
+    <div style="background:#fff;border-radius:20px;padding:24px;width:100%;max-width:440px">
+      <div style="font-size:17px;font-weight:800;color:#1c1c1e;margin-bottom:6px">📲 Отправить SMS клиенту?</div>
+      <div style="font-size:13px;color:#8e8e93;margin-bottom:14px">Заявка создана с позициями — выберите язык, на котором говорит клиент</div>
+      <button onclick="_orSendSmsConfirm(${orderId},'ru')" style="width:100%;padding:14px;background:#163E3B;color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:10px">🇷🇺 Отправить на русском</button>
+      <button onclick="_orSendSmsConfirm(${orderId},'uz')" style="width:100%;padding:14px;background:#163E3B;color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:10px">🇺🇿 O'zbek tilida yuborish</button>
+      <button onclick="document.getElementById('orSmsConfirmModal')?.remove()" style="width:100%;padding:11px;border:1.5px solid #e5e5ea;border-radius:12px;background:none;color:#8e8e93;font-size:14px;font-weight:600;cursor:pointer">Не отправлять</button>
+    </div>`;
+  document.body.appendChild(div);
+}
+
+async function _orSendSmsConfirm(orderId, lang) {
+  document.getElementById('orSmsConfirmModal')?.remove();
+  try {
+    const token = localStorage.getItem(TOKEN_KEY);
+    const r = await fetch(`${API_BASE}/admin/orders/${orderId}/send-sms`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ lang, kind: 'pickup' }),
+    });
+    const d = await r.json();
+    if (d.sent) showToast('✅ SMS отправлен');
+    else showToast('⚠️ ' + (d.reason || 'SMS не отправлен'), 'error');
+  } catch(e) { showToast('⚠️ Ошибка отправки SMS', 'error'); }
 }
 
 function soNewOrderForClient() {

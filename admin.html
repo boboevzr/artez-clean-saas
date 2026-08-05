@@ -1481,6 +1481,7 @@
           <div class="nav-sub-item" data-page="clients"          onclick="switchSubPage(this)">👤 Клиенты</div>
           <div class="nav-sub-item" data-page="contacts"         onclick="switchSubPage(this)">📒 Справочник</div>
           <div class="nav-sub-item" data-page="active-contacts"  onclick="switchSubPage(this)">✅ Актуальные</div>
+          <div class="nav-sub-item" data-page="blacklist"        onclick="switchSubPage(this)">🚫 Чёрный список</div>
           <div class="nav-sub-item" data-page="site-users"       onclick="switchSubPage(this)">🌐 Польз. сайта</div>
         </div>
       </div>
@@ -2260,7 +2261,7 @@
           <table class="staff-table" id="adminClientsTable">
             <thead><tr>
               <th data-i18n="th.num">#</th><th data-i18n="th.name">Имя</th><th data-i18n="th.phone">Телефон</th><th data-i18n="th.extra.phone">Доп.номер</th>
-              <th data-i18n="th.status">Статус</th><th data-i18n="th.source">Источник</th><th data-i18n="th.orders.count">Заявок</th><th data-i18n="th.last.order">Последняя заявка</th>
+              <th data-i18n="th.status">Статус</th><th data-i18n="th.source">Источник</th><th data-i18n="th.orders.count">Заявок</th><th data-i18n="th.last.order">Последняя заявка</th><th></th>
             </tr></thead>
             <tbody id="adminClientsTbody"></tbody>
           </table>
@@ -2335,7 +2336,7 @@
         </div>
         <div class="card" style="overflow-x:auto">
           <table class="staff-table" id="adminActiveContactsTable">
-            <thead><tr><th>#</th><th>Имя</th><th>Телефон</th><th>Источник</th><th>Обновлён</th></tr></thead>
+            <thead><tr><th>#</th><th>Имя</th><th>Телефон</th><th>Источник</th><th>Обновлён</th><th></th></tr></thead>
             <tbody id="adminActiveContactsTbody"></tbody>
           </table>
           <div id="adminActiveContactsEmpty" style="display:none" class="loader">Контактов не найдено</div>
@@ -2344,6 +2345,36 @@
           <button class="btn btn-sm" style="background:var(--surface2);color:var(--text)" onclick="adminActiveContactsPage(-1)">‹ Назад</button>
           <span id="adminActiveContactsPageInfo" style="font-size:13px;color:var(--text2)"></span>
           <button class="btn btn-sm" style="background:var(--surface2);color:var(--text)" onclick="adminActiveContactsPage(1)">Вперёд ›</button>
+        </div>
+      </div>
+
+      <!-- ЧЁРНЫЙ СПИСОК -->
+      <div class="page" id="page-blacklist">
+        <div class="section-header">
+          <h2>🚫 Чёрный список</h2>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn btn-sm" style="background:var(--surface2);color:var(--text)" onclick="adminBlacklistSync()" title="Досвежа проставить флаг во всех справочниках по текущему списку">🔄 Обновить</button>
+            <button class="btn btn-primary btn-sm" onclick="openBlacklistModal()">+ Добавить в чёрный список</button>
+          </div>
+        </div>
+        <p class="cfg-hint" style="margin-bottom:14px">Номера отсюда не участвуют в автодозвоне и не попадают в экспорт для SMS/телефонной книги. Добавить номер также можно прямо в Клиентах, Справочнике, Актуальных контактах, Польз. сайта и TG · Клиентах — кнопкой 🚫 в строке.</p>
+        <div id="blacklistCount" style="font-size:13px;color:var(--text2);margin-bottom:14px"></div>
+        <div class="card" style="margin-bottom:14px">
+          <div class="filters-row">
+            <input class="filter-input" id="blacklistSearch" placeholder="🔍 Телефон или причина…" oninput="adminBlacklistDebounce()" style="min-width:220px">
+          </div>
+        </div>
+        <div class="card" style="overflow-x:auto">
+          <table class="staff-table" id="blacklistTable">
+            <thead><tr><th>#</th><th>Телефон</th><th>Имя и Фамилия</th><th>Причина</th><th>Кто добавил</th><th>Дата</th><th></th></tr></thead>
+            <tbody id="blacklistTbody"></tbody>
+          </table>
+          <div id="blacklistEmpty" style="display:none" class="loader">Чёрный список пуст</div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:center;gap:14px;margin-top:14px">
+          <button class="btn btn-sm" style="background:var(--surface2);color:var(--text)" onclick="adminBlacklistPage(-1)">‹ Назад</button>
+          <span id="blacklistPageInfo" style="font-size:13px;color:var(--text2)"></span>
+          <button class="btn btn-sm" style="background:var(--surface2);color:var(--text)" onclick="adminBlacklistPage(1)">Вперёд ›</button>
         </div>
       </div>
 
@@ -4955,6 +4986,7 @@
           </div>
           <div style="display:flex;gap:8px;flex-wrap:wrap">
             <button class="btn btn-sm" onclick="adOpenTest()" style="background:var(--surface2);color:var(--text)" data-i18n="ad.btn.test">🔧 Тест звонка</button>
+            <button class="btn btn-sm" onclick="adCreateFromActiveContacts()" style="background:#dcfce7;color:#16a34a;border:1px solid #86efac" title="Создать группу и кампанию из базы Актуальных контактов">📥 Из Актуальных контактов</button>
             <button class="btn btn-primary btn-sm" onclick="adOpenCreate()" data-i18n="new.campaign">+ Новая кампания</button>
           </div>
         </div>
@@ -9570,6 +9602,7 @@ function _activatePage(page) {
   if (page === 'leads')       adminLoadLeads();
   if (page === 'clients')     adminLoadClients();
   if (page === 'active-contacts') adminLoadActiveContacts();
+  if (page === 'blacklist')   adminLoadBlacklist();
   if (page === 'contacts')    adminLoadContacts();
   if (page === 'site-users')  adminLoadSiteUsers();
   if (page === 'siteconfig')  { loadSiteSettings(); staffMgmtLoad(); }
@@ -15222,15 +15255,17 @@ async function adminLoadClients() {
       const lo   = c.last_order_at ? new Date(c.last_order_at).toLocaleDateString('ru') : '—';
       const src  = ADMIN_CLIENT_SOURCE[c.source] || c.source || '—';
       const badge = `<span style="padding:2px 10px;border-radius:12px;font-size:12px;font-weight:700;background:${st.bg};color:${st.color}">${st.label}</span>`;
-      return `<tr class="client-row" onclick="openClientCard(${c.id})" style="cursor:pointer">
+      const bl = !!c.blacklisted;
+      return `<tr class="client-row" onclick="openClientCard(${c.id})" style="cursor:pointer;${bl?'opacity:.55':''}">
         <td>${i+1}</td>
-        <td data-label="Имя"><b>${name}</b></td>
+        <td data-label="Имя"><b>${name}</b>${bl?' <span style="font-size:10px;background:#dc2626;color:#fff;padding:1px 5px;border-radius:4px">🚫</span>':''}</td>
         <td data-label="Телефон"><a href="tel:${c.phone}" onclick="event.stopPropagation()">${c.phone}</a></td>
         <td data-label="Доп.номер">${c.phone2 || '—'}</td>
         <td data-label="Статус">${badge}</td>
         <td data-label="Источник">${src}</td>
         <td data-label="Заявок">${c.orders_count || 0}</td>
         <td data-label="Дата">${lo}</td>
+        <td><button class="btn btn-sm" style="background:var(--surface2);color:${bl?'#16a34a':'#dc2626'}" onclick="event.stopPropagation();toggleBlacklist('${_escJs(c.phone)}', ${bl}, adminLoadClients, '${_escJs(name==='—'?'':name)}')" title="${bl?'Убрать из ЧС':'В чёрный список'}">🚫</button></td>
       </tr>`;
     }).join('');
   } catch(e) { tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;color:var(--red)">Ошибка: ${e.message}</td></tr>`; }
@@ -15595,12 +15630,14 @@ async function adminLoadActiveContacts() {
     tbody.innerHTML = contacts.map((c, i) => {
       const name = [c.first_name, c.last_name].filter(Boolean).join(' ') || '—';
       const upd  = c.updated_at ? new Date(c.updated_at).toLocaleDateString('ru') : '—';
-      return `<tr>
+      const bl   = !!c.blacklisted;
+      return `<tr style="${bl?'opacity:.55':''}">
         <td>${_adminActiveContactsOffset + i + 1}</td>
-        <td data-label="Имя"><b>${_esc(name)}</b></td>
+        <td data-label="Имя"><b>${_esc(name)}</b>${bl?' <span style="font-size:10px;background:#dc2626;color:#fff;padding:1px 5px;border-radius:4px">🚫</span>':''}</td>
         <td data-label="Телефон"><a href="tel:${c.phone}">${c.phone}</a></td>
         <td data-label="Источник">${SRC[c.source] || c.source || '—'}</td>
         <td data-label="Обновлён">${upd}</td>
+        <td><button class="btn btn-sm" style="background:var(--surface2);color:${bl?'#16a34a':'#dc2626'}" onclick="toggleBlacklist('${_escJs(c.phone)}', ${bl}, adminLoadActiveContacts, '${_escJs(name==='—'?'':name)}')" title="${bl?'Убрать из ЧС':'В чёрный список'}">🚫</button></td>
       </tr>`;
     }).join('');
   } catch(e) { tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:var(--red)">Ошибка: ${e.message}</td></tr>`; }
@@ -15619,9 +15656,154 @@ async function adminBackfillActiveContacts() {
   } catch(e) { showToast('Ошибка: ' + e.message, 'error'); }
 }
 
+// ══════════════════════════════════════════
+// ЧЁРНЫЙ СПИСОК
+// ══════════════════════════════════════════
+let _adminBlacklistTimer  = null;
+let _adminBlacklistOffset = 0;
+const ADMIN_BLACKLIST_PAGE_SIZE = 50;
+
+function adminBlacklistDebounce() {
+  _adminBlacklistOffset = 0;
+  clearTimeout(_adminBlacklistTimer);
+  _adminBlacklistTimer = setTimeout(adminLoadBlacklist, 350);
+}
+
+function adminBlacklistPage(dir) {
+  const next = _adminBlacklistOffset + dir * ADMIN_BLACKLIST_PAGE_SIZE;
+  _adminBlacklistOffset = Math.max(0, next);
+  adminLoadBlacklist();
+}
+
+async function adminLoadBlacklist() {
+  const q     = (document.getElementById('blacklistSearch')?.value || '').trim();
+  const tbody = document.getElementById('blacklistTbody');
+  const empty = document.getElementById('blacklistEmpty');
+  if (!tbody) return;
+  let url = `/admin/blacklist?limit=${ADMIN_BLACKLIST_PAGE_SIZE}&offset=${_adminBlacklistOffset}`;
+  if (q) url += `&search=${encodeURIComponent(q)}`;
+  try {
+    const data = await apiGet(url);
+    if (!data) return;
+    const entries = data.entries || [];
+    const total = data.count ?? entries.length;
+    const countEl = document.getElementById('blacklistCount');
+    if (countEl) countEl.textContent = `Всего: ${total}`;
+    const pageInfo = document.getElementById('blacklistPageInfo');
+    if (pageInfo) {
+      const from = total ? _adminBlacklistOffset + 1 : 0;
+      const to   = Math.min(_adminBlacklistOffset + ADMIN_BLACKLIST_PAGE_SIZE, total);
+      pageInfo.textContent = `${from}–${to} из ${total}`;
+    }
+    if (!entries.length) {
+      tbody.innerHTML = '';
+      empty.style.display = '';
+      return;
+    }
+    empty.style.display = 'none';
+    tbody.innerHTML = entries.map((e, i) => {
+      const dt = e.created_at ? new Date(e.created_at).toLocaleDateString('ru') : '—';
+      return `<tr>
+        <td>${_adminBlacklistOffset + i + 1}</td>
+        <td data-label="Телефон"><a href="tel:${_esc(e.phone)}">${_esc(e.phone)}</a></td>
+        <td data-label="Имя и Фамилия">${_esc(e.name || '—')}</td>
+        <td data-label="Причина">${_esc(e.note || '—')}</td>
+        <td data-label="Кто добавил">${_esc(e.added_by || '—')}</td>
+        <td data-label="Дата">${dt}</td>
+        <td style="white-space:nowrap">
+          <button class="btn btn-sm" style="background:var(--surface2);color:var(--text)" onclick="openBlacklistModal(${JSON.stringify(e).replace(/"/g,'&quot;')})" title="Редактировать">✏️</button>
+          <button class="btn btn-sm" style="background:var(--surface2);color:#dc2626" onclick="adminBlacklistRemove('${_escJs(e.phone)}')" title="Убрать из чёрного списка">🗑</button>
+        </td>
+      </tr>`;
+    }).join('');
+  } catch(e) { tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--red)">Ошибка: ${e.message}</td></tr>`; }
+}
+
+let _blModalReloadFn = null;
+
+// opts.readonly — номер/имя только для просмотра (быстрое добавление из
+// Клиентов/Справочника/Актуальных/Польз. сайта/TG-клиентов — там нельзя
+// перепутать какой номер добавляем). opts.reloadFn — что перерисовать после
+// сохранения (по умолчанию — сама страница ЧС).
+function openBlacklistModal(entry, opts) {
+  opts = opts || {};
+  const isEdit = !!(entry && entry.phone);
+  document.getElementById('blModalTitle').textContent = isEdit && !opts.readonly ? '✏️ Редактировать запись' : '🚫 В чёрный список';
+  document.getElementById('blModalOrigPhone').value = isEdit ? entry.phone : '';
+  document.getElementById('blModalPhone').value = isEdit ? (entry.phone || '') : '';
+  document.getElementById('blModalName').value  = isEdit ? (entry.name  || '') : '';
+  document.getElementById('blModalNote').value  = '';
+  document.getElementById('blModalPhone').disabled = !!opts.readonly;
+  document.getElementById('blModalName').disabled  = !!opts.readonly;
+  _blModalReloadFn = opts.reloadFn || null;
+  document.getElementById('modalBlacklist').style.display = 'flex';
+  setTimeout(() => document.getElementById('blModalNote')?.focus(), 50);
+}
+
+function closeBlacklistModal() {
+  document.getElementById('modalBlacklist').style.display = 'none';
+  document.getElementById('blModalPhone').disabled = false;
+  document.getElementById('blModalName').disabled  = false;
+  _blModalReloadFn = null;
+}
+
+async function saveBlacklistModal() {
+  const phone = document.getElementById('blModalPhone')?.value.trim();
+  const name  = document.getElementById('blModalName')?.value.trim() || '';
+  const note  = document.getElementById('blModalNote')?.value.trim() || '';
+  if (!phone) { showToast('Укажите телефон', 'error'); return; }
+  if (!note)  { showToast('Укажите причину', 'error'); return; }
+  try {
+    const r = await apiPost('/admin/blacklist/toggle', { phone, blacklisted: true, note, name });
+    if (!r?.ok) { showToast('Ошибка', 'error'); return; }
+    const reloadFn = _blModalReloadFn;
+    closeBlacklistModal();
+    showToast('🚫 Добавлено в чёрный список', 'success');
+    if (reloadFn) reloadFn(); else adminLoadBlacklist();
+  } catch(e) { showToast('Ошибка: ' + e.message, 'error'); }
+}
+
+async function adminBlacklistRemove(phone) {
+  if (!confirm(`Убрать ${phone} из чёрного списка?`)) return;
+  try {
+    const r = await apiPost('/admin/blacklist/toggle', { phone, blacklisted: false });
+    if (!r?.ok) { showToast('Ошибка', 'error'); return; }
+    showToast('Убрано из чёрного списка', 'success');
+    adminLoadBlacklist();
+  } catch(e) { showToast('Ошибка: ' + e.message, 'error'); }
+}
+
+async function adminBlacklistSync() {
+  showToast('⏳ Обновляем…');
+  try {
+    const r = await apiPost('/admin/blacklist/sync', {});
+    if (r?.ok) { showToast('✅ Обновлено', 'success'); adminLoadBlacklist(); }
+    else showToast('Ошибка', 'error');
+  } catch(e) { showToast('Ошибка: ' + e.message, 'error'); }
+}
+
+// Общий helper для кнопки 🚫 в Клиентах/Справочнике/Актуальных/Польз. сайта/
+// TG-клиентах — добавление открывает модалку ЧС (номер/имя нередактируемые —
+// видно кого добавляем — причина обязательна); отмена в модалке ничего не
+// добавляет. Убрать из ЧС — как раньше, через confirm().
+async function toggleBlacklist(phone, currentlyBlacklisted, reloadFn, name) {
+  if (!phone) { showToast('Нет телефона у этой записи', 'error'); return; }
+  if (currentlyBlacklisted) {
+    if (!confirm(`Убрать ${phone} из чёрного списка?`)) return;
+    try {
+      const r = await apiPost('/admin/blacklist/toggle', { phone, blacklisted: false });
+      if (r?.ok) { showToast('Убрано из чёрного списка', 'success'); if (reloadFn) reloadFn(); }
+      else showToast('Ошибка', 'error');
+    } catch(e) { showToast('Ошибка: ' + e.message, 'error'); }
+  } else {
+    openBlacklistModal({ phone, name: name || '' }, { readonly: true, reloadFn });
+  }
+}
+
 async function _fetchAllActiveContacts() {
   const data = await apiGet('/admin/active-contacts?limit=100000');
-  return (data && data.contacts) || [];
+  // Чёрный список не должен попадать ни в телефонную книгу, ни в SMS-экспорт.
+  return ((data && data.contacts) || []).filter(c => !c.blacklisted);
 }
 
 // 1) Телефонная книга: Имя и фамилия / Сотовый / E-mail / Адрес.
@@ -15831,13 +16013,14 @@ async function adminLoadSiteUsers() {
     const agentBadge = u.is_agent
       ? `<span style="font-size:11px;padding:2px 7px;border-radius:10px;background:#ff950018;color:#ff9500;font-weight:600">🤝 Агент</span>`
       : `<span style="font-size:12px;color:var(--text2)">—</span>`;
-    return `<tr style="cursor:pointer" onclick="openSiteUserCard(${u.id})">
+    const bl = !!u.blacklisted;
+    return `<tr style="cursor:pointer;${bl?'opacity:.55':''}" onclick="openSiteUserCard(${u.id})">
       <td style="color:var(--text2);font-size:12px">${i+1}</td>
       <td>
         <div style="display:flex;align-items:center;gap:9px">
           <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">${initials}</div>
           <div>
-            <div style="font-weight:600;font-size:13px">${name}</div>
+            <div style="font-weight:600;font-size:13px">${name}${bl?' <span style="font-size:10px;background:#dc2626;color:#fff;padding:1px 5px;border-radius:4px">🚫</span>':''}</div>
             <div style="font-size:12px;color:var(--text2)">${u.phone}</div>
           </div>
         </div>
@@ -15846,7 +16029,10 @@ async function adminLoadSiteUsers() {
       <td>${agentBadge}</td>
       <td style="font-size:12px;white-space:nowrap;color:var(--text2)">${_fmtDate(u.created_at)}</td>
       <td style="font-size:12px;white-space:nowrap;color:var(--text2)">${_fmtDt(u.last_login)}</td>
-      <td><button class="btn btn-sm" style="padding:4px 10px;font-size:12px" onclick="event.stopPropagation();openSiteUserCard(${u.id})">✏️</button></td>
+      <td style="white-space:nowrap">
+        <button class="btn btn-sm" style="padding:4px 10px;font-size:12px" onclick="event.stopPropagation();openSiteUserCard(${u.id})">✏️</button>
+        <button class="btn btn-sm" style="padding:4px 10px;font-size:12px;background:var(--surface2);color:${bl?'#16a34a':'#dc2626'}" onclick="event.stopPropagation();toggleBlacklist('${_escJs(u.phone)}', ${bl}, adminLoadSiteUsers, '${_escJs(u.first_name||'')}')" title="${bl?'Убрать из ЧС':'В чёрный список'}">🚫</button>
+      </td>
     </tr>`;
   }).join('');
 }
@@ -16026,9 +16212,10 @@ async function adminLoadContacts() {
   tbody.innerHTML = contacts.map((c, i) => {
     const name = [c.last_name, c.first_name, c.middle_name].filter(Boolean).join(' ') || '—';
     const src = c.source === 'Старая база' ? '<span style="color:#8e8e93">📂 Старая база</span>' : '<span style="color:#34c759">✅ ARTEZ</span>';
-    return `<tr>
+    const bl = !!c.blacklisted;
+    return `<tr style="${bl?'opacity:.55':''}">
       <td>${_adminContactsOffset + i + 1}</td>
-      <td data-label="Имя"><b>${name}</b></td>
+      <td data-label="Имя"><b>${name}</b>${bl?' <span style="font-size:10px;background:#dc2626;color:#fff;padding:1px 5px;border-radius:4px">🚫</span>':''}</td>
       <td data-label="Телефон"><a href="tel:${c.phone}">${c.phone}</a></td>
       <td data-label="Доп.номер">${c.phone2 || '—'}</td>
       <td data-label="Кр. адрес">${c.short_address || '—'}</td>
@@ -16036,6 +16223,7 @@ async function adminLoadContacts() {
       <td data-label="Источник">${src}</td>
       <td class="cl-actions">
         <button class="btn btn-sm" onclick="openAdminContactEdit(${c.id})">✏️</button>
+        <button class="btn btn-sm" style="background:var(--surface2);color:${bl?'#16a34a':'#dc2626'}" onclick="toggleBlacklist('${_escJs(c.phone)}', ${bl}, adminLoadContacts, '${_escJs(name==='—'?'':name)}')" title="${bl?'Убрать из ЧС':'В чёрный список'}">🚫</button>
         <button class="btn btn-sm" style="background:rgba(239,68,68,.15);color:#ef4444;border:1px solid rgba(239,68,68,.3)" onclick="deleteAdminContact(${c.id},'${name.replace(/'/g,"\\'")}')">🗑</button>
       </td>
     </tr>`;
@@ -16306,7 +16494,7 @@ async function adminImportContactsExcel(input) {
       const rows = XLSX.utils.sheet_to_json(ws);
       if (!rows.length) { st.textContent = '⚠️ Файл пустой'; return; }
       const BATCH = 500;
-      let ok = 0, dup = 0, err = 0;
+      let ok = 0, dup = 0, err = 0, bl = 0;
       for (let i = 0; i < rows.length; i += BATCH) {
         const batch = rows.slice(i, i + BATCH).map(r => ({
           phone:         String(r['Телефон']       || r['телефон']       || r['phone']         || '').trim().replace(/\s/g,''),
@@ -16324,11 +16512,11 @@ async function adminImportContactsExcel(input) {
           headers:{'Content-Type':'application/json', Authorization:`Bearer ${adminToken}`},
           body: JSON.stringify({ rows: batch }),
         });
-        if (res.ok) { const d = await res.json(); ok+=d.ok||0; dup+=d.dup||0; err+=d.err||0; }
+        if (res.ok) { const d = await res.json(); ok+=d.ok||0; dup+=d.dup||0; err+=d.err||0; bl+=d.blacklisted||0; }
         else err += batch.length;
       }
       st.style.color = 'var(--green)';
-      st.textContent = `✅ Импорт завершён: добавлено ${ok.toLocaleString('ru')}, дублей ${dup}, ошибок ${err}`;
+      st.textContent = `✅ Импорт завершён: добавлено ${ok.toLocaleString('ru')}, дублей ${dup}, из чёрного списка пропущено ${bl}, ошибок ${err}`;
       setTimeout(() => { st.style.display='none'; adminLoadContacts(); }, 3000);
     } catch(e) { st.textContent = '❌ Ошибка: ' + e.message; }
   };
@@ -16982,16 +17170,19 @@ async function loadTgClients(search = '') {
       const tg = c.tg_username ? `@${c.tg_username}` : `ID: ${c.tg_id}`;
       const lastOrder = c.last_order_at ? new Date(c.last_order_at).toLocaleDateString('ru-RU') : '—';
       const spent = c.total_spent > 0 ? Number(c.total_spent).toLocaleString('ru-RU') + ' сум' : '—';
-      const blockedBadge = c.blocked ? `<span style="font-size:10px;background:#ff3b30;color:#fff;padding:1px 5px;border-radius:4px;margin-left:5px">🚫</span>` : '';
-      return `<tr style="${c.blocked?'opacity:.6':''}">
-        <td style="padding:8px 10px;border:1px solid var(--border);">${name}${blockedBadge}</td>
+      const blockedBadge = c.blocked ? `<span style="font-size:10px;background:#ff3b30;color:#fff;padding:1px 5px;border-radius:4px;margin-left:5px">🚫 блок</span>` : '';
+      const bl = !!c.blacklisted;
+      const blBadge = bl ? `<span style="font-size:10px;background:#dc2626;color:#fff;padding:1px 5px;border-radius:4px;margin-left:5px">🚫 ЧС</span>` : '';
+      return `<tr style="${(c.blocked||bl)?'opacity:.6':''}">
+        <td style="padding:8px 10px;border:1px solid var(--border);">${name}${blockedBadge}${blBadge}</td>
         <td style="padding:8px 10px;border:1px solid var(--border);font-family:monospace;white-space:nowrap;">${c.phone||'—'}</td>
         <td style="padding:8px 10px;border:1px solid var(--border);white-space:nowrap;color:var(--accent)">${tg}</td>
         <td style="padding:8px 10px;border:1px solid var(--border);text-align:center;">${c.orders_count||0}</td>
         <td style="padding:8px 10px;border:1px solid var(--border);text-align:right;white-space:nowrap;">${spent}</td>
         <td style="padding:8px 10px;border:1px solid var(--border);color:var(--muted);">${lastOrder}</td>
-        <td style="padding:6px 8px;border:1px solid var(--border);text-align:center;">
+        <td style="padding:6px 8px;border:1px solid var(--border);text-align:center;white-space:nowrap;">
           <button class="btn btn-sm" style="padding:4px 10px;font-size:12px" onclick="openTgClientCard(${JSON.stringify(c).replace(/"/g,'&quot;')})">✏️</button>
+          <button class="btn btn-sm" style="padding:4px 10px;font-size:12px;background:var(--surface2);color:${bl?'#16a34a':'#dc2626'}" onclick="toggleBlacklist('${_escJs(c.phone||'')}', ${bl}, () => loadTgClients(), '${_escJs(name==='—'?'':name)}')" title="${bl?'Убрать из ЧС':'В чёрный список'}">🚫</button>
         </td>
       </tr>`;
     }).join('');
@@ -20069,6 +20260,35 @@ function confirmBranchLoc() {
   </div>
 </div>
 
+<!-- MODAL: BLACKLIST ADD/EDIT -->
+<div id="modalBlacklist" class="modal-overlay" style="display:none">
+  <div class="modal-box-sm" style="max-width:380px">
+    <div style="background:linear-gradient(135deg,#dc2626,#991b1b);color:#fff;padding:16px 20px;border-radius:12px 12px 0 0;margin:-24px -24px 20px">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div id="blModalTitle" style="font-size:16px;font-weight:700">🚫 В чёрный список</div>
+        <button onclick="closeBlacklistModal()" style="background:rgba(255,255,255,.2);border:none;color:#fff;width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:16px;line-height:1">✕</button>
+      </div>
+    </div>
+    <input type="hidden" id="blModalOrigPhone">
+    <div class="form-group" style="margin-bottom:12px">
+      <label class="form-label">Телефон</label>
+      <input class="form-input" id="blModalPhone" placeholder="+998901234567">
+    </div>
+    <div class="form-group" style="margin-bottom:12px">
+      <label class="form-label">Имя и Фамилия</label>
+      <input class="form-input" id="blModalName" placeholder="Алишер Каримов">
+    </div>
+    <div class="form-group" style="margin-bottom:20px">
+      <label class="form-label">Причина</label>
+      <input class="form-input" id="blModalNote" placeholder="Например: жалоба, не звонить">
+    </div>
+    <div style="display:flex;gap:10px">
+      <button class="btn" style="flex:1" onclick="closeBlacklistModal()">Отмена</button>
+      <button class="btn" style="flex:2;background:#dc2626;color:#fff" onclick="saveBlacklistModal()">Сохранить</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL: CONTACTS DUPLICATES -->
 <div id="modalContactsDups" class="modal-overlay" style="display:none">
   <div class="modal-box" style="max-width:720px;max-height:90vh;display:flex;flex-direction:column">
@@ -21096,6 +21316,7 @@ function confirmBranchLoc() {
       <div class="mob-drawer-sub-item" data-page="clients"         onclick="mobDrawerGoCrm(this)">👤 Клиенты</div>
       <div class="mob-drawer-sub-item" data-page="contacts"        onclick="mobDrawerGoCrm(this)">📒 Справочник</div>
       <div class="mob-drawer-sub-item" data-page="active-contacts" onclick="mobDrawerGoCrm(this)">✅ Актуальные</div>
+      <div class="mob-drawer-sub-item" data-page="blacklist"       onclick="mobDrawerGoCrm(this)">🚫 Чёрный список</div>
       <div class="mob-drawer-sub-item" data-page="site-users"      onclick="mobDrawerGoCrm(this)">🌐 Польз. сайта</div>
     </div>
 
@@ -22391,6 +22612,10 @@ function _adStat(label, val, color) {
 }
 
 function _esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+// Экранирует и для JS-строки в одинарных кавычках (onclick="...('...')"), и для
+// самого HTML-атрибута в двойных — _esc() кавычки не трогает, этого одного было
+// недостаточно (нашла security-проверка после коммита ЧС в проде).
+function _escJs(s) { return String(s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 async function adImportActive(id, total, btn) {
   const origHtml = btn.innerHTML;
@@ -22449,6 +22674,23 @@ async function adOpenCreate() {
   _adInitDays(null);
   await Promise.all([adLoadGroupsForSelect(), _adLoadExtenSels()]);
   document.getElementById('adModal').classList.remove('hidden');
+}
+
+// Кнопка «📥 Из Актуальных контактов»: создаёт группу автодозвона из базы
+// ✅ Актуальные контакты (без ЧС) и сразу открывает форму новой кампании
+// с этой группой предвыбранной.
+async function adCreateFromActiveContacts() {
+  const name = prompt('Название группы:', `Актуальные контакты ${new Date().toLocaleDateString('ru')}`);
+  if (!name) return;
+  try {
+    const r = await apiPost('/admin/autodial/groups/from-active-contacts', { name: name.trim() });
+    if (!r?.ok) { showToast(r?.detail || 'Ошибка', 'error'); return; }
+    showToast(`✅ Группа «${r.group_name}» создана — ${r.inserted} контактов`, 'success');
+    await adOpenCreate();
+    await adLoadGroupsForSelect();
+    _adRenderGroupSelect([r.group_id]);
+    document.getElementById('adName').value = r.group_name;
+  } catch(e) { showToast('Ошибка: ' + e.message, 'error'); }
 }
 
 async function adOpenEdit(id) {
