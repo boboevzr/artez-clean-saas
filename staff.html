@@ -10835,7 +10835,11 @@ function staffRenderWorkflow(currentStatus, permissions, rowId) {
       const deliveredBtn = canDeliver ? _wfBtn("staffMarkDelivered()", '#7c3aed', '✅ Доставлен') : '';
       row.innerHTML = deliveredBtn;
     }
-    else if (currentStatus === 'delivered') { row.innerHTML = ''; }
+    else if (currentStatus === 'delivered') {
+      // Доставлен считается конечным статусом для всех ролей — но админу нужна
+      // возможность откатить/поправить статус вручную (напр. ошиблись при доставке).
+      row.innerHTML = currentStaff?.role === 'admin' ? statusDropdown() : '';
+    }
     else                  { row.innerHTML = statusDropdown(); }
     return;
   }
