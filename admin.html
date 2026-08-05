@@ -22634,20 +22634,14 @@ function adExportCsv(statusFilter) {
     ? _adDetailCalls
     : _adDetailCalls.filter(c => c.status === statusFilter);
   if (!rows.length) { showToast('Нет данных для экспорта', 'error'); return; }
-  const header = 'Телефон,Имя,Статус,Время звонка,Длительность (сек)';
-  const lines = rows.map(c => {
-    const st = _AD_CALL_STATUS[c.status]?.label || c.status;
-    const time = c.started_at ? new Date(c.started_at).toLocaleString('ru') : '';
-    let dur = '';
-    if (c.answered_at && c.hangup_at)
-      dur = String(Math.round((new Date(c.hangup_at) - new Date(c.answered_at)) / 1000));
-    return [c.phone, c.name||'', st, time, dur].map(v => `"${String(v).replace(/"/g,'""')}"`).join(',');
-  });
-  const blob = new Blob(['﻿' + header + '\n' + lines.join('\n')], {type:'text/csv;charset=utf-8'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `autodial_${statusFilter}_${Date.now()}.csv`;
-  a.click();
+  const data = rows.map(c => ({
+    'Номер телефона':    c.phone || '',
+    'Фамилия и Имя':     c.name || '',
+  }));
+  const ws = XLSX.utils.json_to_sheet(data);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Контакты');
+  XLSX.writeFile(wb, `autodial_${statusFilter}_${Date.now()}.xlsx`);
 }
 
 // ── Создать группу из звонков ─────────────────────────────────────────────
